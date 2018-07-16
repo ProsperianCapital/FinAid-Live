@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:typens="urn:PtCard" xmlns="http://schemas.xmlsoap.org/wsdl/" name="PtCard" targetNamespace="urn:PtCard" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:PtCard">
+      <xsd:complexType name="SaleRequest">
+        <xsd:all>
+          <xsd:element name="cardExpiration" type="xsd:string" />
+          <xsd:element name="cardNumber" type="xsd:string" />
+          <xsd:element name="cardType" type="xsd:string" />
+          <xsd:element minOccurs="0" name="cardVerificationCode" type="xsd:string" />
+          <xsd:element name="customerAddress" type="xsd:string" />
+          <xsd:element name="customerCity" type="xsd:string" />
+          <xsd:element name="customerCountry" type="xsd:string" />
+          <xsd:element name="customerEmail" type="xsd:string" />
+          <xsd:element name="customerIP" type="xsd:string" />
+          <xsd:element name="customerName" type="xsd:string" />
+          <xsd:element name="customerPhoneNumber" type="xsd:string" />
+          <xsd:element minOccurs="0" name="customerState" type="xsd:string" />
+          <xsd:element name="customerZipCode" type="xsd:string" />
+          <xsd:element minOccurs="0" name="initRecurring" type="xsd:string" />
+          <xsd:element name="merchantID" type="xsd:string" />
+          <xsd:element minOccurs="0" name="channelID" type="xsd:string" />
+          <xsd:element name="orderAmount" type="xsd:string" />
+          <xsd:element name="orderCurrency" type="xsd:string" />
+          <xsd:element name="orderDescription" type="xsd:string" />
+          <xsd:element name="orderReference" type="xsd:string" />
+          <xsd:element minOccurs="0" name="returnUrl" type="xsd:string" />
+          <xsd:element name="signature" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="SaleResult">
+        <xsd:all>
+          <xsd:element name="merchantID" type="xsd:string" />
+          <xsd:element name="orderReference" type="xsd:string" />
+          <xsd:element minOccurs="0" name="recurringToken" type="xsd:string" />
+          <xsd:element name="statusCode" type="xsd:integer" />
+          <xsd:element minOccurs="0" name="transactionError" type="xsd:string" />
+          <xsd:element name="transactionStatus" type="xsd:string" />
+          <xsd:element name="transactionType" type="xsd:string" />
+          <xsd:element minOccurs="0" name="verificationParams" type="xsd:string" />
+          <xsd:element minOccurs="0" name="verificationUrl" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="CaptureRequest">
+        <xsd:all>
+          <xsd:element name="merchantID" type="xsd:string" />
+          <xsd:element name="orderReference" type="xsd:string" />
+          <xsd:element minOccurs="0" name="amount" type="xsd:string" />
+          <xsd:element name="signature" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="CaptureResult">
+        <xsd:all>
+          <xsd:element name="merchantID" type="xsd:string" />
+          <xsd:element name="orderReference" type="xsd:string" />
+          <xsd:element name="statusCode" type="xsd:integer" />
+          <xsd:element name="transactionStatus" type="xsd:string" />
+          <xsd:element name="transactionType" type="xsd:string" />
+          <xsd:element minOccurs="0" name="transactionError" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="CancelRequest">
+        <xsd:all>
+          <xsd:element name="merchantID" type="xsd:string" />
+          <xsd:element name="orderReference" type="xsd:string" />
+          <xsd:element minOccurs="0" name="amount" type="xsd:string" />
+          <xsd:element name="signature" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="CancelResult">
+        <xsd:all>
+          <xsd:element name="merchantID" type="xsd:string" />
+          <xsd:element name="orderReference" type="xsd:string" />
+          <xsd:element name="statusCode" type="xsd:integer" />
+          <xsd:element name="transactionStatus" type="xsd:string" />
+          <xsd:element name="transactionType" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="RebillRequest">
+        <xsd:all>
+          <xsd:element name="merchantID" type="xsd:string" />
+          <xsd:element name="orderAmount" type="xsd:string" />
+          <xsd:element name="orderDescription" type="xsd:string" />
+          <xsd:element name="orderReference" type="xsd:string" />
+          <xsd:element name="originalOrderReference" type="xsd:string" />
+          <xsd:element name="recurringToken" type="xsd:string" />
+          <xsd:element name="signature" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="RebillResult">
+        <xsd:all>
+          <xsd:element name="merchantID" type="xsd:string" />
+          <xsd:element name="orderReference" type="xsd:string" />
+          <xsd:element name="statusCode" type="xsd:integer" />
+          <xsd:element minOccurs="0" name="transactionError" type="xsd:string" />
+          <xsd:element name="transactionStatus" type="xsd:string" />
+          <xsd:element name="transactionType" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="StatusRequest">
+        <xsd:all>
+          <xsd:element name="merchantID" type="xsd:string" />
+          <xsd:element name="orderReference" type="xsd:string" />
+          <xsd:element name="signature" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="StatusResult">
+        <xsd:all>
+          <xsd:element name="merchantID" type="xsd:string" />
+          <xsd:element name="orderReference" type="xsd:string" />
+          <xsd:element name="orderStatus" type="xsd:string" />
+          <xsd:element minOccurs="0" name="orderError" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="ScheduleRequest">
+        <xsd:all>
+          <xsd:element name="merchantID" type="xsd:string" />
+          <xsd:element name="orderAmount" type="xsd:string" />
+          <xsd:element minOccurs="0" name="orderDescription" type="xsd:string" />
+          <xsd:element name="originalOrderReference" type="xsd:string" />
+          <xsd:element name="recurringToken" type="xsd:string" />
+          <xsd:element minOccurs="0" name="scheduleCount" type="xsd:string" />
+          <xsd:element minOccurs="0" name="scheduleDelay" type="xsd:string" />
+          <xsd:element name="schedulePeriod" type="xsd:string" />
+          <xsd:element name="signature" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="ScheduleResult">
+        <xsd:all>
+          <xsd:element name="merchantID" type="xsd:string" />
+          <xsd:element name="orderReference" type="xsd:string" />
+          <xsd:element name="statusCode" type="xsd:integer" />
+          <xsd:element name="transactionStatus" type="xsd:string" />
+          <xsd:element name="transactionType" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="DescheduleRequest">
+        <xsd:all>
+          <xsd:element name="merchantID" type="xsd:string" />
+          <xsd:element name="originalOrderReference" type="xsd:string" />
+          <xsd:element name="recurringToken" type="xsd:string" />
+          <xsd:element name="signature" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+      <xsd:complexType name="DescheduleResult">
+        <xsd:all>
+          <xsd:element name="merchantID" type="xsd:string" />
+          <xsd:element name="orderReference" type="xsd:string" />
+          <xsd:element name="statusCode" type="xsd:integer" />
+          <xsd:element name="transactionStatus" type="xsd:string" />
+          <xsd:element name="transactionType" type="xsd:string" />
+        </xsd:all>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="sale">
+    <wsdl:part name="params" type="typens:SaleRequest" />
+  </wsdl:message>
+  <wsdl:message name="saleResponse">
+    <wsdl:part name="saleReturn" type="typens:SaleResult" />
+  </wsdl:message>
+  <wsdl:message name="capture">
+    <wsdl:part name="params" type="typens:CaptureRequest" />
+  </wsdl:message>
+  <wsdl:message name="captureResponse">
+    <wsdl:part name="captureReturn" type="typens:CaptureResult" />
+  </wsdl:message>
+  <wsdl:message name="cancel">
+    <wsdl:part name="params" type="typens:CancelRequest" />
+  </wsdl:message>
+  <wsdl:message name="cancelResponse">
+    <wsdl:part name="cancelReturn" type="typens:CancelResult" />
+  </wsdl:message>
+  <wsdl:message name="rebill">
+    <wsdl:part name="params" type="typens:RebillRequest" />
+  </wsdl:message>
+  <wsdl:message name="rebillResponse">
+    <wsdl:part name="rebillReturn" type="typens:RebillResult" />
+  </wsdl:message>
+  <wsdl:message name="status">
+    <wsdl:part name="params" type="typens:StatusRequest" />
+  </wsdl:message>
+  <wsdl:message name="statusResponse">
+    <wsdl:part name="statusReturn" type="typens:StatusResult" />
+  </wsdl:message>
+  <wsdl:message name="schedule">
+    <wsdl:part name="params" type="typens:ScheduleRequest" />
+  </wsdl:message>
+  <wsdl:message name="scheduleResponse">
+    <wsdl:part name="scheduleReturn" type="typens:ScheduleResult" />
+  </wsdl:message>
+  <wsdl:message name="deschedule">
+    <wsdl:part name="params" type="typens:DescheduleRequest" />
+  </wsdl:message>
+  <wsdl:message name="descheduleResponse">
+    <wsdl:part name="descheduleReturn" type="typens:DescheduleResult" />
+  </wsdl:message>
+  <wsdl:portType name="PtCardPortType">
+    <wsdl:operation name="auth">
+      <wsdl:input message="typens:sale" />
+      <wsdl:output message="typens:saleResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="sale">
+      <wsdl:input message="typens:sale" />
+      <wsdl:output message="typens:saleResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="capture">
+      <wsdl:input message="typens:capture" />
+      <wsdl:output message="typens:captureResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="cancel">
+      <wsdl:input message="typens:cancel" />
+      <wsdl:output message="typens:cancelResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="authRebill">
+      <wsdl:input message="typens:rebill" />
+      <wsdl:output message="typens:rebillResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="rebill">
+      <wsdl:input message="typens:rebill" />
+      <wsdl:output message="typens:rebillResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="status">
+      <wsdl:input message="typens:status" />
+      <wsdl:output message="typens:statusResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="schedule">
+      <wsdl:input message="typens:schedule" />
+      <wsdl:output message="typens:scheduleResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="deschedule">
+      <wsdl:input message="typens:deschedule" />
+      <wsdl:output message="typens:descheduleResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="PtCardBinding" type="typens:PtCardPortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
+    <wsdl:operation name="auth">
+      <soap:operation soapAction="urn:PtCardAction" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sale">
+      <soap:operation soapAction="urn:PtCardAction" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="capture">
+      <soap:operation soapAction="urn:PtCardAction" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="cancel">
+      <soap:operation soapAction="urn:PtCardAction" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="authRebill">
+      <soap:operation soapAction="urn:PtCardAction" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="rebill">
+      <soap:operation soapAction="urn:PtCardAction" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="status">
+      <soap:operation soapAction="urn:PtCardAction" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="schedule">
+      <soap:operation soapAction="urn:PtCardAction" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deschedule">
+      <soap:operation soapAction="urn:PtCardAction" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="urn:PtCard" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PtCardService">
+    <wsdl:port name="PtCardPort" binding="typens:PtCardBinding">
+      <soap:address location="https://secure.payinspect.com/pt-card/index.php" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

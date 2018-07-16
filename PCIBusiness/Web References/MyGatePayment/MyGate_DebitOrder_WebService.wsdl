@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:intf="http://functions.debitorders.includes.console" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns1="http://rpc.xml.coldfusion" xmlns:impl="http://functions.debitorders.includes.console" targetNamespace="http://functions.debitorders.includes.console" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://rpc.xml.coldfusion">
+      <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <xsd:complexType name="CFCInvocationException">
+        <xsd:sequence />
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="releaseDebitFileResponse">
+    <wsdl:part name="releaseDebitFileReturn" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="downloadResponseFiles_NaedoResponse">
+    <wsdl:part name="downloadResponseFiles_NaedoReturn" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="downloadResponseFiles_CCResponse">
+    <wsdl:part name="downloadResponseFiles_CCReturn" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="uploadRefundFileResponse">
+    <wsdl:part name="uploadRefundFileReturn" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="releaseRefundFileRequest">
+    <wsdl:part name="refundXML" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="downloadRDFilesResponse">
+    <wsdl:part name="downloadRDFilesReturn" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="releaseRefundFileResponse">
+    <wsdl:part name="releaseRefundFileReturn" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="CFCInvocationException">
+    <wsdl:part name="fault" type="tns1:CFCInvocationException" />
+  </wsdl:message>
+  <wsdl:message name="downloadResponseFiles_NaedoRequest">
+    <wsdl:part name="inputXML" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="downloadRDFilesRequest">
+    <wsdl:part name="inputXML" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="downloadResponseFiles_CCRequest">
+    <wsdl:part name="inputXML" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="uploadRefundFileRequest">
+    <wsdl:part name="debitOrderXML" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="fRetrieveBatchStatusRequest">
+    <wsdl:part name="input" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="releaseDebitFileRequest">
+    <wsdl:part name="releaseXML" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="uploadDebitFileRequest">
+    <wsdl:part name="debitOrderXML" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="uploadDebitFileResponse">
+    <wsdl:part name="uploadDebitFileReturn" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="fRetrieveBatchStatusResponse">
+    <wsdl:part name="fRetrieveBatchStatusReturn" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:portType name="MyGate_DebitOrder_WebService">
+    <wsdl:operation name="releaseRefundFile" parameterOrder="refundXML">
+      <wsdl:input name="releaseRefundFileRequest" message="impl:releaseRefundFileRequest" />
+      <wsdl:output name="releaseRefundFileResponse" message="impl:releaseRefundFileResponse" />
+      <wsdl:fault name="CFCInvocationException" message="impl:CFCInvocationException" />
+    </wsdl:operation>
+    <wsdl:operation name="uploadRefundFile" parameterOrder="debitOrderXML">
+      <wsdl:input name="uploadRefundFileRequest" message="impl:uploadRefundFileRequest" />
+      <wsdl:output name="uploadRefundFileResponse" message="impl:uploadRefundFileResponse" />
+      <wsdl:fault name="CFCInvocationException" message="impl:CFCInvocationException" />
+    </wsdl:operation>
+    <wsdl:operation name="downloadRDFiles" parameterOrder="inputXML">
+      <wsdl:input name="downloadRDFilesRequest" message="impl:downloadRDFilesRequest" />
+      <wsdl:output name="downloadRDFilesResponse" message="impl:downloadRDFilesResponse" />
+      <wsdl:fault name="CFCInvocationException" message="impl:CFCInvocationException" />
+    </wsdl:operation>
+    <wsdl:operation name="downloadResponseFiles_Naedo" parameterOrder="inputXML">
+      <wsdl:input name="downloadResponseFiles_NaedoRequest" message="impl:downloadResponseFiles_NaedoRequest" />
+      <wsdl:output name="downloadResponseFiles_NaedoResponse" message="impl:downloadResponseFiles_NaedoResponse" />
+      <wsdl:fault name="CFCInvocationException" message="impl:CFCInvocationException" />
+    </wsdl:operation>
+    <wsdl:operation name="uploadDebitFile" parameterOrder="debitOrderXML">
+      <wsdl:input name="uploadDebitFileRequest" message="impl:uploadDebitFileRequest" />
+      <wsdl:output name="uploadDebitFileResponse" message="impl:uploadDebitFileResponse" />
+      <wsdl:fault name="CFCInvocationException" message="impl:CFCInvocationException" />
+    </wsdl:operation>
+    <wsdl:operation name="downloadResponseFiles_CC" parameterOrder="inputXML">
+      <wsdl:input name="downloadResponseFiles_CCRequest" message="impl:downloadResponseFiles_CCRequest" />
+      <wsdl:output name="downloadResponseFiles_CCResponse" message="impl:downloadResponseFiles_CCResponse" />
+      <wsdl:fault name="CFCInvocationException" message="impl:CFCInvocationException" />
+    </wsdl:operation>
+    <wsdl:operation name="releaseDebitFile" parameterOrder="releaseXML">
+      <wsdl:input name="releaseDebitFileRequest" message="impl:releaseDebitFileRequest" />
+      <wsdl:output name="releaseDebitFileResponse" message="impl:releaseDebitFileResponse" />
+      <wsdl:fault name="CFCInvocationException" message="impl:CFCInvocationException" />
+    </wsdl:operation>
+    <wsdl:operation name="fRetrieveBatchStatus" parameterOrder="input">
+      <wsdl:input name="fRetrieveBatchStatusRequest" message="impl:fRetrieveBatchStatusRequest" />
+      <wsdl:output name="fRetrieveBatchStatusResponse" message="impl:fRetrieveBatchStatusResponse" />
+      <wsdl:fault name="CFCInvocationException" message="impl:CFCInvocationException" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="MyGate_DebitOrder_WebService.cfcSoapBinding" type="impl:MyGate_DebitOrder_WebService">
+    <wsdlsoap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
+    <wsdl:operation name="releaseRefundFile">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="releaseRefundFileRequest">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="releaseRefundFileResponse">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+      <wsdl:fault name="CFCInvocationException">
+        <wsdlsoap:fault use="encoded" name="CFCInvocationException" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="uploadRefundFile">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="uploadRefundFileRequest">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="uploadRefundFileResponse">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+      <wsdl:fault name="CFCInvocationException">
+        <wsdlsoap:fault use="encoded" name="CFCInvocationException" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="downloadRDFiles">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="downloadRDFilesRequest">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="downloadRDFilesResponse">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+      <wsdl:fault name="CFCInvocationException">
+        <wsdlsoap:fault use="encoded" name="CFCInvocationException" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="downloadResponseFiles_Naedo">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="downloadResponseFiles_NaedoRequest">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="downloadResponseFiles_NaedoResponse">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+      <wsdl:fault name="CFCInvocationException">
+        <wsdlsoap:fault use="encoded" name="CFCInvocationException" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="uploadDebitFile">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="uploadDebitFileRequest">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="uploadDebitFileResponse">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+      <wsdl:fault name="CFCInvocationException">
+        <wsdlsoap:fault use="encoded" name="CFCInvocationException" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="downloadResponseFiles_CC">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="downloadResponseFiles_CCRequest">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="downloadResponseFiles_CCResponse">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+      <wsdl:fault name="CFCInvocationException">
+        <wsdlsoap:fault use="encoded" name="CFCInvocationException" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="releaseDebitFile">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="releaseDebitFileRequest">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="releaseDebitFileResponse">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+      <wsdl:fault name="CFCInvocationException">
+        <wsdlsoap:fault use="encoded" name="CFCInvocationException" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="fRetrieveBatchStatus">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="fRetrieveBatchStatusRequest">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="fRetrieveBatchStatusResponse">
+        <wsdlsoap:body use="encoded" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+      <wsdl:fault name="CFCInvocationException">
+        <wsdlsoap:fault use="encoded" name="CFCInvocationException" namespace="http://functions.debitorders.includes.console" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="MyGate_DebitOrder_WebServiceService">
+    <wsdl:port name="MyGate_DebitOrder_WebService.cfc" binding="impl:MyGate_DebitOrder_WebService.cfcSoapBinding">
+      <wsdlsoap:address location="https://www.mygate.co.za/console/includes/debitorders/functions/MyGate_DebitOrder_WebService.cfc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

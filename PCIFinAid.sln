@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCIBusiness", "PCIBusiness\PCIBusiness.csproj", "{24BE56C3-FD48-4D4F-ABB5-9D78B3AFF620}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCIWebFinAid", "PCIWebFinAid\PCIWebFinAid.csproj", "{3065CB70-E265-4BC4-9153-4D9B283A9389}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{24BE56C3-FD48-4D4F-ABB5-9D78B3AFF620}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24BE56C3-FD48-4D4F-ABB5-9D78B3AFF620}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24BE56C3-FD48-4D4F-ABB5-9D78B3AFF620}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24BE56C3-FD48-4D4F-ABB5-9D78B3AFF620}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D16691EC-E9AE-4325-A717-031310FD1116}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D16691EC-E9AE-4325-A717-031310FD1116}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D16691EC-E9AE-4325-A717-031310FD1116}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D16691EC-E9AE-4325-A717-031310FD1116}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F095CC77-E758-474B-B206-88647CB5DD2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F095CC77-E758-474B-B206-88647CB5DD2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F095CC77-E758-474B-B206-88647CB5DD2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F095CC77-E758-474B-B206-88647CB5DD2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3065CB70-E265-4BC4-9153-4D9B283A9389}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3065CB70-E265-4BC4-9153-4D9B283A9389}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3065CB70-E265-4BC4-9153-4D9B283A9389}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3065CB70-E265-4BC4-9153-4D9B283A9389}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

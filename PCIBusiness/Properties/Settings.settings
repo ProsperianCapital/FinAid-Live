@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PCIBusiness.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="PCIBusiness_PinManagement_PinManagement" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://www.mygate.co.za/Collections/1x0x0/pinManagement.cfc</Value>
+    </Setting>
+    <Setting Name="PCIBusiness_MyGatePayment_MyGate_DebitOrder_WebServiceService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://www.mygate.co.za/console/includes/debitorders/functions/MyGate_DebitOrder_WebService.cfc</Value>
+    </Setting>
+    <Setting Name="PCIBusiness_IkajoService_PtCardService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://secure.payinspect.com/pt-card/index.php</Value>
+    </Setting>
+    <Setting Name="PCIBusiness_za_co_paygate_secure_PayVault" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://secure.paygate.co.za/PayVault/process.trans</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

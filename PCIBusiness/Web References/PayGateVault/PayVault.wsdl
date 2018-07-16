@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="urn:paygate.payvault" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" targetNamespace="urn:paygate.payvault" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema targetNamespace="urn:paygate.payvault">
+      <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <xsd:complexType name="vaultData">
+        <xsd:sequence>
+          <xsd:element name="cardNo" type="xsd:string" />
+          <xsd:element name="expMonth" type="xsd:string" />
+          <xsd:element name="expYear" type="xsd:string" />
+          <xsd:element minOccurs="0" name="userData1" type="xsd:string" />
+          <xsd:element minOccurs="0" name="userData2" type="xsd:string" />
+          <xsd:element minOccurs="0" name="userData3" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </types>
+  <message name="putCardRequest">
+    <part name="vaultData" type="tns:vaultData" />
+  </message>
+  <message name="putCardResponse">
+    <part name="return" type="xsd:string" />
+  </message>
+  <message name="getCardRequest">
+    <part name="vaultId" type="xsd:string" />
+  </message>
+  <message name="getCardResponse">
+    <part name="return" type="tns:vaultData" />
+  </message>
+  <message name="deleteCardRequest">
+    <part name="vaultId" type="xsd:string" />
+  </message>
+  <message name="deleteCardResponse">
+    <part name="return" type="xsd:string" />
+  </message>
+  <portType name="PayVaultPortType">
+    <operation name="putCard">
+      <input message="tns:putCardRequest" />
+      <output message="tns:putCardResponse" />
+    </operation>
+    <operation name="getCard">
+      <input message="tns:getCardRequest" />
+      <output message="tns:getCardResponse" />
+    </operation>
+    <operation name="deleteCard">
+      <input message="tns:deleteCardRequest" />
+      <output message="tns:deleteCardResponse" />
+    </operation>
+  </portType>
+  <binding name="PayVaultBinding" type="tns:PayVaultPortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
+    <operation name="putCard">
+      <soap:operation soapAction="urn:paygate.payvault#putCard" style="rpc" />
+      <input>
+        <soap:body use="encoded" namespace="urn:paygate.payvault" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </input>
+      <output>
+        <soap:body use="encoded" namespace="urn:paygate.payvault" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </output>
+    </operation>
+    <operation name="getCard">
+      <soap:operation soapAction="urn:paygate.payvault#getCard" style="rpc" />
+      <input>
+        <soap:body use="encoded" namespace="urn:paygate.payvault" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </input>
+      <output>
+        <soap:body use="encoded" namespace="urn:paygate.payvault" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </output>
+    </operation>
+    <operation name="deleteCard">
+      <soap:operation soapAction="urn:paygate.payvault#deleteCard" style="rpc" />
+      <input>
+        <soap:body use="encoded" namespace="urn:paygate.payvault" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </input>
+      <output>
+        <soap:body use="encoded" namespace="urn:paygate.payvault" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="PayVault">
+    <port name="PayVaultPort" binding="tns:PayVaultBinding">
+      <soap:address location="https://secure.paygate.co.za/PayVault/process.trans" />
+    </port>
+  </service>
+</definitions>
