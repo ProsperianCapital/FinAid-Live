@@ -2,7 +2,7 @@
 
 <div class="Header1">
 	&nbsp;&nbsp;Emergency Mobile, Legal & Financial Assistance
-	<img src="Images/Flag-TH.png" title="Thailand" style="float:left" />
+	<img src="/Images/Flag-TH.png" title="Thailand" style="float:left" />
 	<table class="Header1a">
 	<tr>
 		<td>
@@ -16,7 +16,7 @@
 </div>
 
 <div class="Header2">
-	<img src="Images/FinAid.png" />
+	<img src="/Images/FinAid.png" />
 	<div class="Header2a">
 		<br />
 		<a href="#">Home</a> |
