@@ -82,6 +82,12 @@
     <Content Include="Register.aspx" />
     <Content Include="Web.config" />
     <Content Include="JS\Utils.js" />
+    <Content Include="Images\FinAid.png" />
+    <Content Include="Images\Phone.png" />
+    <Content Include="Images\VeriSign.png" />
+    <Content Include="Images\Visa.png" />
+    <Content Include="Images\MasterCard.png" />
+    <Content Include="Images\Flag-TH.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasePage.cs">
