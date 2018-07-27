@@ -619,8 +619,8 @@ function ShowPopup(eltID,info,event,endLR,eltObj)
 			{
 				var ctl = eltObj.getBoundingClientRect();
 				var scr = document.body.getBoundingClientRect();
-				q.style.top  = ( ctl.top  - scr.top  -  40 ).toString()  + "px";
-				q.style.left = ( ctl.left - scr.left + (ctl.right-ctl.left)/2 ).toString() + "px";
+				q.style.top  = ( ctl.top  - scr.top  + 15 ).toString()  + "px";
+				q.style.left = ( ctl.left - scr.left + 15 + (ctl.right-ctl.left)/2 ).toString() + "px";
 			}
 		}
 		else
