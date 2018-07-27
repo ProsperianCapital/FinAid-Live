@@ -64,8 +64,8 @@ namespace PCIBusiness
 					return "MY014473";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate) )
 					return "XXXX";
-				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayFast) )
-					return "XXXX";
+//				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayFast) )
+//					return "XXXX";
 				return "";
 			}
 		}
@@ -325,8 +325,9 @@ namespace PCIBusiness
 //			return 899;
 //	Testing
 
-			int ret = 64020;
-			sql     = "";
+			int processMode = Tools.StringToInt(Tools.ConfigValue("ProcessMode"));
+			int ret         = 64020;
+			sql             = "";
 			Tools.LogInfo("Payment.GetToken/10","Merchant Ref=" + merchantReference,10);
 
 			if ( transaction == null || transaction.BureauCode != bureauCode )
@@ -347,22 +348,28 @@ namespace PCIBusiness
 					return ret;
 			}
 			ret = transaction.GetToken(this);
-			sql = "exec sp_Upd_CardTokenVault @MerchantReference = "           + Tools.DBString(merchantReference) // nvarchar(20),
-				                           + ",@PaymentBureauCode = "           + Tools.DBString(bureauCode)        // char(3),
-			                              + ",@PaymentBureauToken = "          + Tools.DBString(transaction.PaymentToken)
-			                              + ",@BureauSubmissionSoap = "        + Tools.DBString(transaction.XMLSent,3)
-			                              + ",@BureauResultSoap = "            + Tools.DBString(transaction.XMLResult,3)
-			                              + ",@TransactionStatusCode = "       + Tools.DBString(transaction.ResultCode)
-		                                 + ",@CardTokenisationStatusCode = '" + ( ret == 0 ? "007'" : "001'" );
-			Tools.LogInfo("Payment.GetToken/20","SQL=" + sql,20);
-			int k = ExecuteSQLUpdate();
+
+			if ( processMode == (int)Constants.ProcessMode.FullUpdate ||
+			     processMode == (int)Constants.ProcessMode.UpdateToken )
+			{
+				sql = "exec sp_Upd_CardTokenVault @MerchantReference = "           + Tools.DBString(merchantReference) // nvarchar(20),
+				                              + ",@PaymentBureauCode = "           + Tools.DBString(bureauCode)        // char(3),
+			                                 + ",@PaymentBureauToken = "          + Tools.DBString(transaction.PaymentToken)
+			                                 + ",@BureauSubmissionSoap = "        + Tools.DBString(transaction.XMLSent,3)
+			                                 + ",@BureauResultSoap = "            + Tools.DBString(transaction.XMLResult,3)
+			                                 + ",@TransactionStatusCode = "       + Tools.DBString(transaction.ResultCode)
+		                                    + ",@CardTokenisationStatusCode = '" + ( ret == 0 ? "007'" : "001'" );
+				Tools.LogInfo("Payment.GetToken/20","SQL=" + sql,20);
+				int k = ExecuteSQLUpdate();
+			}
 			Tools.LogInfo("Payment.GetToken/90","Ret=" + ret.ToString(),20);
 			return ret;
 		}
 
 		public int ProcessPayment()
 		{
-			int ret = 37020;
+			int processMode = Tools.StringToInt(Tools.ConfigValue("ProcessMode"));
+			int ret         = 37020;
 			int k;
 			Tools.LogInfo("Payment.ProcessPayment/10","Merchant Ref=" + merchantReference,10);
 
@@ -383,17 +390,34 @@ namespace PCIBusiness
 				else
 					return ret;
 			}
-			sql = "exec sp_Upd_CardPayment @MerchantReference = " + Tools.DBString(merchantReference)
-			                           + ",@TransactionStatusCode = '77'";
-			Tools.LogInfo("Payment.ProcessPayment/20","SQL 1=" + sql,20);
-			k   = ExecuteSQLUpdate();
-			Tools.LogInfo("Payment.ProcessPayment/30","SQL 1 complete",20);
+			if ( processMode == (int)Constants.ProcessMode.FullUpdate         ||
+			     processMode == (int)Constants.ProcessMode.UpdatePaymentStep1 ||
+			     processMode == (int)Constants.ProcessMode.UpdatePaymentStep1AndStep2 )
+			{
+				sql = "exec sp_Upd_CardPayment @MerchantReference = " + Tools.DBString(merchantReference)
+			                              + ",@TransactionStatusCode = '77'";
+				Tools.LogInfo("Payment.ProcessPayment/20","SQL 1=" + sql,20);
+				k   = ExecuteSQLUpdate();
+				Tools.LogInfo("Payment.ProcessPayment/30","SQL 1 complete",20);
+			}
+			else
+				Tools.LogInfo("Payment.ProcessPayment/40","SQL 1 skipped",20);
+
 			ret = transaction.ProcessPayment(this);
-			sql = "exec sp_Upd_CardPayment @MerchantReference = " + Tools.DBString(merchantReference)
-			                           + ",@TransactionStatusCode = " + Tools.DBString(transaction.ResultCode);
-			Tools.LogInfo("Payment.ProcessPayment/40","SQL 2=" + sql,20);
-			k   = ExecuteSQLUpdate();
-			Tools.LogInfo("Payment.ProcessPayment/50","SQL 2 complete",20);
+
+			if ( processMode == (int)Constants.ProcessMode.FullUpdate         ||
+			     processMode == (int)Constants.ProcessMode.UpdatePaymentStep2 ||
+			     processMode == (int)Constants.ProcessMode.UpdatePaymentStep1AndStep2 )
+			{
+				sql = "exec sp_Upd_CardPayment @MerchantReference = " + Tools.DBString(merchantReference)
+			                              + ",@TransactionStatusCode = " + Tools.DBString(transaction.ResultCode);
+				Tools.LogInfo("Payment.ProcessPayment/50","SQL 2=" + sql,20);
+				k   = ExecuteSQLUpdate();
+				Tools.LogInfo("Payment.ProcessPayment/60","SQL 2 complete",20);
+			}
+			else
+				Tools.LogInfo("Payment.ProcessPayment/70","SQL 2 skipped",20);
+
 			return ret;
 		}
 
@@ -402,24 +426,24 @@ namespace PCIBusiness
 			dbConn.SourceInfo  = "Payment.LoadData";
 
 		//	Payment Provider
-			providerKey      = dbConn.ColString("Safekey");
-			providerURL      = dbConn.ColString("url");
-			providerAccount  = dbConn.ColString("MerchantAccount",0);
-			providerUserID   = dbConn.ColString("MerchantUserId");
-			providerPassword = dbConn.ColString("MerchantUserPassword");
+			providerKey      = dbConn.ColString ("Safekey");
+			providerURL      = dbConn.ColString ("url");
+			providerAccount  = dbConn.ColString ("MerchantAccount",0);
+			providerUserID   = dbConn.ColString ("MerchantUserId");
+			providerPassword = dbConn.ColString ("MerchantUserPassword");
 
 		//	Customer
-			firstName        = dbConn.ColString("firstName");
-			lastName         = dbConn.ColString("lastName");
-			email            = dbConn.ColString("email");
-			phoneCell        = dbConn.ColString("mobile");
-			regionalId       = dbConn.ColString("regionalId",0);
-			address1         = dbConn.ColString("address1",0);
-			address2         = dbConn.ColString("city",0);
-			postalCode       = dbConn.ColString("zip_code",0);
-			provinceCode     = dbConn.ColString("State",0);
-			countryCode      = dbConn.ColString("CountryCode");
-			ipAddress        = dbConn.ColString("IPAddress",0);
+			firstName        = dbConn.ColUniCode("firstName");
+			lastName         = dbConn.ColUniCode("lastName");
+			email            = dbConn.ColString ("email");
+			phoneCell        = dbConn.ColString ("mobile");
+			regionalId       = dbConn.ColString ("regionalId",0);
+			address1         = dbConn.ColString ("address1",0);
+			address2         = dbConn.ColString ("city",0);
+			postalCode       = dbConn.ColString ("zip_code",0);
+			provinceCode     = dbConn.ColString ("State",0);
+			countryCode      = dbConn.ColString ("CountryCode");
+			ipAddress        = dbConn.ColString ("IPAddress",0);
 
 		//	Payment
 			merchantReference         = dbConn.ColString("merchantReference");

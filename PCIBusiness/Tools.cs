@@ -331,7 +331,7 @@ namespace PCIBusiness
 			return "";
 		}
 
-		public static string XMLSafe(string str)
+		public static string XMLSafe(string str,byte encoding=0)
 		{
       // Converts a string to safe format for XML:
       // (1) Removes leading and trailing spaces
@@ -340,6 +340,7 @@ namespace PCIBusiness
     
 			if ( string.IsNullOrWhiteSpace(str) )
 				return "";
+
 			str = str.Trim();
          str = str.Replace("'","`");
          str = str.Replace("\"","`");
@@ -348,6 +349,95 @@ namespace PCIBusiness
          str = str.Replace("&"," and ");
          str = str.Replace("  and "," and ");
          str = str.Replace(" and  "," and ");
+
+//	UniCode testing
+/*
+//	Ver 1
+			if ( encoding == 29 ) // Unicode
+			{
+				byte[] unicodeBytes = Encoding.UTF8.GetBytes(str);
+				string ret          = Encoding.UTF8.GetString(unicodeBytes,0,unicodeBytes.Length);
+				LogInfo("Tools.XMLSafe/1","Str (in)='"+str+"', Str (out)='"+ret+"'",255);
+//				return ret;
+			}
+
+//	Ver 2
+			if ( encoding == 29 ) // Unicode
+			{
+				byte[] unicodeBytes = Encoding.UTF8.GetBytes(str);
+				string ret          = "";
+				for ( int k = 0 ; k < unicodeBytes.Length ; k++ )
+					ret = ret + "/" + unicodeBytes[k];
+				LogInfo("Tools.XMLSafe/2","Str (in)='"+str+"', Str (out)='"+ret.Substring(1)+"'",255);
+//				return ret.Substring(1);
+			}
+
+//	Ver 3 & 4
+			if ( encoding == 29 ) // Unicode
+			{
+				byte[] unicodeBytes = Encoding.UTF8.GetBytes(str);
+				string ret10        = "";
+				string ret16        = "";
+				for ( int k = 0 ; k < unicodeBytes.Length ; k++ )
+				{
+					ret10 = ret10 + "&#"  + unicodeBytes[k] + ";";
+					ret16 = ret16 + "&#x" + unicodeBytes[k] + ";";
+				}
+				LogInfo("Tools.XMLSafe/3","Str (in)='"+str+"', Str (out)='"+ret10+"'",255);
+				LogInfo("Tools.XMLSafe/4","Str (in)='"+str+"', Str (out)='"+ret16+"'",255);
+//				return ret10;
+			}
+
+//	Ver 5 & 6
+			if ( encoding == 29 ) // Unicode
+			{
+				byte[] unicodeBytes5 = Encoding.UTF8.GetBytes(str);
+				byte[] unicodeBytes6 = new UTF8Encoding().GetBytes(str);
+				string ret5          = "";
+				string ret6          = "";
+				for ( int k = 0 ; k < unicodeBytes5.Length ; k++ )
+					ret5 = ret5 + "/" + unicodeBytes5[k].ToString("x2");
+				for ( int k = 0 ; k < unicodeBytes6.Length ; k++ )
+					ret6 = ret6 + "&#x" + unicodeBytes6[k].ToString("x2") + ";";
+				LogInfo("Tools.XMLSafe/5","Str (in)='"+str+"', Str (out)='"+ret5.Substring(1)+"'",255);
+				LogInfo("Tools.XMLSafe/6","Str (in)='"+str+"', Str (out)='"+ret6.Substring(1)+"'",255);
+//				return ret6.Substring(1);
+			}
+
+//	Ver 7
+			if ( encoding == 29 ) // Unicode
+			{
+				byte[] utf8Bytes = new byte[str.Length];
+				for ( int k = 0 ; k < str.Length ; k++ )
+					utf8Bytes[k] = (byte)str[k];
+				LogInfo("Tools.XMLSafe/7","Str (in)='"+str+"', Str (out)='"+Encoding.UTF8.GetString(utf8Bytes,0,utf8Bytes.Length)+"'",255);
+//				return Encoding.UTF8.GetString(utf8Bytes,0,utf8Bytes.Length);
+			}
+
+//	Ver 8
+			if ( encoding == 29 ) // Unicode
+			{
+				byte[] unicodeBytes = Encoding.UTF8.GetBytes(str);
+				string ret          = Encoding.Unicode.GetString(unicodeBytes);
+				LogInfo("Tools.XMLSafe/8","Str (in)='"+str+"', Str (out)='"+ret+"'",255);
+//				return ret;
+			}
+
+//	Ver 9
+			if ( encoding == 29 ) // Unicode
+			{
+				byte[] utfBytes = Encoding.UTF8.GetBytes(str);
+				string ret9     = "";
+				for ( int k = 0 ; k < str.Length ; k++ )
+					for ( int h = 0 ; h < 3 ; h++ )
+						if ( h == 0 )
+							ret9 = ret9 + "\\u";
+						else
+							ret9 = ret9 + utfBytes[(k*3)+h].ToString("x2");
+				LogInfo("Tools.XMLSafe/9","Str (in)='"+str+"', Str (out)='"+ret9+"'",255);
+//				return ret9;
+			}
+*/
          return str;
 		}
 
@@ -792,12 +882,21 @@ namespace PCIBusiness
 					Tools.LogInfo("Tools.SQLDebug/3",str,255);
 					ret.Append(str+"<hr />"); // Constants.C_HTMLBREAK());
 
+					string colType;
+
 					for ( int k = 0 ; k < conn.ColumnCount ; k++ )
 					{
 						str = "(Col " + k.ToString()
 						    + ") Name = " + conn.ColName(k)
 						    + ", Type = " + conn.ColDataType("",k)
-						    + ", Value = " + ( conn.ColStatus("",k) == Constants.DBColumnStatus.ValueIsNull ? "NULL" : conn.ColValue(k) );
+						    + ", Value = ";
+						colType = conn.ColDataType("",k).ToUpper();
+						if ( conn.ColStatus("",k) == Constants.DBColumnStatus.ValueIsNull )
+							str = str + "NULL";
+						else if ( colType == "NVARCHAR" || colType == "NCHAR" )
+							str = str + conn.ColUniCode("",0,k);
+						else
+							str = str + conn.ColValue(k);
 						Tools.LogInfo("Tools.SQLDebug/4",str,255);
 						ret.Append(str+Constants.C_HTMLBREAK());
 					}

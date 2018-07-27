@@ -387,18 +387,107 @@ namespace PCIBusiness
       try
       {
          colNo = dataReader.GetOrdinal(colName);
-         if ( ! dataReader.IsDBNull(colNo) )
+			if ( ! dataReader.IsDBNull(colNo) )
 				return dataReader.GetString(colNo).Trim();
 
-//				if ( dataReader.GetDataTypeName(colNo).ToUpper() == "NVARCHAR" )
-//					return dataReader.GetSqlString(colNo).ToString().Trim();
+//			if ( ! dataReader.IsDBNull(colNo) )
+//			{
+//				string colType = dataReader.GetDataTypeName(colNo).ToUpper();
+//				string colValue;
+//				if ( colType == "NCHAR" || colType == "NVARCHAR" )
+//					colValue = dataReader.GetSqlString(colNo).ToString();
 //				else
-//					return dataReader.GetString(colNo).Trim();
+//					colValue = dataReader.GetString(colNo);
+//				if ( errorMode == 37 )
+//					Tools.LogInfo ( ModuleName("DBConn.ColString"), "Column " + colName + " : Col No = " + colNo.ToString() + ", SQL Type = " + colType + ", Value = '" + colValue + "'", 255 );
+//				return colValue.Trim();
+//			}
+
+     }
+      catch (Exception ex)
+      {
+			if ( errorMode > 0 )
+				Tools.LogException ( ModuleName("DBConn.ColString"), colName, ex );
+      }
+      return "";
+   }
+
+
+   public string ColUniCode(string colName,byte errorMode=1,int colNumber=99999)
+   {
+      try
+      {
+			if ( colNumber >= 0 && colNumber <= 88888 )
+				colNo = colNumber;
+			else
+				colNo = dataReader.GetOrdinal(colName);
+
+			if ( dataReader.IsDBNull(colNo) )
+				return "";
+
+			SqlString str     = dataReader.GetSqlString(colNo);
+			byte[]    uniCode = str.GetUnicodeBytes();
+			return Encoding.Unicode.GetString(uniCode);
+
+/*
+			string    pre     = "\\u";
+			SqlString str1    = dataReader.GetSqlString(colNo);
+			string    str2    = str1.ToString();
+
+			byte[]    uniCodeA = str1.GetUnicodeBytes();
+			byte[]    uniCodeB = Encoding.Unicode.GetBytes(str2);
+			byte[]    uniCodeC = Encoding.UTF8.GetBytes(str2);
+
+			string    retA1    = "";
+			string    retA2    = "";
+			string    retA3    = "";
+			string    retB1    = "";
+			string    retB2    = "";
+			string    retB3    = "";
+			string    retC1    = "";
+			string    retC2    = "";
+			string    retC3    = "";
+
+//			if ( uniCode.Length < 1 )
+//				return "";
+
+			for ( int k = 0 ; k < uniCodeA.Length ; k ++ )
+				retA1 = retA1 + pre + uniCodeA[k];
+
+			retA2 = Encoding.UTF8.GetString(uniCodeA);
+			retA3 = Encoding.Unicode.GetString(uniCodeA);
+
+			for ( int k = 0 ; k < uniCodeB.Length ; k ++ )
+				retB1 = retB1 + pre + uniCodeB[k];
+
+			retB2 = Encoding.UTF8.GetString(uniCodeB);
+			retB3 = Encoding.Unicode.GetString(uniCodeB);
+
+			for ( int k = 0 ; k < uniCodeC.Length ; k ++ )
+				retC1 = retC1 + pre + uniCodeC[k];
+
+			retC2 = Encoding.UTF8.GetString(uniCodeC);
+			retC3 = Encoding.Unicode.GetString(uniCodeC);
+
+			string retD1 = System.Text.UnicodeEncoding.Unicode.GetString(uniCodeA);
+			string retD2 = System.Text.UnicodeEncoding.Unicode.GetString(uniCodeB);
+			string retD3 = System.Text.UnicodeEncoding.Unicode.GetString(uniCodeC);
+
+			if ( errorMode == 29 )
+			{
+				Tools.LogInfo ( ModuleName("DBConn.ColUniCode/A"), "retA1 = '" + retA1 + "', retA2 = '" + retA2 + "', retA3 = '" + retA3 + "'", 255 );
+				Tools.LogInfo ( ModuleName("DBConn.ColUniCode/B"), "retB1 = '" + retB1 + "', retB2 = '" + retB2 + "', retB3 = '" + retB3 + "'", 255 );
+				Tools.LogInfo ( ModuleName("DBConn.ColUniCode/C"), "retC1 = '" + retC1 + "', retC2 = '" + retC2 + "', retC3 = '" + retC3 + "'", 255 );
+				Tools.LogInfo ( ModuleName("DBConn.ColUniCode/D"), "retD1 = '" + retD1 + "', retD2 = '" + retD2 + "', retD3 = '" + retD3 + "'", 255 );
+			}
+			return retB1;
+*/
+
       }
       catch (Exception ex)
       {
-			if ( errorMode == 1 )
-				Tools.LogException ( ModuleName("DBConn.ColString"), colName, ex );
+			if ( errorMode > 0 )
+				Tools.LogException ( ModuleName("DBConn.ColUniCode"), colName, ex );
       }
       return "";
    }
@@ -444,6 +533,19 @@ namespace PCIBusiness
 				Tools.LogException ( ModuleName("DBConn.ColName"), "ColNo=" + colNumber.ToString(), ex );
 			}
 			return "";
+		}
+
+		public int ColNumber(string colName)
+		{
+			try
+			{
+				return dataReader.GetOrdinal(colName);
+			}
+			catch (Exception ex)
+			{
+				Tools.LogException ( ModuleName("DBConn.ColNumber"), "ColName=" + colName, ex );
+			}
+			return -8;
 		}
 
 

@@ -64,6 +64,8 @@
     <Compile Include="BaseData.cs" />
     <Compile Include="BaseList.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="MiscData.cs" />
+    <Compile Include="MiscList.cs" />
     <Compile Include="Payment.cs" />
     <Compile Include="Payments.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

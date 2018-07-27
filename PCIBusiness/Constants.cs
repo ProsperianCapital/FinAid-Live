@@ -46,8 +46,8 @@ namespace PCIBusiness
 			T24     =  6,
 			Ikajo   = 15,
 			PayU    = 16,
-			PayGate = 17,
-			PayFast = 18
+			PayGate = 17
+//			PayFast = 18
 		}
 
 		public enum CreditCardType : byte
@@ -71,6 +71,15 @@ namespace PCIBusiness
 			Development = 1,
 			Testing     = 2,
 			Live        = 3
+		}
+		public enum ProcessMode : int
+		{
+			FullUpdate                 =  0, // Live
+			UpdateToken                = 10,
+			UpdatePaymentStep1         = 21,
+			UpdatePaymentStep2         = 22,
+			UpdatePaymentStep1AndStep2 = 23,
+			NoUpdate                   = 99
 		}
 	}
 }
