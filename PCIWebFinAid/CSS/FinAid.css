@@ -1,0 +1,161 @@
+@font-face{font-family:'ralewaysemibold';src:url(/CSS/raleway-semibold-webfont.eot);src:url(/CSS/raleway-semibold-webfont.eot?#iefix) format("embedded-opentype"),url(/CSS/raleway-semibold-webfont.woff) format("woff"),url(/CSS/raleway-semibold-webfont.ttf) format("truetype"),url(/CSS/raleway-semibold-webfont.svg#ralewaysemibold) format("svg");font-weight:400;font-style:normal}
+@font-face{font-family:'ralewaymedium';src:url(/CSS/raleway-medium-webfont.eot);src:url(/CSS/raleway-medium-webfont.eot?#iefix) format("embedded-opentype"),url(/CSS/raleway-medium-webfont.woff) format("woff"),url(/CSS/raleway-medium-webfont.ttf) format("truetype"),url(/CSS/raleway-medium-webfont.svg#ralewaymedium) format("svg");font-weight:400;font-style:normal}
+@font-face{font-family:'ralewaybold';src:url(/CSS/raleway-bold-webfont.eot);src:url(/CSS/raleway-bold-webfont.eot?#iefix) format("embedded-opentype"),url(/CSS/raleway-bold-webfont.woff) format("woff"),url(/CSS/raleway-bold-webfont.ttf) format("truetype"),url(/CSS/raleway-bold-webfont.svg#ralewaybold) format("svg");font-weight:400;font-style:normal}
+
+body
+{
+	font-family: ralewaymedium, Calibri, Arial, Tahoma;
+	font-size: 14px;
+}
+input[type=button]
+{
+	font-weight: 300;
+	color: white;
+	background-color: #E68A00;
+	width: 100px;
+	padding: 3px;
+}
+input[type=button]:hover
+{
+	background-color: #FF1A1A;
+}
+table td
+{
+	height: 22px;
+	width: 209px;
+}
+
+.Header1
+{
+	font-family: "Trebuchet MS", serif;
+	font-size: 16px;
+	font-style: italic;
+	font-weight: 100;
+	color: white;
+	padding: 10px;
+	background-color: #898787;
+	height: 32px;
+}
+.Header1a
+{
+	font-size: 13px;
+	float: right;
+}
+.Header1b:hover
+{
+	background-color: #FF1A1A;
+}
+
+.Header2
+{
+	font-family: "Trebuchet MS", serif;
+	font-size: 20px;
+	color: black;
+	padding: 10px;
+}
+.Header2a
+{
+	float: right;
+}
+
+.Header3
+{
+	font-family: "Trebuchet MS", serif;
+	font-size: 30px;
+	font-weight: 100;
+	color: black;
+	padding: 10px;
+	background-color: #898787;
+}
+
+.Header4
+{
+	font-family: ralewaymedium;
+	font-size: 20px;
+	font-weight: bold;
+	color: black;
+}
+
+.Footer1
+{
+	font-family: "Trebuchet MS", serif;
+	font-size: 12px;
+	color: black;
+	padding: 10px;
+	background-color: #898787;
+	position: relative;
+	bottom: 1px;
+}
+
+.DataLabel
+{
+	color: #E68A00;
+	width: 209px;
+}
+
+.DataInput
+{
+	background-color: #898787;
+	width: 209px;
+	border: 0;
+	padding: 2px;
+}
+
+.Error
+{
+	color: red;
+	width: 500px;
+}
+
+.PopupBox
+{
+	top: 20%;
+	left: 20%;
+	position: fixed; /* absolute; */
+	z-index: 100;
+	border: 1px solid #999999;
+	padding: 5px;
+	background-color: #E68A00;
+	color: #FFFFFF;
+	-moz-box-shadow: 1px 1px 3px 1px #999;
+	-webkit-box-shadow: 1px 1px 3px 1px #999;
+	box-shadow: 1px 1px 3px 1px #999; }}
+
+/* Testing stuff below, not used */
+
+.Detail
+{
+	font-size: 16px;
+}
+.Red
+{
+	color: red;
+}
+
+.ButtonRow
+{
+	padding: 5px;
+	background-color: powderblue;
+}
+.Button
+{
+	padding: 5px;
+	color: darkgreen;
+	font-weight: bold;
+	font-size: 14px;
+	cursor: pointer;
+	background-color: #DDCCCC;
+}
+.Button:hover
+{
+	background-color: yellow;
+}
+.BoxRight
+{
+	padding: 3px;
+	border: 1px solid #000000;
+	background-color: #E8E8FF;
+	margin: 0px;
+	margin-left: 5px;
+	float: right;
+}
