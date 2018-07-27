@@ -1,6 +1,4 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="false" CodeBehind="Register.aspx.cs" Inherits="PCIWebFinAid.Register" %>
-<%@ Register TagPrefix="ascx" TagName="Header" Src="Header.ascx" %>
-<%@ Register TagPrefix="ascx" TagName="Footer" Src="Footer.ascx" %>
 
 <!DOCTYPE html>
 
@@ -8,13 +6,12 @@
 <head runat="server">
 	<!--#include file="IncludeMain.htm" -->
 	<title>FinAid : Register</title>
-	<link rel="stylesheet" href="FinAid.css" type="text/css" />
+	<link rel="stylesheet" href="CSS/FinAid.css" type="text/css" />
 	<link rel="shortcut icon" href="gfx/favicon.ico" />
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
 </head>
 <body>
 <form id="frmRegister" runat="server">
-<ascx:Header runat="server" ID="ctlHeader" />
 
 <script type="text/javascript">
 var firstPage = 1;
@@ -25,7 +22,7 @@ function NextPage(inc)
 {
 	try
 	{
-		if ( inc > 0 && ! ValidatePage() )
+		if ( inc > 0 && ! ValidatePage(0) )
 			return;
 
 		if ( inc > 0 && pageNo < lastPage )
@@ -67,16 +64,38 @@ function NextPage(inc)
 		alert(x.message);
 	}
 }
-function ValidatePage()
+function ShowTick(err,ctl,seq)
 {
-	var err = "X";
+	if ( seq == 2 )
+		GetElt('img'+ctl).src = 'Images/' + ( err.length > 0 ? 'Cross' : 'Tick' ) + '.png';
+}
+function ValidatePage(ctl,seq)
+{
+	var err = "";
+	var p;
+
 	try
 	{
-		if ( pageNo == 1 )
-			err = Validate('lstTitle','errTitle',3,errTitle.title,73,0)
-			    + Validate('txtSurname','errSurname',1,errSurname.title,2,2)
-			    + Validate('txtCellNo','errCellNo',7,errCellNo.title);
-		else if ( pageNo == 2 )
+		if ( ( pageNo == 1 && ctl == 0 ) || ctl == 101 )
+		{
+			p   = Validate('lstTitle','lblTitleError',3,lblTitleError.title,73,0);
+			err = err + p;
+			ShowTick(p,'Title',seq);
+		}
+		if ( ( pageNo == 1 && ctl == 0 ) || ctl == 102 )
+		{
+			p   = Validate('txtSurname','lblSurnameError',1,lblSurnameError.title,2,2);
+			err = err + p;
+			ShowTick(p,'Surname',seq);
+		}
+		if ( ( pageNo == 1 && ctl == 0 ) || ctl == 103 )
+		{
+			p   = Validate('txtCellNo','lblCellNoError',7,lblCellNoError.title);
+			err = err + p;
+			ShowTick(p,'CellNo',seq);
+		}
+
+		if ( pageNo == 2 )
 			err = Validate('txtFirstName','errFirstName',1,errFirstName.title,2,2)
 			    + Validate('txtEMail','errEMail',5,errEMail.title)
 			    + Validate('txtID','errID',1,errID.title,2,4);
@@ -101,71 +120,122 @@ function ValidatePage()
 	}
 	return ( err.length == 0 );
 }
+function Help(onOrOff,ctl,item)
+{
+	try
+	{
+		if ( onOrOff > 0 )
+		{
+			var h = GetEltValue('hdn'+item+'Help');
+			ShowPopup('divHelp',h,null,null,ctl);
+		}
+		else
+			ShowElt('divHelp',false);
+	}
+	catch (x)
+	{ }
+}
+
+//
+function TestSetup()
+{
+	SetEltValue("hdnTitleHelp"  ,"Please choose a title");
+	SetEltValue("hdnSurnameHelp","Please enter your surname");
+	SetEltValue("hdnCellNoHelp" ,"Please enter your mobile phone number");
+
+	GetElt("lblTitleError").title   = "Choose a title from the list";
+	GetElt("lblSurnameError").title = "Please enter a valid surname";
+	GetElt("lblCellNoError").title  = "Please enter a valid mobile phone number";
+}
+//
+
 </script>
 
 <input type="hidden" id="hdnPageNo" value="1" />
 
 <div id="divP01">
 <p class="Header4">
-(1) Welcome
+(1) <asp:Literal runat="server" ID="lblSubHead1Label">Welcome</asp:Literal>
 </p>
 <table>
 	<tr>
-		<td>Title</td>
-		<td>
-			<asp:DropDownList runat="server" ID="lstTitle" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()">
+		<td class="DataLabel">
+			<asp:Literal runat="server" ID="lblTitleLabel">Title</asp:Literal></td>
+		<td style="white-space:nowrap">
+			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstTitle" onfocus="JavaScript:ValidatePage(101,1)" onblur="JavaScript:ValidatePage(101,2)">
 				<asp:ListItem Value="0" Text="Select Title"></asp:ListItem>
 				<asp:ListItem Value="1" Text="Mr"></asp:ListItem>
 				<asp:ListItem Value="2" Text="Mrs"></asp:ListItem>
 				<asp:ListItem Value="3" Text="Miss"></asp:ListItem>
 				<asp:ListItem Value="4" Text="Dr"></asp:ListItem>
 				<asp:ListItem Value="5" Text="Prof"></asp:ListItem>
-			</asp:DropDownList> ?</td>
-		<td id="errTitle" title="Please choose a title"></td></tr>
+			</asp:DropDownList>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'Title')" onmouseout="JavaScript:Help(0)">?</a></td>
+		<td>
+			<img id="imgTitle" />
+			<asp:HiddenField runat="server" ID="hdnTitleHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblTitleError"></asp:Label></td></tr>
 	<tr>
-		<td>Surname</td>
-		<td><asp:TextBox runat="server" ID="txtSurname" Width="320px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?&nbsp;&nbsp;</td>
-		<td id="errSurname" title="Please enter your Surname/Last Name"></td></tr>
+		<td class="DataLabel">
+			<asp:Literal runat="server" ID="lblSurnameLabel">Surname</asp:Literal></td>
+		<td style="white-space:nowrap">
+			<asp:TextBox runat="server" CssClass="DataInput" ID="txtSurname" onfocus="JavaScript:ValidatePage(102,1)" onblur="JavaScript:ValidatePage(102,2)"></asp:TextBox>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'Surname')" onmouseout="JavaScript:Help(0)">?</a></td>
+		<td>
+			<img id="imgSurname" />
+			<asp:HiddenField runat="server" ID="hdnSurnameHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblSurnameError"></asp:Label></td></tr>
 	<tr>
-		<td>Mobile Number</td>
-		<td><asp:TextBox runat="server" ID="txtCellNo" Width="240px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?</td>
-		<td id="errCellNo" title="Please enter a valid mobile/cellular phone number"></td></tr>
+		<td class="DataLabel">
+			<asp:Literal runat="server" ID="lblCellNoLabel">Mobile number</asp:Literal></td>
+		<td style="white-space:nowrap">
+			<asp:TextBox runat="server" CssClass="DataInput" ID="txtCellNo" onfocus="JavaScript:ValidatePage(103,1)" onblur="JavaScript:ValidatePage(103,2)"></asp:TextBox>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'CellNo')" onmouseout="JavaScript:Help(0)">?</a></td>
+		<td>
+			<img id="imgCellNo" />
+			<asp:HiddenField runat="server" ID="hdnCellNoHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblCellNoError"></asp:Label></td></tr>
 </table>
 </div>
 
+<div id="divHelp" class="PopupBox" style="visibility:hidden"></div>
+
 <div id="divP02">
 <p class="Header4">
-(2) Welcome
+(2) <asp:Literal runat="server" ID="lblSubHead2Label"></asp:Literal>
 </p>
 <table>
 	<tr>
-		<td>First Name</td>
-		<td><asp:TextBox runat="server" ID="txtFirstName" Width="320px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?&nbsp;&nbsp;</td>
+		<td style="width:209px"><asp:Literal runat="server" ID="lblFirstName"></asp:Literal></td>
+		<td><asp:TextBox runat="server" ID="txtFirstName" Width="209px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?&nbsp;&nbsp;</td>
 		<td id="errFirstName" title="Please enter your First Name"></td></tr>
 	<tr>
-		<td>EMail</td>
-		<td><asp:TextBox runat="server" ID="txtEMail" Width="320px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?</td>
+		<td><asp:Literal runat="server" ID="lblEMail"></asp:Literal></td>
+		<td><asp:TextBox runat="server" ID="txtEMail" Width="209px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?</td>
 		<td id="errEMail" title="Please enter a valid email address"></td></tr>
 	<tr>
-		<td>Identity Number</td>
-		<td><asp:TextBox runat="server" ID="txtID" Width="320px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?</td>
+		<td><asp:Literal runat="server" ID="lblID"></asp:Literal></td>
+		<td><asp:TextBox runat="server" ID="txtID" Width="209px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?</td>
 		<td id="errID" title="Please enter your identity number"></td></tr>
 </table>
 </div>
 
 <div id="divP03">
 <p class="Header4">
-(3) Income
+(3) <asp:Literal runat="server" ID="lblSubHead3Label"></asp:Literal>
 </p>
 <table>
 	<tr>
-		<td>Net Income</td>
-		<td><asp:TextBox runat="server" ID="txtIncome" Width="320px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?</td>
+		<td style="width:209px"><asp:Literal runat="server" ID="lblIncome"></asp:Literal></td>
+		<td><asp:TextBox runat="server" ID="txtIncome" Width="209px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?</td>
 		<td id="errIncome" title="Your total monthly income after statutory deductions"></td></tr>
 	<tr>
-		<td>Employment Status</td>
+		<td><asp:Literal runat="server" ID="lblStatus"></asp:Literal></td>
 		<td>
-			<asp:DropDownList runat="server" ID="lstStatus" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()">
+			<asp:DropDownList runat="server" ID="lstStatus" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()" Width="209px">
 				<asp:ListItem Value="0" Text="Select Employment Status"></asp:ListItem>
 				<asp:ListItem Value="1" Text="Fixed Term"></asp:ListItem>
 				<asp:ListItem Value="2" Text="Permanent"></asp:ListItem>
@@ -176,9 +246,9 @@ function ValidatePage()
 			</asp:DropDownList> ?</td>
 		<td id="errStatus" title="Please choose an employment status"></td></tr>
 	<tr>
-		<td>Pay Day</td>
+		<td><asp:Literal runat="server" ID="lblPayDay"></asp:Literal></td>
 		<td>
-			<asp:DropDownList runat="server" ID="lstPayDay" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()">
+			<asp:DropDownList runat="server" ID="lstPayDay" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()" Width="209px">
 				<asp:ListItem Value="0" Text="Select Pay Day"></asp:ListItem>
 				<asp:ListItem Value="1" Text="Monthly on the 1'st"></asp:ListItem>
 				<asp:ListItem Value="2" Text="Monthly on the 8'th"></asp:ListItem>
@@ -193,7 +263,7 @@ function ValidatePage()
 
 <div id="divP04">
 <p class="Header4">
-(4) Congratulations! Your product options are:
+(4) <asp:Literal runat="server" ID="lblSubHead4Label"></asp:Literal> <!-- Congratulations! Your product options are: -->
 </p>
 Product Options&nbsp;&nbsp;
 <asp:DropDownList runat="server" ID="lstOptions" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()">
@@ -287,12 +357,13 @@ This collection mandate will stay in force until you cancel it by giving us at l
 </div>
 
 <br />
-<input type="button" id="btnBack"  value="<< Back" onclick="JavaScript:NextPage(-1)" />
-<input type="button" id="btnNext"  value="Next >>" onclick="JavaScript:NextPage(1)"  />
+<input type="button" id="btnBack"  value="<< BACK" onclick="JavaScript:NextPage(-1)" />
+<input type="button" id="btnNext"  value="NEXT >>" onclick="JavaScript:NextPage(1)"  />
 <input type="button" id="btnAgree" value="I Agree" />
 <br /><br />
 
+<asp:Literal runat="server" ID="lblJS"></asp:Literal>
+
 </form>
-<ascx:Footer runat="server" ID="ctlFooter" />
 </body>
 </html>

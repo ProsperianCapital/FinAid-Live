@@ -66,7 +66,6 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FinAid.css" />
     <Content Include="IncludeMain.htm" />
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">
@@ -82,12 +81,27 @@
     <Content Include="Register.aspx" />
     <Content Include="Web.config" />
     <Content Include="JS\Utils.js" />
+    <Content Include="CSS\FinAid.css" />
+    <Content Include="CSS\raleway-bold-webfont.eot" />
+    <Content Include="CSS\raleway-semibold-webfont.eot" />
+    <Content Include="CSS\raleway-medium-webfont.eot" />
+    <Content Include="CSS\raleway-bold-webfont.ttf" />
+    <Content Include="CSS\raleway-semibold-webfont.ttf" />
+    <Content Include="CSS\raleway-medium-webfont.ttf" />
+    <Content Include="CSS\raleway-bold-webfont.woff" />
+    <Content Include="CSS\raleway-semibold-webfont.woff" />
+    <Content Include="CSS\raleway-medium-webfont.woff" />
+    <Content Include="CSS\raleway-bold-webfont.svg" />
+    <Content Include="CSS\raleway-semibold-webfont.svg" />
+    <Content Include="CSS\raleway-medium-webfont.svg" />
     <Content Include="Images\FinAid.png" />
     <Content Include="Images\Phone.png" />
     <Content Include="Images\VeriSign.png" />
     <Content Include="Images\Visa.png" />
     <Content Include="Images\MasterCard.png" />
     <Content Include="Images\Flag-TH.png" />
+    <Content Include="Images\Tick.png" />
+    <Content Include="Images\Cross.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasePage.cs">

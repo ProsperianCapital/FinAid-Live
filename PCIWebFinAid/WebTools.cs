@@ -228,14 +228,18 @@ namespace PCIWebFinAid
 			return debugMode;
 		}
 
-		public static string JavaScriptSource(string newScript,string existingScript="")
+		public static string JavaScriptSource(string newScript,string existingScript="",byte beforeOrAfter=2)
 		{
 			newScript = newScript.Trim();
 			if ( newScript.Length < 1 && existingScript.Length < 1 )
 				return "";
 			else if ( ! existingScript.ToLower().Contains("<script") )
 				existingScript = "<script type='text/javascript'>" + existingScript + "</script>";
-			if ( newScript.Length > 0 )
+//			if ( newScript.Length > 0 && beforeOrAfter == 2 ) // After
+//				existingScript = existingScript.Replace("</script>",newScript + ( newScript.EndsWith(";") ? "" : ";" ) + "</script>");
+			if ( newScript.Length > 0 && beforeOrAfter == 1 ) // Before
+				existingScript = existingScript.Replace("script'>","script'>" + newScript + ( newScript.EndsWith(";") ? "" : ";"  ) );
+			else if ( newScript.Length > 0 )
 				existingScript = existingScript.Replace("</script>",newScript + ( newScript.EndsWith(";") ? "" : ";" ) + "</script>");
 			return existingScript;
 		}
