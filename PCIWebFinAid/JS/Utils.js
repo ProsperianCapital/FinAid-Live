@@ -511,6 +511,7 @@ function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 
 			if ( numVal < 0 && eltValue.length > 0 )
 				err = eltDesc;
+//	Value checks
 			else if ( eltMode == 1 && ( numVal < 0 || numVal > eltParm ) ) // 0 <= x <= eltParm
 				err = eltDesc;
 			else if ( eltMode == 2 && ( numVal < 1 || numVal > eltParm ) ) // 1 <= x <= eltParm
@@ -521,11 +522,15 @@ function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 				err = eltDesc;
 			else if ( eltMode == 5 && ( numVal < 1 || numVal > eltParm ) && numLen > 0 ) // 1 <= x <= eltParm, but BLANK is allowed
 				err = eltDesc;
+//	Length checks
 			else if ( eltMode == 6 && numLen != eltParm ) // Must be exactly this length
 				err = eltDesc;
-			else if ( eltMode == 9 && ( eltValue.length != numLen || numLen < 13 || numVal > 19 ) ) // Credit card, 13-19 digits
+			else if ( eltMode == 7 && ( numLen < 1 || numLen > eltParm ) ) // 1 <= x <= eltParm
 				err = eltDesc;
-			else if ( eltMode >= 71 && eltMode <= 74 ) // Credit card
+			else if ( eltMode == 8 && numLen < eltParm ) // x <= eltParm
+				err = eltDesc;
+//	Credit card checks
+			else if ( eltMode >= 71 && eltMode <= 74 )
 			{
 				if ( eltValue.length != numLen )
 					err = eltDesc;
