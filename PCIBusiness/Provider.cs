@@ -37,8 +37,9 @@ namespace PCIBusiness
 		{
 			get 
 			{
-				if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU) ||
-				     bureauCode == Tools.BureauCode(Constants.PaymentProvider.T24)  ||
+				if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU)   ||
+				     bureauCode == Tools.BureauCode(Constants.PaymentProvider.T24)    ||
+				     bureauCode == Tools.BureauCode(Constants.PaymentProvider.MyGate) ||
 				     bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate) )
 					return "Live";
 				return "In development";

@@ -76,17 +76,17 @@ namespace PCIBusiness
 			if ( ! Tools.OpenDB(ref dbConn) )
 			{
 				returnCode    = 1;
-				returnMessage = "[BaseData.ExecuteSQL] Unable to connect to SQL database <1>";
+				returnMessage = "[BaseData.ExecuteSQL/1] Unable to connect to SQL database";
 			}
 			else if ( ! dbConn.Execute(sql,closeConnection,parms) )
 			{
 				returnCode    = 2;
-				returnMessage = "[BaseData.ExecuteSQL] SQL execution failed <2>";
+				returnMessage = "[BaseData.ExecuteSQL/2] SQL execution failed";
 			}
 			else if ( dbConn.EOF && eofIsError )
 			{
 				returnCode    = 3;
-				returnMessage = "[BaseData.ExecuteSQL] SQL successfully executed, but no data returned <3>";
+				returnMessage = "[BaseData.ExecuteSQL/3] SQL successfully executed, but no data returned";
 			}
 			return returnCode;
 		}

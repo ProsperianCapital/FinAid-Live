@@ -100,25 +100,20 @@ namespace PCIBusiness
 			get {  return rowsPerPage; }
 		}
 
-		protected int LoadDataFromSQL()
+		protected int LoadDataFromSQL(int maxRows=0,string sourceInfo="")
 		{
-			return LoadDataFromSQL(null,Constants.C_MAXSQLROWS());
+			if ( maxRows < 1 )
+				maxRows = Constants.C_MAXSQLROWS();
+			return LoadDataFromSQL(null,maxRows,null,0,sourceInfo);
 		}
-		protected int LoadDataFromSQL(int maxRows)
-		{
-			return LoadDataFromSQL(null,maxRows);
-		}
-		protected int LoadDataFromSQL(object[][] parms)
-		{
-			return LoadDataFromSQL(parms,Constants.C_MAXSQLROWS());
-		}
-		protected int LoadDataFromSQL(object[][] parms,int maxRows,System.Type classType=null,byte pagingMode=0)
+		protected int LoadDataFromSQL(object[][] parms,int maxRows,System.Type classType=null,byte pagingMode=0,string sourceInfo="")
 		{
 			objList.Clear();
 
 			if ( Tools.OpenDB(ref dbConn) )
 			{
-				int q = 0;
+				int    q          = 0;
+				dbConn.SourceInfo = sourceInfo;
 
 				if ( maxRows > short.MaxValue )
 					maxRows   = short.MaxValue;

@@ -23,6 +23,10 @@ namespace PCIBusiness
 		{
 			return 100;
 		}
+		public static short C_MAXPAYMENTROWS()
+		{
+			return 50;
+		}
 		public enum DBColumnStatus : byte
 		{
 			InvalidColumn = 1,
@@ -42,12 +46,14 @@ namespace PCIBusiness
 
 		public enum PaymentProvider : int
 		{
-			MyGate  =  2,
-			T24     =  6,
-			Ikajo   = 15,
-			PayU    = 16,
-			PayGate = 17
-//			PayFast = 18
+			MyGate    =  2,
+			T24       =  6,
+			Ikajo     = 15,
+			PayU      = 16,
+			PayGate   = 17,
+			PayGenius = 18,
+			ECentric  = 19
+//			PayFast   = 19
 		}
 
 		public enum CreditCardType : byte
@@ -70,6 +76,13 @@ namespace PCIBusiness
 			Unknown     = 0,
 			Development = 1,
 			Testing     = 2,
+			Live        = 3
+		}
+
+		public enum SystemMode : byte
+		{
+			Development = 1,
+			Test        = 2,
 			Live        = 3
 		}
 		public enum ProcessMode : int

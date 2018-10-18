@@ -86,8 +86,6 @@ namespace PCIBusiness
 			return 0;
 		}
 
-//		public abstract string ConnectionDetails(byte mode,string separator="");
-
       public override void Close()
 		{
 			xmlResult = null;

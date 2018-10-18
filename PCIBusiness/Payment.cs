@@ -64,6 +64,8 @@ namespace PCIBusiness
 					return "MY014473";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate) )
 					return "XXXX";
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGenius) )
+					return "XXXX";
 //				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayFast) )
 //					return "XXXX";
 				return "";
@@ -76,6 +78,7 @@ namespace PCIBusiness
 		}
 		public string    ProviderKey
 		{
+			set { providerKey = value.Trim(); }
 			get { return  Tools.NullToString(providerKey); }
 		}
 		public string    ProviderUserID
@@ -84,6 +87,7 @@ namespace PCIBusiness
 		}
 		public string    ProviderPassword
 		{
+			set { providerPassword = value.Trim(); }
 			get { return  Tools.NullToString(providerPassword); }
 		}
 		public string    ProviderURL
@@ -94,7 +98,8 @@ namespace PCIBusiness
 
 //			get { return "https://payment.ccp.boarding.transact24.com/PaymentCard";           } // T24
 //			get { return "https://www.mygate.co.za/Collections/1x0x0/pinManagement.cfc?wsdl"; } MyGate
-//			get { return "https://secure.paygate.co.za/payhost/process.trans";           } PayGate
+//			get { return "https://secure.paygate.co.za/payhost/process.trans";                } PayGate
+//			get { return "https://developer.paygenius.co.za";                                 } PayGenius
 		}
 
 //		public string    MerchantUserId
@@ -342,6 +347,8 @@ namespace PCIBusiness
 					transaction = new TransactionMyGate();
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate) )
 					transaction = new TransactionPayGate();
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGenius) )
+					transaction = new TransactionPayGenius();
 //				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayFast) )
 //					transaction = new TransactionPayFast();
 				else
@@ -385,6 +392,8 @@ namespace PCIBusiness
 					transaction = new TransactionMyGate();
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate) )
 					transaction = new TransactionPayGate();
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGenius) )
+					transaction = new TransactionPayGenius();
 //				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayFast) )
 //					transaction = new TransactionPayFast();
 				else
@@ -423,7 +432,7 @@ namespace PCIBusiness
 
 		public override void LoadData(DBConn dbConn)
 		{
-			dbConn.SourceInfo  = "Payment.LoadData";
+		//	dbConn.SourceInfo  = "Payment.LoadData";
 
 		//	Payment Provider
 			providerKey      = dbConn.ColString ("Safekey");

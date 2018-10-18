@@ -178,7 +178,7 @@ namespace PCIBusiness
 //	Not needed
 			//	UTF-32
 //				bytes = md5.ComputeHash(new UTF32Encoding().GetBytes(data));
-			//	ASCIII
+			//	ASCII
 //				bytes = md5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(data));
 			//	Default
 //				bytes = md5.ComputeHash(Encoding.Default.GetBytes(data));

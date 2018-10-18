@@ -303,6 +303,7 @@ namespace PCIBusiness
 			int ret = 10;
 
 			if ( Tools.NullToString(url).Length == 0 )
+//				PayGate use the same URL for live and test
 				url = "https://secure.paygate.co.za/payhost/process.trans";
 
 			try

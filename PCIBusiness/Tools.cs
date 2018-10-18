@@ -256,6 +256,35 @@ namespace PCIBusiness
 			return str;
 		}
 
+//		public static string JSONPair(string name,string value,byte dataType=1,bool firstPair=false,bool lastPair=false)
+//		{
+//			string quote = "\"";
+//			return ( firstPair ? "{" : "" )
+//			     + quote + name.Trim().Replace(quote,"'") + quote + " : "
+//			     + ( dataType<10 ? quote : "" ) + value.Trim().Replace(quote,"'") + ( dataType<10 ? quote : "" )
+//			     + ( lastPair  ? "}" : "," );
+//		}
+
+		public static string JSONPair(string name,string value,byte dataType=1,string prefix="",string suffix=",")
+		{
+		//	dataType =  1 means STRING
+		//          = 11 means NUMERIC
+		//          = 12 means BOOLEAN
+			string quote = "\"";
+			return prefix
+			     + quote + name.Trim().Replace(quote,"'") + quote + " : "
+			     + ( dataType<10 ? quote : "" ) + value.Trim().Replace(quote,"'") + ( dataType<10 ? quote : "" )
+			     + suffix;
+		}
+
+//		public static string JSONPair(string name,int value,bool firstPair=false,bool lastPair=false)
+//		{
+//			string quote = "\"";
+//			return (firstPair?"{":"")
+//			     + quote + name.Trim().Replace(quote,"'") + quote + " : " + value.ToString()
+//			     + (lastPair ?"}":",");
+//		}
+
 		public static string JSONValue(string data,string tag)
 		{
 		//	Handle data in the format
@@ -264,12 +293,14 @@ namespace PCIBusiness
 
 			try
 			{
-				int j;
-				int k = 0;
-				int h = 0;
-				tag   = "\"" + tag.ToUpper() + "\"";
+				int    j;
+				int    k     = 0;
+				int    h     = 1;
+				string value = "";
+				tag          = "\"" + tag.ToUpper() + "\"";
 
-				while ( h == 0 )
+//	Find the tag
+				while ( value.Length == 0 )
 				{
 					k = data.ToUpper().IndexOf(tag,k);
 					if ( k < 0 )
@@ -280,20 +311,45 @@ namespace PCIBusiness
 						else
 						{
 							if ( data.Substring(j,1) == ":" )
-								h = j + 1;
+								value = data.Substring(j+1).Trim();
 							else
 								k = j;
 							break;
 						}
 				}
-				k = data.IndexOf("\"",h);
-				if ( k < 0 )
-					return "";
-				j = data.IndexOf("\"",k+1);
-				if ( j <= k )
-					return "";
-				return data.Substring(k+1,j-k-1).Trim();
 
+				if ( value.Substring(0,1) == "\"" ) // Value starts with " and will end with "
+					k = value.IndexOf("\"",1);
+				else                                // Value may end with , { }
+				{
+					h = 0;
+					k = value.IndexOf(",");
+					if ( k < 0 )
+						k = value.IndexOf("{");
+					if ( k < 0 )
+						k = value.IndexOf("}");
+				}
+				if ( k <= h )
+					return "";
+				
+				return value.Substring(h,k-h).Trim();
+
+//	Version 2
+//				k = data.IndexOf("\"",h);
+//				if ( k < 0 )
+//					k = data.IndexOf(",",h);
+//				if ( k < 0 )
+//					k = data.IndexOf("{",h);
+//				if ( k < 0 )
+//					k = data.IndexOf("}",h);
+//				if ( k < 0 )
+//					return "";
+//				j = data.IndexOf("\"",k+1);
+//				if ( j <= k )
+//					return "";
+//				return data.Substring(k+1,j-k-1).Trim();
+
+//	Version 1
 //				j = data.IndexOf(":",k+tag.Length);
 //					
 //				if ( k < 0 )
@@ -751,7 +807,7 @@ namespace PCIBusiness
 			}
 			catch (Exception ex)
 			{
-				Tools.LogException("Tool.DeleteFiles","",ex);
+				Tools.LogException("Tools.DeleteFiles","",ex);
 			}
 			return deleted;
 		}
@@ -852,6 +908,16 @@ namespace PCIBusiness
 				str = str.Substring(k+1).Trim();
 			}
 			return ret + str;
+		}
+
+		public static Constants.SystemMode LiveTestOrDev()
+		{
+			string mode = Tools.ConfigValue("SystemMode").ToUpper();
+			if ( mode.StartsWith("LIVE") || mode.StartsWith("PROD") )
+				return Constants.SystemMode.Live;
+			if ( mode.StartsWith("TEST") )
+				return Constants.SystemMode.Test;
+			return Constants.SystemMode.Development;
 		}
 
 		public static string BureauCode(Constants.PaymentProvider providerCode)

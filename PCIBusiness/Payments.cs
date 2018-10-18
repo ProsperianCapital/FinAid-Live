@@ -10,7 +10,8 @@ namespace PCIBusiness
 		private int       fail;
 		private int       err;
 
-		private const int MAX_ROWS = 50; // Default maximum per iteration
+//		private const int MAX_ROWS = 50; // Default maximum per iteration
+//		See Constants.C_MAXPAYMENTROWS()
 
 		public override BaseData NewItem()
 		{
@@ -28,41 +29,40 @@ namespace PCIBusiness
 		}
 		public Provider Summary(string bureau)
 		{
-			int      k;
+			int      tok        = 0;
+			int      pay        = 0;
 			Provider provider   = new Provider();
 			provider.BureauCode = bureau;
 
 			try
 			{
-				k   = 0;
-    			sql = "exec sp_Get_CardToToken " + Tools.DBString(bureau) + "," + MAX_ROWS.ToString();
+    			sql = "exec sp_Get_CardToToken " + Tools.DBString(bureau) + "," + Constants.C_MAXPAYMENTROWS().ToString();
 				err = ExecuteSQL(null,false,false);
 				if ( err > 0 )
 					Tools.LogException("Payments.Summary/10",sql + " failed, return code " + err.ToString());
 				else
-					while ( ! dbConn.EOF )
+					while ( ! dbConn.EOF && tok < Constants.C_MAXPAYMENTROWS() )
 					{
-						if ( k == 0 )
+						if ( pay == 0 && tok == 0 )
 							provider.LoadData(dbConn);
-						k++;
+						tok++;
 						dbConn.NextRow();
 					}
-				provider.CardsToBeTokenized = k;
+				provider.CardsToBeTokenized = tok;
 
-				k   = 0;
-    			sql = "exec sp_Get_CardPayment " + Tools.DBString(bureau) + "," + MAX_ROWS.ToString();
+    			sql = "exec sp_Get_CardPayment " + Tools.DBString(bureau) + "," + Constants.C_MAXPAYMENTROWS().ToString();
 				err = ExecuteSQL(null,false,false);
 				if ( err > 0 )
 					Tools.LogException("Payments.Summary/20",sql + " failed, return code " + err.ToString());
 				else
-					while ( ! dbConn.EOF )
+					while ( ! dbConn.EOF && pay < Constants.C_MAXPAYMENTROWS() )
 					{
-						if ( k == 0 )
+						if ( pay == 0 && tok == 0 )
 							provider.LoadData(dbConn);
-						k++;
+						pay++;
 						dbConn.NextRow();
 					}
-				provider.PaymentsToBeProcessed = k;
+				provider.PaymentsToBeProcessed = pay;
 			}
 			catch (Exception ex)
 			{
@@ -84,7 +84,7 @@ namespace PCIBusiness
 			bureauCode = Tools.NullToString(bureau);
 			success    = 0;
 			fail       = 0;
-			maxRows    = ( maxRows < 1 ? MAX_ROWS : maxRows );
+			maxRows    = ( maxRows < 1 ? Constants.C_MAXPAYMENTROWS() : maxRows );
 //			maxRows    = ( maxRows < 1 || maxRows > MAX_ROWS ? MAX_ROWS : maxRows );
 
 			if ( bureauCode.Length < 1 )
@@ -112,7 +112,7 @@ namespace PCIBusiness
 			else if ( rowsToProcess > 0 )
 				sql = sql + "," + rowsToProcess.ToString();
 			else
-				sql = sql + "," + MAX_ROWS.ToString();
+				sql = sql + "," + Constants.C_MAXPAYMENTROWS().ToString();
 
 			Tools.LogInfo("Payments.ProcessCards/10","Mode="+mode.ToString()+", MaxRows=" + maxRows.ToString()+", RowsToProcess=" + rowsToProcess.ToString()+", BureauCode="+bureauCode+", SQL="+sql,199);
 
@@ -120,7 +120,7 @@ namespace PCIBusiness
 			{
 				while ( rowsToProcess < 1 || rowsToProcess > success + fail )
 				{
-					if ( LoadDataFromSQL(maxRows) < 1 )
+					if ( LoadDataFromSQL(maxRows,"Payments.ProcessCards/"+desc+"/"+bureauCode) < 1 )
 						break;
 					Tools.CloseDB(ref dbConn);
 					int rowsDone = 0;
@@ -140,7 +140,12 @@ namespace PCIBusiness
 						if ( rowsToProcess > 0 && rowsToProcess <= success + fail )
 							break;
 					}
-					Tools.LogInfo("Payments.ProcessCards/30","Iteration " + iter.ToString() + " (" + rowsDone.ToString() + " " + desc + "s processed)",199);
+					Tools.LogInfo("Payments.ProcessCards/30","Iteration " + iter.ToString() + " (" + rowsDone.ToString() + " " + desc + "s)",199);
+//	In case of a runaway loop where failures are not rectified ...
+					if ( fail > 99 && success == 0 )
+						break;
+					if ( fail > 999 )
+						break;
 				}
 			}
 			catch (Exception ex)

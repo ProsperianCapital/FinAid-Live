@@ -54,8 +54,8 @@ namespace PCIBusiness
 			get { return sourceInfo; }
 			set 
 			{
-				if ( sourceInfo.Length == 0 )
-					sourceInfo = value;
+				if ( string.IsNullOrWhiteSpace(sourceInfo) && ! string.IsNullOrWhiteSpace(value) )
+					sourceInfo = value.Trim();
 			}
 		}
 

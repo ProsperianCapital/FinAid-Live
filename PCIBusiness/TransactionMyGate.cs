@@ -54,7 +54,6 @@ namespace PCIBusiness
 
 			try
 			{
-
 				if ( myGateToken == null )
 					myGateToken = new MyGateToken.PinManagement();
 
