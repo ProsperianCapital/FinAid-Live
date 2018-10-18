@@ -388,6 +388,8 @@ function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 	var elt;
 	var eltValue;
 
+	alert('Validate/1:'+ctlID);
+
 	try
 	{
 		if ( eltBool == null || eltBool )
@@ -578,6 +580,8 @@ function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 	{
 		alert(z);
 	}
+
+	alert('Validate/2:'+err);
 
 	return err + ( err.length == 0 ? '' : '<br />' );
 }
