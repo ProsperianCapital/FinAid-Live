@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using PCIBusiness;
 
 namespace PCIWebFinAid
 {
@@ -11,14 +12,15 @@ namespace PCIWebFinAid
 		{
 			if ( ! Page.IsPostBack )
 			{
-				lblJS.Text = WebTools.JavaScriptSource("NextPage(0)");
+				lblAppDetails.Text = AppDetails.Summary();
+				lblJS.Text         = WebTools.JavaScriptSource("NextPage(0)");
 				LoadLabels();
 			}
 		}
 
 		private void LoadLabels()
 		{
-			using (PCIBusiness.MiscList miscList = new PCIBusiness.MiscList())
+			using (MiscList miscList = new MiscList())
 				try
 				{
 					HiddenField ctlHidden;
@@ -28,15 +30,15 @@ namespace PCIWebFinAid
 					string      fieldValue;
 					string      controlID;
 					string      sql;
-					string      productCode     = PCIBusiness.Tools.ConfigValue("ProductCode");
-					string      languageCode    = PCIBusiness.Tools.ConfigValue("LanguageCode");
-					string      languageDialect = PCIBusiness.Tools.ConfigValue("LanguageDialectCode");
+					string      productCode     = Tools.ConfigValue("ProductCode");
+					string      languageCode    = Tools.ConfigValue("LanguageCode");
+					string      languageDialect = Tools.ConfigValue("LanguageDialectCode");
 
 //	Static labels, help text, etc
 
-					sql = "exec sp_WP_GetFieldData @ProductCode="         + PCIBusiness.Tools.DBString(productCode)
-					                           + ",@LanguageCode="        + PCIBusiness.Tools.DBString(languageCode)
-					                           + ",@LanguageDialectCode=" + PCIBusiness.Tools.DBString(languageDialect);
+					sql = "exec sp_WP_GetFieldData @ProductCode="         + Tools.DBString(productCode)
+					                           + ",@LanguageCode="        + Tools.DBString(languageCode)
+					                           + ",@LanguageDialectCode=" + Tools.DBString(languageDialect);
 
 					if ( miscList.ExecQuery(sql,0) == 0 )
 						while ( ! miscList.EOF )
@@ -114,37 +116,37 @@ namespace PCIWebFinAid
 
 //	Title
 					sql = "exec sp_WP_Get_Title"
-					    + " @LanguageCode="        + PCIBusiness.Tools.DBString(languageCode)
-					    + ",@LanguageDialectCode=" + PCIBusiness.Tools.DBString(languageDialect);
+					    + " @LanguageCode="        + Tools.DBString(languageCode)
+					    + ",@LanguageDialectCode=" + Tools.DBString(languageDialect);
 					WebTools.ListBind(lstTitle,sql,null,"TitleCode","TitleDescription","","");
 
 //	Employment Status
 					sql = "exec sp_WP_Get_EmploymentStatus"
-					    + " @LanguageCode="        + PCIBusiness.Tools.DBString(languageCode)
-					    + ",@LanguageDialectCode=" + PCIBusiness.Tools.DBString(languageDialect);
+					    + " @LanguageCode="        + Tools.DBString(languageCode)
+					    + ",@LanguageDialectCode=" + Tools.DBString(languageDialect);
 					WebTools.ListBind(lstStatus,sql,null,"EmploymentStatusCode","EmploymentStatusDescription");
 
 //	Pay Date
 					sql = "exec sp_WP_Get_PayDate"
-					    + " @LanguageCode="        + PCIBusiness.Tools.DBString(languageCode)
-					    + ",@LanguageDialectCode=" + PCIBusiness.Tools.DBString(languageDialect);
+					    + " @LanguageCode="        + Tools.DBString(languageCode)
+					    + ",@LanguageDialectCode=" + Tools.DBString(languageDialect);
 					WebTools.ListBind(lstPayDay,sql,null,"PayDateCode","PayDateDescription");
 
 //	Product Option
 					sql = "exec sp_WP_Get_ProductOption"
-					    + " @ProductCode="         + PCIBusiness.Tools.DBString(productCode);
+					    + " @ProductCode="         + Tools.DBString(productCode);
 					WebTools.ListBind(lstOptions,sql,null,"ProductOptionCode","ProductOptionDescription");
 
 //	Payment Method
 					sql = "exec sp_WP_Get_PaymentMethod"
-					    + " @ProductCode="         + PCIBusiness.Tools.DBString(productCode)
-					    + ",@LanguageCode="        + PCIBusiness.Tools.DBString(languageCode)
-					    + ",@LanguageDialectCode=" + PCIBusiness.Tools.DBString(languageDialect);
+					    + " @ProductCode="         + Tools.DBString(productCode)
+					    + ",@LanguageCode="        + Tools.DBString(languageCode)
+					    + ",@LanguageDialectCode=" + Tools.DBString(languageDialect);
 					WebTools.ListBind(lstPayment,sql,null,"PaymentMethodCode","PaymentMethodDescription");
 				}
 				catch (Exception ex)
 				{
-					PCIBusiness.Tools.LogException("Register.LoadLabels","",ex);
+					Tools.LogException("Register.LoadLabels","",ex);
 				}
 		}
 	}

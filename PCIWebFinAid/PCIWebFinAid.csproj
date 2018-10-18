@@ -104,6 +104,7 @@
     <Content Include="Images\Cross.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppDetails.cs" />
     <Compile Include="BasePage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

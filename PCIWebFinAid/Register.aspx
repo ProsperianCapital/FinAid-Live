@@ -11,6 +11,7 @@
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
 </head>
 <body>
+<asp:Literal runat="server" ID="lblAppDetails"></asp:Literal>
 <form id="frmRegister" runat="server">
 
 <script type="text/javascript">
