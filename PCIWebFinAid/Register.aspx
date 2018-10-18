@@ -76,47 +76,123 @@ function ValidatePage(ctl,seq)
 
 	try
 	{
-		if ( ( pageNo == 1 && ctl == 0 ) || ctl == 101 )
+		if ( ( pageNo == 1 && ctl == 0 ) || ctl == 100111 )
 		{
 			p   = Validate('lstTitle','lblTitleError',3,lblTitleError.title,73,0);
 			err = err + p;
 			ShowTick(p,'Title',seq);
 		}
-		if ( ( pageNo == 1 && ctl == 0 ) || ctl == 102 )
+		if ( ( pageNo == 1 && ctl == 0 ) || ctl == 100114 )
 		{
 			p   = Validate('txtSurname','lblSurnameError',1,lblSurnameError.title,2,2);
 			err = err + p;
 			ShowTick(p,'Surname',seq);
 		}
-		if ( ( pageNo == 1 && ctl == 0 ) || ctl == 103 )
+		if ( ( pageNo == 1 && ctl == 0 ) || ctl == 100117 )
 		{
 			p   = Validate('txtCellNo','lblCellNoError',7,lblCellNoError.title);
 			err = err + p;
 			ShowTick(p,'CellNo',seq);
 		}
 
-		if ( pageNo == 2 )
-			err = Validate('txtFirstName','errFirstName',1,errFirstName.title,2,2)
-			    + Validate('txtEMail','errEMail',5,errEMail.title)
-			    + Validate('txtID','errID',1,errID.title,2,4);
-		else if ( pageNo == 3 )
-			err = Validate('txtIncome','errIncome',6,errIncome.title,3,100)
-			    + Validate('lstStatus','errStatus',3,errStatus.title,73,0)
-			    + Validate('lstPayDay','errPayDay',3,errPayDay.title,73,0);
-		else if ( pageNo == 4 )
-			err = Validate('lstOptions','errOptions',3,errOptions.title,73,0)
-			    + Validate('chkTerms','errTerms',8,errTerms.title,2)
-			    + Validate('lstPayment','errPayment',3,errPayment.title,73,0);
-		else if ( pageNo == 5 )
-			err = Validate('txtCCNumber','errCCNumber',6,errCCNumber.title,71)
-			    + Validate('txtCCName','errCCName',1,errCCName.title,2,2)
-			    + Validate('lstCCMonth','errCCExpiry',3,errCCExpiry.title,73,0)
-			    + Validate('lstCCYear','errCCExpiry',3,errCCExpiry.title,73,0)
-			    + Validate('txtCCCVV','errCCCVV',6,errCCCVV.title,2,9999);
+		if ( ( pageNo == 2 && ctl == 0 ) || ctl == 100112 )
+		{
+			p   = Validate('txtFirstName','lblFirstNameError',1,lblFirstNameError.title,2,1);
+			err = err + p;
+			ShowTick(p,'FirstName',seq);
+		}
+		if ( ( pageNo == 2 && ctl == 0 ) || ctl == 100116 )
+		{
+			p   = Validate('txtEMail','lblEMailError',5,lblEMailError.title);
+			err = err + p;
+			ShowTick(p,'EMail',seq);
+		}
+		if ( ( pageNo == 2 && ctl == 0 ) || ctl == 100118 )
+		{
+			p   = Validate('txtID','lblIDError',6,lblIDError.title,7,20);
+			err = err + p;
+			ShowTick(p,'ID',seq);
+		}
+
+		if ( ( pageNo == 3 && ctl == 0 ) || ctl == 100123 )
+		{
+			p   = Validate('txtIncome','lblIncomeError',6,lblIncomeError.title,3,1000);
+			err = err + p;
+			ShowTick(p,'Income',seq);
+		}
+		if ( ( pageNo == 3 && ctl == 0 ) || ctl == 100131 )
+		{
+			p   = Validate('lstStatus','lblStatusError',3,lblStatusError.title,73,0);
+			err = err + p;
+			ShowTick(p,'Status',seq);
+		}
+		if ( ( pageNo == 3 && ctl == 0 ) || ctl == 100132 )
+		{
+			p   = Validate('lstPayDay','lblPayDayError',3,lblPayDayError.title,73,0);
+			err = err + p;
+			ShowTick(p,'PayDay',seq);
+		}
+
+		if ( ( pageNo == 4 && ctl == 0 ) || ctl == 100138 )
+		{
+			p   = Validate('lstOptions','lblOptionsError',3,lblOptionsError.title,73,0);
+			err = err + p;
+			ShowTick(p,'Options',seq);
+		}
+		if ( ( pageNo == 4 && ctl == 0 ) || ctl == 100144 )
+		{
+			p   = Validate('chkTerms','lblTermsError',8,lblTermsError.title,2);
+			err = err + p;
+			ShowTick(p,'Terms',seq);
+		}
+		if ( ( pageNo == 4 && ctl == 0 ) || ctl == 100147 )
+		{
+			p   = Validate('lstPayment','lblPaymentError',3,lblPaymentError.title,73,0);
+			err = err + p;
+			ShowTick(p,'Payment',seq);
+		}
+
+		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100187 )
+		{
+			p   = Validate('txtCCNumber','lblCCNumberError',6,lblCCNumberError.title,8,14);
+			err = err + p;
+			ShowTick(p,'CCNumber',seq);
+		}
+		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100186 )
+		{
+			p   = Validate('txtCCName','lblCCNameError',1,lblCCNameError.title,2,2);
+			err = err + p;
+			ShowTick(p,'CCName',seq);
+		}
+		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100188 )
+		{
+			p    = Validate('lstCCMonth','lblCCExpiryError',3,lblCCExpiryError.title,73,0)
+			     + Validate('lstCCYear' ,'lblCCExpiryError',3,lblCCExpiryError.title,73,0);
+			err  = err + p;
+			if ( p.length == 0 )
+			{
+				p = new Date();
+				if ( p.getFullYear() > GetListValue('lstCCYear') )
+					p = 'Invalid card expiry date';
+				else if ( p.getFullYear() == GetListValue('lstCCYear') && p.getMonth()+1 > GetListValue('lstCCMonth') )
+					p = 'Invalid card expiry date';
+				else
+					p = '';
+				err  = err + p;
+				SetErrorLabel('lblCCExpiryError',p.length,p);
+			}
+			ShowTick(p,'CCExpiry',seq);
+		}
+		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100189 )
+		{
+			p   = Validate('txtCCCVV','lblCCCVVError',6,lblCCCVVError.title,7,4);
+			err = err + p;
+			ShowTick(p,'CCCVV',seq);
+		}
 	}
 	catch (x)
 	{
-		err = "Y";
+		alert(x.message);
 	}
 	return ( err.length == 0 );
 }
@@ -136,7 +212,6 @@ function Help(onOrOff,ctl,item)
 	{ }
 }
 
-//
 function TestSetup()
 {
 	SetEltValue("hdnTitleHelp"  ,"Please choose a title");
@@ -147,8 +222,6 @@ function TestSetup()
 	GetElt("lblSurnameError").title = "Please enter a valid surname";
 	GetElt("lblCellNoError").title  = "Please enter a valid mobile phone number";
 }
-//
-
 </script>
 
 <input type="hidden" id="hdnPageNo" value="1" />
@@ -160,15 +233,9 @@ function TestSetup()
 <table>
 	<tr>
 		<td class="DataLabel">
-			<asp:Literal runat="server" ID="lblTitleLabel">Title</asp:Literal></td>
+			<asp:Literal runat="server" ID="lblTitleLabel"></asp:Literal></td>
 		<td style="white-space:nowrap">
-			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstTitle" onfocus="JavaScript:ValidatePage(101,1)" onblur="JavaScript:ValidatePage(101,2)">
-				<asp:ListItem Value="0" Text="Select Title"></asp:ListItem>
-				<asp:ListItem Value="1" Text="Mr"></asp:ListItem>
-				<asp:ListItem Value="2" Text="Mrs"></asp:ListItem>
-				<asp:ListItem Value="3" Text="Miss"></asp:ListItem>
-				<asp:ListItem Value="4" Text="Dr"></asp:ListItem>
-				<asp:ListItem Value="5" Text="Prof"></asp:ListItem>
+			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstTitle" onfocus="JavaScript:ValidatePage(100111,1)" onblur="JavaScript:ValidatePage(100111,2)">
 			</asp:DropDownList>
 			<a href="#" onmouseover="JavaScript:Help(1,this,'Title')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
@@ -178,9 +245,9 @@ function TestSetup()
 			<asp:Label runat="server" id="lblTitleError"></asp:Label></td></tr>
 	<tr>
 		<td class="DataLabel">
-			<asp:Literal runat="server" ID="lblSurnameLabel">Surname</asp:Literal></td>
+			<asp:Literal runat="server" ID="lblSurnameLabel"></asp:Literal></td>
 		<td style="white-space:nowrap">
-			<asp:TextBox runat="server" CssClass="DataInput" ID="txtSurname" onfocus="JavaScript:ValidatePage(102,1)" onblur="JavaScript:ValidatePage(102,2)"></asp:TextBox>
+			<asp:TextBox runat="server" CssClass="DataInput" ID="txtSurname" onfocus="JavaScript:ValidatePage(100114,1)" onblur="JavaScript:ValidatePage(100114,2)"></asp:TextBox>
 			<a href="#" onmouseover="JavaScript:Help(1,this,'Surname')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgSurname" />
@@ -189,9 +256,9 @@ function TestSetup()
 			<asp:Label runat="server" id="lblSurnameError"></asp:Label></td></tr>
 	<tr>
 		<td class="DataLabel">
-			<asp:Literal runat="server" ID="lblCellNoLabel">Mobile number</asp:Literal></td>
+			<asp:Literal runat="server" ID="lblCellNoLabel"></asp:Literal></td>
 		<td style="white-space:nowrap">
-			<asp:TextBox runat="server" CssClass="DataInput" ID="txtCellNo" onfocus="JavaScript:ValidatePage(103,1)" onblur="JavaScript:ValidatePage(103,2)"></asp:TextBox>
+			<asp:TextBox runat="server" CssClass="DataInput" ID="txtCellNo" onfocus="JavaScript:ValidatePage(100117,1)" onblur="JavaScript:ValidatePage(100117,2)"></asp:TextBox>
 			<a href="#" onmouseover="JavaScript:Help(1,this,'CellNo')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgCellNo" />
@@ -209,17 +276,38 @@ function TestSetup()
 </p>
 <table>
 	<tr>
-		<td style="width:209px"><asp:Literal runat="server" ID="lblFirstName"></asp:Literal></td>
-		<td><asp:TextBox runat="server" ID="txtFirstName" Width="209px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?&nbsp;&nbsp;</td>
-		<td id="errFirstName" title="Please enter your First Name"></td></tr>
+		<td class="DataLabel">
+			<asp:Literal runat="server" ID="lblFirstNameLabel"></asp:Literal></td>
+		<td style="white-space:nowrap">
+			<asp:TextBox runat="server" CssClass="DataInput" ID="txtFirstName" onfocus="JavaScript:ValidatePage(100112,1)" onblur="JavaScript:ValidatePage(100112,2)"></asp:TextBox>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'FirstName')" onmouseout="JavaScript:Help(0)">?</a></td>
+		<td>
+			<img id="imgFirstName" />
+			<asp:HiddenField runat="server" ID="hdnFirstNameHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblFirstNameError"></asp:Label></td></tr>
 	<tr>
-		<td><asp:Literal runat="server" ID="lblEMail"></asp:Literal></td>
-		<td><asp:TextBox runat="server" ID="txtEMail" Width="209px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?</td>
-		<td id="errEMail" title="Please enter a valid email address"></td></tr>
+		<td class="DataLabel">
+			<asp:Literal runat="server" ID="lblEMailLabel"></asp:Literal></td>
+		<td style="white-space:nowrap">
+			<asp:TextBox runat="server" CssClass="DataInput" ID="txtEMail" onfocus="JavaScript:ValidatePage(100116,1)" onblur="JavaScript:ValidatePage(100116,2)"></asp:TextBox>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'EMail')" onmouseout="JavaScript:Help(0)">?</a></td>
+		<td>
+			<img id="imgEMail" />
+			<asp:HiddenField runat="server" ID="hdnEMailHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblEMailError"></asp:Label></td></tr>
 	<tr>
-		<td><asp:Literal runat="server" ID="lblID"></asp:Literal></td>
-		<td><asp:TextBox runat="server" ID="txtID" Width="209px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?</td>
-		<td id="errID" title="Please enter your identity number"></td></tr>
+		<td class="DataLabel">
+			<asp:Literal runat="server" ID="lblIDLabel"></asp:Literal></td>
+		<td style="white-space:nowrap">
+			<asp:TextBox runat="server" CssClass="DataInput" ID="txtID" onfocus="JavaScript:ValidatePage(100118,1)" onblur="JavaScript:ValidatePage(100118,2)"></asp:TextBox>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'ID')" onmouseout="JavaScript:Help(0)">?</a></td>
+		<td>
+			<img id="imgID" />
+			<asp:HiddenField runat="server" ID="hdnIDHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblIDError"></asp:Label></td></tr>
 </table>
 </div>
 
@@ -229,81 +317,125 @@ function TestSetup()
 </p>
 <table>
 	<tr>
-		<td style="width:209px"><asp:Literal runat="server" ID="lblIncome"></asp:Literal></td>
-		<td><asp:TextBox runat="server" ID="txtIncome" Width="209px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?</td>
-		<td id="errIncome" title="Your total monthly income after statutory deductions"></td></tr>
-	<tr>
-		<td><asp:Literal runat="server" ID="lblStatus"></asp:Literal></td>
+		<td class="DataLabel">
+			<asp:Literal runat="server" ID="lblIncomeLabel"></asp:Literal></td>
+		<td style="white-space:nowrap">
+			<asp:TextBox runat="server" CssClass="DataInput" ID="txtIncome" onfocus="JavaScript:ValidatePage(100123,1)" onblur="JavaScript:ValidatePage(100123,2)"></asp:TextBox>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'Income')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
-			<asp:DropDownList runat="server" ID="lstStatus" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()" Width="209px">
-				<asp:ListItem Value="0" Text="Select Employment Status"></asp:ListItem>
-				<asp:ListItem Value="1" Text="Fixed Term"></asp:ListItem>
-				<asp:ListItem Value="2" Text="Permanent"></asp:ListItem>
-				<asp:ListItem Value="3" Text="Project Based"></asp:ListItem>
-				<asp:ListItem Value="4" Text="Casual"></asp:ListItem>
-				<asp:ListItem Value="5" Text="No Contract"></asp:ListItem>
-				<asp:ListItem Value="6" Text="Training Agreement"></asp:ListItem>
-			</asp:DropDownList> ?</td>
-		<td id="errStatus" title="Please choose an employment status"></td></tr>
+			<img id="imgIncome" />
+			<asp:HiddenField runat="server" ID="hdnIncomeHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblIncomeError"></asp:Label></td></tr>
 	<tr>
-		<td><asp:Literal runat="server" ID="lblPayDay"></asp:Literal></td>
+		<td class="DataLabel">
+			<asp:Literal runat="server" ID="lblStatusLabel"></asp:Literal></td>
+		<td style="white-space:nowrap">
+			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstStatus" onfocus="JavaScript:ValidatePage(100131,1)" onblur="JavaScript:ValidatePage(100131,2)">
+			</asp:DropDownList>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'Status')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
-			<asp:DropDownList runat="server" ID="lstPayDay" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()" Width="209px">
-				<asp:ListItem Value="0" Text="Select Pay Day"></asp:ListItem>
-				<asp:ListItem Value="1" Text="Monthly on the 1'st"></asp:ListItem>
-				<asp:ListItem Value="2" Text="Monthly on the 8'th"></asp:ListItem>
-				<asp:ListItem Value="3" Text="Monthly on the 15'th"></asp:ListItem>
-				<asp:ListItem Value="4" Text="Monthly on the 21'st"></asp:ListItem>
-				<asp:ListItem Value="5" Text="Monthly on the 25'th"></asp:ListItem>
-				<asp:ListItem Value="6" Text="Monthly on the last day"></asp:ListItem>
-			</asp:DropDownList> ?</td>
-		<td id="errPayDay" title="Please choose your pay day"></td></tr>
+			<img id="imgStatus" />
+			<asp:HiddenField runat="server" ID="hdnStatusHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblStatusError"></asp:Label></td></tr>
+	<tr>
+		<td class="DataLabel">
+			<asp:Literal runat="server" ID="lblPayDayLabel"></asp:Literal></td>
+		<td style="white-space:nowrap">
+			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstPayDay" onfocus="JavaScript:ValidatePage(100132,1)" onblur="JavaScript:ValidatePage(100132,2)">
+			</asp:DropDownList>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'PayDay')" onmouseout="JavaScript:Help(0)">?</a></td>
+		<td>
+			<img id="imgPayDay" />
+			<asp:HiddenField runat="server" ID="hdnPayDayHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblPayDayError"></asp:Label></td></tr>
 </table>
 </div>
 
 <div id="divP04">
 <p class="Header4">
-(4) <asp:Literal runat="server" ID="lblSubHead4Label"></asp:Literal> <!-- Congratulations! Your product options are: -->
+(4) <asp:Literal runat="server" ID="lblSubHead4aLabel"></asp:Literal> <!-- Congratulations! Your product options are: -->
+</p><p class="Header5">
+<asp:Literal runat="server" ID="lblSubHead4bLabel"></asp:Literal>
 </p>
-Product Options&nbsp;&nbsp;
-<asp:DropDownList runat="server" ID="lstOptions" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()">
-	<asp:ListItem Value="0" Text="Select Product Option"></asp:ListItem>
-	<asp:ListItem Value="1" Text="Bronze"></asp:ListItem>
-	<asp:ListItem Value="2" Text="Silver"></asp:ListItem>
-	<asp:ListItem Value="3" Text="Gold"></asp:ListItem>
-</asp:DropDownList> ?&nbsp;&nbsp;&nbsp;&nbsp;
-<span id="errOptions" title="Please choose one of the product options"></span>
-<p class="Header4">
-I confirm having read and understood each of ...
-</p>
-<asp:CheckBox runat="server" ID="chkTerms" onclick="JavaScript:ValidatePage()" /> Terms & Conditions ?&nbsp;&nbsp;&nbsp;&nbsp;
-<span id="errTerms" title="Please confirm that you have read and understood all the terms and conditions"></span><br /><br />
-Payment Method&nbsp;&nbsp;
-<asp:DropDownList runat="server" ID="lstPayment" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()">
-	<asp:ListItem Value="0" Text="Select Payment Method"></asp:ListItem>
-	<asp:ListItem Value="1" Text="Debit my Visa or MasterCard"></asp:ListItem>
-</asp:DropDownList> ?&nbsp;&nbsp;&nbsp;&nbsp;
-<span id="errPayment" title="Please choose a payment method"></span><br /><br />
-PLEASE NOTE: We are accepting your application based on the information you provided.
+<table>
+	<tr>
+		<td class="DataLabel">
+			<asp:Literal runat="server" ID="lblOptionsLabel"></asp:Literal></td>
+		<td style="white-space:nowrap">
+			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstOptions" onfocus="JavaScript:ValidatePage(100138,1)" onblur="JavaScript:ValidatePage(100138,2)">
+			</asp:DropDownList>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'Options')" onmouseout="JavaScript:Help(0)">?</a></td>
+		<td>
+			<img id="imgOptions" />
+			<asp:HiddenField runat="server" ID="hdnOptionsHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblOptionsError"></asp:Label></td></tr>
+	<tr>
+		<td colspan="4" class="Header4">
+			<br /><asp:Literal runat="server" ID="lblSubHead4cLabel"></asp:Literal><br />&nbsp;</td></tr>
+	<tr>
+		<td style="white-space:nowrap" colspan="2">
+			<asp:CheckBox runat="server" ID="chkTerms" onclick="JavaScript:ValidatePage(100144,1)" />
+			<asp:Literal runat="server" ID="lblTermsLabel"></asp:Literal>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'Terms')" onmouseout="JavaScript:Help(0)">?</a></td>
+		<td>
+			<img id="imgTerms" />
+			<asp:HiddenField runat="server" ID="hdnTermsHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblTermsError"></asp:Label></td></tr>
+	<tr>
+		<td class="DataLabel">
+			<asp:Literal runat="server" ID="lblPaymentLabel"></asp:Literal></td>
+		<td style="white-space:nowrap">
+			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstPayment" onfocus="JavaScript:ValidatePage(100144,1);ValidatePage(100147,1)" onblur="JavaScript:ValidatePage(100147,2)">
+			</asp:DropDownList>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'Payment')" onmouseout="JavaScript:Help(0)">?</a></td>
+		<td>
+			<img id="imgPayment" />
+			<asp:HiddenField runat="server" ID="hdnPaymentHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblPaymentError"></asp:Label></td></tr>
+	<tr>
+		<td colspan="4">
+			<asp:Literal runat="server" ID="lblSubHead4dLabel"></asp:Literal></td></tr>
+</table>
 </div>
 
 <div id="divP05">
 <p class="Header4">
-(5) Card Information
+(5) <asp:Literal runat="server" ID="lblSubHead5Label"></asp:Literal>
 </p>
 <table>
 	<tr>
-		<td>Card Number</td>
-		<td><asp:TextBox runat="server" ID="txtCCNumber" Width="320px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?&nbsp;&nbsp;</td>
-		<td id="errCCNumber" title="Please enter your credit/debit card number"></td></tr>
-	<tr>
-		<td>Name on Card</td>
-		<td><asp:TextBox runat="server" ID="txtCCName" Width="320px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?</td>
-		<td id="errCCName" title="Please enter the name on your credit/debit card"></td></tr>
-	<tr>
-		<td>Expiry Date</td>
+		<td class="DataLabel">
+			<asp:Literal runat="server" ID="lblCCNumberLabel"></asp:Literal></td>
+		<td style="white-space:nowrap">
+			<asp:TextBox runat="server" CssClass="DataInput" ID="txtCCNumber" MaxLength="20" onfocus="JavaScript:ValidatePage(100187,1)" onblur="JavaScript:ValidatePage(100187,2)"></asp:TextBox>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'CCNumber')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
-			<asp:DropDownList runat="server" ID="lstCCMonth" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()">
+			<img id="imgCCNumber" />
+			<asp:HiddenField runat="server" ID="hdnCCNumberHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblCCNumberError"></asp:Label></td></tr>
+	<tr>
+		<td class="DataLabel">
+			<asp:Literal runat="server" ID="lblCCNameLabel"></asp:Literal></td>
+		<td style="white-space:nowrap">
+			<asp:TextBox runat="server" CssClass="DataInput" ID="txtCCName" onfocus="JavaScript:ValidatePage(100186,1)" onblur="JavaScript:ValidatePage(100186,2)"></asp:TextBox>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'CCName')" onmouseout="JavaScript:Help(0)">?</a></td>
+		<td>
+			<img id="imgCCName" />
+			<asp:HiddenField runat="server" ID="hdnCCNameHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblCCNameError"></asp:Label></td></tr>
+	<tr>
+		<td class="DataLabel">
+			<asp:Literal runat="server" ID="lblCCExpiryLabel"></asp:Literal></td>
+		<td style="white-space:nowrap">
+			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstCCMonth" onfocus="JavaScript:ValidatePage(100188,1)" onblur="JavaScript:ValidatePage(100188,2)">
 				<asp:ListItem Value= "1" Text="01 (January)"></asp:ListItem>
 				<asp:ListItem Value= "2" Text="02 (February)"></asp:ListItem>
 				<asp:ListItem Value= "3" Text="03 (March)"></asp:ListItem>
@@ -316,8 +448,8 @@ PLEASE NOTE: We are accepting your application based on the information you prov
 				<asp:ListItem Value="10" Text="10 (October)"></asp:ListItem>
 				<asp:ListItem Value="11" Text="11 (November)"></asp:ListItem>
 				<asp:ListItem Value="12" Text="12 (December)"></asp:ListItem>
-			</asp:DropDownList>&nbsp;
-			<asp:DropDownList runat="server" ID="lstCCYear" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()">
+			</asp:DropDownList>
+			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstCCYear" onfocus="JavaScript:ValidatePage(100188,1)" onblur="JavaScript:ValidatePage(100188,2)">
 				<asp:ListItem Value= "2018" Text="2018"></asp:ListItem>
 				<asp:ListItem Value= "2019" Text="2019"></asp:ListItem>
 				<asp:ListItem Value= "2020" Text="2020"></asp:ListItem>
@@ -330,29 +462,36 @@ PLEASE NOTE: We are accepting your application based on the information you prov
 				<asp:ListItem Value= "2027" Text="2027"></asp:ListItem>
 				<asp:ListItem Value= "2028" Text="2028"></asp:ListItem>
 				<asp:ListItem Value= "2029" Text="2029"></asp:ListItem>
-			</asp:DropDownList> ?</td>
-		<td id="errCCExpiry" title="Please select your card's date (month and year)"></td></tr>
+			</asp:DropDownList>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'CCExpiry')" onmouseout="JavaScript:Help(0)">?</a></td>
+		<td>
+			<img id="imgCCExpiry" />
+			<asp:HiddenField runat="server" ID="hdnCCExpiryHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblCCExpiryError"></asp:Label></td></tr>
 	<tr>
-		<td>CVV Code</td>
-		<td><asp:TextBox runat="server" ID="txtCCCVV" Width="40px" onfocus="JavaScript:ValidatePage()" onblur="JavaScript:ValidatePage()"></asp:TextBox> ?&nbsp;&nbsp;</td>
-		<td id="errCCCVV" title="Please enter your card CVV number"></td></tr>
+		<td class="DataLabel">
+			<asp:Literal runat="server" ID="lblCCCVVLabel"></asp:Literal></td>
+		<td style="white-space:nowrap">
+			<asp:TextBox runat="server" CssClass="DataInput" ID="txtCCCVV" MaxLength="4" onfocus="JavaScript:ValidatePage(100189,1)" onblur="JavaScript:ValidatePage(100189,2)"></asp:TextBox>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'CCCVV')" onmouseout="JavaScript:Help(0)">?</a></td>
+		<td>
+			<img id="imgCCCVV" />
+			<asp:HiddenField runat="server" ID="hdnCCCVVHelp" /></td>
+		<td class="Error">
+			<asp:Label runat="server" id="lblCCCVVError"></asp:Label></td></tr>
+	<tr>
+		<td class="DataLabel">
+			<asp:Label runat="server" ID="lblCCDueDayLabel"></asp:Label></td>
+		<td style="white-space:nowrap" colspan="3">
+			<asp:Label runat="server" id="txtCCDueDay"></asp:Label></td></tr>
 </table>
+
 <div style="background-color:lightgray">
-<p style="color:orange;font-weight:bold;font-size:20px">
-COLLECTION MANDATE : <span id="spnDate"></span>
-</p><p>
-You hereby authorise and instruct us to collect all money due by you from your Card listed above or any other card that you may indicate from time to time.
-</p><p>
-You confirm that you are the account holder or have authority to give us this mandate.
-</p><p>
-You hereby authorise and instruct us to collect your registration fee immediately or as soon as possible.
-</p><p>
-You hereby authorise and instruct us to deduct your monthly subscription fees on, or as close as possible to your indicated Pay Day.
-</p><p>
-You will ensure that sufficient funds are available in your account to cover these deductions and we may track your account and re-present the deductions should the transactions fail.
-</p><p>
-This collection mandate will stay in force until you cancel it by giving us at least 30 days prior written notice to the client care email address listed in the Contact Us section of this website.
-</p>
+<div style="color:orange;font-weight:bold;font-size:20px">
+<asp:Literal runat="server" ID="lblMandateHead"></asp:Literal> : <span id="spnDate"></span>
+</div>
+<asp:Literal runat="server" ID="lblMandateDetail"></asp:Literal>
 </div>
 </div>
 

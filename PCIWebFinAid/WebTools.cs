@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Web;
+using System.Web.UI.WebControls;
 
 namespace PCIWebFinAid
 {
@@ -6,24 +8,18 @@ namespace PCIWebFinAid
 	{
 		static short debugMode = -888;
 
-		public static string RequestValueString (System.Web.HttpRequest req,string parmName)
+		public static string RequestValueString (HttpRequest req,string parmName)
 		{
-//			string ret = "";
 			try
 			{
 				return PCIBusiness.Tools.ObjectToString(req[parmName]);
-//				ret = req[parmName];
-//				ret = ret.Trim().Replace("<","").Replace(">","");
 			}
 			catch
-			{
-//				ret = "";
-			}
-//			return ret;
+			{ }
 			return "";
 		}
 
-		public static int RequestValueInt (System.Web.HttpRequest req,string parmName,int minValue=0,int maxValue=int.MaxValue)
+		public static int RequestValueInt (HttpRequest req,string parmName,int minValue=0,int maxValue=int.MaxValue)
 		{
 			try
 			{
@@ -58,10 +54,10 @@ namespace PCIWebFinAid
 			return 0;
 		}
 
-		public static int ListAdd ( System.Web.UI.WebControls.ListControl listBox,
-		                            int                                   position,
-                                  string                                listValue,
-                                  string                                listText )
+		public static int ListAdd ( ListControl listBox,
+		                            int         position,
+                                  string      listValue,
+                                  string      listText )
 		{
 			try
 			{
@@ -71,7 +67,7 @@ namespace PCIWebFinAid
 					position = 0;
 				listBox.Items.Insert(position,listText);
 				listBox.Items[position].Value = listValue;
-				if ( listBox.GetType() == typeof(System.Web.UI.WebControls.RadioButtonList) )
+				if ( listBox.GetType() == typeof(RadioButtonList) )
 					listBox.Items[position].Attributes.Add("style","white-space:nowrap");
 			}
 			catch
@@ -81,7 +77,7 @@ namespace PCIWebFinAid
 			return position;
 		}
 
-		public static int ListValue ( System.Web.UI.WebControls.ListControl listBox )
+		public static int ListValue ( ListControl listBox )
 		{
 			try
 			{
@@ -92,8 +88,8 @@ namespace PCIWebFinAid
 			return 0;
 		}
 
-		public static string ListValue ( System.Web.UI.WebControls.ListControl listBox,
-		                                 string                                defaultValue )
+		public static string ListValue ( ListControl listBox,
+		                                 string      defaultValue )
 		{
 			string sel = "";
 			try
@@ -109,9 +105,9 @@ namespace PCIWebFinAid
 			return sel;
 		}
 
-		public static void ListSelect ( System.Web.UI.WebControls.ListControl listBox,
-		                                string                                selectValue,
-		                                string                                defaultValue="0" )
+		public static void ListSelect ( ListControl listBox,
+		                                string      selectValue,
+		                                string      defaultValue="0" )
 		{
 			bool   OK = false;
 			string lValue;
@@ -125,7 +121,6 @@ namespace PCIWebFinAid
 				catch { }
 
 			if ( !OK )
-			{
 				try
 				{
 					for ( int k = 0 ; k < listBox.Items.Count ; k++ )
@@ -148,62 +143,76 @@ namespace PCIWebFinAid
 					}
 				}
 				catch { }
-			}
+
 			if ( !OK && defaultValue.Length > 0 )
-			{
 				try
 				{
 					listBox.SelectedValue = defaultValue;
 				}
 				catch { }
-			}
 		}
 
-		public static void ListBind ( System.Web.UI.WebControls.ListControl listBox,
-		                              object                                dataSource,
-		                              string                                dataFieldKey,
-		                              string                                dataFieldShow,
-		                              string                                addZeroRow,
-		                              string                                selectValue )
+		public static void ListBind ( ListControl listBox,
+		                              string      sql,
+		                              object      dataSource,
+		                              string      dataFieldKey,
+		                              string      dataFieldShow,
+		                              string      addZeroRow  = "",
+		                              string      selectValue = "",
+		                              short       selectIndex = -888 )
 		{
-			ListBind(listBox,dataSource,dataFieldKey,dataFieldShow,addZeroRow,selectValue,-888);
+			listBox.Items.Clear();
+
+			try
+			{
+				if ( PCIBusiness.Tools.NullToString(sql).Length > 0 )
+				{
+					string dataValue;
+					string keyValue;
+					using (PCIBusiness.MiscList dList = new PCIBusiness.MiscList())
+						if ( dList.ExecQuery(sql,0) == 0 )
+							while ( ! dList.EOF )
+							{
+								dataValue = dList.GetColumn(dataFieldShow);
+								keyValue  = dList.GetColumn(dataFieldKey);
+								listBox.Items.Add(new ListItem(dataValue,keyValue));
+								dList.NextRow();
+							}
+				}
+				else if ( dataSource != null )
+				{
+					listBox.DataSource     = dataSource;
+					listBox.DataValueField = dataFieldKey;
+					listBox.DataTextField  = dataFieldShow;
+					listBox.DataBind();
+				}
+				else
+					return;
+
+				if ( addZeroRow.Length > 0 )
+					listBox.Items.Insert(0,(new ListItem(addZeroRow,"0")));
+
+				if ( listBox.Items.Count > 0 )
+				{
+					if ( selectValue.Length > 0 )
+						ListSelect(listBox,selectValue,"0");
+				//	else if ( selectIndex == 0 )
+				//		listBox.SelectedIndex = 0;
+					else if ( selectIndex >= listBox.Items.Count )
+						listBox.SelectedIndex = listBox.Items.Count - 1;
+					else if ( selectIndex >= 0 )
+						listBox.SelectedIndex = selectIndex;
+				}
+			}
+			catch (Exception ex)
+			{ }
 		}
 
-		public static void ListBind ( System.Web.UI.WebControls.ListControl listBox,
-		                              object                                dataSource,
-		                              string                                dataFieldKey,
-		                              string                                dataFieldShow,
-		                              string                                addZeroRow,
-		                              string                                selectValue,
-		                              short                                 selectIndex )
-		{
-			listBox.DataSource     = dataSource;
-			listBox.DataValueField = dataFieldKey;
-			listBox.DataTextField  = dataFieldShow;
-			listBox.DataBind();
-			if ( addZeroRow.Length > 0 )
-			{
-				listBox.Items.Insert(0,addZeroRow);
-				listBox.Items[0].Value = "0";
-			}
-			if ( listBox.Items.Count > 0 )
-			{
-				if ( selectValue.Length > 0 )
-					ListSelect(listBox,selectValue,"0");
-			//	else if ( selectIndex == 0 )
-			//		listBox.SelectedIndex = 0;
-				else if ( selectIndex >= listBox.Items.Count )
-					listBox.SelectedIndex = listBox.Items.Count - 1;
-				else if ( selectIndex >= 0 )
-					listBox.SelectedIndex = selectIndex;
-			}
-		}
-
-		public static void Redirect (System.Web.HttpResponse response,string url)
+		public static void Redirect (HttpResponse response,string url)
 		{
 			try
 			{
-				if ( url.Length < 6 ) url = "Identify.aspx";
+				if ( url.Length < 6 ) url = "Register.aspx";
 				response.Redirect(url,false);
 			}
 			catch
@@ -215,7 +224,7 @@ namespace PCIWebFinAid
 			if ( load || debugMode < 0 )
 				try
 				{
-					string g  = ((System.Web.UI.WebControls.Literal)webPage.FindControl("DebugMode")).Text;
+					string g  = ((Literal)webPage.FindControl("DebugMode")).Text;
 					debugMode = System.Convert.ToInt16(g);
 					if ( debugMode < 0 )
 						debugMode = 0;
@@ -244,7 +253,7 @@ namespace PCIWebFinAid
 			return existingScript;
 		}
 
-		public static string ClientIPAddress(System.Web.HttpRequest req)
+		public static string ClientIPAddress(HttpRequest req)
 		{
 			string ipAddr = "";
 

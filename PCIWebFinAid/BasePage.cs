@@ -13,6 +13,14 @@ namespace PCIWebFinAid
 	{
 //		protected SessionGeneral sessionGeneral;
 
+//		private struct WebSetup
+//		{
+//			string productCode;
+//			string languageCode;
+//			string languageDialect;
+//		}
+//		private WebSetup webSetup;
+
 		override protected void OnInit(EventArgs e) // You must set AutoEventWireup="false" in the ASPX page
 		{
 			base.OnInit(e);
