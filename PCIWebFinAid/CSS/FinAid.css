@@ -82,9 +82,10 @@ table td
 	font-size: 12px;
 	color: black;
 	padding: 10px;
-	background-color: #898787;
-	position: relative;
+	background-color: lightblue; /* #898787; */
+	position: fixed;
 	bottom: 1px;
+	width: 97%;
 }
 
 .DataLabel
