@@ -8,18 +8,25 @@ namespace PCIWebFinAid
 {
 	public partial class Register : BasePage
 	{
+		byte logDebug = 240;
+
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
 			if ( ! Page.IsPostBack )
 			{
+				Tools.LogInfo("Register.PageLoad","Inital load",logDebug);
 				lblAppDetails.Text = AppDetails.Summary();
 				lblJS.Text         = WebTools.JavaScriptSource("NextPage(0)");
+				lblVersion.Text    = "Version " + SystemDetails.AppVersion;
 				LoadLabels();
 			}
 		}
 
 		private void LoadLabels()
 		{
+			byte logNo = 5;
+			Tools.LogInfo("Register.LoadLabels/5","",logDebug);
+
 			using (MiscList miscList = new MiscList())
 				try
 				{
@@ -35,10 +42,12 @@ namespace PCIWebFinAid
 					string      languageDialect = Tools.ConfigValue("LanguageDialectCode");
 
 //	Static labels, help text, etc
+					logNo = 10;
+					sql   = "exec sp_WP_GetFieldData @ProductCode="         + Tools.DBString(productCode)
+					                             + ",@LanguageCode="        + Tools.DBString(languageCode)
+					                             + ",@LanguageDialectCode=" + Tools.DBString(languageDialect);
 
-					sql = "exec sp_WP_GetFieldData @ProductCode="         + Tools.DBString(productCode)
-					                           + ",@LanguageCode="        + Tools.DBString(languageCode)
-					                           + ",@LanguageDialectCode=" + Tools.DBString(languageDialect);
+					Tools.LogInfo("Register.LoadLabels/10",sql,logDebug);
 
 					if ( miscList.ExecQuery(sql,0) == 0 )
 						while ( ! miscList.EOF )
@@ -46,6 +55,10 @@ namespace PCIWebFinAid
 							fieldCode  = miscList.GetColumn("WebsiteFieldCode");
 							fieldValue = miscList.GetColumn("FieldValue");
 							controlID  = "";
+
+							if ( logNo <= 10 )
+								Tools.LogInfo("Register.LoadLabels/15","Row 1, FieldCode="+fieldCode+", FieldValue="+fieldValue,logDebug);
+							logNo = 15;
 
 						//	Page 1
 							if      ( fieldCode == "100111" ) controlID = "Title";
@@ -95,6 +108,8 @@ namespace PCIWebFinAid
 							else if ( fieldCode == "100192" )
 								lblMandateDetail.Text = fieldValue;
 
+							logNo = 20;
+
 							if ( controlID.Length > 0 )
 							{
 								ctlLiteral = (Literal)FindControl("lbl"+controlID+"Label");
@@ -115,39 +130,54 @@ namespace PCIWebFinAid
 						lblJS.Text = WebTools.JavaScriptSource("TestSetup()",lblJS.Text,1);
 
 //	Title
-					sql = "exec sp_WP_Get_Title"
-					    + " @LanguageCode="        + Tools.DBString(languageCode)
-					    + ",@LanguageDialectCode=" + Tools.DBString(languageDialect);
+					logNo = 40;
+					sql   = "exec sp_WP_Get_Title"
+					      + " @LanguageCode="        + Tools.DBString(languageCode)
+					      + ",@LanguageDialectCode=" + Tools.DBString(languageDialect);
+					Tools.LogInfo("Register.LoadLabels/40",sql,logDebug);
 					WebTools.ListBind(lstTitle,sql,null,"TitleCode","TitleDescription","","");
 
 //	Employment Status
-					sql = "exec sp_WP_Get_EmploymentStatus"
-					    + " @LanguageCode="        + Tools.DBString(languageCode)
-					    + ",@LanguageDialectCode=" + Tools.DBString(languageDialect);
+					logNo = 50;
+					sql   = "exec sp_WP_Get_EmploymentStatus"
+					      + " @LanguageCode="        + Tools.DBString(languageCode)
+					      + ",@LanguageDialectCode=" + Tools.DBString(languageDialect);
+					Tools.LogInfo("Register.LoadLabels/50",sql,logDebug);
 					WebTools.ListBind(lstStatus,sql,null,"EmploymentStatusCode","EmploymentStatusDescription");
 
 //	Pay Date
-					sql = "exec sp_WP_Get_PayDate"
-					    + " @LanguageCode="        + Tools.DBString(languageCode)
-					    + ",@LanguageDialectCode=" + Tools.DBString(languageDialect);
+					logNo = 60;
+					sql   = "exec sp_WP_Get_PayDate"
+					      + " @LanguageCode="        + Tools.DBString(languageCode)
+					      + ",@LanguageDialectCode=" + Tools.DBString(languageDialect);
+					Tools.LogInfo("Register.LoadLabels/60",sql,logDebug);
 					WebTools.ListBind(lstPayDay,sql,null,"PayDateCode","PayDateDescription");
 
 //	Product Option
-					sql = "exec sp_WP_Get_ProductOption"
-					    + " @ProductCode="         + Tools.DBString(productCode);
+					logNo = 70;
+					sql   = "exec sp_WP_Get_ProductOption"
+					      + " @ProductCode="         + Tools.DBString(productCode);
+					Tools.LogInfo("Register.LoadLabels/70",sql,logDebug);
 					WebTools.ListBind(lstOptions,sql,null,"ProductOptionCode","ProductOptionDescription");
 
 //	Payment Method
-					sql = "exec sp_WP_Get_PaymentMethod"
-					    + " @ProductCode="         + Tools.DBString(productCode)
-					    + ",@LanguageCode="        + Tools.DBString(languageCode)
-					    + ",@LanguageDialectCode=" + Tools.DBString(languageDialect);
+					logNo = 80;
+					sql   = "exec sp_WP_Get_PaymentMethod"
+					      + " @ProductCode="         + Tools.DBString(productCode)
+					      + ",@LanguageCode="        + Tools.DBString(languageCode)
+					      + ",@LanguageDialectCode=" + Tools.DBString(languageDialect);
+					Tools.LogInfo("Register.LoadLabels/80",sql,logDebug);
 					WebTools.ListBind(lstPayment,sql,null,"PaymentMethodCode","PaymentMethodDescription");
 				}
 				catch (Exception ex)
 				{
-					Tools.LogException("Register.LoadLabels","",ex);
+					Tools.LogException("Register.LoadLabels","logNo=" + logNo.ToString(),ex);
 				}
+
+			lstCCYear.Items.Clear();
+			lstCCYear.Items.Add(new ListItem("(Select one)","0"));
+			for ( int y = System.DateTime.Now.Year ; y < System.DateTime.Now.Year+15 ; y++ )
+				lstCCYear.Items.Add(new ListItem(y.ToString(),y.ToString()));
 		}
 	}
 }
