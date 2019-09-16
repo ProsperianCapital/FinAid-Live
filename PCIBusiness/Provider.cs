@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 
 namespace PCIBusiness
 {
@@ -16,6 +15,8 @@ namespace PCIBusiness
 		private int     cardCount;
 		private int     paymentCount;
 
+		private Transaction transaction;
+
 		public  string  BureauCode
 		{
 			set { bureauCode = value.Trim(); }
@@ -31,17 +32,30 @@ namespace PCIBusiness
 		}
 		public  byte    BureauStatusCode
 		{
-			get { return bureauStatus; }
+			get
+			{
+				bureauStatus = 1; // Development
+				if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU)      ||
+				     bureauCode == Tools.BureauCode(Constants.PaymentProvider.T24)       ||
+				     bureauCode == Tools.BureauCode(Constants.PaymentProvider.MyGate)    ||
+				     bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGenius) ||
+				     bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate)   ||
+				     bureauCode == Tools.BureauCode(Constants.PaymentProvider.eNETS)     ||
+				     bureauCode == Tools.BureauCode(Constants.PaymentProvider.Ecentric) )
+					bureauStatus = 3; // Live
+//				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.eNETS) )
+//					bureauStatus = 2; // Disabled
+				return bureauStatus;
+			}
 		}
 		public  string  BureauStatusName
 		{
 			get 
 			{
-				if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU)   ||
-				     bureauCode == Tools.BureauCode(Constants.PaymentProvider.T24)    ||
-				     bureauCode == Tools.BureauCode(Constants.PaymentProvider.MyGate) ||
-				     bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate) )
+				if ( BureauStatusCode == 3 )
 					return "Live";
+				if ( BureauStatusCode == 2 )
+					return "Disabled";
 				return "In development";
 			}
 		}
@@ -58,6 +72,45 @@ namespace PCIBusiness
 			get { return Tools.NullToString(userID); }
 		}
 
+		public Transaction Transaction
+		{
+			get
+			{
+				if ( transaction == null )
+					if      ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU)      ) transaction = new TransactionPayU();
+				   else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.T24)       ) transaction = new TransactionT24();
+				   else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.MyGate)    ) transaction = new TransactionMyGate();
+				   else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGenius) ) transaction = new TransactionPayGenius();
+				   else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate)   ) transaction = new TransactionPayGate();
+				   else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.eNETS)     ) transaction = new TransactionENets();
+				   else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Ecentric)  ) transaction = new TransactionEcentric();
+				return transaction;
+			}
+		}
+
+		public bool ThreeDEnabled
+		{
+			get
+			{
+			//	Type classType  = (System.Reflection.Assembly.Load("PCIBusiness")).GetType("PCIBusiness.TransactionPayGate");
+			//	Transaction x = (Transaction)Activator.CreateInstance(classType);
+				if ( Transaction != null )
+					return Transaction.EnabledFor3d((byte)Constants.TransactionType.ManualPayment);
+				return false;
+			}
+		}
+
+		public byte PaymentType
+		{
+		//	Change as required for each payment provider
+			get
+			{
+				if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.eNETS) )
+					return (byte)Constants.TransactionType.CardPayment;
+				return (byte)Constants.TransactionType.TokenPayment;
+			}
+		}
+
 		public int CardsToBeTokenized
 		{
 			set { cardCount = value; }
@@ -70,45 +123,26 @@ namespace PCIBusiness
 			get { return paymentCount; }
 		}
 
-//		public string ConnectionDetails(byte mode,string separator="")
-//		{
-//			if ( mode == 1 ) // HTML
-//				return "<table>"
-//					  + "<tr><td>Payment Provider</td><td class='Red'> : " + BureauName + "</td></tr>"
-//					  + "<tr><td>Bureau Code</td><td class='Red'> : " + BureauCode + "</td></tr>"
-//					  + "<tr><td>Status</td><td class='Red'> : " + StatusName + "</td></tr>"
-//					  + "<tr><td colspan='2'><hr /></td></tr>"
-//					  + "<tr><td>Go To URL</td><td> : " + "" + "</td></tr>"
-//					  + "<tr><td>Return To URL</td><td> : " + "" + "</td></tr>"
-//					  + "<tr><td>User ID</td><td> : " + "" + "</td></tr>"
-//					  + "<tr><td>Password</td><td> : " + "" + "</td></tr>"
-//					  + "</table>";
-//
-//			if ( Tools.NullToString(separator).Length < 1 )
-//				separator = Environment.NewLine;
-//
-//			return "Payment Provider : " + BureauName + separator
-//			     + "Bureau Code : " + BureauCode + separator
-//			     + "URL : " + separator
-//			     + "User ID : " + separator
-//			     + "Password : ";
-//		}
-
 		public override void LoadData(DBConn dbConn)
 		{
 			dbConn.SourceInfo = "Provider.LoadData";
 			merchantKey       = dbConn.ColString("Safekey");
 			providerURL       = dbConn.ColString("url");
-			userID            = dbConn.ColString("MerchantUserId");
-			userPassword      = dbConn.ColString("MerchantUserPassword");
+			userID            = dbConn.ColString("MerchantUserId",0);
+			userPassword      = dbConn.ColString("MerchantUserPassword",0);
 			bureauName        = "";
 			bureauStatus      = 0;
+		}
+      public override void CleanUp()
+		{
+			transaction = null;
 		}
 
 		public Provider() : base()
 		{
 			cardCount    = 0;
 			paymentCount = 0;
+			transaction  = null;
 		}
 	}
 }

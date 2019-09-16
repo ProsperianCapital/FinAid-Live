@@ -150,6 +150,8 @@ namespace PCIBusiness
 		{
 			int ret = 0;
 
+//			Tools.LogInfo("BaseList.ExecuteSQL",sql,199);
+
 			if ( ! Tools.OpenDB(ref dbConn) )
 				ret = 1;
 			else if ( ! dbConn.Execute(sql,true,parms) )

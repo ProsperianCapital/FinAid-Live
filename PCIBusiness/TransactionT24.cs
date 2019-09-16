@@ -97,7 +97,7 @@ namespace PCIBusiness
 					}
 				}
 
-				Tools.LogInfo("TransactionT24.PostHTML/70","XML Received=" + xmlReceived.ToString(),10);
+				Tools.LogInfo("TransactionT24.PostHTML/70","XML Rec=" + xmlReceived.ToString(),10);
 				ret       = 80;
 				xmlResult = new XmlDocument();
 				xmlResult.LoadXml(xmlReceived.ToString());
@@ -110,7 +110,7 @@ namespace PCIBusiness
 				if ( Successful )
 					return 0;
 
-				Tools.LogInfo("TransactionT24.PostHTML/80","XML Sent=" + xmlSent+", XML Received=" + xmlReceived,220);
+				Tools.LogInfo("TransactionT24.PostHTML/80","XML Sent=" + xmlSent+", XML Rec=" + xmlReceived,220);
 			}
 			catch (Exception ex)
 			{
@@ -249,6 +249,9 @@ namespace PCIBusiness
 
 		public override int ProcessPayment(Payment payment)
 		{
+			if ( ! EnabledFor3d(payment.TransactionType) )
+				return 590;
+
 			int ret = 10;
 
 			try

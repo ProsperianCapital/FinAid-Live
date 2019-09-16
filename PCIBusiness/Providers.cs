@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-
-namespace PCIBusiness
+﻿namespace PCIBusiness
 {
 	public class Providers : BaseList
 	{
@@ -13,16 +10,20 @@ namespace PCIBusiness
 
 		public Provider LoadOne(string bureauCode)
 		{
-			sql = "exec Blah " + Tools.DBString(bureauCode);
-			if ( LoadDataFromSQL(1) > 0 )
-				return (Provider)Item(0);
+		//	sql = "exec Blah " + Tools.DBString(bureauCode);
+		//	if ( LoadDataFromSQL(1) > 0 )
+		//		return (Provider)Item(0);
+		//	return null;
+
 			return null;
 		}
 
 		public int LoadAll()
 		{
-			sql = "exec Blah";
-			return LoadDataFromSQL();
+		//	sql = "exec Blah";
+		//	return LoadDataFromSQL();
+
+			return 0;
 		}
 	}
 }

@@ -121,7 +121,7 @@ namespace PCIBusiness
 					}
 				}
 
-				Tools.LogInfo("TransactionPayU.SendXML/50","XML Received=" + xmlReceived,10);
+				Tools.LogInfo("TransactionPayU.SendXML/50","XML Rec=" + xmlReceived,255);
 
 			// Create an empty soap result object
 				ret       = 70;
@@ -139,7 +139,7 @@ namespace PCIBusiness
 				if ( Successful )
 					return 0;
 
-				Tools.LogInfo("TransactionPayU.SendXML/80","URL=" + url + ", XML Sent=" + xmlSent+", XML Received="+xmlReceived,220);
+				Tools.LogInfo("TransactionPayU.SendXML/80","URL=" + url + ", XML Sent=" + xmlSent+", XML Rec="+xmlReceived,220);
 			}
 			catch (Exception ex)
 			{
@@ -154,7 +154,7 @@ namespace PCIBusiness
 			int ret = 300;
 			xmlSent = "";
 
-			Tools.LogInfo("TransactionPayU.GetToken/10","RESERVE, Merchant Ref=" + payment.MerchantReference,10);
+			Tools.LogInfo("TransactionPayU.GetToken/10","RESERVE, Merchant Ref=" + payment.MerchantReference,199);
 
 			try
 			{
@@ -228,10 +228,13 @@ namespace PCIBusiness
 
 		public override int ProcessPayment(Payment payment)
 		{
+			if ( ! EnabledFor3d(payment.TransactionType) )
+				return 590;
+
 			int ret = 600;
 			xmlSent = "";
 
-			Tools.LogInfo("TransactionPayU.ProcessPayment/10","PAYMENT, Merchant Ref=" + payment.MerchantReference,10);
+			Tools.LogInfo("TransactionPayU.ProcessPayment/10","PAYMENT, Merchant Ref=" + payment.MerchantReference,199);
 
 //		   +   "<secure3d>false</secure3d>"
 //       +   "<storePaymentMethod>true</storePaymentMethod>"

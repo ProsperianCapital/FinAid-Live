@@ -27,6 +27,12 @@ namespace PCIBusiness
 //		11  HH:mm:ss                  Hard-code to 00:00:00
 //		12  HH:mm:ss                  Hard-code to 23:59:59
 
+		public static bool SystemIsLive()
+		{
+			string mode = ConfigValue("SystemMode").ToUpper();
+			return ( mode.Length >= 4 && ( mode.Contains("PRODUCTION") || mode.Contains("LIVE") ) );
+		}
+
 		public static string DecimalToString(decimal theValue,byte decimalPlaces=2)
 		{
 			return System.Math.Round(theValue,decimalPlaces).ToString();
@@ -196,6 +202,8 @@ namespace PCIBusiness
 				theTime = whatDate.ToString("HH:mm",CultureInfo.InvariantCulture);
 			else if ( timeFormat == 4 )  // at HH:MM
 				theTime = "at " + whatDate.ToString("HH:mm",CultureInfo.InvariantCulture);
+			else if ( timeFormat == 5 )  // HH:MM:SS.999
+				theTime = whatDate.ToString("HH:mm:ss.fff",CultureInfo.InvariantCulture);
 			else if ( timeFormat == 11 )  // 00:00:00
 				theTime = "00:00:00";
 			else if ( timeFormat == 12 )  // 23:59:59
@@ -373,7 +381,15 @@ namespace PCIBusiness
 			{
 				string ret = "";
 				if ( nsPrefix.Length == 0 || nsURL.Length == 0 )
-					ret = xmlDoc.SelectSingleNode("//"+xmlTag).InnerText;
+				{
+					try
+					{	
+						ret = xmlDoc.SelectSingleNode("//"+xmlTag).InnerText.Trim();
+					}
+					catch { }
+					if ( ret == null || ret.Length == 0 )
+						ret = xmlDoc.GetElementsByTagName(xmlTag).Item(0).InnerText.Trim();
+				}
 				else
 				{
 					XmlNamespaceManager nsMgr = new XmlNamespaceManager(xmlDoc.NameTable);
@@ -629,10 +645,13 @@ namespace PCIBusiness
 		public static void LogException(string component, string msg, Exception ex=null)
 		{
 		// Use this routine to log error messages
+			msg = ( msg.Length == 0 ? "" : " (" + msg + ")" );
 			if ( ex == null )
-				msg = "Non-exception error" + ( msg.Length == 0 ? "" : " ("+msg+")" );
+				msg = "Non-exception error" + msg;
+			else if ( ex.GetType() == typeof(System.IndexOutOfRangeException) )
+				msg = "SQL column not found" + msg;
 			else
-				msg = ex.Message + ( msg.Length == 0 ? "" : " ("+msg+")" ) + " : [" + ex.ToString() + "]";
+				msg = ex.Message + msg + " : [" + ex.ToString() + "]";
 			LogWrite("LogFileErrors",component,msg);
 		}
 
@@ -641,6 +660,11 @@ namespace PCIBusiness
 		// Use this routine to log debugging/info messages
 		//	To decide which messages to write, adjust the severity below
 		//	Calling routines must supply a severity between 0-255 (default 10)
+		//	If severity == 255 then do NOT log for LIVE
+
+			if ( severity == 255 )
+				if ( LiveTestOrDev() == Constants.SystemMode.Live )
+					return;
 			if ( severity > 100 )
 				LogWrite("LogFileInfo",component,msg);
 		}
@@ -772,79 +796,79 @@ namespace PCIBusiness
 			return "";
 		}
 
-		public static int DeleteFiles(string fileSpec,short ageDays=0,short beforeHour=0,short afterHour=0)
-		{
-			int deleted = 0;
+//		public static int DeleteFiles(string fileSpec,short ageDays=0,short beforeHour=0,short afterHour=0)
+//		{
+//			int deleted = 0;
+//
+//			try
+//			{
+//				if ( beforeHour > 0 && beforeHour < 24 && System.DateTime.Now.Hour >= beforeHour )
+//					return -5;
+//				if ( afterHour  > 0 && afterHour  < 24 && System.DateTime.Now.Hour <  afterHour )
+//					return -10;
+//
+//				string folder = Tools.ConfigValue("ReportFolder");
+//
+//				if ( ! Directory.Exists(folder) )
+//					return -15;
+//				string[] files = Directory.GetFiles(folder,fileSpec);
+//				if ( files.Length < 1 )
+//					return -20;
+//
+//				if ( ageDays < 1 )
+//					ageDays = 7;
+//
+//				foreach ( string fileName in files )
+//					if ( File.GetLastWriteTime(fileName).AddDays(ageDays) < DateTime.Now ) // More "x" days old
+//					{
+//						try
+//						{
+//							File.Delete(fileName);
+//							deleted++;
+//						}
+//						catch { }
+//					}
+//			}
+//			catch (Exception ex)
+//			{
+//				Tools.LogException("Tools.DeleteFiles","",ex);
+//			}
+//			return deleted;
+//		}
 
-			try
-			{
-				if ( beforeHour > 0 && beforeHour < 24 && System.DateTime.Now.Hour >= beforeHour )
-					return -5;
-				if ( afterHour  > 0 && afterHour  < 24 && System.DateTime.Now.Hour <  afterHour )
-					return -10;
-
-				string folder = Tools.ConfigValue("ReportFolder");
-
-				if ( ! Directory.Exists(folder) )
-					return -15;
-				string[] files = Directory.GetFiles(folder,fileSpec);
-				if ( files.Length < 1 )
-					return -20;
-
-				if ( ageDays < 1 )
-					ageDays = 7;
-
-				foreach ( string fileName in files )
-					if ( File.GetLastWriteTime(fileName).AddDays(ageDays) < DateTime.Now ) // More "x" days old
-					{
-						try
-						{
-							File.Delete(fileName);
-							deleted++;
-						}
-						catch { }
-					}
-			}
-			catch (Exception ex)
-			{
-				Tools.LogException("Tools.DeleteFiles","",ex);
-			}
-			return deleted;
-		}
-
-		public static string CreateFile(int userCode,ref StreamWriter fileStream,string fileExtension="csv")
-		{
-			FileStream fileHandle;
-			string     fileName      = "";
-			string     fileNameFixed = "";
-
-			if ( NullToString(fileExtension).Length < 1 )
-				fileExtension = ".csv";
-			else if ( ! fileExtension.StartsWith(".") )
-				fileExtension = "." + fileExtension;
-
-			try
-			{
-				fileStream    = null;
-				fileNameFixed = Tools.FixFolderName(ConfigValue("ReportFolder"));
-				fileNameFixed = fileNameFixed + userCode.ToString() + "-" + DateToString(DateTime.Now,5) + "-";
-
-				for ( int k = 1 ; k < 999999 ; k++ )
-				{
-					fileName = fileNameFixed + k.ToString().PadLeft(6,'0') + fileExtension;
-					if ( ! File.Exists(fileName) )
-						break;
-				}
-				fileHandle = File.Open(fileName, FileMode.Create);
-				fileStream = new StreamWriter(fileHandle,System.Text.Encoding.Default);
-				return fileName;
-			}
-			catch (Exception ex)
-			{
-				LogException("Tools.CreateFile","UserCode=" + userCode.ToString(),ex);
-			}
-			return "";
-		}
+//		public static string CreateFile(int userCode,ref StreamWriter fileStream,string fileExtension="csv")
+//		{
+//			FileStream fileHandle;
+//			string     fileName      = "";
+//			string     fileNameFixed = "";
+//
+//			if ( NullToString(fileExtension).Length < 1 )
+//				fileExtension = ".csv";
+//			else if ( ! fileExtension.StartsWith(".") )
+//				fileExtension = "." + fileExtension;
+//
+//			try
+//			{
+//				fileStream    = null;
+//				fileNameFixed = Tools.FixFolderName(ConfigValue("ReportFolder"));
+//				fileNameFixed = fileNameFixed + userCode.ToString() + "-" + DateToString(DateTime.Now,5) + "-";
+//
+//				for ( int k = 1 ; k < 999999 ; k++ )
+//				{
+//					fileName = fileNameFixed + k.ToString().PadLeft(6,'0') + fileExtension;
+//					if ( ! File.Exists(fileName) )
+//						break;
+//				}
+//				fileHandle = File.Open(fileName, FileMode.Create);
+//				fileStream = new StreamWriter(fileHandle,System.Text.Encoding.Default);
+//				return fileName;
+//			}
+//			catch (Exception ex)
+//			{
+//				LogException("Tools.CreateFile","UserCode=" + userCode.ToString(),ex);
+//			}
+//			return "";
+//		}
 
 		public static string FixFolderName(string folder)
 		{
@@ -854,6 +878,19 @@ namespace PCIBusiness
 			if ( folder.Length < 1 )
 				return "";
 			return ( folder.EndsWith("\\") ? folder : folder + "\\" );
+		}
+
+		public static string SystemFolder(string subFolder)
+		{
+			string folder = ConfigValue("SystemPath");
+			subFolder     = NullToString(subFolder);
+			if ( folder.Length > 0 && subFolder.Length > 0 )
+				return folder + ( folder.EndsWith("\\") ? "" : "\\" ) + subFolder + ( subFolder.EndsWith("\\") ? "" : "\\" );
+			if ( folder.Length > 0 )
+				return folder + ( folder.EndsWith("\\") ? "" : "\\" );
+			if ( subFolder.Length > 0 )
+				return folder + ( subFolder.EndsWith("\\") ? "" : "\\" );
+			return "";
 		}
 
 		public static string ConciseName(string theName)

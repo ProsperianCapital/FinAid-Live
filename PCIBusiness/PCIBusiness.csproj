@@ -82,6 +82,8 @@
     <Compile Include="DBConn.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transaction.cs" />
+    <Compile Include="TransactionEcentric.cs" />
+    <Compile Include="TransactionENets.cs" />
     <Compile Include="TransactionIkajo.cs" />
     <Compile Include="TransactionMyGate.cs" />
     <Compile Include="TransactionPayGate.cs" />
