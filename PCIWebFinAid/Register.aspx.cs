@@ -122,7 +122,11 @@ namespace PCIWebFinAid
 
 								ctlLabel   = (Label)FindControl("lbl"+controlID+"Error");
 								if ( ctlLabel != null )
+								{
 									ctlLabel.ToolTip = miscList.GetColumn("FieldMessage");
+									if ( ctlLabel.ToolTip.Length == 0 )
+										ctlLabel.ToolTip = miscList.GetColumn("FieldScreenGuide");
+								}
 							}
 							miscList.NextRow();
 						}
