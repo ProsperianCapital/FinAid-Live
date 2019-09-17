@@ -542,6 +542,9 @@ function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 					err = eltDesc;
 				else if ( eltMode == 74 && ( numLen < 14 || numLen > 16 ) ) // Diners
 					err = eltDesc;
+
+				alert(err);
+
 			}
 			else if ( eltMode == 66 ) // SA Id
 			{
