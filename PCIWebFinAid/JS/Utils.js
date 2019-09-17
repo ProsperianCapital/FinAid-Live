@@ -554,8 +554,6 @@ function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 			}
 			else if ( eltMode > 99 && ( numVal < eltMode || numVal > eltParm ) ) // So a number between (eg) 1900 and 2017
 				err = eltDesc;
-
-			alert(err);
 		}
 
 		else if ( eltType == 81 ) // Show error
