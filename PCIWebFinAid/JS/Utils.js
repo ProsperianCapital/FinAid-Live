@@ -384,6 +384,8 @@ function CheckRadio(groupName,eltName)
 
 function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 {
+	alert('V1');
+
 	var err = "";
 	var elt;
 	var eltValue;
@@ -405,6 +407,8 @@ function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 	{
 		eltValue = "";
 	}
+
+	alert('V2');
 
 	try
 	{
