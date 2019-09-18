@@ -66,6 +66,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\LogoProsperian.png" />
     <Content Include="IncludeMain.htm" />
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">

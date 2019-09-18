@@ -227,6 +227,8 @@ function TestSetup()
 
 <input type="hidden" id="hdnPageNo" value="1" />
 
+<a href="http://prosperian.mu" target="P"><img src="Images/LogoProsperian.png" title="Prosperian Capital" style="float:right" /></a>
+	
 <div id="divP01">
 <p class="Header4">
 (1) <asp:Literal runat="server" ID="lblSubHead1Label">Welcome</asp:Literal>
