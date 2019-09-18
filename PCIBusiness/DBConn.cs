@@ -269,7 +269,7 @@ namespace PCIBusiness
       }
       catch (Exception ex)
       {
-         Tools.LogException ( ModuleName("DBConn.ColDataType"), colName, ex );
+         Tools.LogException ( ModuleName("DBConn.ColDataType"), "ColName=" + colName + ", ColNo=" + colNumber.ToString(), ex );
       }
       return "";
    }
@@ -285,7 +285,7 @@ namespace PCIBusiness
       catch (Exception ex)
       {
 			if ( errorMode == 1 )
-				Tools.LogException ( ModuleName("DBConn.ColByte"), colName, ex );
+				Tools.LogException ( ModuleName("DBConn.ColByte"), "ColName=" + colName, ex );
       }
       return 0;
    }
@@ -301,7 +301,7 @@ namespace PCIBusiness
       catch (Exception ex)
       {
 			if ( errorMode == 1 )
-				Tools.LogException ( ModuleName("DBConn.ColShort/1"), colName, ex );
+				Tools.LogException ( ModuleName("DBConn.ColShort/1"), "ColName=" + colName, ex );
       }
       return 0;
    }
@@ -331,7 +331,7 @@ namespace PCIBusiness
       catch (Exception ex)
       {
 			if ( errorMode == 1 )
-				Tools.LogException ( ModuleName("DBConn.ColLong/1"), colName, ex );
+				Tools.LogException ( ModuleName("DBConn.ColLong/1"), "ColName=" + colName, ex );
       }
       return 0;
    }
@@ -361,7 +361,7 @@ namespace PCIBusiness
       catch (Exception ex)
       {
 			if ( errorMode == 1 )
-				Tools.LogException ( ModuleName("DBConn.ColBig"), colName, ex );
+				Tools.LogException ( ModuleName("DBConn.ColBig"), "ColName=" + colName, ex );
       }
       return 0;
    }
@@ -377,7 +377,7 @@ namespace PCIBusiness
       catch (Exception ex)
       {
 			if ( errorMode == 1 )
-				Tools.LogException ( ModuleName("DBConn.ColDecimal"), colName, ex );
+				Tools.LogException ( ModuleName("DBConn.ColDecimal"), "ColName=" + colName, ex );
       }
       return 0;
    }
@@ -406,8 +406,8 @@ namespace PCIBusiness
      }
       catch (Exception ex)
       {
-			if ( errorMode > 0 )
-				Tools.LogException ( ModuleName("DBConn.ColString"), colName, ex );
+			if ( errorMode == 1 )
+				Tools.LogException ( ModuleName("DBConn.ColString"), "ColName=" + colName, ex );
       }
       return "";
    }
@@ -486,8 +486,8 @@ namespace PCIBusiness
       }
       catch (Exception ex)
       {
-			if ( errorMode > 0 )
-				Tools.LogException ( ModuleName("DBConn.ColUniCode"), colName, ex );
+			if ( errorMode == 1 )
+				Tools.LogException ( ModuleName("DBConn.ColUniCode"), "ColName=" + colName, ex );
       }
       return "";
    }
@@ -503,7 +503,7 @@ namespace PCIBusiness
       catch (Exception ex)
       {
 			if ( errorMode == 1 )
-				Tools.LogException ( ModuleName("DBConn.ColDate"), colName, ex );
+				Tools.LogException ( ModuleName("DBConn.ColDate"), "ColName=" + colName, ex );
       }
       return Constants.C_NULLDATE();
    } 
@@ -535,7 +535,7 @@ namespace PCIBusiness
 			return "";
 		}
 
-		public int ColNumber(string colName)
+		public int ColNumber(string colName,byte errorMode=1)
 		{
 			try
 			{
@@ -543,7 +543,8 @@ namespace PCIBusiness
 			}
 			catch (Exception ex)
 			{
-				Tools.LogException ( ModuleName("DBConn.ColNumber"), "ColName=" + colName, ex );
+				if ( errorMode == 1 )
+					Tools.LogException ( ModuleName("DBConn.ColNumber"), "ColName=" + colName, ex );
 			}
 			return -8;
 		}

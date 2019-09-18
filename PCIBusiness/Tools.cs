@@ -72,7 +72,7 @@ namespace PCIBusiness
 		public static string CompressedString(string theValue)
 		{
 			if ( string.IsNullOrWhiteSpace(theValue) ) return "";
-				theValue = theValue.Trim();
+			theValue = theValue.Trim();
 			while ( theValue.Contains("  ") )
 				theValue = theValue.Replace("  "," ");
 			return theValue;

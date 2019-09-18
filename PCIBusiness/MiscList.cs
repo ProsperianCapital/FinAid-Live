@@ -59,13 +59,13 @@ namespace PCIBusiness
 			{ }
 			return "";
 		}
-		public string GetColumn(string colName)
+		public string GetColumn(string colName,byte errorMode=1)
 		{
 			try
 			{
 				if ( dbConn != null )
 				{
-					int x = dbConn.ColNumber(colName);
+					int x = dbConn.ColNumber(colName,errorMode);
 					if ( x >= 0 )
 						return GetColumn(x);	
 				}
