@@ -562,7 +562,8 @@ function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 		else if ( eltType == 91 ) // Hide error
 			err = "";
 
-		SetErrorLabel(lblID,err.length,err);
+//		SetErrorLabel(lblID,err.length,err);
+		SetErrorLabel(lblID,37,err);
 
 		try
 		{
