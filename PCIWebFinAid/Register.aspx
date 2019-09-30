@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="false" CodeBehind="Register.aspx.cs" Inherits="PCIWebFinAid.Register" %>
+﻿<%@ Page Language="C#" AutoEventWireup="false" CodeBehind="Register.aspx.cs" Inherits="PCIWebFinAid.Register" ValidateRequest="false" %>
 
 <!DOCTYPE html>
 
@@ -11,27 +11,52 @@
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
 </head>
 <body>
-<asp:Literal runat="server" ID="lblAppDetails"></asp:Literal>
 <form id="frmRegister" runat="server">
 
 <script type="text/javascript">
 var firstPage = 1;
 var lastPage  = 5;
-var pageNo    = firstPage;
+var pageNo;
+
+function OptSelect()
+{
+	try
+	{
+		var p = GetListValue('lstOptions');
+		var h = '';
+		if ( p == 1 ) // Bronze
+			h = 'PRODUCT NAME: BRONZE<br /><br />Up To $150 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $14.95';
+		else if ( p == 2 ) // Silver
+			h = 'PRODUCT NAME: SILVER<br /><br />Up To $200 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $19.95';
+		else if ( p == 3 ) // Gold
+			h = 'PRODUCT NAME: GOLD<br /><br />Up To $300 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $29.95';
+		SetEltValue('lblInfo4',h);
+	}
+	catch (x)
+	{ }
+}
 
 function NextPage(inc)
 {
 	try
 	{
-		if ( inc > 0 && ! ValidatePage(0) )
-			return;
+//		alert("pageNo="+pageNo.toString()+", inc="+inc.toString());
 
-		if ( inc > 0 && pageNo < lastPage )
-			pageNo++;
+		if ( inc > 0 )
+			return ValidatePage(0,2);
 		else if ( inc < 0 && pageNo > firstPage )
 			pageNo--;
 		else if ( inc != 0 )
-			return;
+			return false;
+
+//		if ( inc > 0 && pageNo < lastPage )
+//			pageNo++;
+//		else if ( inc < 0 && pageNo > firstPage )
+//			pageNo--;
+//		else if ( inc != 0 )
+//			return false;
+
+		SetEltValue('hdnPageNo',pageNo.toString());
 
 		ShowElt('divP01'  ,pageNo==1);
 		ShowElt('divP02'  ,pageNo==2);
@@ -42,7 +67,10 @@ function NextPage(inc)
 		ShowElt('btnNext' ,pageNo< lastPage);
 		ShowElt('btnAgree',pageNo==lastPage);
 
-		if ( pageNo == lastPage )
+		if ( pageNo == firstPage )
+			ShowElt('btnNext',GetElt('chkAgree').checked);
+
+		else if ( pageNo == lastPage )
 		{
 			var dt = new Date();
 			var dd = dt.getDate();
@@ -63,12 +91,22 @@ function NextPage(inc)
 	catch (x)
 	{
 		alert(x.message);
+		return false;
 	}
+	return true;
 }
 function ShowTick(err,ctl,seq)
 {
-	if ( seq == 2 )
+	var h = '';
+	if ( seq == 1 )
+		h = GetEltValue('hdn'+ctl+'Guide');
+	else if ( seq == 2 )
+	{
 		GetElt('img'+ctl).src = 'Images/' + ( err.length > 0 ? 'Cross' : 'Tick' ) + '.png';
+		if ( err.length > 0 )
+			h = GetEltValue('hdn'+ctl+'Error');
+	}
+	SetEltValue('lblInfo'+pageNo.toString(),h);
 }
 function ValidatePage(ctl,seq)
 {
@@ -77,98 +115,103 @@ function ValidatePage(ctl,seq)
 
 	try
 	{
+	//	Page 1
 		if ( ( pageNo == 1 && ctl == 0 ) || ctl == 100111 )
 		{
-			p   = Validate('lstTitle','lblTitleError',3,lblTitleError.title,73,0);
+			p   = Validate('lstTitle','lblInfo1',3,hdnTitleError.value,73,0);
 			err = err + p;
 			ShowTick(p,'Title',seq);
 		}
 		if ( ( pageNo == 1 && ctl == 0 ) || ctl == 100114 )
 		{
-			p   = Validate('txtSurname','lblSurnameError',1,lblSurnameError.title,2,2);
+			p   = Validate('txtSurname','lblInfo1',1,hdnSurnameError.value,2,2);
 			err = err + p;
 			ShowTick(p,'Surname',seq);
 		}
 		if ( ( pageNo == 1 && ctl == 0 ) || ctl == 100117 )
 		{
-			p   = Validate('txtCellNo','lblCellNoError',7,lblCellNoError.title);
+			p   = Validate('txtCellNo','lblInfo1',7,hdnCellNoError.value,0,0);
 			err = err + p;
 			ShowTick(p,'CellNo',seq);
 		}
 
+	//	Page 2
 		if ( ( pageNo == 2 && ctl == 0 ) || ctl == 100112 )
 		{
-			p   = Validate('txtFirstName','lblFirstNameError',1,lblFirstNameError.title,2,1);
+			p   = Validate('txtFirstName','lblInfo2',1,hdnFirstNameError.value,2,1);
 			err = err + p;
 			ShowTick(p,'FirstName',seq);
 		}
 		if ( ( pageNo == 2 && ctl == 0 ) || ctl == 100116 )
 		{
-			p   = Validate('txtEMail','lblEMailError',5,lblEMailError.title);
+			p   = Validate('txtEMail','lblInfo2',5,hdnEMailError.value);
 			err = err + p;
 			ShowTick(p,'EMail',seq);
 		}
 		if ( ( pageNo == 2 && ctl == 0 ) || ctl == 100118 )
 		{
-			p   = Validate('txtID','lblIDError',6,lblIDError.title,7,20);
+			p   = Validate('txtID','lblInfo2',6,hdnIDError.value,7,20);
 			err = err + p;
 			ShowTick(p,'ID',seq);
 		}
 
+	//	Page 3
 		if ( ( pageNo == 3 && ctl == 0 ) || ctl == 100123 )
 		{
-			p   = Validate('txtIncome','lblIncomeError',6,lblIncomeError.title,3,1000);
+			p   = Validate('txtIncome','lblInfo3',6,hdnIncomeError.value,3,1000);
 			err = err + p;
 			ShowTick(p,'Income',seq);
 		}
 		if ( ( pageNo == 3 && ctl == 0 ) || ctl == 100131 )
 		{
-			p   = Validate('lstStatus','lblStatusError',3,lblStatusError.title,73,0);
+			p   = Validate('lstStatus','lblInfo3',3,hdnStatusError.value,73,0);
 			err = err + p;
 			ShowTick(p,'Status',seq);
 		}
 		if ( ( pageNo == 3 && ctl == 0 ) || ctl == 100132 )
 		{
-			p   = Validate('lstPayDay','lblPayDayError',3,lblPayDayError.title,73,0);
+			p   = Validate('lstPayDay','lblInfo3',3,hdnPayDayError.value,73,0);
 			err = err + p;
 			ShowTick(p,'PayDay',seq);
 		}
 
+	//	Page 4
 		if ( ( pageNo == 4 && ctl == 0 ) || ctl == 100138 )
 		{
-			p   = Validate('lstOptions','lblOptionsError',3,lblOptionsError.title,73,0);
+			p   = Validate('lstOptions','lblInfo4',3,hdnOptionsError.value,73,0);
 			err = err + p;
 			ShowTick(p,'Options',seq);
 		}
 		if ( ( pageNo == 4 && ctl == 0 ) || ctl == 100144 )
 		{
-			p   = Validate('chkTerms','lblTermsError',8,lblTermsError.title,2);
+			p   = Validate('chkTerms','lblInfo4',8,hdnTermsError.value,2);
 			err = err + p;
 			ShowTick(p,'Terms',seq);
 		}
 		if ( ( pageNo == 4 && ctl == 0 ) || ctl == 100147 )
 		{
-			p   = Validate('lstPayment','lblPaymentError',3,lblPaymentError.title,73,0);
+			p   = Validate('lstPayment','lblInfo4',3,hdnPaymentError.value,73,0);
 			err = err + p;
 			ShowTick(p,'Payment',seq);
 		}
 
+	//	Page 5
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100187 )
 		{
-			p   = Validate('txtCCNumber','lblCCNumberError',6,lblCCNumberError.title,8,14);
+			p   = Validate('txtCCNumber','lblInfo5',6,hdnCCNumberError.value,8,14);
 			err = err + p;
 			ShowTick(p,'CCNumber',seq);
 		}
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100186 )
 		{
-			p   = Validate('txtCCName','lblCCNameError',1,lblCCNameError.title,2,2);
+			p   = Validate('txtCCName','lblInfo5',1,hdnCCNameError.value,2,2);
 			err = err + p;
 			ShowTick(p,'CCName',seq);
 		}
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100188 )
 		{
-			p    = Validate('lstCCMonth','lblCCExpiryError',3,lblCCExpiryError.title,73,0)
-			     + Validate('lstCCYear' ,'lblCCExpiryError',3,lblCCExpiryError.title,73,0);
+			p    = Validate('lstCCMonth','lblInfo5',3,hdnCCExpiryError.value,73,0)
+			     + Validate('lstCCYear' ,'lblInfo5',3,hdnCCExpiryError.value,73,0);
 			err  = err + p;
 			if ( p.length == 0 )
 			{
@@ -180,13 +223,13 @@ function ValidatePage(ctl,seq)
 				else
 					p = '';
 				err  = err + p;
-				SetErrorLabel('lblCCExpiryError',p.length,p);
+				SetErrorLabel('lblInfo5',p.length,p);
 			}
 			ShowTick(p,'CCExpiry',seq);
 		}
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100189 )
 		{
-			p   = Validate('txtCCCVV','lblCCCVVError',6,lblCCCVVError.title,7,4);
+			p   = Validate('txtCCCVV','lblInfo5',6,hdnCCCVVError.value,7,4);
 			err = err + p;
 			ShowTick(p,'CCCVV',seq);
 		}
@@ -212,26 +255,20 @@ function Help(onOrOff,ctl,item)
 	catch (x)
 	{ }
 }
-
-function TestSetup()
-{
-	SetEltValue("hdnTitleHelp"  ,"Please choose a title");
-	SetEltValue("hdnSurnameHelp","Please enter your surname");
-	SetEltValue("hdnCellNoHelp" ,"Please enter your mobile phone number");
-
-	GetElt("lblTitleError").title   = "Choose a title from the list";
-	GetElt("lblSurnameError").title = "Please enter a valid surname";
-	GetElt("lblCellNoError").title  = "Please enter a valid mobile phone number";
-}
 </script>
 
-<input type="hidden" id="hdnPageNo" value="1" />
+<asp:HiddenField runat="server" id="hdnPageNo" value="1" />
 
-<a href="http://prosperian.mu" target="P"><img src="Images/LogoProsperian.png" title="Prosperian Capital" style="float:right" /></a>
-	
+<div class="Header3">Registration</div>
+
 <div id="divP01">
 <p class="Header4">
-(1) <asp:Literal runat="server" ID="lblSubHead1Label">Welcome</asp:Literal>
+<asp:Literal runat="server" ID="lblSubHead1Label">Welcome</asp:Literal>
+</p><p>
+<asp:Literal runat="server" ID="lbl104397"></asp:Literal>
+</p><p>
+<asp:CheckBox runat="server" ID="chkAgree" onclick="JavaScript:ShowElt('btnNext',this.checked)" />
+<asp:Literal runat="server" ID="lbl104398"></asp:Literal>
 </p>
 <table>
 	<tr>
@@ -243,9 +280,10 @@ function TestSetup()
 			<a href="#" onmouseover="JavaScript:Help(1,this,'Title')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgTitle" />
-			<asp:HiddenField runat="server" ID="hdnTitleHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblTitleError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnTitleHelp" />
+			<asp:HiddenField runat="server" ID="hdnTitleError" />
+			<asp:HiddenField runat="server" ID="hdnTitleGuide" /></td>
+		<td class="Error" rowspan="3" id="lblInfo1" style="text-align:center"></td></tr>
 	<tr>
 		<td class="DataLabel">
 			<asp:Literal runat="server" ID="lblSurnameLabel"></asp:Literal></td>
@@ -254,9 +292,9 @@ function TestSetup()
 			<a href="#" onmouseover="JavaScript:Help(1,this,'Surname')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgSurname" />
-			<asp:HiddenField runat="server" ID="hdnSurnameHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblSurnameError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnSurnameHelp" />
+			<asp:HiddenField runat="server" ID="hdnSurnameError" />
+			<asp:HiddenField runat="server" ID="hdnSurnameGuide" /></td></tr>
 	<tr>
 		<td class="DataLabel">
 			<asp:Literal runat="server" ID="lblCellNoLabel"></asp:Literal></td>
@@ -265,9 +303,9 @@ function TestSetup()
 			<a href="#" onmouseover="JavaScript:Help(1,this,'CellNo')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgCellNo" />
-			<asp:HiddenField runat="server" ID="hdnCellNoHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblCellNoError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnCellNoHelp" />
+			<asp:HiddenField runat="server" ID="hdnCellNoError" />
+			<asp:HiddenField runat="server" ID="hdnCellNoGuide" /></td></tr>
 </table>
 </div>
 
@@ -275,7 +313,7 @@ function TestSetup()
 
 <div id="divP02">
 <p class="Header4">
-(2) <asp:Literal runat="server" ID="lblSubHead2Label"></asp:Literal>
+<asp:Literal runat="server" ID="lblSubHead2Label"></asp:Literal>
 </p>
 <table>
 	<tr>
@@ -286,9 +324,10 @@ function TestSetup()
 			<a href="#" onmouseover="JavaScript:Help(1,this,'FirstName')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgFirstName" />
-			<asp:HiddenField runat="server" ID="hdnFirstNameHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblFirstNameError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnFirstNameHelp" />
+			<asp:HiddenField runat="server" ID="hdnFirstNameError" />
+			<asp:HiddenField runat="server" ID="hdnFirstNameGuide" /></td>
+		<td class="Error" rowspan="3" id="lblInfo2" style="text-align:center"></td></tr>
 	<tr>
 		<td class="DataLabel">
 			<asp:Literal runat="server" ID="lblEMailLabel"></asp:Literal></td>
@@ -297,9 +336,9 @@ function TestSetup()
 			<a href="#" onmouseover="JavaScript:Help(1,this,'EMail')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgEMail" />
-			<asp:HiddenField runat="server" ID="hdnEMailHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblEMailError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnEMailHelp" />
+			<asp:HiddenField runat="server" ID="hdnEMailError" />
+			<asp:HiddenField runat="server" ID="hdnEMailGuide" /></td></tr>
 	<tr>
 		<td class="DataLabel">
 			<asp:Literal runat="server" ID="lblIDLabel"></asp:Literal></td>
@@ -308,15 +347,15 @@ function TestSetup()
 			<a href="#" onmouseover="JavaScript:Help(1,this,'ID')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgID" />
-			<asp:HiddenField runat="server" ID="hdnIDHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblIDError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnIDHelp" />
+			<asp:HiddenField runat="server" ID="hdnIDError" />
+			<asp:HiddenField runat="server" ID="hdnIDGuide" /></td></tr>
 </table>
 </div>
 
 <div id="divP03">
 <p class="Header4">
-(3) <asp:Literal runat="server" ID="lblSubHead3Label"></asp:Literal>
+<asp:Literal runat="server" ID="lblSubHead3Label"></asp:Literal>
 </p>
 <table>
 	<tr>
@@ -327,9 +366,10 @@ function TestSetup()
 			<a href="#" onmouseover="JavaScript:Help(1,this,'Income')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgIncome" />
-			<asp:HiddenField runat="server" ID="hdnIncomeHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblIncomeError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnIncomeHelp" />
+			<asp:HiddenField runat="server" ID="hdnIncomeError" />
+			<asp:HiddenField runat="server" ID="hdnIncomeGuide" /></td>
+		<td class="Error" rowspan="3" id="lblInfo3" style="text-align:center"></td></tr>
 	<tr>
 		<td class="DataLabel">
 			<asp:Literal runat="server" ID="lblStatusLabel"></asp:Literal></td>
@@ -339,9 +379,9 @@ function TestSetup()
 			<a href="#" onmouseover="JavaScript:Help(1,this,'Status')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgStatus" />
-			<asp:HiddenField runat="server" ID="hdnStatusHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblStatusError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnStatusHelp" />
+			<asp:HiddenField runat="server" ID="hdnStatusError" />
+			<asp:HiddenField runat="server" ID="hdnStatusGuide" /></td></tr>
 	<tr>
 		<td class="DataLabel">
 			<asp:Literal runat="server" ID="lblPayDayLabel"></asp:Literal></td>
@@ -351,15 +391,15 @@ function TestSetup()
 			<a href="#" onmouseover="JavaScript:Help(1,this,'PayDay')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgPayDay" />
-			<asp:HiddenField runat="server" ID="hdnPayDayHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblPayDayError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnPayDayHelp" />
+			<asp:HiddenField runat="server" ID="hdnPayDayError" />
+			<asp:HiddenField runat="server" ID="hdnPayDayGuide" /></td></tr>
 </table>
 </div>
 
 <div id="divP04">
 <p class="Header4">
-(4) <asp:Literal runat="server" ID="lblSubHead4aLabel"></asp:Literal> <!-- Congratulations! Your product options are: -->
+<asp:Literal runat="server" ID="lblSubHead4aLabel"></asp:Literal> <!-- Congratulations! Your product options are: -->
 </p><p class="Header5">
 <asp:Literal runat="server" ID="lblSubHead4bLabel"></asp:Literal>
 </p>
@@ -368,39 +408,40 @@ function TestSetup()
 		<td class="DataLabel">
 			<asp:Literal runat="server" ID="lblOptionsLabel"></asp:Literal></td>
 		<td style="white-space:nowrap">
-			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstOptions" onfocus="JavaScript:ValidatePage(100138,1)" onblur="JavaScript:ValidatePage(100138,2)">
+			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstOptions" onfocus="JavaScript:ValidatePage(100138,1)" onblur="JavaScript:ValidatePage(100138,2)" onchange="JavaScript:OptSelect()">
 			</asp:DropDownList>
 			<a href="#" onmouseover="JavaScript:Help(1,this,'Options')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgOptions" />
-			<asp:HiddenField runat="server" ID="hdnOptionsHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblOptionsError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnOptionsHelp" />
+			<asp:HiddenField runat="server" ID="hdnOptionsError" />
+			<asp:HiddenField runat="server" ID="hdnOptionsGuide" /></td>
+		<td class="Error" rowspan="3" id="lblInfo4" style="text-align:center"></td></tr>
 	<tr>
 		<td colspan="4" class="Header4">
 			<br /><asp:Literal runat="server" ID="lblSubHead4cLabel"></asp:Literal><br />&nbsp;</td></tr>
 	<tr>
 		<td style="white-space:nowrap" colspan="2">
-			<asp:CheckBox runat="server" ID="chkTerms" onclick="JavaScript:ValidatePage(100144,1)" />
+			<asp:CheckBox runat="server" ID="chkTerms" onclick="JavaScript:ValidatePage(100144,2)" />
 			<asp:Literal runat="server" ID="lblTermsLabel"></asp:Literal>
-			<a href="#" onmouseover="JavaScript:Help(1,this,'Terms')" onmouseout="JavaScript:Help(0)">?</a></td>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'Terms')" onmouseout="JavaScript:Help(0)">?</a><br />&nbsp;</td>
 		<td>
 			<img id="imgTerms" />
-			<asp:HiddenField runat="server" ID="hdnTermsHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblTermsError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnTermsHelp" />
+			<asp:HiddenField runat="server" ID="hdnTermsError" />
+			<asp:HiddenField runat="server" ID="hdnTermsGuide" /></td></tr>
 	<tr>
 		<td class="DataLabel">
 			<asp:Literal runat="server" ID="lblPaymentLabel"></asp:Literal></td>
 		<td style="white-space:nowrap">
-			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstPayment" onfocus="JavaScript:ValidatePage(100144,1);ValidatePage(100147,1)" onblur="JavaScript:ValidatePage(100147,2)">
+			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstPayment" onfocus="JavaScript:ValidatePage(100147,1)" onblur="JavaScript:ValidatePage(100147,2)">
 			</asp:DropDownList>
 			<a href="#" onmouseover="JavaScript:Help(1,this,'Payment')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgPayment" />
-			<asp:HiddenField runat="server" ID="hdnPaymentHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblPaymentError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnPaymentHelp" />
+			<asp:HiddenField runat="server" ID="hdnPaymentError" />
+			<asp:HiddenField runat="server" ID="hdnPaymentGuide" /></td></tr>
 	<tr>
 		<td colspan="4">
 			<asp:Literal runat="server" ID="lblSubHead4dLabel"></asp:Literal></td></tr>
@@ -409,7 +450,7 @@ function TestSetup()
 
 <div id="divP05">
 <p class="Header4">
-(5) <asp:Literal runat="server" ID="lblSubHead5Label"></asp:Literal>
+<asp:Literal runat="server" ID="lblSubHead5Label"></asp:Literal>
 </p>
 <table>
 	<tr>
@@ -420,9 +461,10 @@ function TestSetup()
 			<a href="#" onmouseover="JavaScript:Help(1,this,'CCNumber')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgCCNumber" />
-			<asp:HiddenField runat="server" ID="hdnCCNumberHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblCCNumberError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnCCNumberHelp" />
+			<asp:HiddenField runat="server" ID="hdnCCNumberError" />
+			<asp:HiddenField runat="server" ID="hdnCCNumberGuide" /></td>
+		<td class="Error" rowspan="3" id="lblInfo5" style="text-align:center"></td></tr>
 	<tr>
 		<td class="DataLabel">
 			<asp:Literal runat="server" ID="lblCCNameLabel"></asp:Literal></td>
@@ -431,9 +473,9 @@ function TestSetup()
 			<a href="#" onmouseover="JavaScript:Help(1,this,'CCName')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgCCName" />
-			<asp:HiddenField runat="server" ID="hdnCCNameHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblCCNameError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnCCNameHelp" />
+			<asp:HiddenField runat="server" ID="hdnCCNameError" />
+			<asp:HiddenField runat="server" ID="hdnCCNameGuide" /></td></tr>
 	<tr>
 		<td class="DataLabel">
 			<asp:Literal runat="server" ID="lblCCExpiryLabel"></asp:Literal></td>
@@ -456,9 +498,9 @@ function TestSetup()
 			<a href="#" onmouseover="JavaScript:Help(1,this,'CCExpiry')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgCCExpiry" />
-			<asp:HiddenField runat="server" ID="hdnCCExpiryHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblCCExpiryError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnCCExpiryHelp" />
+			<asp:HiddenField runat="server" ID="hdnCCExpiryError" />
+			<asp:HiddenField runat="server" ID="hdnCCExpiryGuide" /></td></tr>
 	<tr>
 		<td class="DataLabel">
 			<asp:Literal runat="server" ID="lblCCCVVLabel"></asp:Literal></td>
@@ -467,34 +509,36 @@ function TestSetup()
 			<a href="#" onmouseover="JavaScript:Help(1,this,'CCCVV')" onmouseout="JavaScript:Help(0)">?</a></td>
 		<td>
 			<img id="imgCCCVV" />
-			<asp:HiddenField runat="server" ID="hdnCCCVVHelp" /></td>
-		<td class="Error">
-			<asp:Label runat="server" id="lblCCCVVError"></asp:Label></td></tr>
+			<asp:HiddenField runat="server" ID="hdnCCCVVHelp" />
+			<asp:HiddenField runat="server" ID="hdnCCCVVError" />
+			<asp:HiddenField runat="server" ID="hdnCCCVVGuide" /></td></tr>
 	<tr>
 		<td class="DataLabel">
-			<asp:Label runat="server" ID="lblCCDueDayLabel"></asp:Label></td>
-		<td style="white-space:nowrap" colspan="3">
-			<asp:Label runat="server" id="txtCCDueDay"></asp:Label></td></tr>
+			<asp:Literal runat="server" ID="lblCCDueDayLabel"></asp:Literal></td>
+		<td style="white-space:nowrap;font-weight:bold" colspan="3">
+			<asp:Label runat="server" id="spnDate"></asp:Label></td></tr>
 </table>
 
+<!--
 <div style="background-color:lightgray">
 <div style="color:orange;font-weight:bold;font-size:20px">
 <asp:Literal runat="server" ID="lblMandateHead"></asp:Literal> : <span id="spnDate"></span>
 </div>
 <asp:Literal runat="server" ID="lblMandateDetail"></asp:Literal>
 </div>
+-->
+
 </div>
 
 <br />
 <input type="button" id="btnBack"  value="<< BACK" onclick="JavaScript:NextPage(-1)" />
-<input type="button" id="btnNext"  value="NEXT >>" onclick="JavaScript:NextPage(1)"  />
+<asp:Button runat="server" ID="btnNext" OnClick="btnNext_Click" OnClientClick="JavaScript:return NextPage(1)" Text="NEXT >>" />
 <input type="button" id="btnAgree" value="I Agree" />
-<br /><br />
+<br />
 
-<p class="Footer1">
-	&nbsp;Phone +230 404 8000&nbsp; | &nbsp;Email <a href="mailto:info@prosperian.mu">Info@prosperian.mu</a>
-	<span style="float:right;margin-right:5px"><asp:Literal runat="server" ID="lblVersion"></asp:Literal></span>
-</p>
+<script type="text/javascript">
+pageNo = GetEltValueInt('hdnPageNo');
+</script>
 
 <asp:Literal runat="server" ID="lblJS"></asp:Literal>
 

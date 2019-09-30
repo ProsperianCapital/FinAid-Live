@@ -30,6 +30,17 @@ namespace PCIWebFinAid
 			return 0;
 		}
 
+		public static string ViewStateString (System.Web.UI.StateBag viewState,string parmName)
+		{
+			try
+			{
+				return (viewState[parmName]).ToString().Trim();
+			}
+			catch
+			{ }
+			return "";
+		}
+
 		public static int ViewStateInt (System.Web.UI.StateBag viewState,string parmName,int minValue=0,int maxValue=int.MaxValue)
 		{
 			try

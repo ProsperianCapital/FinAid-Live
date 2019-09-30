@@ -13,15 +13,6 @@ namespace PCIWebFinAid {
     public partial class Register {
         
         /// <summary>
-        /// lblAppDetails control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lblAppDetails;
-        
-        /// <summary>
         /// frmRegister control.
         /// </summary>
         /// <remarks>
@@ -31,6 +22,15 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.HtmlControls.HtmlForm frmRegister;
         
         /// <summary>
+        /// hdnPageNo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnPageNo;
+        
+        /// <summary>
         /// lblSubHead1Label control.
         /// </summary>
         /// <remarks>
@@ -38,6 +38,33 @@ namespace PCIWebFinAid {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal lblSubHead1Label;
+        
+        /// <summary>
+        /// lbl104397 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal lbl104397;
+        
+        /// <summary>
+        /// chkAgree control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkAgree;
+        
+        /// <summary>
+        /// lbl104398 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal lbl104398;
         
         /// <summary>
         /// lblTitleLabel control.
@@ -67,13 +94,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnTitleHelp;
         
         /// <summary>
-        /// lblTitleError control.
+        /// hdnTitleError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTitleError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnTitleError;
+        
+        /// <summary>
+        /// hdnTitleGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnTitleGuide;
         
         /// <summary>
         /// lblSurnameLabel control.
@@ -103,13 +139,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnSurnameHelp;
         
         /// <summary>
-        /// lblSurnameError control.
+        /// hdnSurnameError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblSurnameError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnSurnameError;
+        
+        /// <summary>
+        /// hdnSurnameGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnSurnameGuide;
         
         /// <summary>
         /// lblCellNoLabel control.
@@ -139,13 +184,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnCellNoHelp;
         
         /// <summary>
-        /// lblCellNoError control.
+        /// hdnCellNoError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCellNoError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnCellNoError;
+        
+        /// <summary>
+        /// hdnCellNoGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnCellNoGuide;
         
         /// <summary>
         /// lblSubHead2Label control.
@@ -184,13 +238,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnFirstNameHelp;
         
         /// <summary>
-        /// lblFirstNameError control.
+        /// hdnFirstNameError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblFirstNameError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnFirstNameError;
+        
+        /// <summary>
+        /// hdnFirstNameGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnFirstNameGuide;
         
         /// <summary>
         /// lblEMailLabel control.
@@ -220,13 +283,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnEMailHelp;
         
         /// <summary>
-        /// lblEMailError control.
+        /// hdnEMailError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblEMailError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnEMailError;
+        
+        /// <summary>
+        /// hdnEMailGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnEMailGuide;
         
         /// <summary>
         /// lblIDLabel control.
@@ -256,13 +328,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnIDHelp;
         
         /// <summary>
-        /// lblIDError control.
+        /// hdnIDError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblIDError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnIDError;
+        
+        /// <summary>
+        /// hdnIDGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnIDGuide;
         
         /// <summary>
         /// lblSubHead3Label control.
@@ -301,13 +382,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnIncomeHelp;
         
         /// <summary>
-        /// lblIncomeError control.
+        /// hdnIncomeError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblIncomeError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnIncomeError;
+        
+        /// <summary>
+        /// hdnIncomeGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnIncomeGuide;
         
         /// <summary>
         /// lblStatusLabel control.
@@ -337,13 +427,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnStatusHelp;
         
         /// <summary>
-        /// lblStatusError control.
+        /// hdnStatusError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblStatusError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnStatusError;
+        
+        /// <summary>
+        /// hdnStatusGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnStatusGuide;
         
         /// <summary>
         /// lblPayDayLabel control.
@@ -373,13 +472,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnPayDayHelp;
         
         /// <summary>
-        /// lblPayDayError control.
+        /// hdnPayDayError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPayDayError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnPayDayError;
+        
+        /// <summary>
+        /// hdnPayDayGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnPayDayGuide;
         
         /// <summary>
         /// lblSubHead4aLabel control.
@@ -427,13 +535,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnOptionsHelp;
         
         /// <summary>
-        /// lblOptionsError control.
+        /// hdnOptionsError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblOptionsError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnOptionsError;
+        
+        /// <summary>
+        /// hdnOptionsGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnOptionsGuide;
         
         /// <summary>
         /// lblSubHead4cLabel control.
@@ -472,13 +589,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnTermsHelp;
         
         /// <summary>
-        /// lblTermsError control.
+        /// hdnTermsError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTermsError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnTermsError;
+        
+        /// <summary>
+        /// hdnTermsGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnTermsGuide;
         
         /// <summary>
         /// lblPaymentLabel control.
@@ -508,13 +634,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnPaymentHelp;
         
         /// <summary>
-        /// lblPaymentError control.
+        /// hdnPaymentError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPaymentError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnPaymentError;
+        
+        /// <summary>
+        /// hdnPaymentGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnPaymentGuide;
         
         /// <summary>
         /// lblSubHead4dLabel control.
@@ -562,13 +697,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnCCNumberHelp;
         
         /// <summary>
-        /// lblCCNumberError control.
+        /// hdnCCNumberError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCCNumberError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnCCNumberError;
+        
+        /// <summary>
+        /// hdnCCNumberGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnCCNumberGuide;
         
         /// <summary>
         /// lblCCNameLabel control.
@@ -598,13 +742,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnCCNameHelp;
         
         /// <summary>
-        /// lblCCNameError control.
+        /// hdnCCNameError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCCNameError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnCCNameError;
+        
+        /// <summary>
+        /// hdnCCNameGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnCCNameGuide;
         
         /// <summary>
         /// lblCCExpiryLabel control.
@@ -643,13 +796,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnCCExpiryHelp;
         
         /// <summary>
-        /// lblCCExpiryError control.
+        /// hdnCCExpiryError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCCExpiryError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnCCExpiryError;
+        
+        /// <summary>
+        /// hdnCCExpiryGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnCCExpiryGuide;
         
         /// <summary>
         /// lblCCCVVLabel control.
@@ -679,13 +841,22 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnCCCVVHelp;
         
         /// <summary>
-        /// lblCCCVVError control.
+        /// hdnCCCVVError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCCCVVError;
+        protected global::System.Web.UI.WebControls.HiddenField hdnCCCVVError;
+        
+        /// <summary>
+        /// hdnCCCVVGuide control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnCCCVVGuide;
         
         /// <summary>
         /// lblCCDueDayLabel control.
@@ -694,16 +865,16 @@ namespace PCIWebFinAid {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCCDueDayLabel;
+        protected global::System.Web.UI.WebControls.Literal lblCCDueDayLabel;
         
         /// <summary>
-        /// txtCCDueDay control.
+        /// spnDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label txtCCDueDay;
+        protected global::System.Web.UI.WebControls.Label spnDate;
         
         /// <summary>
         /// lblMandateHead control.
@@ -724,13 +895,13 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.Literal lblMandateDetail;
         
         /// <summary>
-        /// lblVersion control.
+        /// btnNext control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lblVersion;
+        protected global::System.Web.UI.WebControls.Button btnNext;
         
         /// <summary>
         /// lblJS control.
