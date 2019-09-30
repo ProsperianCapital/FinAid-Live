@@ -7,7 +7,7 @@ body
 	font-family: ralewaymedium, Calibri, Arial, Tahoma;
 	font-size: 14px;
 }
-input[type=button]
+input[type=button], input[type=submit]
 {
 	font-weight: 300;
 	color: white;
@@ -15,7 +15,7 @@ input[type=button]
 	width: 100px;
 	padding: 3px;
 }
-input[type=button]:hover
+input[type=button]:hover, input[type=submit]:hover
 {
 	background-color: #FF1A1A;
 }
@@ -60,11 +60,12 @@ table td
 
 .Header3
 {
-	font-family: "Trebuchet MS", serif;
-	font-size: 30px;
+	display: block;
+	font-family: ralewaymedium, sans-serif;
+	font-size: 32px;
 	font-weight: 100;
 	color: black;
-	padding: 10px;
+	padding: 40px;
 	background-color: #898787;
 }
 
