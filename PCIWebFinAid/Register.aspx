@@ -536,6 +536,8 @@ function Help(onOrOff,ctl,item)
 <input type="button" id="btnAgree" value="I Agree" />
 <br />
 
+<asp:Label runat="server" ID="lblVer" style="position:fixed;bottom:3px;right:5px"></asp:Label>
+
 <script type="text/javascript">
 pageNo = GetEltValueInt('hdnPageNo');
 </script>

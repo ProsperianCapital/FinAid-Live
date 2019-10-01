@@ -47,6 +47,9 @@ namespace PCIWebFinAid
 				ViewState["ContractCode"]        = contractCode;
 
 				LoadLabels();
+
+				lblVer.Text    = "Version " + SystemDetails.AppVersion;
+				lblVer.Visible = ! Tools.SystemIsLive();
 			}
 		}
 
@@ -209,7 +212,9 @@ namespace PCIWebFinAid
 //	Product Option
 					logNo = 70;
 					sql   = "exec sp_WP_Get_ProductOption"
-					      + " @ProductCode="         + Tools.DBString(productCode);
+					      + " @ProductCode="         + Tools.DBString(productCode)
+					      + ",@LanguageCode="        + Tools.DBString(languageCode)
+					      + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
 					Tools.LogInfo("Register.LoadLabels/70",sql,logDebug);
 					WebTools.ListBind(lstOptions,sql,null,"ProductOptionCode","ProductOptionDescription");
 

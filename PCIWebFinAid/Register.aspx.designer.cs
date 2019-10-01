@@ -904,6 +904,15 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.Button btnNext;
         
         /// <summary>
+        /// lblVer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblVer;
+        
+        /// <summary>
         /// lblJS control.
         /// </summary>
         /// <remarks>

@@ -9,7 +9,7 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{3065CB70-E265-4BC4-9153-4D9B283A9389}</ProjectGuid>
+    <ProjectGuid>{B4452FEE-D776-4617-9360-2ABA86FEC523}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -66,7 +66,6 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\LogoProsperian.png" />
     <Content Include="IncludeMain.htm" />
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">
