@@ -28,7 +28,7 @@ namespace PCIWebFinAid
 			}
 			else
 			{
-				Tools.LogInfo("Register.PageLoad","Inital load",logDebug);
+//				Tools.LogInfo("Register.PageLoad","Inital load",logDebug);
 //				lblJS.Text          = WebTools.JavaScriptSource("SetEltValue('hdnPageNo','1');pageNo=1;NextPage(0)");
 				lblJS.Text          = WebTools.JavaScriptSource("NextPage(0)");
 				productCode         = WebTools.RequestValueString(Request,"PC");  // ProductCode");
@@ -57,7 +57,6 @@ namespace PCIWebFinAid
 		private void LoadLabels()
 		{
 			byte logNo = 5;
-			Tools.LogInfo("Register.LoadLabels/5","",logDebug);
 
 			using (MiscList miscList = new MiscList())
 				try
@@ -249,7 +248,7 @@ namespace PCIWebFinAid
 			using (MiscList miscList = new MiscList())
 				try
 				{
-					sql = "exec WP_ContractApplicationA"
+					sql = "exec WP_ContractApplicationB"
 					    +     " @RegistrationPage   = 'Z'"
 					    +     ",@WebsiteCode        =" + Tools.DBString(WebTools.RequestValueString(Request,"WVC"))
 					    +     ",@ProductCode        =" + Tools.DBString(productCode)
@@ -268,8 +267,18 @@ namespace PCIWebFinAid
 					Tools.LogInfo("Register.GetContractCode/10",sql,logDebug);
 
 					if ( miscList.ExecQuery(sql,0) == 0 )
+					{
+						Tools.LogInfo("Register.GetContractCode/11","",logDebug);
 						if ( ! miscList.EOF )
+						{
+							Tools.LogInfo("Register.GetContractCode/12","",logDebug);
 							contractCode = miscList.GetColumn("ContractCode");
+						}
+						else
+							Tools.LogInfo("Register.GetContractCode/13","",logDebug);
+					}
+					else
+						Tools.LogInfo("Register.GetContractCode/14","",logDebug);
 
 					Tools.LogInfo("Register.GetContractCode/20","ContractCode="+contractCode,logDebug);
 				}
@@ -291,7 +300,7 @@ namespace PCIWebFinAid
 				try
 				{
 					int statusCode = 900;
-					sql            = "exec WP_ContractApplicationA"
+					sql            = "exec WP_ContractApplicationB"
 					               +     " @RegistrationPage =" + Tools.DBString((pageNo-1).ToString())
 					               +     ",@ContractCode     =" + Tools.DBString(contractCode);
 
@@ -329,7 +338,7 @@ namespace PCIWebFinAid
 
 						if ( pageNo == 5 && statusCode == 0 )
 						{
-							sql = "exec WP_ContractApplicationA"
+							sql = "exec WP_ContractApplicationB"
 							    +     " @RegistrationPage = '5'"
 							    +     ",@ContractCode     =" + Tools.DBString(contractCode);
 							Tools.LogInfo("Register.btnNext_Click/20",sql,logDebug);
@@ -355,6 +364,7 @@ namespace PCIWebFinAid
 							      + ",@LanguageCode="        +  Tools.DBString(languageCode)
 							      + ",@LanguageDialectCode=" +  Tools.DBString(languageDialectCode)
 							      + ",@Income="              + (Tools.StringToInt(txtIncome.Text)).ToString();
+							Tools.LogInfo("Register.btnNext_Click/40",sql,logDebug);
 							WebTools.ListBind(lstOptions,sql,null,"ProductOptionCode","ProductOptionDescription");
 						}
 					}
@@ -363,7 +373,7 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-					Tools.LogException("Register.btnNext_Click/40",sql,ex);
+					Tools.LogException("Register.btnNext_Click/90",sql,ex);
 				}
 		}
 	}
