@@ -534,7 +534,9 @@ function Help(onOrOff,ctl,item)
 <input type="button" id="btnBack"  value="<< BACK" onclick="JavaScript:NextPage(-1)" />
 <asp:Button runat="server" ID="btnNext" OnClick="btnNext_Click" OnClientClick="JavaScript:return NextPage(1)" Text="NEXT >>" />
 <input type="button" id="btnAgree" value="I Agree" />
-<br />
+<br /><br />
+
+<asp:Label runat="server" ID="lblError" CssClass="Error"></asp:Label>
 
 <asp:Label runat="server" ID="lblVer" style="position:fixed;bottom:3px;right:5px"></asp:Label>
 

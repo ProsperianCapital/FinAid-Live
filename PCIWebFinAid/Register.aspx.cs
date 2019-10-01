@@ -24,6 +24,7 @@ namespace PCIWebFinAid
 				languageCode        = WebTools.ViewStateString(ViewState,"LanguageCode");
 				languageDialectCode = WebTools.ViewStateString(ViewState,"LanguageDialectCode");
 				contractCode        = WebTools.ViewStateString(ViewState,"ContractCode");
+				lblError.Text       = "";
 			}
 			else
 			{
@@ -210,13 +211,16 @@ namespace PCIWebFinAid
 					WebTools.ListBind(lstPayDay,sql,null,"PayDateCode","PayDateDescription");
 
 //	Product Option
-					logNo = 70;
-					sql   = "exec sp_WP_Get_ProductOption"
-					      + " @ProductCode="         + Tools.DBString(productCode)
-					      + ",@LanguageCode="        + Tools.DBString(languageCode)
-					      + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
-					Tools.LogInfo("Register.LoadLabels/70",sql,logDebug);
-					WebTools.ListBind(lstOptions,sql,null,"ProductOptionCode","ProductOptionDescription");
+//	Deferred to the load of page 4
+//					logNo = 70;
+//	//				sql   = "exec sp_WP_Get_ProductOption"
+//					sql   = "exec sp_WP_Get_ProductOptionA"
+//					      + " @ProductCode="         + Tools.DBString(productCode)
+//					      + ",@LanguageCode="        + Tools.DBString(languageCode)
+//					      + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode)
+//					      + ",@Income="              + hdnIncomeError.ToString();
+//					Tools.LogInfo("Register.LoadLabels/70",sql,logDebug);
+//					WebTools.ListBind(lstOptions,sql,null,"ProductOptionCode","ProductOptionDescription");
 
 //	Payment Method
 					logNo = 80;
@@ -247,25 +251,27 @@ namespace PCIWebFinAid
 				{
 					sql = "exec WP_ContractApplicationA"
 					    +     " @RegistrationPage   = 'Z'"
-					    +     ",@WebsiteCode        =" + Tools.DBString(WebTools.RequestValueString(Request,"WebSiteCode"))
+					    +     ",@WebsiteCode        =" + Tools.DBString(WebTools.RequestValueString(Request,"WVC"))
 					    +     ",@ProductCode        =" + Tools.DBString(productCode)
 					    +     ",@LanguageCode       =" + Tools.DBString(languageCode)
-					    +     ",@GoogleUtmSource    =" + Tools.DBString(WebTools.RequestValueString(Request,"GoogleUtmSource"))
-					    +     ",@GoogleUtmMedium    =" + Tools.DBString(WebTools.RequestValueString(Request,"GoogleUtmMedium"))
-					    +     ",@GoogleUtmCampaign  =" + Tools.DBString(WebTools.RequestValueString(Request,"GoogleUtmCampaign"))
-					    +     ",@GoogleUtmTerm      =" + Tools.DBString(WebTools.RequestValueString(Request,"GoogleUtmTerm"))
-					    +     ",@GoogleUtmContent   =" + Tools.DBString(WebTools.RequestValueString(Request,"GoogleUtmContent"))
-					    +     ",@AdvertCode         =" + Tools.DBString(WebTools.RequestValueString(Request,"AdvertCode"))
-					    +     ",@ClientIPAddress    =" + Tools.DBString(WebTools.RequestValueString(Request,"ClientIPAddress"))
-					    +     ",@ClientDevice       =" + Tools.DBString(WebTools.RequestValueString(Request,"ClientDevice"))
-					    +     ",@WebsiteVisitorCode =" + Tools.DBString(WebTools.RequestValueString(Request,"WebsiteVisitorCode"))
-					    +     ",@WebsiteVisitorSessionCode =" + Tools.DBString(WebTools.RequestValueString(Request,"WebsiteVisitorSessionCode"));
+					    +     ",@GoogleUtmSource    =" + Tools.DBString(WebTools.RequestValueString(Request,"GUS"))
+					    +     ",@GoogleUtmMedium    =" + Tools.DBString(WebTools.RequestValueString(Request,"GUM"))
+					    +     ",@GoogleUtmCampaign  =" + Tools.DBString(WebTools.RequestValueString(Request,"GUC"))
+					    +     ",@GoogleUtmTerm      =" + Tools.DBString(WebTools.RequestValueString(Request,"GUT"))
+					    +     ",@GoogleUtmContent   =" + Tools.DBString(WebTools.RequestValueString(Request,"GUN"))
+					    +     ",@AdvertCode         =" + Tools.DBString(WebTools.RequestValueString(Request,"AC"))
+					    +     ",@ClientIPAddress    =" + Tools.DBString(WebTools.RequestValueString(Request,"CIPA"))
+					    +     ",@ClientDevice       =" + Tools.DBString(WebTools.RequestValueString(Request,"CD"))
+					    +     ",@WebsiteVisitorCode =" + Tools.DBString(WebTools.RequestValueString(Request,"WVC"))
+					    +     ",@WebsiteVisitorSessionCode =" + Tools.DBString(WebTools.RequestValueString(Request,"WVSC"));
 
 					Tools.LogInfo("Register.GetContractCode/10",sql,logDebug);
 
 					if ( miscList.ExecQuery(sql,0) == 0 )
 						if ( ! miscList.EOF )
 							contractCode = miscList.GetColumn("ContractCode");
+
+					Tools.LogInfo("Register.GetContractCode/20","ContractCode="+contractCode,logDebug);
 				}
 				catch (Exception ex)
 				{
@@ -284,11 +290,15 @@ namespace PCIWebFinAid
 			using (MiscList miscList = new MiscList())
 				try
 				{
-					sql = "exec WP_ContractApplicationA"
-					    +     " @RegistrationPage =" + Tools.DBString((pageNo-1).ToString())
-					    +     ",@ContractCode     =" + Tools.DBString(contractCode);
+					int statusCode = 900;
+					sql            = "exec WP_ContractApplicationA"
+					               +     " @RegistrationPage =" + Tools.DBString((pageNo-1).ToString())
+					               +     ",@ContractCode     =" + Tools.DBString(contractCode);
 
-					if ( pageNo == 1 )
+					if ( Tools.LiveTestOrDev() == Constants.SystemMode.Development )
+					{ }
+
+					else if ( pageNo == 1 )
 						sql = sql + ",@TitleCode        =" + Tools.DBString(WebTools.ListValue(lstTitle).ToString())
 					             + ",@Surname          =" + Tools.DBString(txtSurname.Text)
 					             + ",@TelephoneNumberM =" + Tools.DBString(txtCellNo.Text);
@@ -311,30 +321,49 @@ namespace PCIWebFinAid
 					             + ",@CardExpiryYear  =" + Tools.DBString(WebTools.ListValue(lstCCYear).ToString())
 					             + ",@CardCVVCode     =" + Tools.DBString(txtCCCVV.Text);
 
-					Tools.LogInfo("Register.btnNext_Click/10",sql,logDebug);
-
-					miscList.ExecQuery(sql,0);
-
-					if ( pageNo == 5 )
+					try
 					{
-						sql = "exec WP_ContractApplicationA"
-						    +     " @RegistrationPage = '5'"
-						    +     ",@ContractCode     =" + Tools.DBString(contractCode);
-						Tools.LogInfo("Register.btnNext_Click/20",sql,logDebug);
+						Tools.LogInfo("Register.btnNext_Click/10",sql,logDebug);
 						miscList.ExecQuery(sql,0);
-					}			
+						statusCode = System.Convert.ToInt32(miscList.GetColumn("StatusCode"));
 
-				//	Check for error
-				//	if error, show message and return
-				//	if no error, do the following:
+						if ( pageNo == 5 && statusCode == 0 )
+						{
+							sql = "exec WP_ContractApplicationA"
+							    +     " @RegistrationPage = '5'"
+							    +     ",@ContractCode     =" + Tools.DBString(contractCode);
+							Tools.LogInfo("Register.btnNext_Click/20",sql,logDebug);
+							miscList.ExecQuery(sql,0);
+							statusCode = System.Convert.ToInt32(miscList.GetColumn("StatusCode"));
+						}			
+					}
+					catch (Exception ex)
+					{
+						Tools.LogException("Register.btnNext_Click/30",sql,ex);
+						statusCode = 910;
+					}
 
-					pageNo++;
-					hdnPageNo.Value = pageNo.ToString();
-//					lblError.Text   = "";
+					if ( statusCode == 0 )
+					{
+						pageNo++;
+						hdnPageNo.Value = pageNo.ToString();
+
+						if ( pageNo == 4 )
+						{
+							sql   = "exec sp_WP_Get_ProductOptionA"
+							      + " @ProductCode="         +  Tools.DBString(productCode)
+							      + ",@LanguageCode="        +  Tools.DBString(languageCode)
+							      + ",@LanguageDialectCode=" +  Tools.DBString(languageDialectCode)
+							      + ",@Income="              + (Tools.StringToInt(txtIncome.Text)).ToString();
+							WebTools.ListBind(lstOptions,sql,null,"ProductOptionCode","ProductOptionDescription");
+						}
+					}
+					else
+						lblError.Text = "Internal database error ; please try again later";
 				}
 				catch (Exception ex)
 				{
-					Tools.LogException("Register.GetContractCode",sql,ex);
+					Tools.LogException("Register.btnNext_Click/40",sql,ex);
 				}
 		}
 	}
