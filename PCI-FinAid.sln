@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCIBusiness", "PCIBusiness\PCIBusiness.csproj", "{24BE56C3-FD48-4D4F-ABB5-9D78B3AFF620}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCIWebFinAid2", "PCIWebFinAid2\PCIWebFinAid2.csproj", "{B4452FEE-D776-4617-9360-2ABA86FEC523}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCIWebFinAid", "PCIWebFinAid\PCIWebFinAid.csproj", "{B4452FEE-D776-4617-9360-2ABA86FEC523}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
