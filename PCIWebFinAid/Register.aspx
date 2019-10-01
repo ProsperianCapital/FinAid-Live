@@ -24,11 +24,11 @@ function OptSelect()
 	{
 		var p = GetListValue('lstOptions');
 		var h = '';
-		if ( p == 1 ) // Bronze
+		if ( p == 2 ) // Bronze
 			h = 'PRODUCT NAME: BRONZE<br /><br />Up To $150 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $14.95';
-		else if ( p == 2 ) // Silver
+		else if ( p == 3 ) // Silver
 			h = 'PRODUCT NAME: SILVER<br /><br />Up To $200 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $19.95';
-		else if ( p == 3 ) // Gold
+		else if ( p == 4 ) // Gold
 			h = 'PRODUCT NAME: GOLD<br /><br />Up To $300 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $29.95';
 		SetEltValue('lblInfo4',h);
 	}
