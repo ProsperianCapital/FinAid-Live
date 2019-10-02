@@ -362,7 +362,8 @@ namespace PCIWebFinAid
 
 					Tools.LogInfo("Register.btnNext_Click/10",sql,logDebug);
 					miscList.ExecQuery(sql,0);
-					statusCode = System.Convert.ToInt32(miscList.GetColumn("Status"));
+//					statusCode = System.Convert.ToInt32(miscList.GetColumn("Status"));
+					statusCode = 0;
 
 					if ( pageNo == 5 && statusCode == 0 )
 					{
@@ -371,7 +372,8 @@ namespace PCIWebFinAid
 						    +     ",@ContractCode     =" + Tools.DBString(contractCode);
 						Tools.LogInfo("Register.btnNext_Click/20",sql,logDebug);
 						miscList.ExecQuery(sql,0);
-						statusCode = System.Convert.ToInt32(miscList.GetColumn("Status"));
+//						statusCode = System.Convert.ToInt32(miscList.GetColumn("Status"));
+						statusCode = 0;
 					}			
 
 					if ( statusCode == 0 )
