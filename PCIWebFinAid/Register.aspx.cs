@@ -141,10 +141,10 @@ namespace PCIWebFinAid
 								lblSubHead4dLabel.Text = fieldValue;
 							else if ( fieldCode == "100084" )
 								lblSubHead5Label.Text = fieldValue;
-							else if ( fieldCode == "100191" )
-								lblMandateHead.Text = fieldValue;
-							else if ( fieldCode == "100192" )
-								lblMandateDetail.Text = fieldValue;
+//							else if ( fieldCode == "100191" )
+//								lblMandateHead.Text = fieldValue;
+//							else if ( fieldCode == "100192" )
+//								lblMandateDetail.Text = fieldValue;
 
 							logNo = 20;
 
@@ -290,25 +290,55 @@ namespace PCIWebFinAid
 				return ( contractCode.Length > 0 );
 		}
 
+		private string Validate(int pageNo)
+		{
+			string err = "";
+			if ( pageNo == 1 )
+			{
+				txtSurname.Text = txtSurname.Text.Trim();
+				if ( txtSurname.Text.Length < 2 )
+					err = err + "Invalid surname (at least 2 characters required)<br />";
+				txtCellNo.Text = txtCellNo.Text.Trim();
+				if ( txtCellNo.Text.Replace(" ","").Length < 10 )
+					err = err + "Invalid cell number (at least 10 digits required)<br />";
+			}
+			else if ( pageNo == 2 )
+			{
+				txtFirstName.Text = txtFirstName.Text.Trim();
+				if ( txtFirstName.Text.Length < 1 )
+					err = err + "Invalid first name (at least 1 character required)<br />";
+			}
+			return err;
+		}
+
 		protected void btnNext_Click(Object sender, EventArgs e)
 		{
-			int pageNo = Tools.StringToInt(hdnPageNo.Value);
+			int statusCode = 900;
+			int pageNo     = Tools.StringToInt(hdnPageNo.Value);
+			lblError.Text  = "Page numbering error ; please try again later";
+
 			if ( pageNo < 1 )
 				return;
+
+			lblError.Text = Validate(pageNo);
+
+			if ( lblError.Text.Length > 0 )
+				return;
+
+			lblError.Text = "Internal database error ; please try again later";
 
 			using (MiscList miscList = new MiscList())
 				try
 				{
-					int statusCode = 900;
-					sql            = "exec WP_ContractApplicationB"
-					               +     " @RegistrationPage =" + Tools.DBString((pageNo-1).ToString())
-					               +     ",@ContractCode     =" + Tools.DBString(contractCode);
+					sql = "exec WP_ContractApplicationB"
+					    +     " @RegistrationPage =" + Tools.DBString((pageNo-1).ToString())
+					    +     ",@ContractCode     =" + Tools.DBString(contractCode);
 
 					if ( Tools.LiveTestOrDev() == Constants.SystemMode.Development )
 					{ }
 
 					else if ( pageNo == 1 )
-						sql = sql + ",@TitleCode        =" + Tools.DBString(WebTools.ListValue(lstTitle).ToString())
+						sql = sql + ",@TitleCode        =" + Tools.DBString(WebTools.ListValue(lstTitle,""))
 					             + ",@Surname          =" + Tools.DBString(txtSurname.Text)
 					             + ",@TelephoneNumberM =" + Tools.DBString(txtCellNo.Text);
 					else if ( pageNo == 2 )
@@ -317,12 +347,12 @@ namespace PCIWebFinAid
 					             + ",@ClientCode   =" + Tools.DBString(txtID.Text);
 					else if ( pageNo == 3 )
 						sql = sql + ",@DisposableIncome           =" + Tools.DBString(txtIncome.Text)
-					             + ",@ClientEmploymentStatusCode =" + Tools.DBString(WebTools.ListValue(lstStatus).ToString())
-					             + ",@PayDateCode                =" + Tools.DBString(WebTools.ListValue(lstPayDay).ToString());
+					             + ",@ClientEmploymentStatusCode =" + Tools.DBString(WebTools.ListValue(lstStatus,""))
+					             + ",@PayDateCode                =" + Tools.DBString(WebTools.ListValue(lstPayDay,""));
 					else if ( pageNo == 4 )
-						sql = sql + ",@ProductOptionCode =" + Tools.DBString(WebTools.ListValue(lstOptions).ToString())
+						sql = sql + ",@ProductOptionCode =" + Tools.DBString(WebTools.ListValue(lstOptions,""))
 					             + ",@TsCsRead          = '1'"
-					             + ",@PaymentMethodCode =" + Tools.DBString(WebTools.ListValue(lstPayment).ToString());
+					             + ",@PaymentMethodCode =" + Tools.DBString(WebTools.ListValue(lstPayment,""));
 					else if ( pageNo == 5 )
 						sql = sql + ",@CardNumber      =" + Tools.DBString(txtCCNumber.Text)
 					             + ",@AccountHolder   =" + Tools.DBString(txtCCName.Text)
@@ -330,32 +360,25 @@ namespace PCIWebFinAid
 					             + ",@CardExpiryYear  =" + Tools.DBString(WebTools.ListValue(lstCCYear).ToString())
 					             + ",@CardCVVCode     =" + Tools.DBString(txtCCCVV.Text);
 
-					try
-					{
-						Tools.LogInfo("Register.btnNext_Click/10",sql,logDebug);
-						miscList.ExecQuery(sql,0);
-						statusCode = System.Convert.ToInt32(miscList.GetColumn("StatusCode"));
+					Tools.LogInfo("Register.btnNext_Click/10",sql,logDebug);
+					miscList.ExecQuery(sql,0);
+					statusCode = System.Convert.ToInt32(miscList.GetColumn("Status"));
 
-						if ( pageNo == 5 && statusCode == 0 )
-						{
-							sql = "exec WP_ContractApplicationB"
-							    +     " @RegistrationPage = '5'"
-							    +     ",@ContractCode     =" + Tools.DBString(contractCode);
-							Tools.LogInfo("Register.btnNext_Click/20",sql,logDebug);
-							miscList.ExecQuery(sql,0);
-							statusCode = System.Convert.ToInt32(miscList.GetColumn("StatusCode"));
-						}			
-					}
-					catch (Exception ex)
+					if ( pageNo == 5 && statusCode == 0 )
 					{
-						Tools.LogException("Register.btnNext_Click/30",sql,ex);
-						statusCode = 910;
-					}
+						sql = "exec WP_ContractApplicationB"
+						    +     " @RegistrationPage = '5'"
+						    +     ",@ContractCode     =" + Tools.DBString(contractCode);
+						Tools.LogInfo("Register.btnNext_Click/20",sql,logDebug);
+						miscList.ExecQuery(sql,0);
+						statusCode = System.Convert.ToInt32(miscList.GetColumn("Status"));
+					}			
 
 					if ( statusCode == 0 )
 					{
 						pageNo++;
 						hdnPageNo.Value = pageNo.ToString();
+						lblError.Text   = "";
 
 						if ( pageNo == 4 )
 						{
@@ -367,14 +390,49 @@ namespace PCIWebFinAid
 							Tools.LogInfo("Register.btnNext_Click/40",sql,logDebug);
 							WebTools.ListBind(lstOptions,sql,null,"ProductOptionCode","ProductOptionDescription");
 						}
+						else if ( pageNo == 5 )
+						{
+							string productOption  = WebTools.ListValue(lstOptions,"X");
+							string payMethod      = WebTools.ListValue(lstPayment,"X");
+							txtCCName.Text        = txtFirstName.Text.Substring(0,1).ToUpper()
+							                      + " "
+							                      + txtSurname.Text.Substring(0,1).ToUpper()
+							                      + txtSurname.Text.Substring(1).ToLower();
+							lblCCDueDate.Text     = lstPayDay.SelectedItem.Text;
+							lblCCMandate.Text     = "";
+							lblCCMandateDate.Text = Tools.DateToString(System.DateTime.Now,2);
+							sql                   = "exec sp_WP_Get_ProductoptionmandateA"
+							                      + " @ProductCode="         +  Tools.DBString(productCode)
+							                      + ",@LanguageCode="        +  Tools.DBString(languageCode)
+							                      + ",@LanguageDialectCode=" +  Tools.DBString(languageDialectCode);
+
+							Tools.LogInfo("Register.btnNext_Click/50",sql,logDebug);
+							if ( miscList.ExecQuery(sql,0) == 0 )
+								while ( ! miscList.EOF )
+									if ( ( miscList.GetColumn("ProductOptionCode") == productOption &&
+									       miscList.GetColumn("PaymentMethodCode") == payMethod )   ||
+									       miscList.GetColumn("PaymentMethodCode") == "*" )
+									{
+										lblCCMandate.Text = miscList.GetColumn("CollectionMandateText");
+										break;
+									}
+							if ( lblCCMandate.Text.Length < 1 )
+								lblError.Text = "Error retrieving collection mandate ; please try again later";
+						}
 					}
-					else
-						lblError.Text = "Internal database error ; please try again later";
 				}
 				catch (Exception ex)
 				{
 					Tools.LogException("Register.btnNext_Click/90",sql,ex);
+					lblError.Text = "Internal database error ; please try again later";
 				}
+
+			if ( statusCode != 0 || lblError.Text.Length > 0 )
+			{
+				if ( lblError.Text.Length == 0 )
+					lblError.Text = "Internal error ; please try again later";
+				return;
+			}
 		}
 	}
 }

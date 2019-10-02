@@ -66,6 +66,7 @@ function NextPage(inc)
 		ShowElt('btnBack' ,pageNo> firstPage);
 		ShowElt('btnNext' ,pageNo< lastPage);
 		ShowElt('btnAgree',pageNo==lastPage);
+		ShowElt('btnBack2',pageNo==lastPage);
 
 		if ( pageNo == firstPage )
 			ShowElt('btnNext',GetElt('chkAgree').checked);
@@ -85,7 +86,7 @@ function NextPage(inc)
 			else
 				mm = '0'+mm.toString();
 			yy = yy.toString();
-			SetEltValue('spnDate',yy+'/'+mm+'/'+dd);
+		//	SetEltValue('lblCCDueDate',yy+'/'+mm+'/'+dd);
 		}
 	}
 	catch (x)
@@ -481,6 +482,7 @@ function Help(onOrOff,ctl,item)
 			<asp:Literal runat="server" ID="lblCCExpiryLabel"></asp:Literal></td>
 		<td style="white-space:nowrap">
 			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstCCMonth" onfocus="JavaScript:ValidatePage(100188,1)" onblur="JavaScript:ValidatePage(100188,2)">
+				<asp:ListItem Value= "0" Text="(Select one)"></asp:ListItem>
 				<asp:ListItem Value= "1" Text="01 (January)"></asp:ListItem>
 				<asp:ListItem Value= "2" Text="02 (February)"></asp:ListItem>
 				<asp:ListItem Value= "3" Text="03 (March)"></asp:ListItem>
@@ -516,24 +518,25 @@ function Help(onOrOff,ctl,item)
 		<td class="DataLabel">
 			<asp:Literal runat="server" ID="lblCCDueDayLabel"></asp:Literal></td>
 		<td style="white-space:nowrap;font-weight:bold" colspan="3">
-			<asp:Label runat="server" id="spnDate"></asp:Label></td></tr>
+			<asp:Label runat="server" id="lblCCDueDate"></asp:Label></td></tr>
+	<tr>
+		<td colspan="2">
+			</td>
+	</tr>
 </table>
-
-<!--
 <div style="background-color:lightgray">
-<div style="color:orange;font-weight:bold;font-size:20px">
-<asp:Literal runat="server" ID="lblMandateHead"></asp:Literal> : <span id="spnDate"></span>
+	<div style="color:orange;font-weight:bold;font-size:18px;padding:10px">
+	COLLECTION MANDATE: <asp:Literal runat="server" ID="lblCCMandateDate"></asp:Literal>
+	</div>
+	<asp:Literal runat="server" ID="lblCCMandate"></asp:Literal><br />&nbsp;
 </div>
-<asp:Literal runat="server" ID="lblMandateDetail"></asp:Literal>
-</div>
--->
-
 </div>
 
 <br />
 <input type="button" id="btnBack"  value="<< BACK" onclick="JavaScript:NextPage(-1)" />
-<asp:Button runat="server" ID="btnNext" OnClick="btnNext_Click" OnClientClick="JavaScript:return NextPage(1)" Text="NEXT >>" />
-<input type="button" id="btnAgree" value="I Agree" />
+<asp:Button runat="server" ID="btnNext"  OnClick="btnNext_Click" OnClientClick="JavaScript:return NextPage(1)" Text="NEXT >>" />
+<asp:Button runat="server" ID="btnAgree" OnClick="btnNext_Click" OnClientClick="JavaScript:return NextPage(1)" Text="I Agree" />
+<input type="button" id="btnBack2" value="Change Payment Method" onclick="JavaScript:NextPage(-1)" style="width:175px" />
 <br /><br />
 
 <asp:Label runat="server" ID="lblError" CssClass="Error"></asp:Label>

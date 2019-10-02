@@ -868,31 +868,31 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.Literal lblCCDueDayLabel;
         
         /// <summary>
-        /// spnDate control.
+        /// lblCCDueDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label spnDate;
+        protected global::System.Web.UI.WebControls.Label lblCCDueDate;
         
         /// <summary>
-        /// lblMandateHead control.
+        /// lblCCMandateDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lblMandateHead;
+        protected global::System.Web.UI.WebControls.Literal lblCCMandateDate;
         
         /// <summary>
-        /// lblMandateDetail control.
+        /// lblCCMandate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lblMandateDetail;
+        protected global::System.Web.UI.WebControls.Literal lblCCMandate;
         
         /// <summary>
         /// btnNext control.
@@ -902,6 +902,15 @@ namespace PCIWebFinAid {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnNext;
+        
+        /// <summary>
+        /// btnAgree control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAgree;
         
         /// <summary>
         /// lblError control.
