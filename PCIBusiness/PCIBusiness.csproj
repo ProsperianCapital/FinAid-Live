@@ -132,7 +132,9 @@
     <None Include="Web References\IkajoService\DescheduleResult.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\IkajoService\PtCard.wsdl" />
+    <None Include="Web References\IkajoService\PtCard.wsdl">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Web References\IkajoService\RebillResult.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
