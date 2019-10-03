@@ -77,6 +77,14 @@ table td
 	color: black;
 }
 
+.Header5
+{
+	font-family: ralewaymedium;
+	font-size: 18px;
+	font-weight: bold;
+	color: orange;
+}
+
 .Footer1
 {
 	font-family: "Trebuchet MS", serif;
