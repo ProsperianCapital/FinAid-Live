@@ -16,14 +16,16 @@
 <script type="text/javascript">
 var firstPage = 1;
 var lastPage  = 5;
+var confPage  = 6;
 var pageNo;
 
-function OptSelect()
+function OptSelect(p)
 {
 	try
 	{
-		var p = GetListValue('lstOptions');
 		var h = '';
+		if ( p == null || p < 2 || p > 4 )
+			p = GetListValue('lstOptions');
 		if ( p == 2 ) // Bronze
 			h = 'PRODUCT NAME: BRONZE<br /><br />Up To $150 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $14.95';
 		else if ( p == 3 ) // Silver
@@ -31,6 +33,7 @@ function OptSelect()
 		else if ( p == 4 ) // Gold
 			h = 'PRODUCT NAME: GOLD<br /><br />Up To $300 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $29.95';
 		SetEltValue('lblInfo4',h);
+		SetEltValue('hdnOption',h);
 	}
 	catch (x)
 	{ }
@@ -63,10 +66,11 @@ function NextPage(inc)
 		ShowElt('divP03'  ,pageNo==3);
 		ShowElt('divP04'  ,pageNo==4);
 		ShowElt('divP05'  ,pageNo==5);
-		ShowElt('btnBack' ,pageNo> firstPage);
-		ShowElt('btnNext' ,pageNo< lastPage);
-		ShowElt('btnAgree',pageNo==lastPage);
-		ShowElt('btnBack2',pageNo==lastPage);
+		ShowElt('divP06'  ,pageNo==6);
+		ShowElt('btnBack' ,pageNo> firstPage && pageNo!=confPage);
+		ShowElt('btnNext' ,pageNo< lastPage  && pageNo!=confPage);
+		ShowElt('btnAgree',pageNo==lastPage  && pageNo!=confPage);
+		ShowElt('btnBack2',pageNo==lastPage  && pageNo!=confPage);
 
 		if ( pageNo == firstPage )
 			ShowElt('btnNext',GetElt('chkAgree').checked);
@@ -259,8 +263,9 @@ function Help(onOrOff,ctl,item)
 </script>
 
 <asp:HiddenField runat="server" id="hdnPageNo" value="1" />
+<asp:HiddenField runat="server" id="hdnOption" />
 
-<div class="Header3">Registration</div>
+<div class="Header3">Registration<asp:Literal runat="server" ID="lblRegConf"></asp:Literal></div>
 
 <div id="divP01">
 <p class="Header4">
@@ -483,15 +488,15 @@ function Help(onOrOff,ctl,item)
 		<td style="white-space:nowrap">
 			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstCCMonth" onfocus="JavaScript:ValidatePage(100188,1)" onblur="JavaScript:ValidatePage(100188,2)">
 				<asp:ListItem Value= "0" Text="(Select one)"></asp:ListItem>
-				<asp:ListItem Value= "1" Text="01 (January)"></asp:ListItem>
-				<asp:ListItem Value= "2" Text="02 (February)"></asp:ListItem>
-				<asp:ListItem Value= "3" Text="03 (March)"></asp:ListItem>
-				<asp:ListItem Value= "4" Text="04 (April)"></asp:ListItem>
-				<asp:ListItem Value= "5" Text="05 (May)"></asp:ListItem>
-				<asp:ListItem Value= "6" Text="06 (June)"></asp:ListItem>
-				<asp:ListItem Value= "7" Text="07 (July)"></asp:ListItem>
-				<asp:ListItem Value= "8" Text="08 (August)"></asp:ListItem>
-				<asp:ListItem Value= "9" Text="09 (September)"></asp:ListItem>
+				<asp:ListItem Value="01" Text="01 (January)"></asp:ListItem>
+				<asp:ListItem Value="02" Text="02 (February)"></asp:ListItem>
+				<asp:ListItem Value="03" Text="03 (March)"></asp:ListItem>
+				<asp:ListItem Value="04" Text="04 (April)"></asp:ListItem>
+				<asp:ListItem Value="05" Text="05 (May)"></asp:ListItem>
+				<asp:ListItem Value="06" Text="06 (June)"></asp:ListItem>
+				<asp:ListItem Value="07" Text="07 (July)"></asp:ListItem>
+				<asp:ListItem Value="08" Text="08 (August)"></asp:ListItem>
+				<asp:ListItem Value="09" Text="09 (September)"></asp:ListItem>
 				<asp:ListItem Value="10" Text="10 (October)"></asp:ListItem>
 				<asp:ListItem Value="11" Text="11 (November)"></asp:ListItem>
 				<asp:ListItem Value="12" Text="12 (December)"></asp:ListItem>
@@ -530,6 +535,119 @@ function Help(onOrOff,ctl,item)
 	</div>
 	<asp:Literal runat="server" ID="lblCCMandate"></asp:Literal><br />&nbsp;
 </div>
+</div>
+
+<div id="divP06">
+<p class="Header4">
+<asp:Literal runat="server" ID="lbl100400"></asp:Literal>
+</p><p>
+<asp:Literal runat="server" ID="lbl100209"></asp:Literal>
+</p>
+<table>
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100372"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100210"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Ref"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100211"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Pin"></asp:Literal></td></tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100212"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lblTitle"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Title"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100214"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6FirstName"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100216"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Surname"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100218"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6EMail"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100219"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Cell"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100220"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6ID"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lbl100373"></asp:Literal></td></tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100222"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100223"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Income"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100230"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Status"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100231"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6PayDay"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lbl100374"></asp:Literal></td></tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100233"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Label runat="server" ID="lblp6Option"></asp:Label></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100236"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6PayMethod"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lbl100237"></asp:Literal></td></tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100238"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lblp6Agreement"></asp:Literal></td></tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100184"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100185"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6CCType"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100186"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6CCName"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100187"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6CCNumber"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100188"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6CCExpiry"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lbl100Billing"></asp:Literal></td></tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100Mandate"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lblp6Mandate"></asp:Literal></td></tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100259"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100375"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Date"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100376"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6IP"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lblp6Browser"></asp:Literal></td></tr>
+
+</table>
+
+
 </div>
 
 <br />

@@ -25,6 +25,7 @@ namespace PCIWebFinAid
 				languageDialectCode = WebTools.ViewStateString(ViewState,"LanguageDialectCode");
 				contractCode        = WebTools.ViewStateString(ViewState,"ContractCode");
 				lblError.Text       = "";
+				lblRegConf.Text     = "";
 			}
 			else
 			{
@@ -69,6 +70,7 @@ namespace PCIWebFinAid
 					string      fieldValue;
 					string      fieldMessage;
 					string      screenGuide;
+					string      regPageNo;
 					string      controlID;
 					int         k;
 
@@ -89,14 +91,23 @@ namespace PCIWebFinAid
 							screenGuide  = miscList.GetColumn("WebsiteFieldScreenGuide");
 							fieldFail    = miscList.GetColumn("FieldValidationFailureText");
 							fieldPass    = miscList.GetColumn("FieldValidationPassText");
+							regPageNo    = miscList.GetColumn("RegistrationPageNumber");
 							controlID    = "";
 
 							if ( logNo <= 10 )
 								Tools.LogInfo("Register.LoadLabels/15","Row 1, FieldCode="+fieldCode+", FieldValue="+fieldValue,logDebug);
 							logNo = 15;
 
+						//	Page 6
+							if ( regPageNo == "6" ) // Confirmation page
+							{
+								ctlLiteral = (Literal)FindControl("lbl"+fieldCode);
+								if ( ctlLiteral != null )
+									ctlLiteral.Text = fieldValue;
+							}
+
 						//	Page 1
-							if      ( fieldCode == "100111" ) controlID      = "Title";
+							else if ( fieldCode == "100111" ) controlID      = "Title";
 							else if ( fieldCode == "100114" ) controlID      = "Surname";
 							else if ( fieldCode == "100117" ) controlID      = "CellNo";
 							else if ( fieldCode == "104397" ) lbl104397.Text = fieldValue;
@@ -141,6 +152,8 @@ namespace PCIWebFinAid
 								lblSubHead4dLabel.Text = fieldValue;
 							else if ( fieldCode == "100084" )
 								lblSubHead5Label.Text = fieldValue;
+//							else if ( fieldCode == "100207" )
+//								lblSubHead6Label.Text = fieldValue;
 //							else if ( fieldCode == "100191" )
 //								lblMandateHead.Text = fieldValue;
 //							else if ( fieldCode == "100192" )
@@ -403,7 +416,7 @@ namespace PCIWebFinAid
 							lblCCDueDate.Text     = lstPayDay.SelectedItem.Text;
 							lblCCMandate.Text     = "";
 							lblCCMandateDate.Text = Tools.DateToString(System.DateTime.Now,2);
-							sql                   = "exec sp_WP_Get_ProductoptionmandateA"
+							sql                   = "exec sp_WP_Get_ProductOptionMandateA"
 							                      + " @ProductCode="         +  Tools.DBString(productCode)
 							                      + ",@LanguageCode="        +  Tools.DBString(languageCode)
 							                      + ",@LanguageDialectCode=" +  Tools.DBString(languageDialectCode);
@@ -416,10 +429,49 @@ namespace PCIWebFinAid
 									       miscList.GetColumn("PaymentMethodCode") == "*" )
 									{
 										lblCCMandate.Text = miscList.GetColumn("CollectionMandateText");
+										lblp6Mandate.Text = lblCCMandate.Text;
 										break;
 									}
+									else
+										miscList.NextRow();
+
 							if ( lblCCMandate.Text.Length < 1 )
 								lblError.Text = "Error retrieving collection mandate ; please try again later";
+						}
+						else if ( pageNo == 6 )
+						{
+							sql = "exec sp_WP_Get_ProductLegalDocumentDetail"
+							    + " @ProductCode="         + Tools.DBString(productCode)
+							    + ",@LanguageCode="        + Tools.DBString(languageCode)
+							    + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
+							Tools.LogInfo("Register.btnNext_Click/60",sql,logDebug);
+							if ( miscList.ExecQuery(sql,0) == 0 )
+								if ( ! miscList.EOF )
+								{
+									lblp6Agreement.Text = miscList.GetColumn("ProductLegalDocumentParagraphHeader")
+									                    + miscList.GetColumn("ProductLegalDocumentParagraphText")
+									                    + miscList.GetColumn("ProductLegalDocumentParagraphHeader2");
+								}
+
+							lblRegConf.Text     = " Confirmation";
+							lblp6Ref.Text       = contractCode;
+							lblp6Pin.Text       = "PIN";
+							lblp6Title.Text     = lstTitle.SelectedItem.Text;
+							lblp6FirstName.Text = txtFirstName.Text;
+							lblp6Surname.Text   = txtSurname.Text;
+							lblp6EMail.Text     = txtEMail.Text;
+							lblp6Cell.Text      = txtCellNo.Text;
+							lblp6ID.Text        = txtID.Text;
+							lblp6Income.Text    = txtIncome.Text;
+							lblp6Status.Text    = lstStatus.SelectedItem.Text;
+							lblp6PayDay.Text    = lstPayDay.SelectedItem.Text;
+							lblp6Option.Text    = hdnOption.Value;
+							lblp6PayMethod.Text = lstPayment.SelectedItem.Text;
+							lbl100209.Text      = lbl100209.Text.Replace("[Title]",lstTitle.SelectedItem.Text).Replace("[Initials]",txtFirstName.Text.Substring(0,1).ToUpper()).Replace("[Surname]",txtSurname.Text+"<br />");
+							lblp6CCName.Text    = txtCCName.Text;
+							lblp6CCNumber.Text  = txtCCNumber.Text;
+							lblp6CCExpiry.Text  = lstCCYear.SelectedValue + "/" + lstCCMonth.SelectedValue;
+							lblp6Date.Text      = Tools.DateToString(System.DateTime.Now,2,1);
 						}
 					}
 				}
