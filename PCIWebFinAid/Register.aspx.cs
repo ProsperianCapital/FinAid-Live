@@ -415,7 +415,8 @@ namespace PCIWebFinAid
 							                      + txtSurname.Text.Substring(1).ToLower();
 							lblCCDueDate.Text     = lstPayDay.SelectedItem.Text;
 							lblCCMandate.Text     = "";
-							lblCCMandateDate.Text = Tools.DateToString(System.DateTime.Now,2);
+							lblCCMandateHead.Text = "";
+//							lblCCMandateHead.Text = "Collection Mandate: " + Tools.DateToString(System.DateTime.Now,2);
 							sql                   = "exec sp_WP_Get_ProductOptionMandateA"
 							                      + " @ProductCode="         +  Tools.DBString(productCode)
 							                      + ",@LanguageCode="        +  Tools.DBString(languageCode)
@@ -431,7 +432,14 @@ namespace PCIWebFinAid
 										lblCCMandate.Text = miscList.GetColumn("CollectionMandateText");
 										if ( lblCCMandate.Text.Length == 0 )
 											lblCCMandate.Text = miscList.GetColumn("CollentionMandateText");
-										lblp6Mandate.Text = lblCCMandate.Text;
+										int k = lblCCMandate.Text.IndexOf("\n");
+										if ( k > 0 )
+										{
+											lblCCMandateHead.Text = lblCCMandate.Text.Substring(0,k);
+											lblCCMandate.Text     = lblCCMandate.Text.Substring(k+1).Replace("\n","<br />");
+										}
+										lblp6Mandate.Text     = lblCCMandate.Text;
+										lblp6MandateHead.Text = lblCCMandateHead.Text;
 										break;
 									}
 									else
@@ -452,8 +460,8 @@ namespace PCIWebFinAid
 							if ( miscList.ExecQuery(sql,0) == 0 )
 								if ( ! miscList.EOF )
 									lblp6Agreement.Text = "<u>" + miscList.GetColumn("ProductLegalDocumentParagraphHeader") + "</u><br />"
-									                            + miscList.GetColumn("ProductLegalDocumentParagraphText")
-									                            + miscList.GetColumn("ProductLegalDocumentParagraphText2");
+									                            + miscList.GetColumn("ProductLegalDocumentParagraphText").Replace("\n","<br />")
+									                            + miscList.GetColumn("ProductLegalDocumentParagraphText2").Replace("\n","<br />");
 
 							lblRegConf.Text     = " Confirmation";
 							lblp6Ref.Text       = contractCode;

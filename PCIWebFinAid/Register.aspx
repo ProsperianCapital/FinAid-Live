@@ -531,7 +531,7 @@ function Help(onOrOff,ctl,item)
 </table>
 <div style="background-color:lightgray">
 	<div style="color:orange;font-weight:bold;font-size:18px;padding:10px">
-	COLLECTION MANDATE: <asp:Literal runat="server" ID="lblCCMandateDate"></asp:Literal>
+	<asp:Literal runat="server" ID="lblCCMandateHead"></asp:Literal>
 	</div>
 	<asp:Literal runat="server" ID="lblCCMandate"></asp:Literal><br />&nbsp;
 </div>
@@ -629,7 +629,7 @@ function Help(onOrOff,ctl,item)
 	<tr><td>&nbsp;</td></tr>
 
 	<tr>
-		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100Mandate"></asp:Literal></td></tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lblp6MandateHead"></asp:Literal></td></tr>
 	<tr>
 		<td colspan="2"><asp:Literal runat="server" ID="lblp6Mandate"></asp:Literal></td></tr>
 	<tr><td>&nbsp;</td></tr>

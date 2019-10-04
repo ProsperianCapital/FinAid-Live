@@ -895,13 +895,13 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.Label lblCCDueDate;
         
         /// <summary>
-        /// lblCCMandateDate control.
+        /// lblCCMandateHead control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lblCCMandateDate;
+        protected global::System.Web.UI.WebControls.Literal lblCCMandateHead;
         
         /// <summary>
         /// lblCCMandate control.
@@ -1327,13 +1327,13 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.Literal lbl100Billing;
         
         /// <summary>
-        /// lbl100Mandate control.
+        /// lblp6MandateHead control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lbl100Mandate;
+        protected global::System.Web.UI.WebControls.Literal lblp6MandateHead;
         
         /// <summary>
         /// lblp6Mandate control.
