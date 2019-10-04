@@ -429,6 +429,8 @@ namespace PCIWebFinAid
 									       miscList.GetColumn("PaymentMethodCode") == "*" )
 									{
 										lblCCMandate.Text = miscList.GetColumn("CollectionMandateText");
+										if ( lblCCMandate.Text.Length == 0 )
+											lblCCMandate.Text = miscList.GetColumn("CollentionMandateText");
 										lblp6Mandate.Text = lblCCMandate.Text;
 										break;
 									}
@@ -440,18 +442,18 @@ namespace PCIWebFinAid
 						}
 						else if ( pageNo == 6 )
 						{
+							lblp6Agreement.Text = "";
 							sql = "exec sp_WP_Get_ProductLegalDocumentDetail"
 							    + " @ProductCode="         + Tools.DBString(productCode)
 							    + ",@LanguageCode="        + Tools.DBString(languageCode)
-							    + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
+							    + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode)
+							    + ",@ProductLegalDocumentTypeCode='005'";
 							Tools.LogInfo("Register.btnNext_Click/60",sql,logDebug);
 							if ( miscList.ExecQuery(sql,0) == 0 )
 								if ( ! miscList.EOF )
-								{
-									lblp6Agreement.Text = miscList.GetColumn("ProductLegalDocumentParagraphHeader")
-									                    + miscList.GetColumn("ProductLegalDocumentParagraphText")
-									                    + miscList.GetColumn("ProductLegalDocumentParagraphHeader2");
-								}
+									lblp6Agreement.Text = "<u>" + miscList.GetColumn("ProductLegalDocumentParagraphHeader") + "</u><br />"
+									                            + miscList.GetColumn("ProductLegalDocumentParagraphText")
+									                            + miscList.GetColumn("ProductLegalDocumentParagraphText2");
 
 							lblRegConf.Text     = " Confirmation";
 							lblp6Ref.Text       = contractCode;
