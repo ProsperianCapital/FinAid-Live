@@ -13,6 +13,7 @@ namespace PCIWebFinAid
 		string languageCode;
 		string languageDialectCode;
 		string contractCode;
+		string contractPIN;
 		string sql;
 
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
@@ -24,6 +25,7 @@ namespace PCIWebFinAid
 				languageCode        = WebTools.ViewStateString(ViewState,"LanguageCode");
 				languageDialectCode = WebTools.ViewStateString(ViewState,"LanguageDialectCode");
 				contractCode        = WebTools.ViewStateString(ViewState,"ContractCode");
+				contractPIN         = WebTools.ViewStateString(ViewState,"ContractPIN");
 				lblError.Text       = "";
 				lblRegConf.Text     = "";
 			}
@@ -47,11 +49,13 @@ namespace PCIWebFinAid
 				ViewState["LanguageCode"]        = languageCode;
 				ViewState["LanguageDialectCode"] = languageDialectCode;
 				ViewState["ContractCode"]        = contractCode;
+				ViewState["ContractPIN"]         = contractPIN;
 
 				LoadLabels();
 
-				lblVer.Text    = "Version " + SystemDetails.AppVersion;
-				lblVer.Visible = ! Tools.SystemIsLive();
+				lblVer.Text     = "Version " + SystemDetails.AppVersion;
+				lblVer.Visible  = ! Tools.SystemIsLive();
+				btnNext.Visible = ( lblError.Text.Length == 0 );
 			}
 		}
 
@@ -256,12 +260,14 @@ namespace PCIWebFinAid
 
 		private bool GetContractCode()
 		{
-			contractCode = "";
+			lblError.Text = "Error retrieving new contract details ; please try again later";
+			contractCode  = "";
+			contractPIN   = "";
 
 			using (MiscList miscList = new MiscList())
 				try
 				{
-					sql = "exec WP_ContractApplicationB"
+					sql = "exec WP_ContractApplicationC"
 					    +     " @RegistrationPage   = 'Z'"
 					    +     ",@WebsiteCode        =" + Tools.DBString(WebTools.RequestValueString(Request,"WVC"))
 					    +     ",@ProductCode        =" + Tools.DBString(productCode)
@@ -281,11 +287,15 @@ namespace PCIWebFinAid
 
 					if ( miscList.ExecQuery(sql,0) == 0 )
 					{
-						Tools.LogInfo("Register.GetContractCode/11","",logDebug);
+//						Tools.LogInfo("Register.GetContractCode/11","",logDebug);
 						if ( ! miscList.EOF )
 						{
-							Tools.LogInfo("Register.GetContractCode/12","",logDebug);
+//							Tools.LogInfo("Register.GetContractCode/12","",logDebug);
 							contractCode = miscList.GetColumn("ContractCode");
+							contractPIN  = miscList.GetColumn("PIN");
+							string stat  = miscList.GetColumn("Status");
+							if ( contractCode.Length > 0 && contractPIN.Length > 0 && ( stat == "0" || stat.Length == 0 ) )
+								lblError.Text = "";
 						}
 						else
 							Tools.LogInfo("Register.GetContractCode/13","",logDebug);
@@ -300,7 +310,7 @@ namespace PCIWebFinAid
 					Tools.LogException("Register.GetContractCode",sql,ex);
 					return false;
 				}
-				return ( contractCode.Length > 0 );
+				return ( lblError.Text.Length == 0 );
 		}
 
 		private string Validate(int pageNo)
@@ -429,9 +439,9 @@ namespace PCIWebFinAid
 									       miscList.GetColumn("PaymentMethodCode") == payMethod )   ||
 									       miscList.GetColumn("PaymentMethodCode") == "*" )
 									{
-										lblCCMandate.Text = miscList.GetColumn("CollectionMandateText");
+										lblCCMandate.Text = miscList.GetColumn("CollectionMandateText",0);
 										if ( lblCCMandate.Text.Length == 0 )
-											lblCCMandate.Text = miscList.GetColumn("CollentionMandateText");
+											lblCCMandate.Text = miscList.GetColumn("CollentionMandateText",0);
 										int k = lblCCMandate.Text.IndexOf("\n");
 										if ( k > 0 )
 										{
@@ -463,9 +473,17 @@ namespace PCIWebFinAid
 									                            + miscList.GetColumn("ProductLegalDocumentParagraphText").Replace("\n","<br />")
 									                            + miscList.GetColumn("ProductLegalDocumentParagraphText2").Replace("\n","<br />");
 
+							lblp6CCType.Text = "";
+							sql = "exec WP_Get_CardAssociation"
+							    + " @BIN=" + Tools.DBString(txtCCNumber.Text.Trim().Substring(0,6));
+							Tools.LogInfo("Register.btnNext_Click/70",sql,logDebug);
+							if ( miscList.ExecQuery(sql,0) == 0 )
+								if ( ! miscList.EOF )
+									lblp6CCType.Text = miscList.GetColumn("Brand");
+
 							lblRegConf.Text     = " Confirmation";
 							lblp6Ref.Text       = contractCode;
-							lblp6Pin.Text       = "PIN";
+							lblp6Pin.Text       = contractPIN;
 							lblp6Title.Text     = lstTitle.SelectedItem.Text;
 							lblp6FirstName.Text = txtFirstName.Text;
 							lblp6Surname.Text   = txtSurname.Text;
