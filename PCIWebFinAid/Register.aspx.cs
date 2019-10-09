@@ -108,6 +108,11 @@ namespace PCIWebFinAid
 								ctlLiteral = (Literal)FindControl("lbl"+fieldCode);
 								if ( ctlLiteral != null )
 									ctlLiteral.Text = fieldValue;
+								if ( fieldValue.ToUpper().StartsWith("TITLE") )
+								{
+									lblp6TitleX.Text = "Title (fieldCode " + fieldCode + ")";
+									Tools.LogInfo("Register.LoadLabels/12","fieldCode="+fieldCode + ", fieldValue="+fieldValue);
+								}
 							}
 
 						//	Page 1
@@ -500,6 +505,8 @@ namespace PCIWebFinAid
 							lblp6CCNumber.Text  = txtCCNumber.Text;
 							lblp6CCExpiry.Text  = lstCCYear.SelectedValue + "/" + lstCCMonth.SelectedValue;
 							lblp6Date.Text      = Tools.DateToString(System.DateTime.Now,2,1);
+							lblp6IP.Text        = WebTools.RequestValueString(Request,"CIPA");
+							lblp6Browser.Text   = WebTools.RequestValueString(Request,"CD");
 						}
 					}
 				}

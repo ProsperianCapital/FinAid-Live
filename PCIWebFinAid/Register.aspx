@@ -557,7 +557,7 @@ function Help(onOrOff,ctl,item)
 	<tr>
 		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100212"></asp:Literal></td></tr>
 	<tr>
-		<td><asp:Literal runat="server" ID="lblTitle"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6TitleX"></asp:Literal></td>
 		<td><asp:Literal runat="server" ID="lblp6Title"></asp:Literal></td></tr>
 	<tr>
 		<td><asp:Literal runat="server" ID="lbl100214"></asp:Literal></td>
