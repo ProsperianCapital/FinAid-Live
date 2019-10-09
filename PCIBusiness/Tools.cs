@@ -78,10 +78,13 @@ namespace PCIBusiness
 			return theValue;
 		}
 
-		public static int StringToInt(string theValue)
+		public static int StringToInt(string theValue,bool allowDecimals=false)
 		{
 			try
 			{
+				theValue = NullToString(theValue);
+				if ( allowDecimals && theValue.Contains(".") )
+					theValue = theValue.Substring(0,theValue.IndexOf("."));
 				int ret = System.Convert.ToInt32(theValue);
 				return ret;
 			}
