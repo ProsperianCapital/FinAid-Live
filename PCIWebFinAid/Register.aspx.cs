@@ -98,8 +98,9 @@ namespace PCIWebFinAid
 							regPageNo    = miscList.GetColumn("RegistrationPageNumber");
 							controlID    = "";
 
-							if ( logNo <= 10 )
-								Tools.LogInfo("Register.LoadLabels/15","Row 1, FieldCode="+fieldCode+", FieldValue="+fieldValue,logDebug);
+//							if ( logNo <= 10 )
+//								Tools.LogInfo("Register.LoadLabels/15","Row 1, FieldCode="+fieldCode+", FieldValue="+fieldValue,logDebug);
+
 							logNo = 15;
 
 						//	Page 6
@@ -108,11 +109,11 @@ namespace PCIWebFinAid
 								ctlLiteral = (Literal)FindControl("lbl"+fieldCode);
 								if ( ctlLiteral != null )
 									ctlLiteral.Text = fieldValue;
-								if ( fieldValue.ToUpper().StartsWith("TITLE") )
-								{
-									lblp6TitleX.Text = "Title (fieldCode " + fieldCode + ")";
-									Tools.LogInfo("Register.LoadLabels/12","fieldCode="+fieldCode + ", fieldValue="+fieldValue);
-								}
+//								if ( fieldValue.ToUpper().StartsWith("TITLE") ) -> 100111
+//								{
+//									lblp6TitleX.Text = "Title (fieldCode " + fieldCode + ")";
+//									Tools.LogInfo("Register.LoadLabels/12","fieldCode="+fieldCode + ", fieldValue="+fieldValue);
+//								}
 							}
 
 						//	Page 1
@@ -407,16 +408,22 @@ namespace PCIWebFinAid
 					if ( statusCode == 0 )
 					{
 						pageNo++;
-						hdnPageNo.Value = pageNo.ToString();
+//						hdnPageNo.Value = pageNo.ToString();
 						lblError.Text   = "";
 
 						if ( pageNo == 4 )
 						{
+							int salary = Tools.StringToInt(txtIncome.Text,true);
+							if ( salary < 100 )
+							{
+								lblError.Text = "Invalid income";
+								return;
+							}
 							sql   = "exec sp_WP_Get_ProductOptionA"
-							      + " @ProductCode="         +  Tools.DBString(productCode)
-							      + ",@LanguageCode="        +  Tools.DBString(languageCode)
-							      + ",@LanguageDialectCode=" +  Tools.DBString(languageDialectCode)
-							      + ",@Income="              + (Tools.StringToInt(txtIncome.Text)).ToString();
+							      + " @ProductCode="         + Tools.DBString(productCode)
+							      + ",@LanguageCode="        + Tools.DBString(languageCode)
+							      + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode)
+							      + ",@Income="              + salary.ToString();
 							Tools.LogInfo("Register.btnNext_Click/40",sql,logDebug);
 							WebTools.ListBind(lstOptions,sql,null,"ProductOptionCode","ProductOptionDescription");
 						}
@@ -517,11 +524,11 @@ namespace PCIWebFinAid
 				}
 
 			if ( statusCode != 0 || lblError.Text.Length > 0 )
-			{
 				if ( lblError.Text.Length == 0 )
 					lblError.Text = "Internal error ; please try again later";
-				return;
-			}
+
+			if ( lblError.Text.Length == 0 ) // No errors, can continue
+				hdnPageNo.Value = pageNo.ToString();
 		}
 	}
 }

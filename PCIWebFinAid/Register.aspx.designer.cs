@@ -985,13 +985,13 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.Literal lbl100212;
         
         /// <summary>
-        /// lblp6TitleX control.
+        /// lbl100111 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lblp6TitleX;
+        protected global::System.Web.UI.WebControls.Literal lbl100111;
         
         /// <summary>
         /// lblp6Title control.
