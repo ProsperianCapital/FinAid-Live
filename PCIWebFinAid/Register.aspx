@@ -163,7 +163,7 @@ function ValidatePage(ctl,seq)
 	//	Page 3
 		if ( ( pageNo == 3 && ctl == 0 ) || ctl == 100123 )
 		{
-			p   = Validate('txtIncome','lblInfo3',6,hdnIncomeError.value,3,1000);
+			p   = Validate('txtIncome','lblInfo3',6,hdnIncomeError.value,3,100);
 			err = err + p;
 			ShowTick(p,'Income',seq);
 		}

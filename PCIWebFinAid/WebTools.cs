@@ -264,35 +264,69 @@ namespace PCIWebFinAid
 			return existingScript;
 		}
 
+//	Version 1
+//		public static string ClientIPAddress(HttpRequest req)
+//		{
+//			string ipAddr = "";
+//
+//			for ( int k = 1 ; k < 5 ; k++ )
+//				try
+//				{
+//					if      ( k == 1 )
+//						ipAddr = req.ServerVariables["HTTP_X_CLUSTER_CLIENT_IP"];
+//					else if ( k == 2 )
+//						ipAddr = req.ServerVariables["HTTP_X_FORWARDED_FOR"];
+//					else if ( k == 3 )
+//						ipAddr = req.ServerVariables["REMOTE_ADDR"];
+//					else if ( k == 4 )
+//						ipAddr = req.UserHostAddress;
+//					if ( !string.IsNullOrEmpty(ipAddr) )
+//						break;
+//				}
+//				catch
+//				{
+//					ipAddr = "";
+//				}
+//
+//			if ( string.IsNullOrWhiteSpace(ipAddr) )
+//				ipAddr = "";
+//			else if ( ipAddr.Contains(",") )
+//				ipAddr = ipAddr.Split(',')[0];
+//
+//			return ipAddr;
+//		}
+
+//	Version 2
 		public static string ClientIPAddress(HttpRequest req)
 		{
-			string ipAddr = "";
-
-			for ( int k = 1 ; k < 5 ; k++ )
-				try
+			string ipList = req.ServerVariables["HTTP_X_CLUSTER_CLIENT_IP"];
+			if ( string.IsNullOrWhiteSpace(ipList) )
+			{
+				ipList = req.ServerVariables["HTTP_X_FORWARDED_FOR"];
+				if ( string.IsNullOrWhiteSpace(ipList) )
 				{
-					if      ( k == 1 )
-						ipAddr = req.ServerVariables["HTTP_X_CLUSTER_CLIENT_IP"];
-					else if ( k == 2 )
-						ipAddr = req.ServerVariables["HTTP_X_FORWARDED_FOR"];
-					else if ( k == 3 )
-						ipAddr = req.ServerVariables["REMOTE_ADDR"];
-					else if ( k == 4 )
-						ipAddr = req.UserHostAddress;
-					if ( !string.IsNullOrEmpty(ipAddr) )
-						break;
+					ipList = req.ServerVariables["REMOTE_ADDR"];
+					if ( string.IsNullOrWhiteSpace(ipList) )
+						ipList = req.UserHostAddress;
 				}
-				catch
-				{
-					ipAddr = "";
-				}
+			}
+			if ( string.IsNullOrWhiteSpace(ipList) )
+				return "";
 
-			if ( string.IsNullOrWhiteSpace(ipAddr) )
-				ipAddr = "";
-			else if ( ipAddr.Contains(",") )
-				ipAddr = ipAddr.Split(',')[0];
+			if ( ipList == "::1" )
+				return "localhost";
 
-			return ipAddr;
+			if ( ipList.Contains(",") )
+				return ipList.Split(',')[0];
+
+			return ipList;
+		}
+
+		public static string ClientBrowser(HttpRequest req)
+		{
+			HttpBrowserCapabilities bc = req.Browser;
+			string                  h  = bc.Browser + " " + bc.Version + " (" + bc.Platform + ")";
+			return h;
 		}
 	}
 }

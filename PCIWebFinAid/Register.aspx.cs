@@ -20,7 +20,6 @@ namespace PCIWebFinAid
 		{
 			if ( Page.IsPostBack )
 			{
-//				lblJS.Text          = WebTools.JavaScriptSource("NextPage(0)");
 				productCode         = WebTools.ViewStateString(ViewState,"ProductCode");
 				languageCode        = WebTools.ViewStateString(ViewState,"LanguageCode");
 				languageDialectCode = WebTools.ViewStateString(ViewState,"LanguageDialectCode");
@@ -32,7 +31,6 @@ namespace PCIWebFinAid
 			else
 			{
 //				Tools.LogInfo("Register.PageLoad","Inital load",logDebug);
-//				lblJS.Text          = WebTools.JavaScriptSource("SetEltValue('hdnPageNo','1');pageNo=1;NextPage(0)");
 				lblJS.Text          = WebTools.JavaScriptSource("NextPage(0)");
 				productCode         = WebTools.RequestValueString(Request,"PC");  // ProductCode");
 				languageCode        = WebTools.RequestValueString(Request,"LC");  // LanguageCode");
@@ -109,11 +107,6 @@ namespace PCIWebFinAid
 								ctlLiteral = (Literal)FindControl("lbl"+fieldCode);
 								if ( ctlLiteral != null )
 									ctlLiteral.Text = fieldValue;
-//								if ( fieldValue.ToUpper().StartsWith("TITLE") ) -> 100111
-//								{
-//									lblp6TitleX.Text = "Title (fieldCode " + fieldCode + ")";
-//									Tools.LogInfo("Register.LoadLabels/12","fieldCode="+fieldCode + ", fieldValue="+fieldValue);
-//								}
 							}
 
 						//	Page 1
@@ -275,7 +268,7 @@ namespace PCIWebFinAid
 				{
 					sql = "exec WP_ContractApplicationC"
 					    +     " @RegistrationPage   = 'Z'"
-					    +     ",@WebsiteCode        =" + Tools.DBString(WebTools.RequestValueString(Request,"WVC"))
+					    +     ",@WebsiteCode        =" + Tools.DBString(WebTools.RequestValueString(Request,"WC"))
 					    +     ",@ProductCode        =" + Tools.DBString(productCode)
 					    +     ",@LanguageCode       =" + Tools.DBString(languageCode)
 					    +     ",@GoogleUtmSource    =" + Tools.DBString(WebTools.RequestValueString(Request,"GUS"))
@@ -284,36 +277,36 @@ namespace PCIWebFinAid
 					    +     ",@GoogleUtmTerm      =" + Tools.DBString(WebTools.RequestValueString(Request,"GUT"))
 					    +     ",@GoogleUtmContent   =" + Tools.DBString(WebTools.RequestValueString(Request,"GUN"))
 					    +     ",@AdvertCode         =" + Tools.DBString(WebTools.RequestValueString(Request,"AC"))
-					    +     ",@ClientIPAddress    =" + Tools.DBString(WebTools.RequestValueString(Request,"CIPA"))
-					    +     ",@ClientDevice       =" + Tools.DBString(WebTools.RequestValueString(Request,"CD"))
+					    +     ",@ClientIPAddress    =" + Tools.DBString(WebTools.ClientIPAddress(Request))
+					    +     ",@ClientDevice       =" + Tools.DBString(WebTools.ClientBrowser(Request))
 					    +     ",@WebsiteVisitorCode =" + Tools.DBString(WebTools.RequestValueString(Request,"WVC"))
 					    +     ",@WebsiteVisitorSessionCode =" + Tools.DBString(WebTools.RequestValueString(Request,"WVSC"));
 
+//					    +     ",@ClientIPAddress    =" + Tools.DBString(WebTools.RequestValueString(Request,"CIPA"))
+//					    +     ",@ClientDevice       =" + Tools.DBString(WebTools.RequestValueString(Request,"CD"))
+
 					Tools.LogInfo("Register.GetContractCode/10",sql,logDebug);
 
-					if ( miscList.ExecQuery(sql,0) == 0 )
-					{
-//						Tools.LogInfo("Register.GetContractCode/11","",logDebug);
-						if ( ! miscList.EOF )
-						{
-//							Tools.LogInfo("Register.GetContractCode/12","",logDebug);
-							contractCode = miscList.GetColumn("ContractCode");
-							contractPIN  = miscList.GetColumn("PIN");
-							string stat  = miscList.GetColumn("Status");
-							if ( contractCode.Length > 0 && contractPIN.Length > 0 && ( stat == "0" || stat.Length == 0 ) )
-								lblError.Text = "";
-						}
-						else
-							Tools.LogInfo("Register.GetContractCode/13","",logDebug);
-					}
-					else
-						Tools.LogInfo("Register.GetContractCode/14","",logDebug);
+					if ( miscList.ExecQuery(sql,0) != 0 )
+						Tools.LogInfo("Register.GetContractCode/20","Execution of WP_ContractApplicationC failed",240);
 
-					Tools.LogInfo("Register.GetContractCode/20","ContractCode="+contractCode,logDebug);
+					else if ( miscList.EOF )
+						Tools.LogInfo("Register.GetContractCode/30","No data returned from WP_ContractApplicationC",240);
+
+					else
+					{
+						contractCode = miscList.GetColumn("ContractCode");
+						contractPIN  = miscList.GetColumn("PIN");
+						string stat  = miscList.GetColumn("Status");
+						if ( contractCode.Length > 0 && contractPIN.Length > 0 && ( stat == "0" || stat.Length == 0 ) )
+							lblError.Text = "";
+					}
+
+//					Tools.LogInfo("Register.GetContractCode/50","ContractCode="+contractCode,logDebug);
 				}
 				catch (Exception ex)
 				{
-					Tools.LogException("Register.GetContractCode",sql,ex);
+					Tools.LogException("Register.GetContractCode/99",sql,ex);
 					return false;
 				}
 				return ( lblError.Text.Length == 0 );
@@ -336,7 +329,36 @@ namespace PCIWebFinAid
 				txtFirstName.Text = txtFirstName.Text.Trim();
 				if ( txtFirstName.Text.Length < 1 )
 					err = err + "Invalid first name (at least 1 character required)<br />";
+				txtEMail.Text = txtEMail.Text.Trim();
+				if ( ! Tools.CheckEMail(txtEMail.Text) )
+					err = err + "Invalid email address<br />";
+				txtID.Text = txtID.Text.Trim();
+				if ( txtID.Text.Length < 3 )
+					err = err + "Invalid id number<br />";
 			}
+			else if ( pageNo == 3 )
+			{
+				int income = Tools.StringToInt(txtIncome.Text,true);
+				if ( income < 100 )
+					err = err + "Invalid income (it must be numeric and more than 100)<br />";
+				else
+					txtIncome.Text = income.ToString();
+			}
+			else if ( pageNo == 4 )
+			{ }
+			else if ( pageNo == 5 )
+			{
+				txtCCNumber.Text = txtCCNumber.Text.Trim();
+				if ( txtCCNumber.Text.Length < 12 )
+					err = err + "Invalid credit/debit card number<br />";
+				txtCCName.Text = txtCCName.Text.Trim();
+				if ( txtCCName.Text.Length < 3 )
+					err = err + "Invalid credit/debit card name<br />";
+				txtCCCVV.Text = txtCCCVV.Text.Trim();
+				if ( txtCCCVV.Text.Length < 3 )
+					err = err + "Invalid credit/debit card CVV code<br />";
+			}
+
 			return err;
 		}
 
@@ -359,7 +381,7 @@ namespace PCIWebFinAid
 			using (MiscList miscList = new MiscList())
 				try
 				{
-					sql = "exec WP_ContractApplicationB"
+					sql = "exec WP_ContractApplicationC"
 					    +     " @RegistrationPage =" + Tools.DBString((pageNo-1).ToString())
 					    +     ",@ContractCode     =" + Tools.DBString(contractCode);
 
@@ -396,7 +418,7 @@ namespace PCIWebFinAid
 
 					if ( pageNo == 5 && statusCode == 0 )
 					{
-						sql = "exec WP_ContractApplicationB"
+						sql = "exec WP_ContractApplicationC"
 						    +     " @RegistrationPage = '5'"
 						    +     ",@ContractCode     =" + Tools.DBString(contractCode);
 						Tools.LogInfo("Register.btnNext_Click/20",sql,logDebug);
@@ -408,22 +430,16 @@ namespace PCIWebFinAid
 					if ( statusCode == 0 )
 					{
 						pageNo++;
-//						hdnPageNo.Value = pageNo.ToString();
-						lblError.Text   = "";
+						lblError.Text = "";
 
 						if ( pageNo == 4 )
 						{
-							int salary = Tools.StringToInt(txtIncome.Text,true);
-							if ( salary < 100 )
-							{
-								lblError.Text = "Invalid income";
-								return;
-							}
+							int h = Tools.StringToInt(txtIncome.Text,true);
 							sql   = "exec sp_WP_Get_ProductOptionA"
 							      + " @ProductCode="         + Tools.DBString(productCode)
 							      + ",@LanguageCode="        + Tools.DBString(languageCode)
 							      + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode)
-							      + ",@Income="              + salary.ToString();
+							      + ",@Income="              + h.ToString();
 							Tools.LogInfo("Register.btnNext_Click/40",sql,logDebug);
 							WebTools.ListBind(lstOptions,sql,null,"ProductOptionCode","ProductOptionDescription");
 						}
@@ -512,8 +528,10 @@ namespace PCIWebFinAid
 							lblp6CCNumber.Text  = txtCCNumber.Text;
 							lblp6CCExpiry.Text  = lstCCYear.SelectedValue + "/" + lstCCMonth.SelectedValue;
 							lblp6Date.Text      = Tools.DateToString(System.DateTime.Now,2,1);
-							lblp6IP.Text        = WebTools.RequestValueString(Request,"CIPA");
-							lblp6Browser.Text   = WebTools.RequestValueString(Request,"CD");
+							lblp6IP.Text        = WebTools.ClientIPAddress(Request);
+							lblp6Browser.Text   = WebTools.ClientBrowser(Request);
+//							lblp6IP.Text        = WebTools.RequestValueString(Request,"CIPA");
+//							lblp6Browser.Text   = WebTools.RequestValueString(Request,"CD");
 						}
 					}
 				}
