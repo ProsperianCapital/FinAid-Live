@@ -322,10 +322,13 @@ namespace PCIWebFinAid
 			return ipList;
 		}
 
-		public static string ClientBrowser(HttpRequest req)
+		public static string ClientBrowser(HttpRequest req,string jsData="")
 		{
 			HttpBrowserCapabilities bc = req.Browser;
 			string                  h  = bc.Browser + " " + bc.Version + " (" + bc.Platform + ")";
+			jsData                     = jsData.Trim();
+			if ( jsData.Length > 0 )
+				h = h + " : " + jsData;
 			return h;
 		}
 	}

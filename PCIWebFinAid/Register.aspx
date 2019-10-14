@@ -38,13 +38,10 @@ function OptSelect(p)
 	catch (x)
 	{ }
 }
-
 function NextPage(inc)
 {
 	try
 	{
-//		alert("pageNo="+pageNo.toString()+", inc="+inc.toString());
-
 		if ( inc > 0 )
 			return ValidatePage(0,2);
 		else if ( inc < 0 && pageNo > firstPage )
@@ -75,23 +72,23 @@ function NextPage(inc)
 		if ( pageNo == firstPage )
 			ShowElt('btnNext',GetElt('chkAgree').checked);
 
-		else if ( pageNo == lastPage )
-		{
-			var dt = new Date();
-			var dd = dt.getDate();
-			var mm = dt.getMonth()+1;
-			var yy = dt.getFullYear();
-			if ( dd > 9 )
-				dd = dd.toString();
-			else
-				dd = '0'+dd.toString();
-			if ( mm > 9 )
-				mm = mm.toString();
-			else
-				mm = '0'+mm.toString();
-			yy = yy.toString();
-		//	SetEltValue('lblCCDueDate',yy+'/'+mm+'/'+dd);
-		}
+//		else if ( pageNo == lastPage )
+//		{
+//			var dt = new Date();
+//			var dd = dt.getDate();
+//			var mm = dt.getMonth()+1;
+//			var yy = dt.getFullYear();
+//			if ( dd > 9 )
+//				dd = dd.toString();
+//			else
+//				dd = '0'+dd.toString();
+//			if ( mm > 9 )
+//				mm = mm.toString();
+//			else
+//				mm = '0'+mm.toString();
+//			yy = yy.toString();
+//			SetEltValue('lblCCDueDate',yy+'/'+mm+'/'+dd);
+//		}
 	}
 	catch (x)
 	{
@@ -264,6 +261,7 @@ function Help(onOrOff,ctl,item)
 
 <asp:HiddenField runat="server" id="hdnPageNo" value="1" />
 <asp:HiddenField runat="server" id="hdnOption" />
+<asp:HiddenField runat="server" id="hdnBrowser" />
 
 <div class="Header3">Registration<asp:Literal runat="server" ID="lblRegConf"></asp:Literal></div>
 
@@ -663,6 +661,7 @@ function Help(onOrOff,ctl,item)
 
 <script type="text/javascript">
 pageNo = GetEltValueInt('hdnPageNo');
+SetEltValue('hdnBrowser',navigator.userAgent.toString());
 </script>
 
 <asp:Literal runat="server" ID="lblJS"></asp:Literal>

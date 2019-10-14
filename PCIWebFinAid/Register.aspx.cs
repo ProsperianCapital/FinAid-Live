@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using PCIBusiness;
@@ -18,6 +17,14 @@ namespace PCIWebFinAid
 
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
+//	Browser info in JavaScript:
+
+//	var h = "navigator.appCodeName : " + navigator.appCodeName + "<br />"
+//		   + "navigator.appName : " + navigator.appName + "<br />"
+//		   + "navigator.appVersion : " + navigator.appVersion + "<br />"
+//		   + "navigator.platform : " + navigator.platform + "<br />"
+//		   + "navigator.userAgent : " + navigator.userAgent;
+
 			if ( Page.IsPostBack )
 			{
 				productCode         = WebTools.ViewStateString(ViewState,"ProductCode");
@@ -27,6 +34,9 @@ namespace PCIWebFinAid
 				contractPIN         = WebTools.ViewStateString(ViewState,"ContractPIN");
 				lblError.Text       = "";
 				lblRegConf.Text     = "";
+
+				if ( contractCode.Length < 1 )
+					GetContractCode();
 			}
 			else
 			{
@@ -41,13 +51,13 @@ namespace PCIWebFinAid
 				if ( languageCode.Length        < 1 ) languageCode        = "ENG";
 				if ( languageDialectCode.Length < 1 ) languageDialectCode = "0002";
 
-				GetContractCode();
+//				GetContractCode();
 
 				ViewState["ProductCode"]         = productCode;
 				ViewState["LanguageCode"]        = languageCode;
 				ViewState["LanguageDialectCode"] = languageDialectCode;
-				ViewState["ContractCode"]        = contractCode;
-				ViewState["ContractPIN"]         = contractPIN;
+//				ViewState["ContractCode"]        = contractCode;
+//				ViewState["ContractPIN"]         = contractPIN;
 
 				LoadLabels();
 
@@ -259,9 +269,11 @@ namespace PCIWebFinAid
 
 		private bool GetContractCode()
 		{
-			lblError.Text = "Error retrieving new contract details ; please try again later";
-			contractCode  = "";
-			contractPIN   = "";
+			lblError.Text             = "Error retrieving new contract details ; please try again later";
+			contractCode              = "";
+			contractPIN               = "";
+			ViewState["ContractCode"] = null;
+			ViewState["ContractPIN"]  = null;
 
 			using (MiscList miscList = new MiscList())
 				try
@@ -278,7 +290,7 @@ namespace PCIWebFinAid
 					    +     ",@GoogleUtmContent   =" + Tools.DBString(WebTools.RequestValueString(Request,"GUN"))
 					    +     ",@AdvertCode         =" + Tools.DBString(WebTools.RequestValueString(Request,"AC"))
 					    +     ",@ClientIPAddress    =" + Tools.DBString(WebTools.ClientIPAddress(Request))
-					    +     ",@ClientDevice       =" + Tools.DBString(WebTools.ClientBrowser(Request))
+					    +     ",@ClientDevice       =" + Tools.DBString(WebTools.ClientBrowser(Request,hdnBrowser.Value))
 					    +     ",@WebsiteVisitorCode =" + Tools.DBString(WebTools.RequestValueString(Request,"WVC"))
 					    +     ",@WebsiteVisitorSessionCode =" + Tools.DBString(WebTools.RequestValueString(Request,"WVSC"));
 
@@ -299,7 +311,11 @@ namespace PCIWebFinAid
 						contractPIN  = miscList.GetColumn("PIN");
 						string stat  = miscList.GetColumn("Status");
 						if ( contractCode.Length > 0 && contractPIN.Length > 0 && ( stat == "0" || stat.Length == 0 ) )
-							lblError.Text = "";
+						{
+							lblError.Text             = "";
+							ViewState["ContractCode"] = contractCode;
+							ViewState["ContractPIN"]  = contractPIN;
+						}
 					}
 
 //					Tools.LogInfo("Register.GetContractCode/50","ContractCode="+contractCode,logDebug);
@@ -529,9 +545,7 @@ namespace PCIWebFinAid
 							lblp6CCExpiry.Text  = lstCCYear.SelectedValue + "/" + lstCCMonth.SelectedValue;
 							lblp6Date.Text      = Tools.DateToString(System.DateTime.Now,2,1);
 							lblp6IP.Text        = WebTools.ClientIPAddress(Request);
-							lblp6Browser.Text   = WebTools.ClientBrowser(Request);
-//							lblp6IP.Text        = WebTools.RequestValueString(Request,"CIPA");
-//							lblp6Browser.Text   = WebTools.RequestValueString(Request,"CD");
+							lblp6Browser.Text   = WebTools.ClientBrowser(Request,hdnBrowser.Value);
 						}
 					}
 				}
