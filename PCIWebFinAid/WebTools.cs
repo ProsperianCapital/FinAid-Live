@@ -297,7 +297,7 @@ namespace PCIWebFinAid
 //		}
 
 //	Version 2
-		public static string ClientIPAddress(HttpRequest req)
+		public static string ClientIPAddress(HttpRequest req,byte mode=0)
 		{
 			string ipList = req.ServerVariables["HTTP_X_CLUSTER_CLIENT_IP"];
 			if ( string.IsNullOrWhiteSpace(ipList) )
@@ -313,22 +313,25 @@ namespace PCIWebFinAid
 			if ( string.IsNullOrWhiteSpace(ipList) )
 				return "";
 
-			if ( ipList == "::1" )
+			if ( ipList.StartsWith("::") ) // Typically "::1" on a local machine
 				return "localhost";
 
 			if ( ipList.Contains(",") )
-				return ipList.Split(',')[0];
+				ipList = ipList.Split(',')[0];
+
+			if ( mode == 1 && ipList.IndexOf(":") > 0 )
+				return ipList.Substring(0,ipList.IndexOf(":"));
 
 			return ipList;
 		}
 
-		public static string ClientBrowser(HttpRequest req,string jsData="")
+		public static string ClientBrowser(HttpRequest req,string otherInfo="")
 		{
 			HttpBrowserCapabilities bc = req.Browser;
 			string                  h  = bc.Browser + " " + bc.Version + " (" + bc.Platform + ")";
-			jsData                     = jsData.Trim();
-			if ( jsData.Length > 0 )
-				h = h + " : " + jsData;
+			otherInfo                  = otherInfo.Trim();
+			if ( otherInfo.Length > 0 )
+				h = h + " : " + otherInfo;
 			return h;
 		}
 	}

@@ -35,8 +35,8 @@ namespace PCIWebFinAid
 				lblError.Text       = "";
 				lblRegConf.Text     = "";
 
-				if ( contractCode.Length < 1 )
-					GetContractCode();
+//				if ( contractCode.Length < 1 )
+//					GetContractCode();
 			}
 			else
 			{
@@ -46,18 +46,16 @@ namespace PCIWebFinAid
 				languageCode        = WebTools.RequestValueString(Request,"LC");  // LanguageCode");
 				languageDialectCode = WebTools.RequestValueString(Request,"LDC"); // LanguageDialectCode");
 
-//	Testing
+//	Development
 				if ( productCode.Length         < 1 ) productCode         = "10278";
 				if ( languageCode.Length        < 1 ) languageCode        = "ENG";
 				if ( languageDialectCode.Length < 1 ) languageDialectCode = "0002";
 
-//				GetContractCode();
+				GetContractCode();
 
 				ViewState["ProductCode"]         = productCode;
 				ViewState["LanguageCode"]        = languageCode;
 				ViewState["LanguageDialectCode"] = languageDialectCode;
-//				ViewState["ContractCode"]        = contractCode;
-//				ViewState["ContractPIN"]         = contractPIN;
 
 				LoadLabels();
 
@@ -294,9 +292,6 @@ namespace PCIWebFinAid
 					    +     ",@WebsiteVisitorCode =" + Tools.DBString(WebTools.RequestValueString(Request,"WVC"))
 					    +     ",@WebsiteVisitorSessionCode =" + Tools.DBString(WebTools.RequestValueString(Request,"WVSC"));
 
-//					    +     ",@ClientIPAddress    =" + Tools.DBString(WebTools.RequestValueString(Request,"CIPA"))
-//					    +     ",@ClientDevice       =" + Tools.DBString(WebTools.RequestValueString(Request,"CD"))
-
 					Tools.LogInfo("Register.GetContractCode/10",sql,logDebug);
 
 					if ( miscList.ExecQuery(sql,0) != 0 )
@@ -317,8 +312,6 @@ namespace PCIWebFinAid
 							ViewState["ContractPIN"]  = contractPIN;
 						}
 					}
-
-//					Tools.LogInfo("Register.GetContractCode/50","ContractCode="+contractCode,logDebug);
 				}
 				catch (Exception ex)
 				{
@@ -399,7 +392,9 @@ namespace PCIWebFinAid
 				{
 					sql = "exec WP_ContractApplicationC"
 					    +     " @RegistrationPage =" + Tools.DBString((pageNo-1).ToString())
-					    +     ",@ContractCode     =" + Tools.DBString(contractCode);
+					    +     ",@ContractCode     =" + Tools.DBString(contractCode)
+					    +     ",@ClientIPAddress  =" + Tools.DBString(WebTools.ClientIPAddress(Request))
+					    +     ",@ClientDevice     =" + Tools.DBString(WebTools.ClientBrowser(Request,hdnBrowser.Value));
 
 					if ( Tools.LiveTestOrDev() == Constants.SystemMode.Development )
 					{ }

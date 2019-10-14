@@ -19,6 +19,9 @@ var lastPage  = 5;
 var confPage  = 6;
 var pageNo;
 
+//history.pushState({}, "FinAid", "/2006.aspx");
+//history.replaceState("http://www.paulkilfoil.co.za", "FinAid", "/2006.aspx");
+
 function OptSelect(p)
 {
 	try
