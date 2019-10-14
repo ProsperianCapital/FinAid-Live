@@ -287,7 +287,7 @@ namespace PCIWebFinAid
 					    +     ",@GoogleUtmTerm      =" + Tools.DBString(WebTools.RequestValueString(Request,"GUT"))
 					    +     ",@GoogleUtmContent   =" + Tools.DBString(WebTools.RequestValueString(Request,"GUN"))
 					    +     ",@AdvertCode         =" + Tools.DBString(WebTools.RequestValueString(Request,"AC"))
-					    +     ",@ClientIPAddress    =" + Tools.DBString(WebTools.ClientIPAddress(Request))
+					    +     ",@ClientIPAddress    =" + Tools.DBString(WebTools.ClientIPAddress(Request,1))
 					    +     ",@ClientDevice       =" + Tools.DBString(WebTools.ClientBrowser(Request,hdnBrowser.Value))
 					    +     ",@WebsiteVisitorCode =" + Tools.DBString(WebTools.RequestValueString(Request,"WVC"))
 					    +     ",@WebsiteVisitorSessionCode =" + Tools.DBString(WebTools.RequestValueString(Request,"WVSC"));
@@ -393,7 +393,7 @@ namespace PCIWebFinAid
 					sql = "exec WP_ContractApplicationC"
 					    +     " @RegistrationPage =" + Tools.DBString((pageNo-1).ToString())
 					    +     ",@ContractCode     =" + Tools.DBString(contractCode)
-					    +     ",@ClientIPAddress  =" + Tools.DBString(WebTools.ClientIPAddress(Request))
+					    +     ",@ClientIPAddress  =" + Tools.DBString(WebTools.ClientIPAddress(Request,1))
 					    +     ",@ClientDevice     =" + Tools.DBString(WebTools.ClientBrowser(Request,hdnBrowser.Value));
 
 					if ( Tools.LiveTestOrDev() == Constants.SystemMode.Development )
