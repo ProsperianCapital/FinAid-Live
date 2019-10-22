@@ -706,8 +706,8 @@ namespace PCIWebFinAid
 
 											errCode            = 45;
 											mailMsg.From       = new MailAddress(emailFrom);
-											mailMsg.Subject    = emailHeader;
-											mailMsg.Body       = emailBody;
+											mailMsg.Subject    = emailHeader.Replace("[ContractCode]",contractCode);
+											mailMsg.Body       = emailBody.Replace("[ContractCode]",contractCode);
 											mailMsg.IsBodyHtml = emailBody.ToUpper().Contains("<HTML");
 											errCode            = 50;
 											if ( pdfFileName.Length > 0 )
