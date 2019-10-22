@@ -7,7 +7,7 @@
 	<!--#include file="IncludeMain.htm" -->
 	<title>FinAid : Register</title>
 	<link rel="stylesheet" href="CSS/FinAid.css" type="text/css" />
-	<link rel="shortcut icon" href="gfx/favicon.ico" />
+	<link rel="shortcut icon" href="Images/favicon.ico" />
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
 </head>
 <body>
@@ -626,7 +626,7 @@ function Help(onOrOff,ctl,item)
 		<td><asp:Literal runat="server" ID="lbl100188"></asp:Literal></td>
 		<td><asp:Literal runat="server" ID="lblp6CCExpiry"></asp:Literal></td></tr>
 	<tr>
-		<td colspan="2"><asp:Literal runat="server" ID="lbl100Billing"></asp:Literal></td></tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lblp6Billing"></asp:Literal></td></tr>
 	<tr><td>&nbsp;</td></tr>
 
 	<tr>
@@ -655,6 +655,7 @@ function Help(onOrOff,ctl,item)
 <input type="button" id="btnBack"  value="<< BACK" onclick="JavaScript:NextPage(-1)" />
 <asp:Button runat="server" ID="btnNext"  OnClick="btnNext_Click" OnClientClick="JavaScript:return NextPage(1)" Text="NEXT >>" />
 <asp:Button runat="server" ID="btnAgree" OnClick="btnNext_Click" OnClientClick="JavaScript:return NextPage(1)" Text="I Agree" />
+&nbsp;&nbsp;&nbsp;&nbsp;
 <input type="button" id="btnBack2" value="Change Payment Method" onclick="JavaScript:NextPage(-1)" style="width:175px" />
 <br /><br />
 

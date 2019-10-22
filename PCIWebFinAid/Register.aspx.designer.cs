@@ -1327,13 +1327,13 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.Literal lblp6CCExpiry;
         
         /// <summary>
-        /// lbl100Billing control.
+        /// lblp6Billing control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lbl100Billing;
+        protected global::System.Web.UI.WebControls.Literal lblp6Billing;
         
         /// <summary>
         /// lblp6MandateHead control.
