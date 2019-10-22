@@ -678,7 +678,9 @@ namespace PCIBusiness
 			email = NullToString(email);
 			if ( email.Length < 6 || email.Contains("(") || email.Contains(")") || email.Contains("<") || email.Contains(">") || email.Contains(" ") )
 				return false;
-			return email.Contains("@") && email.Contains(".");
+			int at  = email.IndexOf("@");
+			int dot = email.LastIndexOf(".");
+			return ( at > 0 && dot > at );
 		}
 
 		/*
@@ -799,85 +801,89 @@ namespace PCIBusiness
 			return "";
 		}
 
-//		public static int DeleteFiles(string fileSpec,short ageDays=0,short beforeHour=0,short afterHour=0)
-//		{
-//			int deleted = 0;
-//
-//			try
-//			{
-//				if ( beforeHour > 0 && beforeHour < 24 && System.DateTime.Now.Hour >= beforeHour )
-//					return -5;
-//				if ( afterHour  > 0 && afterHour  < 24 && System.DateTime.Now.Hour <  afterHour )
-//					return -10;
-//
-//				string folder = Tools.ConfigValue("ReportFolder");
-//
-//				if ( ! Directory.Exists(folder) )
-//					return -15;
-//				string[] files = Directory.GetFiles(folder,fileSpec);
-//				if ( files.Length < 1 )
-//					return -20;
-//
-//				if ( ageDays < 1 )
-//					ageDays = 7;
-//
-//				foreach ( string fileName in files )
-//					if ( File.GetLastWriteTime(fileName).AddDays(ageDays) < DateTime.Now ) // More "x" days old
-//					{
-//						try
-//						{
-//							File.Delete(fileName);
-//							deleted++;
-//						}
-//						catch { }
-//					}
-//			}
-//			catch (Exception ex)
-//			{
-//				Tools.LogException("Tools.DeleteFiles","",ex);
-//			}
-//			return deleted;
-//		}
+		public static int DeleteFiles(string fileSpec,short ageDays=0,short beforeHour=0,short afterHour=0)
+		{
+			int deleted = 0;
 
-//		public static string CreateFile(int userCode,ref StreamWriter fileStream,string fileExtension="csv")
-//		{
-//			FileStream fileHandle;
-//			string     fileName      = "";
-//			string     fileNameFixed = "";
-//
-//			if ( NullToString(fileExtension).Length < 1 )
-//				fileExtension = ".csv";
-//			else if ( ! fileExtension.StartsWith(".") )
-//				fileExtension = "." + fileExtension;
-//
-//			try
-//			{
-//				fileStream    = null;
-//				fileNameFixed = Tools.FixFolderName(ConfigValue("ReportFolder"));
-//				fileNameFixed = fileNameFixed + userCode.ToString() + "-" + DateToString(DateTime.Now,5) + "-";
-//
-//				for ( int k = 1 ; k < 999999 ; k++ )
-//				{
-//					fileName = fileNameFixed + k.ToString().PadLeft(6,'0') + fileExtension;
-//					if ( ! File.Exists(fileName) )
-//						break;
-//				}
-//				fileHandle = File.Open(fileName, FileMode.Create);
-//				fileStream = new StreamWriter(fileHandle,System.Text.Encoding.Default);
-//				return fileName;
-//			}
-//			catch (Exception ex)
-//			{
-//				LogException("Tools.CreateFile","UserCode=" + userCode.ToString(),ex);
-//			}
-//			return "";
-//		}
+			try
+			{
+				if ( beforeHour > 0 && beforeHour < 24 && System.DateTime.Now.Hour >= beforeHour )
+					return -5;
+				if ( afterHour  > 0 && afterHour  < 24 && System.DateTime.Now.Hour <  afterHour )
+					return -10;
+
+				string folder = Tools.ConfigValue("TempFiles");
+
+				if ( ! Directory.Exists(folder) )
+					return -15;
+				string[] files = Directory.GetFiles(folder,fileSpec);
+				if ( files.Length < 1 )
+					return -20;
+
+				if ( ageDays < 1 )
+					ageDays = 7;
+
+				foreach ( string fileName in files )
+					if ( File.GetLastWriteTime(fileName).AddDays(ageDays) < DateTime.Now ) // More "x" days old
+					{
+						try
+						{
+							File.Delete(fileName);
+							deleted++;
+						}
+						catch { }
+					}
+			}
+			catch (Exception ex)
+			{
+				Tools.LogException("Tools.DeleteFiles","",ex);
+			}
+			return deleted;
+		}
+
+		public static string CreateFile(ref StreamWriter fileStream,string fileName,string fileExtension="csv")
+		{
+			FileStream fileHandle;
+			string     fileNameFixed = "";
+
+			try
+			{
+				fileName      = NullToString(fileName);
+				fileExtension = NullToString(fileExtension);
+
+				if ( fileExtension.Length < 1 )
+					fileExtension = ".csv";
+				else if ( ! fileExtension.StartsWith(".") )
+					fileExtension = "." + fileExtension;
+
+				if ( fileName.Length > 0 )
+					fileName = fileName.Replace("\\","-").Replace("/","-").Replace(":","-");
+				else
+					fileName = DateToString(DateTime.Now,5);
+
+				fileStream    = null;
+				fileNameFixed = Tools.FixFolderName(ConfigValue("TempFiles")) + fileName + "-";
+
+				for ( int k = 1 ; k < 999999 ; k++ )
+				{
+					fileName = fileNameFixed + k.ToString().PadLeft(3,'0') + fileExtension;
+					if ( ! File.Exists(fileName) )
+						break;
+				}
+				fileHandle = File.Open(fileName, FileMode.Create);
+				fileStream = new StreamWriter(fileHandle,System.Text.Encoding.Default);
+				return fileName;
+			}
+			catch (Exception ex)
+			{
+				LogException("Tools.CreateFile","fileName=" + fileName+", fileExtension=" + fileExtension,ex);
+			}
+			return "";
+		}
 
 		public static string FixFolderName(string folder)
 		{
-			if ( folder == null )
-				return "";
-			folder = folder.Trim();
+			folder = NullToString(folder);
 			if ( folder.Length < 1 )
 				return "";
 			return ( folder.EndsWith("\\") ? folder : folder + "\\" );
