@@ -1426,6 +1426,15 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.Button btnAgree;
         
         /// <summary>
+        /// btnError control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnError;
+        
+        /// <summary>
         /// lblError control.
         /// </summary>
         /// <remarks>
@@ -1433,6 +1442,15 @@ namespace PCIWebFinAid {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblError;
+        
+        /// <summary>
+        /// lblErrorDtl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblErrorDtl;
         
         /// <summary>
         /// lblVer control.

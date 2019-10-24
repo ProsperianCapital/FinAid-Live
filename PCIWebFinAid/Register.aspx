@@ -652,14 +652,17 @@ function Help(onOrOff,ctl,item)
 </div>
 
 <br />
-<input type="button" id="btnBack"  value="<< BACK" onclick="JavaScript:NextPage(-1)" />
-<asp:Button runat="server" ID="btnNext"  OnClick="btnNext_Click" OnClientClick="JavaScript:return NextPage(1)" Text="NEXT >>" />
+<input type="button" id="btnBack"  value="BACK" onclick="JavaScript:NextPage(-1)" />
+<asp:Button runat="server" ID="btnNext"  OnClick="btnNext_Click" OnClientClick="JavaScript:return NextPage(1)" Text="NEXT" />
 <asp:Button runat="server" ID="btnAgree" OnClick="btnNext_Click" OnClientClick="JavaScript:return NextPage(1)" Text="I Agree" />
 &nbsp;&nbsp;&nbsp;&nbsp;
 <input type="button" id="btnBack2" value="Change Payment Method" onclick="JavaScript:NextPage(-1)" style="width:175px" />
+&nbsp;&nbsp;&nbsp;&nbsp;
+<asp:Button runat="server" ID="btnError" Text="Error ...?" OnClientClick="JavaScript:ShowElt('lblErrorDtl',true);return false" />
 <br /><br />
 
 <asp:Label runat="server" ID="lblError" CssClass="Error"></asp:Label>
+<asp:Label runat="server" ID="lblErrorDtl" style="border:1px solid #000000;position:fixed;bottom:20px;right:5px;visibility:hidden;display:none;padding:5px;font-family:Verdana"></asp:Label>
 
 <asp:Label runat="server" ID="lblVer" style="position:fixed;bottom:3px;right:5px"></asp:Label>
 

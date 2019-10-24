@@ -163,7 +163,7 @@ namespace PCIWebFinAid
 				catch { }
 		}
 
-		public static void ListBind ( ListControl listBox,
+		public static byte ListBind ( ListControl listBox,
 		                              string      sql,
 		                              object      dataSource,
 		                              string      dataFieldKey,
@@ -189,6 +189,8 @@ namespace PCIWebFinAid
 								listBox.Items.Add(new ListItem(dataValue,keyValue));
 								dList.NextRow();
 							}
+						else
+							return 5;
 				}
 				else if ( dataSource != null )
 				{
@@ -198,7 +200,7 @@ namespace PCIWebFinAid
 					listBox.DataBind();
 				}
 				else
-					return;
+					return 10;
 
 				if ( addZeroRow.Length > 0 )
 					listBox.Items.Insert(0,(new ListItem(addZeroRow,"0")));
@@ -214,9 +216,12 @@ namespace PCIWebFinAid
 					else if ( selectIndex >= 0 )
 						listBox.SelectedIndex = selectIndex;
 				}
+				return 0;
 			}
 			catch (Exception ex)
-			{ }
+			{
+				return 99;
+			}
 		}
 
 		public static void Redirect (HttpResponse response,string url)
