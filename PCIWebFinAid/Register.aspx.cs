@@ -79,6 +79,7 @@ namespace PCIWebFinAid
 		private void LoadLabels()
 		{
 			byte logNo = 5;
+			int errNo  = 5;
 
 			using (MiscList miscList = new MiscList())
 				try
@@ -103,6 +104,8 @@ namespace PCIWebFinAid
 
 					SetErrorDetail(sql);
 					Tools.LogInfo("Register.LoadLabels/10",sql,logDebug);
+					lblError.Text    = "Unable to load registration page labels and data";
+					btnError.Visible = true;
 
 					if ( miscList.ExecQuery(sql,0) == 0 )
 						while ( ! miscList.EOF )
@@ -115,11 +118,11 @@ namespace PCIWebFinAid
 							fieldPass    = miscList.GetColumn("FieldValidationPassText");
 							regPageNo    = miscList.GetColumn("RegistrationPageNumber");
 							controlID    = "";
-
+							logNo        = 15;
+							errNo        = 0;
+ 
 //							if ( logNo <= 10 )
 //								Tools.LogInfo("Register.LoadLabels/15","Row 1, FieldCode="+fieldCode+", FieldValue="+fieldValue,logDebug);
-
-							logNo = 15;
 
 						//	Page 6
 							if ( regPageNo == "6" ) // Confirmation page
@@ -226,27 +229,30 @@ namespace PCIWebFinAid
 					sql   = "exec sp_WP_Get_Title"
 					      + " @LanguageCode="        + Tools.DBString(languageCode)
 					      + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
-					SetErrorDetail(sql);
+					if ( errNo == 0 )
+						SetErrorDetail(sql);
 					Tools.LogInfo("Register.LoadLabels/40",sql,logDebug);
-					WebTools.ListBind(lstTitle,sql,null,"TitleCode","TitleDescription","","");
+					errNo = errNo + WebTools.ListBind(lstTitle,sql,null,"TitleCode","TitleDescription","","");
 
 //	Employment Status
 					logNo = 50;
 					sql   = "exec sp_WP_Get_EmploymentStatus"
 					      + " @LanguageCode="        + Tools.DBString(languageCode)
 					      + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
-					SetErrorDetail(sql);
+					if ( errNo == 0 )
+						SetErrorDetail(sql);
 					Tools.LogInfo("Register.LoadLabels/50",sql,logDebug);
-					WebTools.ListBind(lstStatus,sql,null,"EmploymentStatusCode","EmploymentStatusDescription");
+					errNo = errNo + WebTools.ListBind(lstStatus,sql,null,"EmploymentStatusCode","EmploymentStatusDescription");
 
 //	Pay Date
 					logNo = 60;
 					sql   = "exec sp_WP_Get_PayDate"
 					      + " @LanguageCode="        + Tools.DBString(languageCode)
 					      + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
-					SetErrorDetail(sql);
+					if ( errNo == 0 )
+						SetErrorDetail(sql);
 					Tools.LogInfo("Register.LoadLabels/60",sql,logDebug);
-					WebTools.ListBind(lstPayDay,sql,null,"PayDateCode","PayDateDescription");
+					errNo = errNo + WebTools.ListBind(lstPayDay,sql,null,"PayDateCode","PayDateDescription");
 
 //	Product Option
 //	Deferred to the load of page 4
@@ -258,7 +264,7 @@ namespace PCIWebFinAid
 //					      + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode)
 //					      + ",@Income="              + hdnIncomeError.ToString();
 //					Tools.LogInfo("Register.LoadLabels/70",sql,logDebug);
-//					WebTools.ListBind(lstOptions,sql,null,"ProductOptionCode","ProductOptionDescription");
+//					errNo = errNo + WebTools.ListBind(lstOptions,sql,null,"ProductOptionCode","ProductOptionDescription");
 
 //	Payment Method
 					logNo = 80;
@@ -266,19 +272,27 @@ namespace PCIWebFinAid
 					      + " @ProductCode="         + Tools.DBString(productCode)
 					      + ",@LanguageCode="        + Tools.DBString(languageCode)
 					      + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
-					SetErrorDetail(sql);
+					if ( errNo == 0 )
+						SetErrorDetail(sql);
 					Tools.LogInfo("Register.LoadLabels/80",sql,logDebug);
-					WebTools.ListBind(lstPayment,sql,null,"PaymentMethodCode","PaymentMethodDescription");
+					errNo = errNo + WebTools.ListBind(lstPayment,sql,null,"PaymentMethodCode","PaymentMethodDescription");
 				}
 				catch (Exception ex)
 				{
 					Tools.LogException("Register.LoadLabels","logNo=" + logNo.ToString(),ex);
+					errNo = errNo + 5;
 				}
 
 			lstCCYear.Items.Clear();
 			lstCCYear.Items.Add(new ListItem("(Select one)","0"));
 			for ( int y = System.DateTime.Now.Year ; y < System.DateTime.Now.Year+15 ; y++ )
 				lstCCYear.Items.Add(new ListItem(y.ToString(),y.ToString()));
+
+			if ( errNo == 0 )
+			{
+				lblError.Text    = "";
+				btnError.Visible = false;
+			}
 		}
 
 		private bool GetContractCode()
