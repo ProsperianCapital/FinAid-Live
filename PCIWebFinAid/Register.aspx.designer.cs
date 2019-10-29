@@ -31,15 +31,6 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnPageNo;
         
         /// <summary>
-        /// hdnOption control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnOption;
-        
-        /// <summary>
         /// hdnBrowser control.
         /// </summary>
         /// <remarks>
@@ -47,6 +38,15 @@ namespace PCIWebFinAid {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnBrowser;
+        
+        /// <summary>
+        /// lblReg control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal lblReg;
         
         /// <summary>
         /// lblRegConf control.
@@ -1192,13 +1192,13 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.Literal lbl100233;
         
         /// <summary>
-        /// lblp6Option control.
+        /// lbl100325 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblp6Option;
+        protected global::System.Web.UI.WebControls.Label lbl100325;
         
         /// <summary>
         /// lbl100236 control.
@@ -1406,6 +1406,15 @@ namespace PCIWebFinAid {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal lblp6Browser;
+        
+        /// <summary>
+        /// btnBack1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnBack1;
         
         /// <summary>
         /// btnNext control.

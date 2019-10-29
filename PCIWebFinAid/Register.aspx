@@ -6,7 +6,7 @@
 <head runat="server">
 	<!--#include file="IncludeMain.htm" -->
 	<title>FinAid : Register</title>
-	<link rel="stylesheet" href="CSS/FinAid.css" type="text/css" />
+	<link rel="stylesheet" href="CSS/FinAid.css?v=4" type="text/css" />
 	<link rel="shortcut icon" href="Images/favicon.ico" />
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
 </head>
@@ -22,25 +22,26 @@ var pageNo;
 //history.pushState({}, "FinAid", "/2006.aspx");
 //history.replaceState("http://www.paulkilfoil.co.za", "FinAid", "/2006.aspx");
 
-function OptSelect(p)
-{
-	try
-	{
-		var h = '';
-		if ( p == null || p < 2 || p > 4 )
-			p = GetListValue('lstOptions');
-		if ( p == 2 ) // Bronze
-			h = 'PRODUCT NAME: BRONZE<br /><br />Up To $150 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $14.95';
-		else if ( p == 3 ) // Silver
-			h = 'PRODUCT NAME: SILVER<br /><br />Up To $200 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $19.95';
-		else if ( p == 4 ) // Gold
-			h = 'PRODUCT NAME: GOLD<br /><br />Up To $300 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $29.95';
-		SetEltValue('lblInfo4',h);
-		SetEltValue('hdnOption',h);
-	}
-	catch (x)
-	{ }
-}
+//function OptSelect(p)
+//{
+//	try
+//	{
+//		var h = '';
+//		if ( p == null || p < 2 || p > 4 )
+//			p = GetListValue('lstOptions');
+//		if ( p == 2 ) // Bronze
+//			h = 'PRODUCT NAME: BRONZE<br /><br />Up To $150 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $14.95';
+//		else if ( p == 3 ) // Silver
+//			h = 'PRODUCT NAME: SILVER<br /><br />Up To $200 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $19.95';
+//		else if ( p == 4 ) // Gold
+//			h = 'PRODUCT NAME: GOLD<br /><br />Up To $300 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $29.95';
+//		SetEltValue('lblInfo4',h);
+//		SetEltValue('hdnOption',h);
+//	}
+//	catch (x)
+//	{ }
+//}
+
 function NextPage(inc)
 {
 	try
@@ -67,7 +68,7 @@ function NextPage(inc)
 		ShowElt('divP04'  ,pageNo==4);
 		ShowElt('divP05'  ,pageNo==5);
 		ShowElt('divP06'  ,pageNo==6);
-		ShowElt('btnBack' ,pageNo> firstPage && pageNo!=confPage);
+		ShowElt('btnBack1',pageNo> firstPage && pageNo!=confPage);
 		ShowElt('btnNext' ,pageNo< lastPage  && pageNo!=confPage);
 		ShowElt('btnAgree',pageNo==lastPage  && pageNo!=confPage);
 		ShowElt('btnBack2',pageNo==lastPage  && pageNo!=confPage);
@@ -263,10 +264,11 @@ function Help(onOrOff,ctl,item)
 </script>
 
 <asp:HiddenField runat="server" id="hdnPageNo" value="1" />
-<asp:HiddenField runat="server" id="hdnOption" />
 <asp:HiddenField runat="server" id="hdnBrowser" />
 
-<div class="Header3">Registration<asp:Literal runat="server" ID="lblRegConf"></asp:Literal></div>
+<div class="Header3">
+	<asp:Literal runat="server" ID="lblReg"></asp:Literal><asp:Literal runat="server" ID="lblRegConf"></asp:Literal>
+</div>
 
 <div id="divP01">
 <p class="Header4">
@@ -544,7 +546,7 @@ function Help(onOrOff,ctl,item)
 </p><p>
 <asp:Literal runat="server" ID="lbl100209"></asp:Literal>
 </p>
-<table style="padding:0px;margin:0px">
+<table class="Confirmation">
 	<tr>
 		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100372"></asp:Literal></td></tr>
 	<tr>
@@ -597,7 +599,7 @@ function Help(onOrOff,ctl,item)
 	<tr>
 		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100233"></asp:Literal></td></tr>
 	<tr>
-		<td colspan="2"><asp:Label runat="server" ID="lblp6Option"></asp:Label></td></tr>
+		<td colspan="2"><asp:Label runat="server" ID="lbl100325"></asp:Label></td></tr>
 	<tr>
 		<td><asp:Literal runat="server" ID="lbl100236"></asp:Literal></td>
 		<td><asp:Literal runat="server" ID="lblp6PayMethod"></asp:Literal></td></tr>
@@ -652,9 +654,9 @@ function Help(onOrOff,ctl,item)
 </div>
 
 <br />
-<input type="button" id="btnBack"  value="BACK" onclick="JavaScript:NextPage(-1)" />
-<asp:Button runat="server" ID="btnNext"  OnClick="btnNext_Click" OnClientClick="JavaScript:return NextPage(1)" Text="NEXT" />
-<asp:Button runat="server" ID="btnAgree" OnClick="btnNext_Click" OnClientClick="JavaScript:return NextPage(1)" Text="I Agree" />
+<asp:Button runat="server" ID="btnBack1" OnClientClick="JavaScript:return NextPage(-1);return false" Text="BACK" />
+<asp:Button runat="server" ID="btnNext"  OnClientClick="JavaScript:return NextPage(1)" OnClick="btnNext_Click" Text="NEXT" />
+<asp:Button runat="server" ID="btnAgree" OnClientClick="JavaScript:return NextPage(1)" OnClick="btnNext_Click" Text="I Agree" />
 &nbsp;&nbsp;&nbsp;&nbsp;
 <input type="button" id="btnBack2" value="Change Payment Method" onclick="JavaScript:NextPage(-1)" style="width:175px" />
 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -662,7 +664,7 @@ function Help(onOrOff,ctl,item)
 <br /><br />
 
 <asp:Label runat="server" ID="lblError" CssClass="Error"></asp:Label>
-<asp:Label runat="server" ID="lblErrorDtl" style="border:1px solid #000000;position:fixed;bottom:20px;right:5px;visibility:hidden;display:none;padding:5px;font-family:Verdana"></asp:Label>
+<asp:Label runat="server" ID="lblErrorDtl" style="border:1px solid #000000;position:fixed;bottom:20px;right:5px;visibility:hidden;display:none;padding:5px;font-family:Verdana;background-color:pink"></asp:Label>
 
 <asp:Label runat="server" ID="lblVer" style="position:fixed;bottom:3px;right:5px"></asp:Label>
 
