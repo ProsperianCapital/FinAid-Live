@@ -25,6 +25,11 @@ table td
 	width: 209px;
 }
 
+.Confirmation td
+{
+	height: 12px;
+}
+
 .Header1
 {
 	font-family: "Trebuchet MS", serif;
