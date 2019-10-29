@@ -227,6 +227,8 @@ namespace PCIBusiness
 					dtCell = new PdfPCell(new Phrase(" "));
 				else if ( rowMode == 1 ) // Heading
 					dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(PDF_FONT,PDF_FONTSIZE_TABLEHEADING,Font.BOLD)));
+				else if ( rowMode == 3 ) // Underlined
+					dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(PDF_FONT,PDF_FONTSIZE_TABLECELL,Font.UNDERLINE)));
 				else
 					dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(PDF_FONT,PDF_FONTSIZE_TABLECELL)));
 				dtCell.Border  = 0;
