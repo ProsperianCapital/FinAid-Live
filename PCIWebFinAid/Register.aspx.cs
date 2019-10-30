@@ -36,14 +36,10 @@ namespace PCIWebFinAid
 				languageDialectCode = WebTools.ViewStateString(ViewState,"LanguageDialectCode");
 				contractCode        = WebTools.ViewStateString(ViewState,"ContractCode");
 				contractPIN         = WebTools.ViewStateString(ViewState,"ContractPIN");
-				btnError.Visible    = true;
-				lblError.Text       = "";
-				lblErrorDtl.Text    = "";
 				lblRegConf.Text     = "";
 			}
 			else
 			{
-//				Tools.LogInfo("Register.PageLoad","Inital load",logDebug);
 				lblJS.Text          = WebTools.JavaScriptSource("NextPage(0)");
 				productCode         = WebTools.RequestValueString(Request,"PC");  // ProductCode");
 				languageCode        = WebTools.RequestValueString(Request,"LC");  // LanguageCode");
@@ -64,8 +60,8 @@ namespace PCIWebFinAid
 
 				lblVer.Text      = "Version " + SystemDetails.AppVersion;
 				lblVer.Visible   = ! Tools.SystemIsLive();
+				btnBack1.Visible = ! Tools.SystemIsLive();
 				btnNext.Visible  = ( lblError.Text.Length == 0 );
-				btnError.Visible = ( lblError.Text.Length >  0 );
 
 //	Testing
 				if ( WebTools.RequestValueInt(Request,"PageNoX") > 0 )
@@ -73,9 +69,6 @@ namespace PCIWebFinAid
 					hdnPageNo.Value = WebTools.RequestValueString(Request,"PageNoX");
 					btnNext_Click(null,null);
 				}
-
-				if ( Tools.LiveTestOrDev() == Constants.SystemMode.Live )
-					btnBack1.Visible = false;
 			}
 		}
 
@@ -415,15 +408,15 @@ namespace PCIWebFinAid
 
 		protected void btnNext_Click(Object sender, EventArgs e)
 		{
-			int pdfErr     = 0;
-//			int statusCode = 900;
-			int pageNo     = Tools.StringToInt(hdnPageNo.Value);
-			lblError.Text  = "Page numbering error ; please try again later";
-			errNo          = 0;
+			int pageNo = Tools.StringToInt(hdnPageNo.Value);
+			int pdfErr = 0;
+			errNo      = 0;
 
 			if ( pageNo < 1 )
+			{
+				SetErrorDetail(99,30010,"Page numbering error","The internal page number is " + pageNo.ToString());
 				return;
-
+			}
 			if ( pageNo > 180 ) // Testing
 			{
 				contractCode      = "20191101/0014";
@@ -437,8 +430,6 @@ namespace PCIWebFinAid
 
 			if ( Validate(pageNo) > 0 )
 				return;
-
-//			SetErrorDetail(-66,0,"","");
 
 			using (MiscList miscList = new MiscList())
 				try
@@ -476,7 +467,7 @@ namespace PCIWebFinAid
 					             + ",@CardCVVCode     =" + Tools.DBString(txtCCCVV.Text);
 
 					errNo = miscList.ExecQuery(sql,0);
-					SetErrorDetail(errNo,30010,"Unable to update information (pageNo="+pageNo.ToString()+")",sql);
+					SetErrorDetail(errNo,30020,"Unable to update information (pageNo="+pageNo.ToString()+")",sql);
 
 //					if ( errNo == 0 && pageNo == 5 )
 //					{
@@ -484,7 +475,7 @@ namespace PCIWebFinAid
 //						      +     " @RegistrationPage = '5'"
 //						      +     ",@ContractCode     =" + Tools.DBString(contractCode);
 //						errNo = miscList.ExecQuery(sql,0);
-//						SetErrorDetail(errNo,30020,"Unable to update information",sql);
+//						SetErrorDetail(errNo,30025,"Unable to update information",sql);
 //					}			
 
 					if ( errNo == 0 || pageNo > 180 )
@@ -853,17 +844,14 @@ namespace PCIWebFinAid
 				catch (Exception ex3)
 				{
 					if ( ex3.Message != "XYZ" )
-						SetErrorDetail(30230,errNo,"Internal database error ; please try again later",ex3.Message);
+						SetErrorDetail(99,errNo,"Internal database error ; please try again later",ex3.Message);
 				}
 
 			if ( lblError.Text.Length == 0 && errNo + pdfErr > 0 )
-				lblError.Text = "Internal error ; please try again later";
+				SetErrorDetail(99,30330,"Internal error ; please try again later","errNo=" + errNo.ToString() + "<br />pdfErr=" + pdfErr.ToString());
 
 			if ( lblError.Text.Length == 0 ) // No errors, can continue
-			{
-				hdnPageNo.Value  = pageNo.ToString();
-				btnError.Visible = false;
-			}
+				hdnPageNo.Value = pageNo.ToString();
 		}
 
 		private void SetErrorDetail(int errCode,int logNo,string errBrief,string errDetail,byte briefMode=2,byte detailMode=1)
@@ -895,7 +883,7 @@ namespace PCIWebFinAid
 				lblErrorDtl.Text = "<div style='background-color:blue;padding:3px;color:white'>Error Details</div>" + lblErrorDtl.Text;
 
 			lblError.Visible = ( lblError.Text.Length    > 0 );
-			btnError.Visible = ( lblErrorDtl.Text.Length > 0 );
+			btnError.Visible = ( lblErrorDtl.Text.Length > 0 ) && lblError.Visible;
 		}
 	}
 }
