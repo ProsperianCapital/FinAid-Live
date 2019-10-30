@@ -1228,22 +1228,31 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.Literal lbl100237;
         
         /// <summary>
-        /// lbl100238 control.
+        /// lblp6RefundPolicy control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lbl100238;
+        protected global::System.Web.UI.WebControls.Literal lblp6RefundPolicy;
         
         /// <summary>
-        /// lblp6Agreement control.
+        /// lblp6MoneyBackPolicy control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lblp6Agreement;
+        protected global::System.Web.UI.WebControls.Literal lblp6MoneyBackPolicy;
+        
+        /// <summary>
+        /// lblp6CancellationPolicy control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal lblp6CancellationPolicy;
         
         /// <summary>
         /// lbl100184 control.

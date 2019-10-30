@@ -74,6 +74,9 @@ namespace PCIWebFinAid
 					hdnPageNo.Value = WebTools.RequestValueString(Request,"PageNoX");
 					btnNext_Click(null,null);
 				}
+
+				if ( Tools.LiveTestOrDev() == Constants.SystemMode.Live )
+					btnBack1.Visible = false;
 			}
 		}
 
@@ -124,8 +127,8 @@ namespace PCIWebFinAid
 						//	Common
 							if ( fieldCode == "100119" ) // Next
 								btnNext.Text = fieldValue;
-							else if ( fieldCode == "100xxx" ) // Back
-								btnBack1.Text = fieldValue;
+//							else if ( fieldCode == "100xxx" ) // Back ... this button only exists in DEV
+//								btnBack1.Text = fieldValue;
 							else if ( fieldCode == "100195" ) // I agree
 								btnAgree.Text = fieldValue;
 							else if ( fieldCode == "100194" ) // Change payment method
@@ -237,12 +240,14 @@ namespace PCIWebFinAid
 
 					logNo = 37;
 
-					if ( btnNext.Text.Length  < 1 || btnBack1.Text.Length < 1 || btnBack2.Text.Length < 1 || btnAgree.Text.Length < 1 )
+//	Note : btnBack1 ("Back") is only for DEV, not LIVE. So no label data exists
+
+					if ( btnNext.Text.Length  < 1 || btnBack2.Text.Length < 1 || btnAgree.Text.Length < 1 )
 						Tools.LogInfo("Register.LoadLabels/37","Unable to load some or all button labels ("
-						             + btnNext.Text + "/" + btnBack1.Text + "/" + btnBack2.Text + "/" + btnAgree.Text + ")");
+						             + btnNext.Text + "/" + btnBack2.Text + "/" + btnAgree.Text + ")");
 
 					if ( btnNext.Text.Length  < 1 ) btnNext.Text  = "NEXT";
-					if ( btnBack1.Text.Length < 1 ) btnBack1.Text = "BACK";
+//					if ( btnBack1.Text.Length < 1 ) btnBack1.Text = "BACK";
 					if ( btnBack2.Text.Length < 1 ) btnBack2.Text = "Change Payment Method";
 					if ( btnAgree.Text.Length < 1 ) btnAgree.Text = "I AGREE";
 
@@ -566,30 +571,32 @@ namespace PCIWebFinAid
 							if ( lbl100325.Text.Length < 1 )
 								SetErrorDetail(30060,30060,"Unable to retrieve product option description",sql,2,2);
 
+//	Not needed any more
+//							string legalAgreementHead = "";
+//							string legalAgreementText = "";
+//							lblp6Agreement.Text       = "";
+//
+//							sql = "exec sp_WP_Get_ProductLegalDocumentDetail"
+//							    + " @ProductCode="         + Tools.DBString(productCode)
+//							    + ",@LanguageCode="        + Tools.DBString(languageCode)
+//							    + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode)
+//							    + ",@ProductLegalDocumentTypeCode='004'";
+//							if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
+//							{
+//								legalAgreementHead  = miscList.GetColumn("ProductLegalDocumentParagraphHeader");
+//								legalAgreementText  = miscList.GetColumn("ProductLegalDocumentParagraphText")
+//								                    + miscList.GetColumn("ProductLegalDocumentParagraphText2");
+//								lblp6Agreement.Text = "<u>"
+//								                    + miscList.GetColumn("ProductLegalDocumentParagraphHeader") + "</u><br />"
+//								                    + miscList.GetColumn("ProductLegalDocumentParagraphText").Replace("\n","<br />")
+//								                    + miscList.GetColumn("ProductLegalDocumentParagraphText2").Replace("\n","<br />");
+//							}
+//							if ( legalAgreementHead.Length + legalAgreementText.Length < 1 )
+//								SetErrorDetail(30070,30070,"Unable to retrieve legal documents",sql,2,2);
+
 							string refundPolicy       = "";
 							string moneyBackPolicy    = "";
 							string cancellationPolicy = "";
-							string legalAgreementHead = "";
-							string legalAgreementText = "";
-							lblp6Agreement.Text       = "";
-
-							sql = "exec sp_WP_Get_ProductLegalDocumentDetail"
-							    + " @ProductCode="         + Tools.DBString(productCode)
-							    + ",@LanguageCode="        + Tools.DBString(languageCode)
-							    + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode)
-							    + ",@ProductLegalDocumentTypeCode='004'";
-							if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
-							{
-								legalAgreementHead  = miscList.GetColumn("ProductLegalDocumentParagraphHeader");
-								legalAgreementText  = miscList.GetColumn("ProductLegalDocumentParagraphText")
-								                    + miscList.GetColumn("ProductLegalDocumentParagraphText2");
-								lblp6Agreement.Text = "<u>"
-								                    + miscList.GetColumn("ProductLegalDocumentParagraphHeader") + "</u><br />"
-								                    + miscList.GetColumn("ProductLegalDocumentParagraphText").Replace("\n","<br />")
-								                    + miscList.GetColumn("ProductLegalDocumentParagraphText2").Replace("\n","<br />");
-							}
-							if ( legalAgreementHead.Length + legalAgreementText.Length < 1 )
-								SetErrorDetail(30070,30070,"Unable to retrieve legal documents",sql,2,2);
 
 							sql = "exec sp_WP_Get_ProductPolicy"
 							    + " @ProductCode="         + Tools.DBString(productCode)
@@ -597,12 +604,15 @@ namespace PCIWebFinAid
 							    + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
 							if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
 							{
-								refundPolicy       = miscList.GetColumn("RefundPolicyText");
-								moneyBackPolicy    = miscList.GetColumn("MoneyBackPolicyText");
-								cancellationPolicy = miscList.GetColumn("CancellationPolicyText");
+								refundPolicy                 = miscList.GetColumn("RefundPolicyText");
+								moneyBackPolicy              = miscList.GetColumn("MoneyBackPolicyText");
+								cancellationPolicy           = miscList.GetColumn("CancellationPolicyText");
+								lblp6RefundPolicy.Text       = refundPolicy.Replace("\n","<br />");
+								lblp6MoneyBackPolicy.Text    = moneyBackPolicy.Replace("\n","<br />");
+								lblp6CancellationPolicy.Text = cancellationPolicy.Replace("\n","<br />");
 							}
-							else
-								SetErrorDetail(30080,30080,"Unable to retrieve product agreement text",sql,2,2);
+							if ( refundPolicy.Length < 1 || moneyBackPolicy.Length < 1 || cancellationPolicy.Length < 1 )
+								SetErrorDetail(30080,30080,"Unable to retrieve product policy text",sql,2,2);
 
 							lblp6CCType.Text = "";
 							sql = "exec WP_Get_CardAssociation"
@@ -686,10 +696,10 @@ namespace PCIWebFinAid
 								pdfErr = pdfErr + pdf.TableWriteLine(lbl100237.Text,2);
 								pdfErr = pdfErr + pdf.TableWriteLine();
 
-								pdfErr = pdfErr + pdf.TableWriteLine(lbl100238.Text);
-								pdfErr = pdfErr + pdf.TableWriteLine(legalAgreementHead,3);
-								pdfErr = pdfErr + pdf.TableWriteLine(legalAgreementText,2);
-								pdfErr = pdfErr + pdf.TableWriteLine();
+//								pdfErr = pdfErr + pdf.TableWriteLine(lbl100238.Text);
+//								pdfErr = pdfErr + pdf.TableWriteLine(legalAgreementHead,3);
+//								pdfErr = pdfErr + pdf.TableWriteLine(legalAgreementText,2);
+//								pdfErr = pdfErr + pdf.TableWriteLine();
 
 								pdfErr = pdfErr + pdf.TableWriteLine(lbl100184.Text);
 								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100185.Text,lblp6CCType.Text});

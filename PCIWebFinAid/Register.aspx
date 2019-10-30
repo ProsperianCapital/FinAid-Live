@@ -606,10 +606,20 @@ function Help(onOrOff,ctl,item)
 		<td colspan="2"><asp:Literal runat="server" ID="lbl100237"></asp:Literal></td></tr>
 	<tr><td>&nbsp;</td></tr>
 
+<!-- OLD
 	<tr>
-		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100238"></asp:Literal></td></tr>
+		<td colspan="2" class="Header5"><asp Literal run@t="server" ID="lbl100238"></asp Literal></td></tr>
 	<tr>
-		<td colspan="2"><asp:Literal runat="server" ID="lblp6Agreement"></asp:Literal></td></tr>
+		<td colspan="2"><asp Literal run@t="server" ID="lblp6Agreement"></asp Literal></td></tr>
+	<tr><td>&nbsp;</td></tr>
+-->
+
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lblp6RefundPolicy"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lblp6MoneyBackPolicy"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lblp6CancellationPolicy"></asp:Literal></td></tr>
 	<tr><td>&nbsp;</td></tr>
 
 	<tr>
@@ -653,7 +663,7 @@ function Help(onOrOff,ctl,item)
 </div>
 
 <br />
-<asp:Button runat="server" ID="btnBack1" OnClientClick="JavaScript:return NextPage(-1);return false" />
+<asp:Button runat="server" ID="btnBack1" OnClientClick="JavaScript:return NextPage(-1);return false" Text="BACK" />
 <asp:Button runat="server" ID="btnNext"  OnClientClick="JavaScript:return NextPage(1)" OnClick="btnNext_Click" />
 <asp:Button runat="server" ID="btnAgree" OnClientClick="JavaScript:return NextPage(1)" OnClick="btnNext_Click" />
 &nbsp;&nbsp;&nbsp;&nbsp;
