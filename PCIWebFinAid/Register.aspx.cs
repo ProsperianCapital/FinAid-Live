@@ -121,6 +121,16 @@ namespace PCIWebFinAid
 //							if ( logNo <= 10 )
 //								Tools.LogInfo("Register.LoadLabels/15","Row 1, FieldCode="+fieldCode+", FieldValue="+fieldValue,logDebug);
 
+						//	Common
+							if ( fieldCode == "100119" ) // Next
+								btnNext.Text = fieldValue;
+							else if ( fieldCode == "100xxx" ) // Back
+								btnBack1.Text = fieldValue;
+							else if ( fieldCode == "100195" ) // I agree
+								btnAgree.Text = fieldValue;
+							else if ( fieldCode == "100194" ) // Change payment method
+								btnBack2.Text = fieldValue;
+
 						//	Page 6
 							if ( regPageNo == "6" ) // Confirmation page
 							{
@@ -163,10 +173,6 @@ namespace PCIWebFinAid
 								lblSubHead1Label.Text = fieldValue;
 								lblSubHead2Label.Text = fieldValue;
 							}
-							else if ( fieldCode == "100119" ) // Next
-								btnNext.Text = fieldValue;
-							else if ( fieldCode == "100xxx" ) // Back
-								btnBack1.Text = fieldValue;
 							else if ( fieldCode == "100135" ) // Registration
 								lblReg.Text = fieldValue;
 							else if ( fieldCode == "100122" )
@@ -229,6 +235,17 @@ namespace PCIWebFinAid
 
 					SetErrorDetail(errNo,logNo,"Unable to load registration page labels and data",sql);
 
+					logNo = 37;
+
+					if ( btnNext.Text.Length  < 1 || btnBack1.Text.Length < 1 || btnBack2.Text.Length < 1 || btnAgree.Text.Length < 1 )
+						Tools.LogInfo("Register.LoadLabels/37","Unable to load some or all button labels ("
+						             + btnNext.Text + "/" + btnBack1.Text + "/" + btnBack2.Text + "/" + btnAgree.Text + ")");
+
+					if ( btnNext.Text.Length  < 1 ) btnNext.Text  = "NEXT";
+					if ( btnBack1.Text.Length < 1 ) btnBack1.Text = "BACK";
+					if ( btnBack2.Text.Length < 1 ) btnBack2.Text = "Change Payment Method";
+					if ( btnAgree.Text.Length < 1 ) btnAgree.Text = "I AGREE";
+
 //	Title
 					sql   = "exec sp_WP_Get_Title"
 					      + " @LanguageCode="        + Tools.DBString(languageCode)
@@ -280,9 +297,9 @@ namespace PCIWebFinAid
 				}
 
 			lstCCYear.Items.Clear();
-			lstCCYear.Items.Add(new ListItem("(Select one)","0"));
 			for ( int y = System.DateTime.Now.Year ; y < System.DateTime.Now.Year+15 ; y++ )
 				lstCCYear.Items.Add(new ListItem(y.ToString(),y.ToString()));
+			lstCCYear.SelectedIndex = 1;
 		}
 
 		private bool GetContractCode()

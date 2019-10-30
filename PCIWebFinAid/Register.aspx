@@ -490,19 +490,18 @@ function Help(onOrOff,ctl,item)
 			<asp:Literal runat="server" ID="lblCCExpiryLabel"></asp:Literal></td>
 		<td style="white-space:nowrap">
 			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstCCMonth" onfocus="JavaScript:ValidatePage(100188,1)" onblur="JavaScript:ValidatePage(100188,2)">
-				<asp:ListItem Value= "0" Text="(Select one)"></asp:ListItem>
-				<asp:ListItem Value="01" Text="01 (January)"></asp:ListItem>
-				<asp:ListItem Value="02" Text="02 (February)"></asp:ListItem>
-				<asp:ListItem Value="03" Text="03 (March)"></asp:ListItem>
-				<asp:ListItem Value="04" Text="04 (April)"></asp:ListItem>
-				<asp:ListItem Value="05" Text="05 (May)"></asp:ListItem>
-				<asp:ListItem Value="06" Text="06 (June)"></asp:ListItem>
-				<asp:ListItem Value="07" Text="07 (July)"></asp:ListItem>
-				<asp:ListItem Value="08" Text="08 (August)"></asp:ListItem>
-				<asp:ListItem Value="09" Text="09 (September)"></asp:ListItem>
-				<asp:ListItem Value="10" Text="10 (October)"></asp:ListItem>
-				<asp:ListItem Value="11" Text="11 (November)"></asp:ListItem>
-				<asp:ListItem Value="12" Text="12 (December)"></asp:ListItem>
+				<asp:ListItem Value="01" Text="01"></asp:ListItem>
+				<asp:ListItem Value="02" Text="02"></asp:ListItem>
+				<asp:ListItem Value="03" Text="03"></asp:ListItem>
+				<asp:ListItem Value="04" Text="04"></asp:ListItem>
+				<asp:ListItem Value="05" Text="05"></asp:ListItem>
+				<asp:ListItem Value="06" Text="06"></asp:ListItem>
+				<asp:ListItem Value="07" Text="07"></asp:ListItem>
+				<asp:ListItem Value="08" Text="08"></asp:ListItem>
+				<asp:ListItem Value="09" Text="09"></asp:ListItem>
+				<asp:ListItem Value="10" Text="10"></asp:ListItem>
+				<asp:ListItem Value="11" Text="11"></asp:ListItem>
+				<asp:ListItem Value="12" Text="12"></asp:ListItem>
 			</asp:DropDownList>
 			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstCCYear" onfocus="JavaScript:ValidatePage(100188,1)" onblur="JavaScript:ValidatePage(100188,2)"></asp:DropDownList>
 			<a href="#" onmouseover="JavaScript:Help(1,this,'CCExpiry')" onmouseout="JavaScript:Help(0)">?</a></td>
@@ -654,11 +653,11 @@ function Help(onOrOff,ctl,item)
 </div>
 
 <br />
-<asp:Button runat="server" ID="btnBack1" OnClientClick="JavaScript:return NextPage(-1);return false" Text="BACK" />
-<asp:Button runat="server" ID="btnNext"  OnClientClick="JavaScript:return NextPage(1)" OnClick="btnNext_Click" Text="NEXT" />
-<asp:Button runat="server" ID="btnAgree" OnClientClick="JavaScript:return NextPage(1)" OnClick="btnNext_Click" Text="I Agree" />
+<asp:Button runat="server" ID="btnBack1" OnClientClick="JavaScript:return NextPage(-1);return false" />
+<asp:Button runat="server" ID="btnNext"  OnClientClick="JavaScript:return NextPage(1)" OnClick="btnNext_Click" />
+<asp:Button runat="server" ID="btnAgree" OnClientClick="JavaScript:return NextPage(1)" OnClick="btnNext_Click" />
 &nbsp;&nbsp;&nbsp;&nbsp;
-<input type="button" id="btnBack2" value="Change Payment Method" onclick="JavaScript:NextPage(-1)" style="width:175px" />
+<asp:Button runat="server" ID="btnBack2" OnClientClick="JavaScript:return NextPage(-1);return false" />
 &nbsp;&nbsp;&nbsp;&nbsp;
 <asp:Button runat="server" ID="btnError" Text="Error ...?" OnClientClick="JavaScript:ShowElt('lblErrorDtl',true);return false" />
 <br /><br />
