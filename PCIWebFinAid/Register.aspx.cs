@@ -561,15 +561,21 @@ namespace PCIWebFinAid
 							SetErrorDetail(errNo,30050,"Unable to update information",sql);
 
 							lbl100325.Text = "";
-							sql = "exec sp_WP_Get_WebsiteProductoptionA"
-							    + " @ProductCode="         +  Tools.DBString(productCode)
-							    + ",@ProductOptionCode="   +  Tools.DBString(WebTools.ListValue(lstOptions,""))
-							    + ",@LanguageCode="        +  Tools.DBString(languageCode)
-							    + ",@LanguageDialectCode=" +  Tools.DBString(languageDialectCode);
-							if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
+							sql = "exec sp_WP_Get_WebsiteProductOptionA"
+							    + " @ProductCode="         + Tools.DBString(productCode)
+							    + ",@ProductOptionCode="   + Tools.DBString(WebTools.ListValue(lstOptions,""))
+							    + ",@LanguageCode="        + Tools.DBString(languageCode)
+							    + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
+							if ( miscList.ExecQuery(sql,0) != 0 )
+								SetErrorDetail(30060,30060,"Internal database error (sp_WP_Get_WebsiteProductOptionA)",sql,2,2);
+							else if ( miscList.EOF )
+								SetErrorDetail(30061,30061,"No product option data returned (sp_WP_Get_WebsiteProductOptionA)",sql,2,2);
+							else
+							{
 								lbl100325.Text = miscList.GetColumn("FieldValue");
-							if ( lbl100325.Text.Length < 1 )
-								SetErrorDetail(30060,30060,"Unable to retrieve product option description",sql,2,2);
+								if ( lbl100325.Text.Length < 1 )
+									SetErrorDetail(30061,30061,"Product option data is empty/blank (sp_WP_Get_WebsiteProductOptionA, column 'FieldValue')",sql,2,2);
+							}
 
 //	Not needed any more
 //							string legalAgreementHead = "";
@@ -875,7 +881,7 @@ namespace PCIWebFinAid
 				return;
 			}
 
-			Tools.LogInfo("Register.SetErrorDetail","(errCode="+errCode.ToString()+", logNo="+logNo.ToString()+") "+errDetail);
+			Tools.LogInfo("Register.SetErrorDetail","(errCode="+errCode.ToString()+", logNo="+logNo.ToString()+") "+errDetail,244);
 
 			if ( briefMode == 2 ) // Append
 				lblError.Text = lblError.Text + ( lblError.Text.Length > 0 ? "<br />" : "" ) + errBrief;
