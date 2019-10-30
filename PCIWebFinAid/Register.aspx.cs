@@ -27,6 +27,8 @@ namespace PCIWebFinAid
 //		   + "navigator.platform : " + navigator.platform + "<br />"
 //		   + "navigator.userAgent : " + navigator.userAgent;
 
+			SetErrorDetail(-88,0,"","");
+
 			if ( Page.IsPostBack )
 			{
 				productCode         = WebTools.ViewStateString(ViewState,"ProductCode");
@@ -38,9 +40,6 @@ namespace PCIWebFinAid
 				lblError.Text       = "";
 				lblErrorDtl.Text    = "";
 				lblRegConf.Text     = "";
-
-//				if ( contractCode.Length < 1 )
-//					GetContractCode();
 			}
 			else
 			{
@@ -99,7 +98,7 @@ namespace PCIWebFinAid
 					string      controlID;
 					int         k;
 
-					SetErrorDetail(-88,0,"","");
+//					SetErrorDetail(-88,0,"","");
 
 //	Static labels, help text, etc
 					errNo = 10;
@@ -314,7 +313,7 @@ namespace PCIWebFinAid
 			ViewState["ContractCode"] = null;
 			ViewState["ContractPIN"]  = null;
 
-			SetErrorDetail(-77,0,"","");
+//			SetErrorDetail(-77,0,"","");
 
 			using (MiscList miscList = new MiscList())
 				try
@@ -439,7 +438,7 @@ namespace PCIWebFinAid
 			if ( Validate(pageNo) > 0 )
 				return;
 
-			SetErrorDetail(-66,0,"","");
+//			SetErrorDetail(-66,0,"","");
 
 			using (MiscList miscList = new MiscList())
 				try
@@ -477,7 +476,7 @@ namespace PCIWebFinAid
 					             + ",@CardCVVCode     =" + Tools.DBString(txtCCCVV.Text);
 
 					errNo = miscList.ExecQuery(sql,0);
-					SetErrorDetail(errNo,30010,"Unable to update information",sql);
+					SetErrorDetail(errNo,30010,"Unable to update information (pageNo="+pageNo.ToString()+")",sql);
 
 //					if ( errNo == 0 && pageNo == 5 )
 //					{
@@ -558,7 +557,7 @@ namespace PCIWebFinAid
 							      +     " @RegistrationPage = '5'"
 							      +     ",@ContractCode     =" + Tools.DBString(contractCode);
 							errNo = miscList.ExecQuery(sql,0);
-							SetErrorDetail(errNo,30050,"Unable to update information",sql);
+							SetErrorDetail(errNo,30050,"Unable to update information (pageNo=6)",sql);
 
 							lbl100325.Text = "";
 							sql = "exec sp_WP_Get_WebsiteProductOptionA"
@@ -574,7 +573,7 @@ namespace PCIWebFinAid
 							{
 								lbl100325.Text = miscList.GetColumn("FieldValue");
 								if ( lbl100325.Text.Length < 1 )
-									SetErrorDetail(30061,30061,"Product option data is empty/blank (sp_WP_Get_WebsiteProductOptionA, column 'FieldValue')",sql,2,2);
+									SetErrorDetail(30062,30062,"Product option data is empty/blank (sp_WP_Get_WebsiteProductOptionA, column 'FieldValue')",sql,2,2);
 							}
 
 //	Not needed any more

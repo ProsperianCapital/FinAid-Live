@@ -24,8 +24,6 @@ var pageNo;
 
 //function OptSelect(p)
 //{
-//	try
-//	{
 //		var h = '';
 //		if ( p == null || p < 2 || p > 4 )
 //			p = GetListValue('lstOptions');
@@ -37,9 +35,6 @@ var pageNo;
 //			h = 'PRODUCT NAME: GOLD<br /><br />Up To $300 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $29.95';
 //		SetEltValue('lblInfo4',h);
 //		SetEltValue('hdnOption',h);
-//	}
-//	catch (x)
-//	{ }
 //}
 
 function NextPage(inc)
@@ -75,24 +70,6 @@ function NextPage(inc)
 
 		if ( pageNo == firstPage )
 			ShowElt('btnNext',GetElt('chkAgree').checked);
-
-//		else if ( pageNo == lastPage )
-//		{
-//			var dt = new Date();
-//			var dd = dt.getDate();
-//			var mm = dt.getMonth()+1;
-//			var yy = dt.getFullYear();
-//			if ( dd > 9 )
-//				dd = dd.toString();
-//			else
-//				dd = '0'+dd.toString();
-//			if ( mm > 9 )
-//				mm = mm.toString();
-//			else
-//				mm = '0'+mm.toString();
-//			yy = yy.toString();
-//			SetEltValue('lblCCDueDate',yy+'/'+mm+'/'+dd);
-//		}
 	}
 	catch (x)
 	{
@@ -527,9 +504,7 @@ function Help(onOrOff,ctl,item)
 		<td style="white-space:nowrap;font-weight:bold" colspan="3">
 			<asp:Label runat="server" id="lblCCDueDate"></asp:Label></td></tr>
 	<tr>
-		<td colspan="2">
-			</td>
-	</tr>
+		<td colspan="2"></td></tr>
 </table>
 <div style="background-color:lightgray">
 	<div style="color:orange;font-weight:bold;font-size:18px;padding:10px">
@@ -656,9 +631,7 @@ function Help(onOrOff,ctl,item)
 		<td><asp:Literal runat="server" ID="lblp6IP"></asp:Literal></td></tr>
 	<tr>
 		<td colspan="2"><asp:Literal runat="server" ID="lblp6Browser"></asp:Literal></td></tr>
-
 </table>
-
 
 </div>
 
@@ -667,14 +640,13 @@ function Help(onOrOff,ctl,item)
 <asp:Button runat="server" ID="btnNext"  OnClientClick="JavaScript:return NextPage(1)" OnClick="btnNext_Click" />
 <asp:Button runat="server" ID="btnAgree" OnClientClick="JavaScript:return NextPage(1)" OnClick="btnNext_Click" />
 &nbsp;&nbsp;&nbsp;&nbsp;
-<asp:Button runat="server" ID="btnBack2" OnClientClick="JavaScript:return NextPage(-1);return false" />
+<asp:Button runat="server" ID="btnBack2" OnClientClick="JavaScript:return NextPage(-1);return false" Width="200px" />
 &nbsp;&nbsp;&nbsp;&nbsp;
 <asp:Button runat="server" ID="btnError" Text="Error ...?" OnClientClick="JavaScript:ShowElt('lblErrorDtl',true);return false" />
 <br /><br />
 
 <asp:Label runat="server" ID="lblError" CssClass="Error"></asp:Label>
 <asp:Label runat="server" ID="lblErrorDtl" style="border:1px solid #000000;position:fixed;bottom:20px;right:5px;visibility:hidden;display:none;padding:5px;font-family:Verdana;background-color:pink"></asp:Label>
-
 <asp:Label runat="server" ID="lblVer" style="position:fixed;bottom:3px;right:5px"></asp:Label>
 
 <script type="text/javascript">
