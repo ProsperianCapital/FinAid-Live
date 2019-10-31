@@ -98,18 +98,20 @@ namespace PCIBusiness
 			return 0;
 		}
 
-		private void AddParagraph ( string theText,
-			                         int    fontSize,
-			                         int    blankLines = 0,
-			                         int    alignment  = 0,
-			                         string foreColor  = "",
-			                         int    style      = 0 )
+		public int AddParagraph ( string theText,
+			                       int    fontSize,
+			                       int    blankLines = 0,
+			                       int    alignment  = 0,
+			                       string foreColor  = "",
+			                       int    style      = 0 )
 		{
+			theText = Tools.NullToString(theText);
 			if ( theText.Length < 1 )
-				return;
+				return 0;
 
 			try
 			{
+				theText   = theText.Replace("<br />  ",Environment.NewLine).Replace("<br /> ",Environment.NewLine).Replace("<br />",Environment.NewLine);
 				foreColor = foreColor.Trim().ToUpper();
 				if ( foreColor.Length == 0 )
 					para = new Paragraph(theText,new iTextSharp.text.Font(PDF_FONT,fontSize,style));
@@ -138,11 +140,14 @@ namespace PCIBusiness
 				if ( blankLines > 0 )
 					for ( k = 1 ; k < blankLines ; k++ )
 						doc.Add(new Chunk(Constants.C_TEXTBREAK()));
+
+				return 0;
 			}
 			catch (Exception ex)
 			{
 				Tools.LogException("PdfFile.AddParagraph","theText=" + theText,ex);
 			}
+			return 20;
 		}
 
 		public int TableOpen(byte columns)
@@ -185,33 +190,31 @@ namespace PCIBusiness
 			return 199;
 		}
 
-		public int WriteLine(string data="",byte rowMode=1,byte blankLines=1)
-		{
-			try
-			{
-				if ( doc == null )
-					return 10;
-				data     = Tools.NullToString(data).Replace("<br />",Environment.NewLine);
-				int font = ( rowMode == 1 ? PDF_FONTSIZE_SUBHEADING : PDF_FONTSIZE_TABLECELL );
-				AddParagraph(data.Trim(),font,blankLines,Element.ALIGN_LEFT);
-
-//				int k    = data.IndexOf("<br ");
-//				while ( k > 0 )
-//				{
-//					AddParagraph(data.Substring(0,k).Trim(),font,1,Element.ALIGN_LEFT);
-//					data = data.Substring(k+6);
-//					k    = data.IndexOf("<br ");
-//				}
-//				AddParagraph(data.Trim(),font,blankLines,Element.ALIGN_LEFT);
-
-				return 0;
-			}
-			catch (Exception ex)
-			{
-				Tools.LogException("PdfFile.WriteLine","",ex);
-			}
-			return 199;
-		}
+//		Use "AddParagraph" rather
+//		public int WriteLine(string data="",Constants.PdfFontSize font=Constants.PdfFontSize.SubHeading,string align="L",byte blankLines=1)
+//		{
+//			try
+//			{
+//				if ( doc == null )
+//					return 10;
+//				data     = Tools.NullToString(data).Replace("<br />",Environment.NewLine);
+//	//			int font = ( rowMode == 1 ? PDF_FONTSIZE_SUBHEADING : PDF_FONTSIZE_TABLECELL );
+//				if ( align == "R" )
+//					AddParagraph(data.Trim(),(int)font,blankLines,Element.ALIGN_RIGHT);
+//				else if ( align == "C" )
+//					AddParagraph(data.Trim(),(int)font,blankLines,Element.ALIGN_CENTER);
+//				else if ( align == "M" )
+//					AddParagraph(data.Trim(),(int)font,blankLines,Element.ALIGN_MIDDLE);
+//				else
+//					AddParagraph(data.Trim(),(int)font,blankLines,Element.ALIGN_LEFT);
+//				return 0;
+//			}
+//			catch (Exception ex)
+//			{
+//				Tools.LogException("PdfFile.WriteLine","",ex);
+//			}
+//			return 199;
+//		}
 
 		public int TableWriteLine(string data="",byte rowMode=1)
 		{
@@ -226,7 +229,7 @@ namespace PCIBusiness
 				if ( data.Length == 0 )
 					dtCell = new PdfPCell(new Phrase(" "));
 				else if ( rowMode == 1 ) // Heading
-					dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(PDF_FONT,PDF_FONTSIZE_TABLEHEADING,Font.BOLD)));
+					dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(PDF_FONT,PDF_FONTSIZE_TABLEHEADING,Font.BOLD,BaseColor.ORANGE)));
 				else if ( rowMode == 3 ) // Underlined
 					dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(PDF_FONT,PDF_FONTSIZE_TABLECELL,Font.UNDERLINE)));
 				else

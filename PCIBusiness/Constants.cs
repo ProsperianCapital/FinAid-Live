@@ -107,6 +107,28 @@ namespace PCIBusiness
 			DeleteToken    =  4,
 			ManualPayment  = 73
 		}
+
+//	iTextSharp stuff
+
+		public enum PdfFontSize : int
+		{
+			HugeHeading      = 40,
+			MajorHeading     = 32,
+			MinorHeading     = 20,
+			SubHeading       = 16,
+			TableHeading     = 12,
+			TableCell        = 10,
+			ParagraphSpacing = 10,
+			ParagraphPadding =  5
+		}
+
+		public enum PdfAlign : int // These must match iTextSharp.Element.ALIGN_LEFT, etc values
+		{
+			Left   = 0,
+			Right  = 2,
+			Centre = 1,
+			Middle = 5
+		}
 //		public enum PaymentType : byte
 //		{
 //			Tokens      = 10,
