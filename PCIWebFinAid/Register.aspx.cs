@@ -124,7 +124,7 @@ namespace PCIWebFinAid
 //								Tools.LogInfo("Register.LoadLabels/15","Row 1, FieldCode="+fieldCode+", FieldValue="+fieldValue,logDebug);
 
 						//	Common
-							if ( fieldCode == "100119" ) // Next
+							if ( fieldCode == "100119" )      // Next
 								btnNext.Text = fieldValue;
 //							else if ( fieldCode == "100xxx" ) // Back ... this button only exists in DEV
 //								btnBack1.Text = fieldValue;
@@ -132,6 +132,16 @@ namespace PCIWebFinAid
 								btnAgree.Text = fieldValue;
 							else if ( fieldCode == "100194" ) // Change payment method
 								btnBack2.Text = fieldValue;
+							else if ( fieldCode == "100135" ) // Registration
+								lblReg.Text = fieldValue;
+							else if ( fieldCode == "100207" ) // Registration Confirmation
+								lblRegConf.Text = fieldValue;
+
+						//	PDF Stuff
+							else if ( fieldCode == "100002" ) // Emergency mobile assistance, blah
+								hdn100002.Value  = fieldValue;
+							else if ( fieldCode == "100137" ) // Product name
+								hdn100137.Value  = fieldValue;
 
 						//	Page 6
 							if ( regPageNo == "6" ) // Confirmation page
@@ -175,10 +185,6 @@ namespace PCIWebFinAid
 								lblSubHead1Label.Text = fieldValue;
 								lblSubHead2Label.Text = fieldValue;
 							}
-							else if ( fieldCode == "100135" ) // Registration
-								lblReg.Text = fieldValue;
-							else if ( fieldCode == "100207" ) // Registration Confirmation
-								lblRegConf.Text = fieldValue;
 							else if ( fieldCode == "100122" )
 								lblSubHead3Label.Text = fieldValue;
 							else if ( fieldCode == "100136" )
@@ -197,12 +203,6 @@ namespace PCIWebFinAid
 //								lblMandateHead.Text = fieldValue;
 //							else if ( fieldCode == "100192" )
 //								lblMandateDetail.Text = fieldValue;
-
-						//	PDF Stuff
-							else if ( fieldCode == "100002" ) // Emergency mobile assistance, blah
-								hdn100002.Value  = fieldValue;
-							else if ( fieldCode == "100137" ) // Product name
-								hdn100137.Value  = fieldValue;
 
 							logNo = 20;
 
@@ -729,11 +729,11 @@ namespace PCIWebFinAid
 								pdfErr = pdfErr + pdf.TableWriteLine(lblp6Mandate.Text,2);
 								pdfErr = pdfErr + pdf.TableWriteLine();
 
-//	Policy stuff should not be in PDF
-//								pdfErr = pdfErr + pdf.TableWriteLine(refundPolicy,2);
-//								pdfErr = pdfErr + pdf.TableWriteLine(moneyBackPolicy,2);
-//								pdfErr = pdfErr + pdf.TableWriteLine(cancellationPolicy,2);
-//								pdfErr = pdfErr + pdf.TableWriteLine();
+								pdfErr = pdfErr + pdf.TableWriteLine(lbl100238.Text);
+								pdfErr = pdfErr + pdf.TableWriteLine(refundPolicy,2);
+								pdfErr = pdfErr + pdf.TableWriteLine(moneyBackPolicy,2);
+								pdfErr = pdfErr + pdf.TableWriteLine(cancellationPolicy,2);
+								pdfErr = pdfErr + pdf.TableWriteLine();
 
 								pdfErr = pdfErr + pdf.TableWriteLine(lbl100259.Text);
 								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100375.Text,lblp6Date.Text});
