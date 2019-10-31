@@ -63,10 +63,10 @@ function NextPage(inc)
 		ShowElt('divP04'  ,pageNo==4);
 		ShowElt('divP05'  ,pageNo==5);
 		ShowElt('divP06'  ,pageNo==6);
-		ShowElt('btnBack1',pageNo> firstPage && pageNo!=confPage);
-		ShowElt('btnNext' ,pageNo< lastPage  && pageNo!=confPage);
 		ShowElt('btnAgree',pageNo==lastPage  && pageNo!=confPage);
 		ShowElt('btnBack2',pageNo==lastPage  && pageNo!=confPage);
+		ShowElt('btnBack1',pageNo> firstPage && pageNo!=confPage);
+		ShowElt('btnNext' ,pageNo< lastPage  && pageNo!=confPage);
 
 		if ( pageNo == firstPage )
 			ShowElt('btnNext',GetElt('chkAgree').checked);
@@ -242,6 +242,8 @@ function Help(onOrOff,ctl,item)
 
 <asp:HiddenField runat="server" id="hdnPageNo" value="1" />
 <asp:HiddenField runat="server" id="hdnBrowser" />
+<asp:HiddenField runat="server" id="hdn100002" />
+<asp:HiddenField runat="server" id="hdn100137" />
 
 <div class="Header3">
 	<asp:Literal runat="server" ID="lblReg"></asp:Literal><asp:Literal runat="server" ID="lblRegConf"></asp:Literal>
@@ -589,6 +591,8 @@ function Help(onOrOff,ctl,item)
 	<tr><td>&nbsp;</td></tr>
 -->
 
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100238"></asp:Literal></td></tr>
 	<tr>
 		<td colspan="2"><asp:Literal runat="server" ID="lblp6RefundPolicy"></asp:Literal></td></tr>
 	<tr>

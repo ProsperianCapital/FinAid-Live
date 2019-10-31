@@ -40,6 +40,24 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdnBrowser;
         
         /// <summary>
+        /// hdn100002 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdn100002;
+        
+        /// <summary>
+        /// hdn100137 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdn100137;
+        
+        /// <summary>
         /// lblReg control.
         /// </summary>
         /// <remarks>
@@ -1226,6 +1244,15 @@ namespace PCIWebFinAid {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal lbl100237;
+        
+        /// <summary>
+        /// lbl100238 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal lbl100238;
         
         /// <summary>
         /// lblp6RefundPolicy control.

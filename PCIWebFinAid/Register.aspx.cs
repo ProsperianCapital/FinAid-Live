@@ -36,7 +36,6 @@ namespace PCIWebFinAid
 				languageDialectCode = WebTools.ViewStateString(ViewState,"LanguageDialectCode");
 				contractCode        = WebTools.ViewStateString(ViewState,"ContractCode");
 				contractPIN         = WebTools.ViewStateString(ViewState,"ContractPIN");
-				lblRegConf.Text     = "";
 			}
 			else
 			{
@@ -45,7 +44,7 @@ namespace PCIWebFinAid
 				languageCode        = WebTools.RequestValueString(Request,"LC");  // LanguageCode");
 				languageDialectCode = WebTools.RequestValueString(Request,"LDC"); // LanguageDialectCode");
 
-//	Testing
+//	Testing 1
 				if ( productCode.Length         < 1 ) productCode         = "10278";
 				if ( languageCode.Length        < 1 ) languageCode        = "ENG";
 				if ( languageDialectCode.Length < 1 ) languageDialectCode = "0002";
@@ -58,12 +57,20 @@ namespace PCIWebFinAid
 
 				LoadLabels();
 
-				lblVer.Text      = "Version " + SystemDetails.AppVersion;
-				lblVer.Visible   = ! Tools.SystemIsLive();
-				btnBack1.Visible = ! Tools.SystemIsLive();
-				btnNext.Visible  = ( lblError.Text.Length == 0 );
+				lblVer.Text        = "Version " + SystemDetails.AppVersion;
+				lblVer.Visible     = ! Tools.SystemIsLive();
+				btnBack1.Visible   = ! Tools.SystemIsLive();
+				btnNext.Visible    = ( lblError.Text.Length == 0 );
+				lblReg.Visible     = true;
+				lblRegConf.Visible = false;
 
-//	Testing
+//	Testing 2
+				if ( hdn100137.Value.Length < 1 ) hdn100137.Value = "PRIME\nASSIST";
+				if ( hdn100002.Value.Length < 1 ) hdn100002.Value = "Emergency Mobile, Legal & Financial Assistance";
+				if ( lblReg.Text.Length     < 1 ) lblReg.Text     = "Registration";
+				if ( lblRegConf.Text.Length < 1 ) lblRegConf.Text = "Registration Confirmation";
+
+//	Testing 3
 				if ( WebTools.RequestValueInt(Request,"PageNoX") > 0 )
 				{
 					hdnPageNo.Value = WebTools.RequestValueString(Request,"PageNoX");
@@ -170,6 +177,8 @@ namespace PCIWebFinAid
 							}
 							else if ( fieldCode == "100135" ) // Registration
 								lblReg.Text = fieldValue;
+							else if ( fieldCode == "100207" ) // Registration Confirmation
+								lblRegConf.Text = fieldValue;
 							else if ( fieldCode == "100122" )
 								lblSubHead3Label.Text = fieldValue;
 							else if ( fieldCode == "100136" )
@@ -188,6 +197,12 @@ namespace PCIWebFinAid
 //								lblMandateHead.Text = fieldValue;
 //							else if ( fieldCode == "100192" )
 //								lblMandateDetail.Text = fieldValue;
+
+						//	PDF Stuff
+							else if ( fieldCode == "100002" ) // Emergency mobile assistance, blah
+								hdn100002.Value  = fieldValue;
+							else if ( fieldCode == "100137" ) // Product name
+								hdn100137.Value  = fieldValue;
 
 							logNo = 20;
 
@@ -622,7 +637,8 @@ namespace PCIWebFinAid
 								throw new Exception("XYZ");
 
 //	Confirmation Page
-							lblRegConf.Text     = " Confirmation";
+							lblReg.Visible      = false;
+							lblRegConf.Visible  = true;
 							lblp6Ref.Text       = contractCode;
 							lblp6Pin.Text       = contractPIN;
 							lblp6Title.Text     = lstTitle.SelectedItem.Text;
@@ -655,12 +671,15 @@ namespace PCIWebFinAid
 
 //	Generate PDF
 							string pdfFileName = "";
-
-							using (PCIBusiness.PdfFile pdf = new PCIBusiness.PdfFile())
+ 
+							using (PdfFile pdf = new PdfFile())
 							{
 								pdfErr =          pdf.Create("FinAid",contractCode);
-								pdfErr = pdfErr + pdf.WriteLine(lbl100400.Text,1,2);
-								pdfErr = pdfErr + pdf.WriteLine(lbl100209.Text,2,2);
+								pdfErr = pdfErr + pdf.AddParagraph(hdn100137.Value,(int)Constants.PdfFontSize.HugeHeading,1,(int)Constants.PdfAlign.Centre,"Orange"); // Prime Assist (product Name)
+								pdfErr = pdfErr + pdf.AddParagraph(hdn100002.Value,(int)Constants.PdfFontSize.TableCell,2,(int)Constants.PdfAlign.Centre); // Emergency mobile, blah
+								pdfErr = pdfErr + pdf.AddParagraph(lblRegConf.Text,(int)Constants.PdfFontSize.MajorHeading,2,(int)Constants.PdfAlign.Centre); // Registration confirmation
+								pdfErr = pdfErr + pdf.AddParagraph(lbl100400.Text,(int)Constants.PdfFontSize.MinorHeading,2,(int)Constants.PdfAlign.Centre); // Congratulations
+								pdfErr = pdfErr + pdf.AddParagraph(lbl100209.Text,(int)Constants.PdfFontSize.TableCell,2,(int)Constants.PdfAlign.Left); // Dear Mr Smith
 
 								pdfErr = pdfErr + pdf.TableOpen(2);
 
@@ -692,6 +711,7 @@ namespace PCIWebFinAid
 								pdfErr = pdfErr + pdf.TableWriteLine(lbl100237.Text,2);
 								pdfErr = pdfErr + pdf.TableWriteLine();
 
+//	Old
 //								pdfErr = pdfErr + pdf.TableWriteLine(lbl100238.Text);
 //								pdfErr = pdfErr + pdf.TableWriteLine(legalAgreementHead,3);
 //								pdfErr = pdfErr + pdf.TableWriteLine(legalAgreementText,2);
@@ -709,10 +729,11 @@ namespace PCIWebFinAid
 								pdfErr = pdfErr + pdf.TableWriteLine(lblp6Mandate.Text,2);
 								pdfErr = pdfErr + pdf.TableWriteLine();
 
-								pdfErr = pdfErr + pdf.TableWriteLine(refundPolicy,2);
-								pdfErr = pdfErr + pdf.TableWriteLine(moneyBackPolicy,2);
-								pdfErr = pdfErr + pdf.TableWriteLine(cancellationPolicy,2);
-								pdfErr = pdfErr + pdf.TableWriteLine();
+//	Policy stuff should not be in PDF
+//								pdfErr = pdfErr + pdf.TableWriteLine(refundPolicy,2);
+//								pdfErr = pdfErr + pdf.TableWriteLine(moneyBackPolicy,2);
+//								pdfErr = pdfErr + pdf.TableWriteLine(cancellationPolicy,2);
+//								pdfErr = pdfErr + pdf.TableWriteLine();
 
 								pdfErr = pdfErr + pdf.TableWriteLine(lbl100259.Text);
 								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100375.Text,lblp6Date.Text});
@@ -883,7 +904,7 @@ namespace PCIWebFinAid
 				lblErrorDtl.Text = "<div style='background-color:blue;padding:3px;color:white'>Error Details</div>" + lblErrorDtl.Text;
 
 			lblError.Visible = ( lblError.Text.Length    > 0 );
-			btnError.Visible = ( lblErrorDtl.Text.Length > 0 ) && lblError.Visible;
+			btnError.Visible = ( lblErrorDtl.Text.Length > 0 ) && lblError.Visible && ! Tools.SystemIsLive();
 		}
 	}
 }
