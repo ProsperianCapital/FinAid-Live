@@ -13,10 +13,12 @@ namespace PCIBusiness
 		private Paragraph para;
 		private PdfWriter writer;
 		private PdfPTable openTable;
+		private BaseFont  fontBase;
+
 		private int       k;
 		private string    fileName;
 
-		private const iTextSharp.text.Font.FontFamily PDF_FONT = iTextSharp.text.Font.FontFamily.HELVETICA;
+//		private const iTextSharp.text.Font.FontFamily PDF_FONT = iTextSharp.text.Font.FontFamily.HELVETICA;
 		private const int PDF_FONTSIZE_TABLECELL     = 10;
 		private const int PDF_FONTSIZE_TABLEHEADING  = 12;
 		private const int PDF_FONTSIZE_MAJORHEADING  = 32;
@@ -49,6 +51,10 @@ namespace PCIBusiness
 				doc              = new Document();
 				writer           = PdfWriter.GetInstance(doc,new FileStream(fileName,FileMode.OpenOrCreate));
 				writer.PageEvent = new PdfHeaderFooter();
+
+//	Set up unicode font ... in constructor
+//				BaseFont fontBase = BaseFont.CreateFont("C:\\Dev\\Prosperian\\Application\\PCIWebFinAid\\CSS\\raleway-medium-webfont.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+//				Font     fontUse  = new Font(fontBase, 12, Font.NORMAL);
 
 			//	Document attributes
 				doc.Open();
@@ -114,7 +120,8 @@ namespace PCIBusiness
 				theText   = theText.Replace("<br />  ",Environment.NewLine).Replace("<br /> ",Environment.NewLine).Replace("<br />",Environment.NewLine);
 				foreColor = foreColor.Trim().ToUpper();
 				if ( foreColor.Length == 0 )
-					para = new Paragraph(theText,new iTextSharp.text.Font(PDF_FONT,fontSize,style));
+					para = new Paragraph(theText,new iTextSharp.text.Font(fontBase,fontSize,style));
+//					para = new Paragraph(theText,new iTextSharp.text.Font(PDF_FONT,fontSize,style));
 				else
 				{
 					BaseColor                            textColor = BaseColor.BLACK;
@@ -130,7 +137,8 @@ namespace PCIBusiness
 					else if ( foreColor == "GRAY"      ) textColor = BaseColor.GRAY;
 					else if ( foreColor == "LIGHTGRAY" ) textColor = BaseColor.LIGHT_GRAY;
 					else if ( foreColor == "MAGENTA"   ) textColor = BaseColor.MAGENTA;
-					para = new Paragraph(theText,new iTextSharp.text.Font(PDF_FONT,fontSize,style,textColor));
+					para = new Paragraph(theText,new iTextSharp.text.Font(fontBase,fontSize,style,textColor));
+//					para = new Paragraph(theText,new iTextSharp.text.Font(PDF_FONT,fontSize,style,textColor));
 				}
 
 				if ( alignment > 0 )
@@ -229,11 +237,11 @@ namespace PCIBusiness
 				if ( data.Length == 0 )
 					dtCell = new PdfPCell(new Phrase(" "));
 				else if ( rowMode == 1 ) // Heading
-					dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(PDF_FONT,PDF_FONTSIZE_TABLEHEADING,Font.BOLD,BaseColor.ORANGE)));
+					dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(fontBase,PDF_FONTSIZE_TABLEHEADING,Font.BOLD,BaseColor.ORANGE)));
 				else if ( rowMode == 3 ) // Underlined
-					dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(PDF_FONT,PDF_FONTSIZE_TABLECELL,Font.UNDERLINE)));
+					dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(fontBase,PDF_FONTSIZE_TABLECELL,Font.UNDERLINE)));
 				else
-					dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(PDF_FONT,PDF_FONTSIZE_TABLECELL)));
+					dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(fontBase,PDF_FONTSIZE_TABLECELL)));
 				dtCell.Border  = 0;
 				dtCell.Colspan = openTable.NumberOfColumns;
 				openTable.AddCell(dtCell);
@@ -261,9 +269,9 @@ namespace PCIBusiness
 				{
 					data = rowData[k].Replace("<br />",Environment.NewLine).Trim();
 					if ( rowMode == 1 ) // Heading
-						dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(PDF_FONT,PDF_FONTSIZE_TABLEHEADING,Font.BOLD)));
+						dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(fontBase,PDF_FONTSIZE_TABLEHEADING,Font.BOLD)));
 					else
-						dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(PDF_FONT,PDF_FONTSIZE_TABLECELL)));
+						dtCell = new PdfPCell(new Phrase(data,new iTextSharp.text.Font(fontBase,PDF_FONTSIZE_TABLECELL)));
 					dtCell.Border = 0;
 					openTable.AddCell(dtCell);
 //					openTable.CompleteRow();
@@ -329,7 +337,7 @@ namespace PCIBusiness
 					}
 					colWidths[k] = colValue.Length;
 		
-					dtCell = new PdfPCell(new Phrase(colValue,new iTextSharp.text.Font(PDF_FONT,PDF_FONTSIZE_TABLEHEADING,Font.BOLD)));
+					dtCell = new PdfPCell(new Phrase(colValue,new iTextSharp.text.Font(fontBase,PDF_FONTSIZE_TABLEHEADING,Font.BOLD)));
 
 					if ( colAttr.Contains("[ALIGN:R]") )
 						dtCell.HorizontalAlignment = Element.ALIGN_RIGHT;
@@ -359,7 +367,7 @@ namespace PCIBusiness
 							colValue  = rows.ToString();
 						else
 							colValue  = dbConn.ColValue(k-extraCols);
-						dtCell        = new PdfPCell(new Phrase(colValue,new iTextSharp.text.Font(PDF_FONT,PDF_FONTSIZE_TABLECELL)));
+						dtCell        = new PdfPCell(new Phrase(colValue,new iTextSharp.text.Font(fontBase,PDF_FONTSIZE_TABLECELL)));
 						dtCell.Border = 0;
 						dtTable.AddCell(dtCell);
 						if ( colWidths[k] < colValue.Length )
@@ -396,11 +404,6 @@ namespace PCIBusiness
 			return 0;
 		}
 
-//		public int WriteText(string text)
-//		{
-//			return 0;
-//		}
-
 		public override void CleanUp()
 		{
 			try
@@ -422,16 +425,32 @@ namespace PCIBusiness
 			}
 			catch
 			{ }
-			para   = null;
-			writer = null;
-			doc    = null;
+			para     = null;
+			writer   = null;
+			doc      = null;
+			fontBase = null;
 
 			Tools.DeleteFiles("*.pdf",0,0,15);
 		}
 
 		public PdfFile()
 		{
-			fileName = "";
+//	Set up unicode font
+			fileName = Tools.SystemFolder("CSS")+"raleway-medium-webfontt.ttf";
+			try
+			{
+				fontBase = BaseFont.CreateFont(fileName, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+			}
+			catch (Exception ex)
+			{
+				fontBase = null;
+				Tools.LogException("PdfFile.Constructor","Font file="+fileName,ex);
+				Tools.LogInfo     ("PdfFile.Constructor","Failed to load font " + fileName,244);
+			}
+			finally
+			{
+				fileName = "";
+			}
 		}
 	}
 }
