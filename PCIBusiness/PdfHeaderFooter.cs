@@ -13,25 +13,25 @@ namespace PCIBusiness
 				{
 					PdfPTable footTable = new PdfPTable(3);
 					PdfPCell  cell;
-					Image     logo;
-					string    dir;
+//					Image     logo;
+//					string    dir;
 
-					dir = AppDomain.CurrentDomain.BaseDirectory;
-					if ( ! dir.EndsWith("\\") ) dir = dir + "\\";
-					dir = dir + "Images\\";
+//					dir = AppDomain.CurrentDomain.BaseDirectory;
+//					if ( ! dir.EndsWith("\\") ) dir = dir + "\\";
+//					dir = dir + "Images\\";
 
-//					footTable.WidthPercentage = 100;
 					Rectangle page = doc.PageSize;
 					footTable.TotalWidth = page.Width;
 
-					logo                     = Image.GetInstance(dir + "PDF-Adidas-Small.jpg");
-					logo.Alignment           = Element.ALIGN_LEFT;
-					cell                     = new PdfPCell();
-					cell.Border              = PdfPCell.NO_BORDER;
-					cell.HorizontalAlignment = Element.ALIGN_LEFT;
-					cell.VerticalAlignment   = Element.ALIGN_BOTTOM;
-					cell.AddElement(new Chunk(logo,0,0));
-					footTable.AddCell(cell);
+//	Put this in if you want a logo on the footer page
+//					logo                     = Image.GetInstance(dir + "Prosperian-Small.jpg");
+//					logo.Alignment           = Element.ALIGN_LEFT;
+//					cell                     = new PdfPCell();
+//					cell.Border              = PdfPCell.NO_BORDER;
+//					cell.HorizontalAlignment = Element.ALIGN_LEFT;
+//					cell.VerticalAlignment   = Element.ALIGN_BOTTOM;
+//					cell.AddElement(new Chunk(logo,0,0));
+//					footTable.AddCell(cell);
 
 					cell                     = new PdfPCell();
 					cell.Border              = PdfPCell.NO_BORDER;

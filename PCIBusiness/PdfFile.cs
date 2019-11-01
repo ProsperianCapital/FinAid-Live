@@ -436,7 +436,7 @@ namespace PCIBusiness
 		public PdfFile()
 		{
 //	Set up unicode font
-			fileName = Tools.SystemFolder("CSS")+"raleway-medium-webfontt.ttf";
+			fileName = Tools.SystemFolder("CSS")+"raleway-medium-webfont.ttf";
 			try
 			{
 				fontBase = BaseFont.CreateFont(fileName, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
