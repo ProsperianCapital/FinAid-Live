@@ -545,11 +545,11 @@ namespace PCIWebFinAid
 									{
 										Tools.LogInfo("Register.btnNext_Click/51",w+" (match)",logDebug);
 										lblCCMandate.Text = miscList.GetColumn("CollectionMandateText",0);
-										int k = lblCCMandate.Text.IndexOf(Environment.NewLine);
+										int k             = lblCCMandate.Text.IndexOf("\n"); // Do NOT use Environment.NewLine here!
 										if ( k > 0 && lblCCMandate.Text.Length > k+1 )
 										{
 											lblCCMandateHead.Text = lblCCMandate.Text.Substring(0,k);
-											lblCCMandate.Text     = lblCCMandate.Text.Substring(k+Environment.NewLine.Length).Replace(Environment.NewLine,"<br />");
+											lblCCMandate.Text     = lblCCMandate.Text.Substring(k+1).Replace(Environment.NewLine,"<br />");
 										}
 										lblp6MandateHead.Text = lblCCMandateHead.Text;
 										lblp6Mandate.Text     = lblCCMandate.Text;
