@@ -717,12 +717,6 @@ namespace PCIWebFinAid
 								pdfErr = pdfErr + pdf.TableWriteLine(lbl100237.Text,2);
 								pdfErr = pdfErr + pdf.TableWriteLine();
 
-//	Old
-//								pdfErr = pdfErr + pdf.TableWriteLine(lbl100238.Text);
-//								pdfErr = pdfErr + pdf.TableWriteLine(legalAgreementHead,3);
-//								pdfErr = pdfErr + pdf.TableWriteLine(legalAgreementText,2);
-//								pdfErr = pdfErr + pdf.TableWriteLine();
-
 								pdfErr = pdfErr + pdf.TableWriteLine(lbl100184.Text);
 								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100185.Text,lblp6CCType.Text});
 								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100186.Text,lblp6CCName.Text});
@@ -736,8 +730,8 @@ namespace PCIWebFinAid
 								pdfErr = pdfErr + pdf.TableWriteLine();
 
 								pdfErr = pdfErr + pdf.TableWriteLine(lbl100238.Text);
-								pdfErr = pdfErr + pdf.TableWriteLine(refundPolicy,2,1);
-								pdfErr = pdfErr + pdf.TableWriteLine(moneyBackPolicy,2,1);
+								pdfErr = pdfErr + pdf.TableWriteLine(refundPolicy,2,2);
+								pdfErr = pdfErr + pdf.TableWriteLine(moneyBackPolicy,2,2);
 								pdfErr = pdfErr + pdf.TableWriteLine(cancellationPolicy,2);
 								pdfErr = pdfErr + pdf.TableWriteLine();
 
