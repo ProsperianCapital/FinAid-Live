@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -91,7 +89,6 @@ namespace PCIBusiness
 				AddParagraph(mainHeading,PDF_FONTSIZE_MAJORHEADING,2,Element.ALIGN_CENTER,"",iTextSharp.text.Font.BOLD);
 				AddParagraph(subHeading,PDF_FONTSIZE_MINORHEADING ,5,Element.ALIGN_CENTER,"",iTextSharp.text.Font.BOLD);
 				AddParagraph("(c) " + SystemDetails.Owner,PDF_FONTSIZE_SUBHEADING,2,Element.ALIGN_CENTER);
-//				AddParagraph("In accordance with the rules of IAAF, ASA and WPA",PDF_FONTSIZE_SUBHEADING,3,Element.ALIGN_CENTER);
 				AddParagraph(appName + ", Version " + SystemDetails.AppVersion + " (" + Tools.DateToString(System.DateTime.Now,2,1) + ")",PDF_FONTSIZE_TABLEHEADING,0,Element.ALIGN_LEFT);
 
 				doc.NewPage();
@@ -121,7 +118,6 @@ namespace PCIBusiness
 				foreColor = foreColor.Trim().ToUpper();
 				if ( foreColor.Length == 0 )
 					para = new Paragraph(theText,new iTextSharp.text.Font(fontBase,fontSize,style));
-//					para = new Paragraph(theText,new iTextSharp.text.Font(PDF_FONT,fontSize,style));
 				else
 				{
 					BaseColor                            textColor = BaseColor.BLACK;
@@ -147,7 +143,7 @@ namespace PCIBusiness
 				doc.Add(para);
 				if ( blankLines > 0 )
 					for ( k = 1 ; k < blankLines ; k++ )
-						doc.Add(new Chunk(Constants.C_TEXTBREAK()));
+						doc.Add(new Chunk(Environment.NewLine));
 
 				return 0;
 			}
@@ -224,7 +220,7 @@ namespace PCIBusiness
 //			return 199;
 //		}
 
-		public int TableWriteLine(string data="",byte rowMode=1)
+		public int TableWriteLine(string data="",byte rowMode=1,byte blankLines=0)
 		{
 			try
 			{
@@ -232,8 +228,14 @@ namespace PCIBusiness
 					return 10;
 				if ( openTable == null )
 					return 20;
+
 				PdfPCell dtCell;
 				data = Tools.NullToString(data).Replace("<br />",Environment.NewLine);
+
+				if ( blankLines > 0 )
+					for ( int k = 1 ; k <= blankLines ; k++ )
+						data = data + Environment.NewLine;
+
 				if ( data.Length == 0 )
 					dtCell = new PdfPCell(new Phrase(" "));
 				else if ( rowMode == 1 ) // Heading

@@ -15,10 +15,10 @@ namespace PCIBusiness
 		{
 			return "<br />";
 		}
-		public static string C_TEXTBREAK()
-		{
-			return Environment.NewLine; // "\n";
-		}
+//		public static string C_TEXTBREAK()
+//		{
+//			return Environment.NewLine; // "\n";
+//		}
 		public static short C_MAXSQLROWS()
 		{
 			return 100;

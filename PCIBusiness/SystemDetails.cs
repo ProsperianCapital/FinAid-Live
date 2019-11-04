@@ -5,8 +5,8 @@
 	//	Now kept in Web.AppDetails ...
 	//	public static string AppName    = "Prosperian Capital Recurring Payments";
 
-		public static string AppVersion = "1.1.028";
-		public static string AppDate    = "2019/11/01 14:22:03";
+		public static string AppVersion = "1.1.029";
+		public static string AppDate    = "2019/11/04 14:55:03";
 		public static string Developer  = "Paul Kilfoil, Software Development & IT Consulting";
 		public static string Owner      = "Prosperian Capital International";
 		public static string OwnerPhone = "+27 21 950 6060";
