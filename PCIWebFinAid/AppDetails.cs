@@ -1,4 +1,6 @@
-﻿namespace PCIWebFinAid
+﻿using System;
+
+namespace PCIWebFinAid
 {
 	public static class AppDetails
 	{
@@ -7,12 +9,12 @@
 
 		public static string Summary()
 		{
-			return "<!--" + PCIBusiness.Constants.C_TEXTBREAK()
-			     + AppName + PCIBusiness.Constants.C_TEXTBREAK()
-			     + "Version " + PCIBusiness.SystemDetails.AppVersion + PCIBusiness.Constants.C_TEXTBREAK()
-			     + PCIBusiness.SystemDetails.AppDate + PCIBusiness.Constants.C_TEXTBREAK()
-			     + "(c) " + PCIBusiness.SystemDetails.Owner + PCIBusiness.Constants.C_TEXTBREAK()
-			     + "Developed by " + PCIBusiness.SystemDetails.Developer + PCIBusiness.Constants.C_TEXTBREAK()
+			return "<!--" + Environment.NewLine
+			     + AppName + Environment.NewLine
+			     + "Version " + PCIBusiness.SystemDetails.AppVersion + Environment.NewLine
+			     + PCIBusiness.SystemDetails.AppDate + Environment.NewLine
+			     + "(c) " + PCIBusiness.SystemDetails.Owner + Environment.NewLine
+			     + "Developed by " + PCIBusiness.SystemDetails.Developer + Environment.NewLine
 			     + "-->";
 		}
 	}

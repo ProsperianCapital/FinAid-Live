@@ -44,10 +44,15 @@ namespace PCIWebFinAid
 				languageCode        = WebTools.RequestValueString(Request,"LC");  // LanguageCode");
 				languageDialectCode = WebTools.RequestValueString(Request,"LDC"); // LanguageDialectCode");
 
-//	Testing 1
+//	Testing 1 (English)
 				if ( productCode.Length         < 1 ) productCode         = "10278";
 				if ( languageCode.Length        < 1 ) languageCode        = "ENG";
 				if ( languageDialectCode.Length < 1 ) languageDialectCode = "0002";
+
+//	Testing 2 (Thai)
+//				if ( productCode.Length         < 1 ) productCode         = "10024";
+//				if ( languageCode.Length        < 1 ) languageCode        = "THA";
+//				if ( languageDialectCode.Length < 1 ) languageDialectCode = "0001";
 
 				GetContractCode();
 
@@ -65,7 +70,7 @@ namespace PCIWebFinAid
 				lblRegConf.Visible = false;
 
 //	Testing 2
-				if ( hdn100137.Value.Length < 1 ) hdn100137.Value = "PRIME\nASSIST";
+				if ( hdn100137.Value.Length < 1 ) hdn100137.Value = "PRIME" + Environment.NewLine + "ASSIST";
 				if ( hdn100002.Value.Length < 1 ) hdn100002.Value = "Emergency Mobile, Legal & Financial Assistance";
 				if ( lblReg.Text.Length     < 1 ) lblReg.Text     = "Registration";
 				if ( lblRegConf.Text.Length < 1 ) lblRegConf.Text = "Registration Confirmation";
@@ -540,11 +545,11 @@ namespace PCIWebFinAid
 									{
 										Tools.LogInfo("Register.btnNext_Click/51",w+" (match)",logDebug);
 										lblCCMandate.Text = miscList.GetColumn("CollectionMandateText",0);
-										int k = lblCCMandate.Text.IndexOf("\n");
+										int k = lblCCMandate.Text.IndexOf(Environment.NewLine);
 										if ( k > 0 && lblCCMandate.Text.Length > k+1 )
 										{
 											lblCCMandateHead.Text = lblCCMandate.Text.Substring(0,k);
-											lblCCMandate.Text     = lblCCMandate.Text.Substring(k+1).Replace("\n","<br />");
+											lblCCMandate.Text     = lblCCMandate.Text.Substring(k+Environment.NewLine.Length).Replace(Environment.NewLine,"<br />");
 										}
 										lblp6MandateHead.Text = lblCCMandateHead.Text;
 										lblp6Mandate.Text     = lblCCMandate.Text;
@@ -599,8 +604,8 @@ namespace PCIWebFinAid
 //								                    + miscList.GetColumn("ProductLegalDocumentParagraphText2");
 //								lblp6Agreement.Text = "<u>"
 //								                    + miscList.GetColumn("ProductLegalDocumentParagraphHeader") + "</u><br />"
-//								                    + miscList.GetColumn("ProductLegalDocumentParagraphText").Replace("\n","<br />")
-//								                    + miscList.GetColumn("ProductLegalDocumentParagraphText2").Replace("\n","<br />");
+//								                    + miscList.GetColumn("ProductLegalDocumentParagraphText").Replace(Environment.NewLine,"<br />")
+//								                    + miscList.GetColumn("ProductLegalDocumentParagraphText2").Replace(Environment.NewLine,"<br />");
 //							}
 //							if ( legalAgreementHead.Length + legalAgreementText.Length < 1 )
 //								SetErrorDetail(30070,30070,"Unable to retrieve legal documents",sql,2,2);
@@ -618,9 +623,9 @@ namespace PCIWebFinAid
 								refundPolicy                 = miscList.GetColumn("RefundPolicyText");
 								moneyBackPolicy              = miscList.GetColumn("MoneyBackPolicyText");
 								cancellationPolicy           = miscList.GetColumn("CancellationPolicyText");
-								lblp6RefundPolicy.Text       = refundPolicy.Replace("\n","<br />");
-								lblp6MoneyBackPolicy.Text    = moneyBackPolicy.Replace("\n","<br />");
-								lblp6CancellationPolicy.Text = cancellationPolicy.Replace("\n","<br />");
+								lblp6RefundPolicy.Text       = refundPolicy.Replace(Environment.NewLine,"<br />") + "<br />&nbsp;";
+								lblp6MoneyBackPolicy.Text    = moneyBackPolicy.Replace(Environment.NewLine,"<br />") + "<br />&nbsp;";
+								lblp6CancellationPolicy.Text = cancellationPolicy.Replace(Environment.NewLine,"<br />");
 							}
 							if ( refundPolicy.Length < 1 || moneyBackPolicy.Length < 1 || cancellationPolicy.Length < 1 )
 								SetErrorDetail(30080,30080,"Unable to retrieve product policy text",sql,2,2);
@@ -652,7 +657,8 @@ namespace PCIWebFinAid
 							lblp6PayDay.Text    = lstPayDay.SelectedItem.Text;
 //							lblp6Option.Text    = hdnOption.Value;
 							lblp6PayMethod.Text = lstPayment.SelectedItem.Text;
-							lbl100209.Text      = lbl100209.Text.Replace("[Title]",lstTitle.SelectedItem.Text).Replace("[Initials]",txtFirstName.Text.Substring(0,1).ToUpper()).Replace("[Surname]",txtSurname.Text+"<br />");
+//							lbl100209.Text      = lbl100209.Text.Replace("[Title]",lstTitle.SelectedItem.Text).Replace("[Initials]",txtFirstName.Text.Substring(0,1).ToUpper()).Replace("[Surname]",txtSurname.Text+"<br />");
+							lbl100209.Text      = lbl100209.Text.Replace("[Title]",lstTitle.SelectedItem.Text).Replace("[Initials]",txtFirstName.Text.Substring(0,1).ToUpper()).Replace("[Surname]",txtSurname.Text);
 							lblp6CCName.Text    = txtCCName.Text;
 							lblp6CCNumber.Text  = txtCCNumber.Text;
 							lblp6CCExpiry.Text  = lstCCYear.SelectedValue + "/" + lstCCMonth.SelectedValue;
@@ -730,8 +736,8 @@ namespace PCIWebFinAid
 								pdfErr = pdfErr + pdf.TableWriteLine();
 
 								pdfErr = pdfErr + pdf.TableWriteLine(lbl100238.Text);
-								pdfErr = pdfErr + pdf.TableWriteLine(refundPolicy,2);
-								pdfErr = pdfErr + pdf.TableWriteLine(moneyBackPolicy,2);
+								pdfErr = pdfErr + pdf.TableWriteLine(refundPolicy,2,1);
+								pdfErr = pdfErr + pdf.TableWriteLine(moneyBackPolicy,2,1);
 								pdfErr = pdfErr + pdf.TableWriteLine(cancellationPolicy,2);
 								pdfErr = pdfErr + pdf.TableWriteLine();
 
