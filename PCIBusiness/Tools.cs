@@ -3,6 +3,7 @@ using System.IO;
 using System.Xml;
 using System.Globalization;
 using System.Text;
+using System.Web.UI;
 
 namespace PCIBusiness
 {
@@ -898,7 +899,7 @@ namespace PCIBusiness
 			if ( folder.Length > 0 )
 				return folder + ( folder.EndsWith("\\") ? "" : "\\" );
 			if ( subFolder.Length > 0 )
-				return folder + ( subFolder.EndsWith("\\") ? "" : "\\" );
+				return subFolder + ( subFolder.EndsWith("\\") ? "" : "\\" );
 			return "";
 		}
 
@@ -1031,6 +1032,55 @@ namespace PCIBusiness
 				Tools.CloseDB(ref conn);
 			}
 			return ret.ToString();
+		}
+
+
+		public static string ReadFile(string fileName)
+		{
+			StreamReader fHandle = null;
+
+			try
+			{
+				fHandle  = File.OpenText(fileName);
+				string h = fHandle.ReadToEnd();
+				return h.Trim();
+			}
+			catch
+			{
+				return "";
+			}
+			finally
+			{
+				if ( fHandle != null )
+					fHandle.Close();
+				fHandle = null;
+			}
+		}
+
+		public static int CreatePDF(string fileSource,string html,ref string fileName)
+		{
+			try
+			{
+				StreamWriter fileOut = null;
+				fileName = Tools.CreateFile(ref fileOut,fileSource,"pdf");
+				if ( fileOut == null )
+					return 10;
+				fileOut.Close();
+				fileOut = null;
+				if ( fileName.Length < 1 )
+					return 20;
+
+				SelectPdf.HtmlToPdf   converter = new SelectPdf.HtmlToPdf();
+				SelectPdf.PdfDocument doc       = converter.ConvertHtmlString(html);
+				doc.Save(fileName);
+				doc.Close();
+				return 0;
+			}
+			catch (Exception ex)
+			{
+				LogException("Tools.CreatePDF","",ex);
+			}
+			return 30;
 		}
 	}
 }
