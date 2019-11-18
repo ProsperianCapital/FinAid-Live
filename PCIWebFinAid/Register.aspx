@@ -636,7 +636,6 @@ function Help(onOrOff,ctl,item)
 	<tr>
 		<td colspan="2"><asp:Literal runat="server" ID="lblp6Browser"></asp:Literal></td></tr>
 </table>
-
 </div>
 
 <br />
