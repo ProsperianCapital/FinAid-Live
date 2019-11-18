@@ -1078,7 +1078,7 @@ namespace PCIBusiness
 			}
 			catch (Exception ex)
 			{
-				LogException("Tools.CreatePDF","",ex);
+				LogException("Tools.CreatePDF","File="+fileName+"\n"+html,ex);
 			}
 			return 30;
 		}
