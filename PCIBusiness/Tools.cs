@@ -1070,7 +1070,10 @@ namespace PCIBusiness
 				if ( fileName.Length < 1 )
 					return 20;
 
-				html                            = html.Trim().Replace(Environment.NewLine,"<br />");
+//	NO! Do NOT do this!
+//				html = html.Trim().Replace(Environment.NewLine,"<br />");
+//	NO!
+
 				SelectPdf.HtmlToPdf   converter = new SelectPdf.HtmlToPdf();
 				SelectPdf.PdfDocument doc       = converter.ConvertHtmlString(html);
 				doc.Save(fileName);
