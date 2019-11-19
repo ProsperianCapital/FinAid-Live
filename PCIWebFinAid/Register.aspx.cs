@@ -622,7 +622,9 @@ namespace PCIWebFinAid
 							else
 							{
 								lbl100325.Text = miscList.GetColumn("FieldValue");
-								if ( lbl100325.Text.Length < 1 )
+								if ( lbl100325.Text.Length > 0 )
+									lbl100325.Text = lbl100325.Text.Replace(Environment.NewLine,"<br />");
+								else
 									SetErrorDetail(30062,30062,"Product option data is empty/blank (sp_WP_Get_WebsiteProductOptionA, column 'FieldValue')",sql,2,2);
 							}
 
@@ -811,9 +813,9 @@ namespace PCIWebFinAid
 //	Policies
 //	..	Labels
 							pdfText = pdfText.Replace("#POLICY-HEAD#"     ,lbl100238.Text)
-							                 .Replace("#POLICY-REFUND#"   ,refundPolicy)
-							                 .Replace("#POLICY-MONEYBACK#",moneyBackPolicy)
-							                 .Replace("#POLICY-CANCEL#"   ,cancellationPolicy);
+							                 .Replace("#POLICY-REFUND#"   ,lblp6RefundPolicy.Text)        // refundPolicy)
+							                 .Replace("#POLICY-MONEYBACK#",lblp6MoneyBackPolicy.Text)     // moneyBackPolicy)
+							                 .Replace("#POLICY-CANCEL#"   ,lblp6CancellationPolicy.Text); // cancellationPolicy);
 
 //	Connection
 //	..	Labels
