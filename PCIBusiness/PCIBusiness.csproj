@@ -39,11 +39,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IronPdf">
+      <HintPath>bin\IronPdf.dll</HintPath>
+    </Reference>
     <Reference Include="itextsharp">
       <HintPath>bin\itextsharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Select.HtmlToPdf">
-      <HintPath>bin\Select.HtmlToPdf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />

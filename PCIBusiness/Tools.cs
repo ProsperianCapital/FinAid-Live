@@ -1074,10 +1074,19 @@ namespace PCIBusiness
 //				html = html.Trim().Replace(Environment.NewLine,"<br />");
 //	NO!
 
-				SelectPdf.HtmlToPdf   converter = new SelectPdf.HtmlToPdf();
-				SelectPdf.PdfDocument doc       = converter.ConvertHtmlString(html);
-				doc.Save(fileName);
-				doc.Close();
+//	SelectPDF code, works fine on Windows but NOT on MS Azure
+//
+//				SelectPdf.HtmlToPdf   converter = new SelectPdf.HtmlToPdf();
+//				SelectPdf.PdfDocument doc       = converter.ConvertHtmlString(html);
+//				doc.Save(fileName);
+//				doc.Close();
+
+//	IronPDF code
+
+				IronPdf.HtmlToPdf   converter = new IronPdf.HtmlToPdf();
+				IronPdf.PdfDocument doc       = converter.RenderHtmlAsPdf(html);
+				doc.SaveAs(fileName);
+
 				return 0;
 			}
 			catch (Exception ex)
