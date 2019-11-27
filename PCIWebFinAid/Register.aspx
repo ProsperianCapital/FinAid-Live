@@ -6,7 +6,7 @@
 <head runat="server">
 	<!--#include file="IncludeMain.htm" -->
 	<title>FinAid : Register</title>
-	<link rel="stylesheet" href="CSS/FinAid.css?v=4" type="text/css" />
+	<link rel="stylesheet" href="CSS/FinAid.css" type="text/css" />
 	<link rel="shortcut icon" href="Images/favicon.ico" />
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
 </head>
@@ -19,23 +19,8 @@ var lastPage  = 5;
 var confPage  = 6;
 var pageNo;
 
-//history.pushState({}, "FinAid", "/2006.aspx");
-//history.replaceState("http://www.paulkilfoil.co.za", "FinAid", "/2006.aspx");
-
-//function OptSelect(p)
-//{
-//		var h = '';
-//		if ( p == null || p < 2 || p > 4 )
-//			p = GetListValue('lstOptions');
-//		if ( p == 2 ) // Bronze
-//			h = 'PRODUCT NAME: BRONZE<br /><br />Up To $150 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $14.95';
-//		else if ( p == 3 ) // Silver
-//			h = 'PRODUCT NAME: SILVER<br /><br />Up To $200 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $19.95';
-//		else if ( p == 4 ) // Gold
-//			h = 'PRODUCT NAME: GOLD<br /><br />Up To $300 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $29.95';
-//		SetEltValue('lblInfo4',h);
-//		SetEltValue('hdnOption',h);
-//}
+// history.pushState({}, "FinAid", "/PageName.aspx");
+// history.replaceState("http://www.blah.coma", "FinAid", "/PageName.aspx");
 
 function NextPage(inc)
 {

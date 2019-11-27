@@ -47,14 +47,14 @@ namespace PCIWebFinAid
 				languageDialectCode = WebTools.RequestValueString(Request,"LDC"); // LanguageDialectCode");
 
 //	Testing 1 (English)
-				if ( productCode.Length         < 1 ) productCode         = "10278";
-				if ( languageCode.Length        < 1 ) languageCode        = "ENG";
-				if ( languageDialectCode.Length < 1 ) languageDialectCode = "0002";
+//				if ( productCode.Length         < 1 ) productCode         = "10278";
+//				if ( languageCode.Length        < 1 ) languageCode        = "ENG";
+//				if ( languageDialectCode.Length < 1 ) languageDialectCode = "0002";
 
 //	Testing 2 (Thai)
-//				if ( productCode.Length         < 1 ) productCode         = "10024";
-//				if ( languageCode.Length        < 1 ) languageCode        = "THA";
-//				if ( languageDialectCode.Length < 1 ) languageDialectCode = "0001";
+				if ( productCode.Length         < 1 ) productCode         = "10024";
+				if ( languageCode.Length        < 1 ) languageCode        = "THA";
+				if ( languageDialectCode.Length < 1 ) languageDialectCode = "0001";
 
 				GetContractCode();
 
@@ -716,6 +716,8 @@ namespace PCIWebFinAid
 //								lblp6Billing.Text     = "We confirm that we have received the above Billing Information as submitted by you";
 //	Testing
 
+//	Generate PDF, version 4 (IronPDF)
+//		and also
 //	Generate PDF, version 3 (SelectPDF)
 //
 							string h   = Request.Url.GetLeftPart(UriPartial.Authority);
