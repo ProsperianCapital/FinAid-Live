@@ -315,7 +315,7 @@ namespace PCIWebFinAid
 					{
 						opt = Tools.StringToInt(miscList.GetColumn("ProductOptionCode"));
 						if ( opt > 0 )
-							F = F + "<input type='hidden' id='hdnOption" + opt.ToString() + "' value='" + miscList.GetColumn("FieldValue").Replace("'","`") + "' />";
+							F = F + "<input type='hidden' id='hdnOption" + opt.ToString() + "' value='" + miscList.GetColumn("FieldValue").Replace("'","`").Replace(Environment.NewLine,"<br />") + "' />";
 						miscList.NextRow();
 					}
 					lblOptionDescriptions.Text = F;
