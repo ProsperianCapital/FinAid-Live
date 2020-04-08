@@ -2,8 +2,7 @@
 
 //	(c)Paul Kilfoil
 //		Software Development & IT Consulting
-//		+27 21 785 5811 (phone)
-//		+27 84 438 5400 (mobile)
+//		+27 84 438 5400 (phone)
 //		PaulKilfoil..[at]..gmail.com
 //		www.PaulKilfoil.co.za
 
