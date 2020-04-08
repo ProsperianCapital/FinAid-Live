@@ -228,12 +228,14 @@ function OptSelect(p)
 	var h = '';
 	if ( p == null || p < 2 || p > 4 )
 		p = GetListValue('lstOptions');
-	if ( p == 2 ) // Bronze
-		h = 'PRODUCT NAME: BRONZE<br /><br />Up To $150 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $14.95';
-	else if ( p == 3 ) // Silver
-		h = 'PRODUCT NAME: SILVER<br /><br />Up To $200 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $19.95';
-	else if ( p == 4 ) // Gold
-		h = 'PRODUCT NAME: GOLD<br /><br />Up To $300 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $29.95';
+	h = GetEltValue('hdnOption'+p.toString());
+	if ( h.length < 1 )
+		if ( p == 2 )
+			h = 'PRODUCT NAME: BRONZE<br /><br />Up To $150 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $14.95';
+		else if ( p == 3 )
+			h = 'PRODUCT NAME: SILVER<br /><br />Up To $200 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $19.95';
+		else if ( p == 4 )
+			h = 'PRODUCT NAME: GOLD<br /><br />Up To $300 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $29.95';
 	SetEltValue('lblOption',h);
 //	SetEltValue('hdnOption',h);
 }
@@ -376,6 +378,7 @@ function OptSelect(p)
 </div>
 
 <div id="divP04">
+<asp:Literal runat="server" ID="lblOptionDescriptions"></asp:Literal>
 <p class="Header4">
 <asp:Literal runat="server" ID="lblSubHead4aLabel"></asp:Literal> <!-- Congratulations! Your product options are: -->
 </p><p class="Header5">
@@ -508,7 +511,7 @@ function OptSelect(p)
 </p><p>
 <asp:Literal runat="server" ID="lbl100209"></asp:Literal>
 </p>
-<table class="Confirmation">
+<table class="Confirmation" style="width:99%">
 	<tr>
 		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100372"></asp:Literal></td></tr>
 	<tr>

@@ -15,10 +15,9 @@ namespace PCIWebFinAid
 		string languageDialectCode;
 		string contractCode;
 		string contractPIN;
-		string pdfFileName;
+//		string pdfFileName;
 		string sql;
 		int    errNo;
-//		int    timeOut;
 
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
@@ -298,8 +297,28 @@ namespace PCIWebFinAid
 //					      + ",@LanguageCode="        + Tools.DBString(languageCode)
 //					      + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode)
 //					      + ",@Income="              + hdnIncomeError.ToString();
-//					logNo = 70;
+//					logNo = 65;
 //					errNo = errNo + WebTools.ListBind(lstOptions,sql,null,"ProductOptionCode","ProductOptionDescription");
+
+//	But we need the details
+					sql = "exec sp_WP_Get_WebsiteProductOptionA"
+					    + " @ProductOptionCode='0'" // Return ALL product options
+					    + ",@ProductCode="         + Tools.DBString(productCode)
+					    + ",@LanguageCode="        + Tools.DBString(languageCode)
+					    + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
+					int    opt;
+					string F = "";
+					logNo    = 70;
+					errNo    = miscList.ExecQuery(sql,0);
+					SetErrorDetail(errNo,logNo,"Unable to retrieve product option descriptions",sql);
+					while ( ! miscList.EOF )
+					{
+						opt = Tools.StringToInt(miscList.GetColumn("ProductOptionCode"));
+						if ( opt > 0 )
+							F = F + "<input type='hidden' id='hdnOption" + opt.ToString() + "' value='" + miscList.GetColumn("FieldValue").Replace("'","`") + "' />";
+						miscList.NextRow();
+					}
+					lblOptionDescriptions.Text = F;
 
 //	Payment Method
 					sql   = "exec sp_WP_Get_PaymentMethod"
@@ -923,7 +942,14 @@ namespace PCIWebFinAid
 							}
 //	Generate PDF, version 1
 */
+
 //	Send email
+//	Code removed, 2020/04/08
+//	Instead ...
+							errNo = 0;
+
+/*
+// Code removed 2020/04/08
 							errNo = 30200;
 							sql   = "exec sp_WP_Get_ProductEmail"
 							      + " @ProductCode="  + Tools.DBString(productCode)
@@ -1033,6 +1059,8 @@ namespace PCIWebFinAid
 									}
 
 							SetErrorDetail(errNo,errNo,"Unable to send confirmation email (SQL error)",sql);
+*/
+//	Email code removed, 2020/04/08
 						}
 					}
 				}
