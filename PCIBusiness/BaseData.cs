@@ -52,23 +52,32 @@ namespace PCIBusiness
 //			Tools.CloseDB(ref dbConn);
 //		}
 
-		protected int ExecuteSQLUpdate(bool closeConnection=true,bool getReturnCodes=true)
+		protected int ExecuteSQLUpdate(byte execMode=1,bool closeConnection=true)
 		{
-			if ( ExecuteSQL(null) == 0 && getReturnCodes )
-			{
-				returnCode    = dbConn.ColLong  ("ReturnCode");
-				returnMessage = dbConn.ColString("ReturnMessage");
-				returnData    = dbConn.ColString("ReturnData");
-			}
+			if ( ExecuteSQL(null,execMode) == 0 )
+				if ( execMode == 1 )
+				{
+					returnCode    = dbConn.ColLong  ("ReturnCode");
+					returnMessage = dbConn.ColString("ReturnMessage");
+					returnData    = dbConn.ColString("ReturnData");
+				}
+				else if ( execMode == 2 )
+					returnCode    = dbConn.ReturnValue;
+
 			if (closeConnection)
 				Tools.CloseDB(ref dbConn);
 			return returnCode;
 		}
 
 		protected int ExecuteSQL (object[][] parms          =null,
-		                          bool       eofIsError     =true,
+		                          byte       execMode       =1,
 		                          bool       closeConnection=true)
 		{
+		//	"execMode" can be
+		//	1 : Execute and expect a result set with at least 1 row
+		//	2 : Execute and expect a SQL integer return value
+		//	3 : Execute and expect nothing
+
 			returnCode    = 0;
 			returnMessage = "";
 			returnData    = "";
@@ -83,10 +92,15 @@ namespace PCIBusiness
 				returnCode    = 2;
 				returnMessage = "[BaseData.ExecuteSQL/2] SQL execution failed";
 			}
-			else if ( dbConn.EOF && eofIsError )
+			else if ( dbConn.EOF && execMode == 1 )
 			{
 				returnCode    = 3;
 				returnMessage = "[BaseData.ExecuteSQL/3] SQL successfully executed, but no data returned";
+			}
+			else if ( execMode == 2 && dbConn.ReturnValue < 0 )
+			{
+				returnCode    = 4;
+				returnMessage = "[BaseData.ExecuteSQL/4 SQL successfully executed, but the return code was invalid/missing";
 			}
 			return returnCode;
 		}
@@ -97,12 +111,16 @@ namespace PCIBusiness
 			get { return 0; }
 		}
 
-		public string Message 
+		public int      ReturnCode
+		{
+			get { return returnCode; }
+		}
+		public string   ReturnMessage 
 		{
 			get { return Tools.NullToString(returnMessage); }
 		}
 
-		public string SQLData
+		public string   ReturnData
 		{
 			get { return Tools.NullToString(returnData); }
 		}

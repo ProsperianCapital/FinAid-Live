@@ -39,9 +39,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IronPdf">
-      <HintPath>bin\IronPdf.dll</HintPath>
-    </Reference>
     <Reference Include="itextsharp">
       <HintPath>bin\itextsharp.dll</HintPath>
     </Reference>
@@ -85,6 +82,8 @@
     <Compile Include="Provider.cs" />
     <Compile Include="Providers.cs" />
     <Compile Include="StdDisposable.cs" />
+    <Compile Include="Stock.cs" />
+    <Compile Include="Stocks.cs" />
     <Compile Include="SystemDetails.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="DBConn.cs" />

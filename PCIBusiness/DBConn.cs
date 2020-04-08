@@ -47,6 +47,7 @@ namespace PCIBusiness
 		private SqlDataReader dataReader;
 		private bool          isEOF;
 		private int           colNo;
+		private int           returnValue;
 		private string        sourceInfo;
 
 		public string SourceInfo
@@ -57,6 +58,11 @@ namespace PCIBusiness
 				if ( string.IsNullOrWhiteSpace(sourceInfo) && ! string.IsNullOrWhiteSpace(value) )
 					sourceInfo = value.Trim();
 			}
+		}
+
+		public int ReturnValue
+		{
+			get { return returnValue; }
 		}
 
 		private string ModuleName(string from)
@@ -142,10 +148,11 @@ namespace PCIBusiness
 			return true;
 		}
 
-		public bool Execute ( string sql, bool autoClose=true, object[][] parms=null, int timeOut=0 )
+		public bool Execute ( string sql, bool autoClose=true, object[][] parms=null, byte execMode=0, int timeOut=0 )
 		{
-			isEOF = true;
-			sql   = sql.Trim();
+			isEOF       = true;
+			sql         = sql.Trim();
+			returnValue = 0;
 
 			try
 			{
@@ -167,8 +174,9 @@ namespace PCIBusiness
 					}
 					catch { }
 
-				sqlCmd.CommandText = sql;
-				sqlCmd.CommandType = System.Data.CommandType.Text;
+				sqlCmd.CommandText      = sql;
+				sqlCmd.CommandType      = System.Data.CommandType.Text;
+				SqlParameter returnParm = null;
 
 				if ( parms != null )
 					for ( int k = 0; k < parms.Length; k++ )
@@ -176,12 +184,23 @@ namespace PCIBusiness
 						sqlCmd.Parameters.Add ( "@"+k.ToString(), (SqlDbType) parms[k][0] );
 						sqlCmd.Parameters[k].Value = parms[k][1];
 					}
+	
+				if ( execMode == 2 ) // SQL "return" value, MUST be a stored procedure
+				{
+					returnParm           = new SqlParameter("@ReturnValue", System.Data.SqlDbType.Int);
+					returnParm.Direction = System.Data.ParameterDirection.ReturnValue;
+					sqlCmd.CommandType   = CommandType.StoredProcedure;
+					sqlCmd.Parameters.Add(returnParm);
+				}
 
 				if (autoClose)
 					dataReader = sqlCmd.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
 				else
 					dataReader = sqlCmd.ExecuteReader();
-          
+ 
+				if ( execMode == 2 ) // SQL "return" value
+					returnValue = System.Convert.ToInt32(returnParm.Value);
+         
 				if ( dataReader != null )
 					if ( dataReader.HasRows )
 						isEOF = ! dataReader.Read();
@@ -566,8 +585,9 @@ namespace PCIBusiness
 
 		public DBConn() : base()
 		{
-			isEOF      = true;
-			sourceInfo = "";
+			isEOF       = true;
+			sourceInfo  = "";
+			returnValue = 0;
 		}
 
 		~DBConn()

@@ -3,7 +3,6 @@ using System.IO;
 using System.Xml;
 using System.Globalization;
 using System.Text;
-using System.Web.UI;
 
 namespace PCIBusiness
 {
@@ -27,6 +26,8 @@ namespace PCIBusiness
 //		 4  at HH:mm                  (at 17:03)
 //		11  HH:mm:ss                  Hard-code to 00:00:00
 //		12  HH:mm:ss                  Hard-code to 23:59:59
+
+		static byte logSeverity;
 
 		public static bool SystemIsLive()
 		{
@@ -646,16 +647,30 @@ namespace PCIBusiness
 			}
 		}
 
+//		public static void LogException(string component, string msg, Exception ex=null)
+//		{
+//		// Use this routine to log error messages
+//			msg = ( msg.Length == 0 ? "" : " (" + msg + ")" );
+//			if ( ex == null )
+//				msg = "Non-exception error" + msg;
+//			else if ( ex.GetType() == typeof(System.IndexOutOfRangeException) )
+//				msg = "SQL column not found" + msg;
+//			else
+//				msg = ex.Message + msg + " : [" + ex.ToString() + "]";
+//			LogWrite("LogFileErrors",component,msg);
+//		}
+
 		public static void LogException(string component, string msg, Exception ex=null)
 		{
-		// Use this routine to log error messages
-			msg = ( msg.Length == 0 ? "" : " (" + msg + ")" );
-			if ( ex == null )
-				msg = "Non-exception error" + msg;
-			else if ( ex.GetType() == typeof(System.IndexOutOfRangeException) )
-				msg = "SQL column not found" + msg;
-			else
-				msg = ex.Message + msg + " : [" + ex.ToString() + "]";
+			if ( ex != null )
+			{
+				if ( msg.Length > 0 )
+					msg = " (" + msg + ")";
+				if ( ex.GetType() == typeof(System.IndexOutOfRangeException) )
+					msg = "SQL column not found" + msg;
+				else
+					msg = ex.Message + msg + " : [" + ex.ToString() + "]";
+			}
 			LogWrite("LogFileErrors",component,msg);
 		}
 
@@ -669,7 +684,17 @@ namespace PCIBusiness
 			if ( severity == 255 )
 				if ( LiveTestOrDev() == Constants.SystemMode.Live )
 					return;
-			if ( severity > 100 )
+
+			if ( logSeverity < 1 )
+			{
+				int h = Tools.StringToInt(Tools.ConfigValue("LogSeverity"));
+				if ( h > 0 && h < byte.MaxValue )
+					logSeverity = (byte)h;
+				else
+					logSeverity = 100;
+			}
+
+			if ( severity >= logSeverity )
 				LogWrite("LogFileInfo",component,msg);
 		}
 
@@ -984,7 +1009,7 @@ namespace PCIBusiness
 
 			try
 			{
-				Tools.LogInfo("Tools.SQLDebug/2",str,255);
+				Tools.LogInfo("Tools.SQLDebug/2",str,250);
 				ret.Append(str+Constants.C_HTMLBREAK());
 
 				Tools.OpenDB(ref conn);
@@ -992,7 +1017,7 @@ namespace PCIBusiness
 				if ( conn.Execute(sql) )
 				{
 					str = "Execution successful, column count = " + conn.ColumnCount.ToString() + ( conn.EOF ? " (NO rows)" : " (At least one row)" );
-					Tools.LogInfo("Tools.SQLDebug/3",str,255);
+					Tools.LogInfo("Tools.SQLDebug/3",str,250);
 					ret.Append(str+"<hr />"); // Constants.C_HTMLBREAK());
 
 					string colType;
@@ -1010,21 +1035,21 @@ namespace PCIBusiness
 							str = str + conn.ColUniCode("",0,k);
 						else
 							str = str + conn.ColValue(k);
-						Tools.LogInfo("Tools.SQLDebug/4",str,255);
+						Tools.LogInfo("Tools.SQLDebug/4",str,250);
 						ret.Append(str+Constants.C_HTMLBREAK());
 					}
 				}
 				else
 				{
 					str = "Execution failed";
-					Tools.LogInfo("Tools.SQLDebug/5",str,255);
+					Tools.LogInfo("Tools.SQLDebug/5",str,250);
 					ret.Append(str+Constants.C_HTMLBREAK());
 				}
 			}
 			catch (Exception ex)
 			{
 				str = "Error : " + ex.Message;
-				Tools.LogInfo("Tools.SQLDebug/6",str,255);
+				Tools.LogInfo("Tools.SQLDebug/6",str,250);
 				ret.Append(str+Constants.C_HTMLBREAK());
 			}
 			finally
@@ -1059,8 +1084,11 @@ namespace PCIBusiness
 
 		public static int CreatePDF(string fileSource,string html,ref string fileName)
 		{
+			byte severity = 229;
+
 			try
 			{
+				LogInfo("Tools.CreatePDF/10","Create empty file for PDF",severity);
 				StreamWriter fileOut = null;
 				fileName = Tools.CreateFile(ref fileOut,fileSource,"pdf");
 				if ( fileOut == null )
@@ -1069,10 +1097,13 @@ namespace PCIBusiness
 				fileOut = null;
 				if ( fileName.Length < 1 )
 					return 20;
+				LogInfo("Tools.CreatePDF/20","File created : " + fileName,severity);
 
 //	NO! Do NOT do this!
 //				html = html.Trim().Replace(Environment.NewLine,"<br />");
 //	NO!
+
+//	PDF code removed so as not to create a huge DLL
 
 //	SelectPDF code, works fine on Windows but NOT on MS Azure
 //
@@ -1081,17 +1112,22 @@ namespace PCIBusiness
 //				doc.Save(fileName);
 //				doc.Close();
 
-//	IronPDF code
-
-				IronPdf.HtmlToPdf   converter = new IronPdf.HtmlToPdf();
-				IronPdf.PdfDocument doc       = converter.RenderHtmlAsPdf(html);
-				doc.SaveAs(fileName);
+//	IronPDF code, works fine on Windows but NOT on MS Azure
+//
+//				LogInfo("Tools.CreatePDF/30","Set up IronPDF object",severity);
+//				IronPdf.HtmlToPdf   converter = new IronPdf.HtmlToPdf();
+//				LogInfo("Tools.CreatePDF/40","Convert HTML to PDF",severity);
+//				IronPdf.PdfDocument doc       = converter.RenderHtmlAsPdf(html);
+//				LogInfo("Tools.CreatePDF/50","Save PDF to file " + fileName,severity);
+//				doc.SaveAs(fileName);
+//				LogInfo("Tools.CreatePDF/60","Exit",severity);
 
 				return 0;
 			}
 			catch (Exception ex)
 			{
-				LogException("Tools.CreatePDF","File="+fileName+"\n"+html,ex);
+				LogInfo("Tools.CreatePDF/98","Failed ... " + ex.Message,severity);
+				LogException("Tools.CreatePDF/99","File="+fileName+"\n"+html,ex);
 			}
 			return 30;
 		}
