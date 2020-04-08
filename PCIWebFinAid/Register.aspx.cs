@@ -18,6 +18,7 @@ namespace PCIWebFinAid
 		string pdfFileName;
 		string sql;
 		int    errNo;
+//		int    timeOut;
 
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
@@ -47,14 +48,14 @@ namespace PCIWebFinAid
 				languageDialectCode = WebTools.RequestValueString(Request,"LDC"); // LanguageDialectCode");
 
 //	Testing 1 (English)
-//				if ( productCode.Length         < 1 ) productCode         = "10278";
-//				if ( languageCode.Length        < 1 ) languageCode        = "ENG";
-//				if ( languageDialectCode.Length < 1 ) languageDialectCode = "0002";
+				if ( productCode.Length         < 1 ) productCode         = "10278";
+				if ( languageCode.Length        < 1 ) languageCode        = "ENG";
+				if ( languageDialectCode.Length < 1 ) languageDialectCode = "0002";
 
 //	Testing 2 (Thai)
-				if ( productCode.Length         < 1 ) productCode         = "10024";
-				if ( languageCode.Length        < 1 ) languageCode        = "THA";
-				if ( languageDialectCode.Length < 1 ) languageDialectCode = "0001";
+//				if ( productCode.Length         < 1 ) productCode         = "10024";
+//				if ( languageCode.Length        < 1 ) languageCode        = "THA";
+//				if ( languageDialectCode.Length < 1 ) languageDialectCode = "0001";
 
 				GetContractCode();
 
@@ -720,6 +721,8 @@ namespace PCIWebFinAid
 //		and also
 //	Generate PDF, version 3 (SelectPDF)
 //
+//	PDF code removed (2020/04/08)
+/*
 							string h   = Request.Url.GetLeftPart(UriPartial.Authority);
 							string f   = Tools.SystemFolder("")+"TemplatePDF.htm";
 							string pdf = Tools.ReadFile(f);
@@ -842,6 +845,7 @@ namespace PCIWebFinAid
 							if ( errNo < 1 && pdfFileName.Length < 5 )
 								errNo = 30120;
 							SetErrorDetail(errNo,errNo,"Unable to create PDF file",pdfFileName);
+*/
 
 //	Generate PDF, version 1 (iTextSharp)
 /*
@@ -997,9 +1001,9 @@ namespace PCIWebFinAid
 											mailMsg.Subject    = emailHeader.Replace("[ContractCode]",contractCode);
 											mailMsg.Body       = emailBody.Replace("[ContractCode]",contractCode);
 											mailMsg.IsBodyHtml = emailBody.ToUpper().Contains("<HTML");
-											errNo              = 30250;
-											if ( pdfFileName.Length > 0 )
-												mailMsg.Attachments.Add(new Attachment(pdfFileName));
+//											errNo              = 30250;
+//	Do NOT send PDF					if ( pdfFileName.Length > 0 )
+//												mailMsg.Attachments.Add(new Attachment(pdfFileName));
 											errNo              = 30255;
 
 											for ( int k = 0 ; k < 5 ; k++ )
@@ -1150,9 +1154,9 @@ namespace PCIWebFinAid
 					mailMsg.Subject    = emailHeader.Replace("[ContractCode]",contractCode);
 					mailMsg.Body       = emailBody.Replace("[ContractCode]",contractCode);
 					mailMsg.IsBodyHtml = emailBody.ToUpper().Contains("<HTML");
-					errNo              = 30250;
-					if ( pdfFileName.Length > 0 )
-						mailMsg.Attachments.Add(new Attachment(pdfFileName));
+//					errNo              = 30250;
+//					if ( pdfFileName.Length > 0 )
+//						mailMsg.Attachments.Add(new Attachment(pdfFileName));
 					errNo              = 30255;
 
 					for ( int k = 0 ; k < 5 ; k++ )
@@ -1216,5 +1220,18 @@ namespace PCIWebFinAid
 			lblError.Visible = ( lblError.Text.Length    > 0 );
 			btnError.Visible = ( lblErrorDtl.Text.Length > 0 ) && lblError.Visible && ! Tools.SystemIsLive();
 		}
+
+//	Script timeout is set to 230 seconds in MS Azure and can't be changed
+
+//		public Register() : base()
+//		{
+//			timeOut              = Server.ScriptTimeout;
+//			Server.ScriptTimeout = 600; // 10 minutes
+//		}
+//
+//		public override void CleanUp()
+//		{
+//			Server.ScriptTimeout = timeOut;
+//		}
 	}
 }
