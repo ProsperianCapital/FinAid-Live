@@ -524,14 +524,14 @@ namespace PCIWebFinAid
 
 					else if ( pageNo == 1 )
 						sql = sql + ",@TitleCode        =" + Tools.DBString(WebTools.ListValue(lstTitle,""))
-					             + ",@Surname          =" + Tools.DBString(txtSurname.Text)
-					             + ",@TelephoneNumberM =" + Tools.DBString(txtCellNo.Text);
+					             + ",@Surname          =" + Tools.DBString(txtSurname.Text,47) // Unicode
+					             + ",@TelephoneNumberM =" + Tools.DBString(txtCellNo.Text,47);
 					else if ( pageNo == 2 )
-						sql = sql + ",@FirstName    =" + Tools.DBString(txtFirstName.Text)
-					             + ",@EMailAddress =" + Tools.DBString(txtEMail.Text)
+						sql = sql + ",@FirstName    =" + Tools.DBString(txtFirstName.Text,47)
+					             + ",@EMailAddress =" + Tools.DBString(txtEMail.Text,47)
 					             + ",@ClientCode   =" + Tools.DBString(txtID.Text);
 					else if ( pageNo == 3 )
-						sql = sql + ",@DisposableIncome           =" + Tools.DBString(txtIncome.Text)
+						sql = sql + ",@DisposableIncome           =" + Tools.DBString(txtIncome.Text,47)
 					             + ",@ClientEmploymentStatusCode =" + Tools.DBString(WebTools.ListValue(lstStatus,""))
 					             + ",@PayDateCode                =" + Tools.DBString(WebTools.ListValue(lstPayDay,""));
 					else if ( pageNo == 4 )
@@ -539,11 +539,11 @@ namespace PCIWebFinAid
 					             + ",@TsCsRead          = '1'"
 					             + ",@PaymentMethodCode =" + Tools.DBString(WebTools.ListValue(lstPayment,""));
 					else if ( pageNo == 5 )
-						sql = sql + ",@CardNumber      =" + Tools.DBString(txtCCNumber.Text)
-					             + ",@AccountHolder   =" + Tools.DBString(txtCCName.Text)
+						sql = sql + ",@CardNumber      =" + Tools.DBString(txtCCNumber.Text,47)
+					             + ",@AccountHolder   =" + Tools.DBString(txtCCName.Text,47)
 					             + ",@CardExpiryMonth =" + Tools.DBString(WebTools.ListValue(lstCCMonth).ToString())
 					             + ",@CardExpiryYear  =" + Tools.DBString(WebTools.ListValue(lstCCYear).ToString())
-					             + ",@CardCVVCode     =" + Tools.DBString(txtCCCVV.Text);
+					             + ",@CardCVVCode     =" + Tools.DBString(txtCCCVV.Text,47);
 
 					errNo = miscList.ExecQuery(sql,0);
 					SetErrorDetail(errNo,30020,"Unable to update information (pageNo="+pageNo.ToString()+")",sql);
