@@ -560,6 +560,8 @@ namespace PCIBusiness
 				str = str.Substring(0,maxLength);
 
          str = "'" + str.Replace("'","''") + "'";
+			if ( mode == 47 ) // Unicode
+				return "N" + str;
          return str;
 		}
 
