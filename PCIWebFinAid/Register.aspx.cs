@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Net.Mail;
@@ -30,6 +29,7 @@ namespace PCIWebFinAid
 //		   + "navigator.userAgent : " + navigator.userAgent;
 
 			SetErrorDetail(-88,0,"","");
+			SetPostBackURL();
 
 			if ( Page.IsPostBack )
 			{
@@ -84,6 +84,16 @@ namespace PCIWebFinAid
 					btnNext_Click(null,null);
 				}
 			}
+		}
+
+		private void SetPostBackURL()
+		{
+			int    pNo = Tools.StringToInt(hdnPageNo.Value);
+			string url = "Register.aspx";
+			if ( pNo > 0 )
+				url = url + "?PageNo=" + (pNo+1).ToString();
+			btnNext.PostBackUrl  = url;
+			btnAgree.PostBackUrl = url;
 		}
 
 		private void LoadLabels()
@@ -384,8 +394,30 @@ namespace PCIWebFinAid
 							lblError.Text             = "";
 							ViewState["ContractCode"] = contractCode;
 							ViewState["ContractPIN"]  = contractPIN;
+
 						}
 					}
+
+//					If this fails, continue - don't stop with an error
+					lblGoogleUA.Text = "";
+					sql              = "exec sp_WP_Get_GoogleAC @ProductCode =" + Tools.DBString(productCode);
+					if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
+						lblGoogleUA.Text = Environment.NewLine
+						                 + "<!-- Global site tag (gtag.js) - Google Analytics -->"
+						                 + "<script async src='https://www.googletagmanager.com/gtag/js?id=" +  miscList.GetColumn(0) + "'></script>"
+						                 + "<script>"
+						                 + "window.datalayer = window.datalayer || [];"
+						                 + "function gtag() {datalayer.push(arguments);}"
+						                 + "gtag('js',new Date());"
+						                 + "gtag('config','" + miscList.GetColumn(0) + "');"
+						                 + "</script>"
+						                 + Environment.NewLine;
+//					if ( miscList.ExecQuery(sql,0) != 0 )
+//						SetErrorDetail(10026,10026,"Error retrieving the Google analytics code ; please try again later",sql);
+//					else if ( miscList.EOF )
+//						SetErrorDetail(10028,10028,"Error retrieving the Google analytics code ; please try again later",sql);
+//					else
+//						lblGoogleUA.Text = "Blah, blah" + miscList.GetColumn(0);
 				}
 				catch (Exception ex)
 				{
@@ -1074,7 +1106,11 @@ namespace PCIWebFinAid
 				SetErrorDetail(99,30330,"Internal error ; please try again later","errNo=" + errNo.ToString() + "<br />pdfErr=" + pdfErr.ToString());
 
 			if ( lblError.Text.Length == 0 ) // No errors, can continue
-				hdnPageNo.Value = pageNo.ToString();
+			{
+				hdnPageNo.Value     = pageNo.ToString();
+//				btnNext.PostBackUrl = "Register.aspx?PageNo=" + (pageNo+1).ToString();
+				SetPostBackURL();
+			}
 		}
 
 		private int SendConfirmationEmail()

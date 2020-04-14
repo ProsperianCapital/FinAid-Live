@@ -4,6 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
+	<asp:Literal runat="server" ID="lblGoogleUA"></asp:Literal>
 	<!--#include file="IncludeMain.htm" -->
 	<title>FinAid : Register</title>
 	<link rel="stylesheet" href="CSS/FinAid.css" type="text/css" />
@@ -18,9 +19,6 @@ var firstPage = 1;
 var lastPage  = 5;
 var confPage  = 6;
 var pageNo;
-
-// history.pushState({}, "FinAid", "/PageName.aspx");
-// history.replaceState("http://www.blah.coma", "FinAid", "/PageName.aspx");
 
 function NextPage(inc)
 {
@@ -628,9 +626,9 @@ function OptSelect(p)
 </div>
 
 <br />
-<asp:Button runat="server" ID="btnBack1" OnClientClick="JavaScript:return NextPage(-1);return false" Text="BACK" />
-<asp:Button runat="server" ID="btnNext"  OnClientClick="JavaScript:return NextPage(1)" OnClick="btnNext_Click" />
-<asp:Button runat="server" ID="btnAgree" OnClientClick="JavaScript:return NextPage(1)" OnClick="btnNext_Click" />
+<asp:Button runat="server" ID="btnBack1" OnClientClick="JavaScript:if (!NextPage(-1)) return false" Text="BACK" />
+<asp:Button runat="server" ID="btnNext"  OnClientClick="JavaScript:if (!NextPage( 1)) return false" OnClick="btnNext_Click" />
+<asp:Button runat="server" ID="btnAgree" OnClientClick="JavaScript:if (!NextPage( 1)) return false" OnClick="btnNext_Click" />
 &nbsp;&nbsp;&nbsp;&nbsp;
 <asp:Button runat="server" ID="btnBack2" OnClientClick="JavaScript:return NextPage(-1);return false" Width="200px" />
 &nbsp;&nbsp;&nbsp;&nbsp;
