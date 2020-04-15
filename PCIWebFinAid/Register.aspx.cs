@@ -394,7 +394,6 @@ namespace PCIWebFinAid
 							lblError.Text             = "";
 							ViewState["ContractCode"] = contractCode;
 							ViewState["ContractPIN"]  = contractPIN;
-
 						}
 					}
 
@@ -403,15 +402,15 @@ namespace PCIWebFinAid
 					sql              = "exec sp_WP_Get_GoogleAC @ProductCode =" + Tools.DBString(productCode);
 					if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
 						lblGoogleUA.Text = Environment.NewLine
-						                 + "<!-- Global site tag (gtag.js) - Google Analytics -->"
-						                 + "<script async src='https://www.googletagmanager.com/gtag/js?id=" +  miscList.GetColumn(0) + "'></script>"
-						                 + "<script>"
-						                 + "window.datalayer = window.datalayer || [];"
-						                 + "function gtag() {datalayer.push(arguments);}"
-						                 + "gtag('js',new Date());"
-						                 + "gtag('config','" + miscList.GetColumn(0) + "');"
-						                 + "</script>"
-						                 + Environment.NewLine;
+						                 + "<!-- Global site tag (gtag.js) - Google Analytics -->" + Environment.NewLine
+						                 + "<script async src=\"https://www.googletagmanager.com/gtag/js?id=" +  miscList.GetColumn(0) + "\"></script>" + Environment.NewLine
+						                 + "<script>" + Environment.NewLine
+						                 + "window.dataLayer = window.dataLayer || [];" + Environment.NewLine
+						                 + "function gtag(){dataLayer.push(arguments);}" + Environment.NewLine
+						                 + "gtag('js', new Date());" + Environment.NewLine
+						                 + "gtag('config', '" + miscList.GetColumn(0) + "');" + Environment.NewLine
+						                 + "</script>" + Environment.NewLine;
+
 //					if ( miscList.ExecQuery(sql,0) != 0 )
 //						SetErrorDetail(10026,10026,"Error retrieving the Google analytics code ; please try again later",sql);
 //					else if ( miscList.EOF )
