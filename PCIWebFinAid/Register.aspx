@@ -104,19 +104,19 @@ function ValidatePage(ctl,seq)
 	//	Page 2
 		if ( ( pageNo == 2 && ctl == 0 ) || ctl == 100112 )
 		{
-			p   = Validate('txtFirstName','lblInfo2',1,hdnFirstNameError.value,2,1);
+			p   = Validate('txtFirstName','lblInfo2',1,GetEltValue('hdnFirstNameError'),2,1);
 			err = err + p;
 			ShowTick(p,'FirstName',seq);
 		}
 		if ( ( pageNo == 2 && ctl == 0 ) || ctl == 100116 )
 		{
-			p   = Validate('txtEMail','lblInfo2',5,hdnEMailError.value);
+			p   = Validate('txtEMail','lblInfo2',5,GetEltValue('hdnEMailError'));
 			err = err + p;
 			ShowTick(p,'EMail',seq);
 		}
 		if ( ( pageNo == 2 && ctl == 0 ) || ctl == 100118 )
 		{
-			p   = Validate('txtID','lblInfo2',6,hdnIDError.value,7,20);
+			p   = Validate('txtID','lblInfo2',6,GetEltValue('hdnIDError'),7,20);
 			err = err + p;
 			ShowTick(p,'ID',seq);
 		}
@@ -124,19 +124,19 @@ function ValidatePage(ctl,seq)
 	//	Page 3
 		if ( ( pageNo == 3 && ctl == 0 ) || ctl == 100123 )
 		{
-			p   = Validate('txtIncome','lblInfo3',6,hdnIncomeError.value,3,100);
+			p   = Validate('txtIncome','lblInfo3',6,GetEltValue('hdnIncomeError'),3,100);
 			err = err + p;
 			ShowTick(p,'Income',seq);
 		}
 		if ( ( pageNo == 3 && ctl == 0 ) || ctl == 100131 )
 		{
-			p   = Validate('lstStatus','lblInfo3',3,hdnStatusError.value,73,0);
+			p   = Validate('lstStatus','lblInfo3',3,GetEltValue('hdnStatusError'),73,0);
 			err = err + p;
 			ShowTick(p,'Status',seq);
 		}
 		if ( ( pageNo == 3 && ctl == 0 ) || ctl == 100132 )
 		{
-			p   = Validate('lstPayDay','lblInfo3',3,hdnPayDayError.value,73,0);
+			p   = Validate('lstPayDay','lblInfo3',3,GetEltValue('hdnPayDayError'),73,0);
 			err = err + p;
 			ShowTick(p,'PayDay',seq);
 		}
@@ -144,19 +144,19 @@ function ValidatePage(ctl,seq)
 	//	Page 4
 		if ( ( pageNo == 4 && ctl == 0 ) || ctl == 100138 )
 		{
-			p   = Validate('lstOptions','lblInfo4',3,hdnOptionsError.value,73,0);
+			p   = Validate('lstOptions','lblInfo4',3,GetEltValue('hdnOptionsError'),73,0);
 			err = err + p;
 			ShowTick(p,'Options',seq);
 		}
 		if ( ( pageNo == 4 && ctl == 0 ) || ctl == 100144 )
 		{
-			p   = Validate('chkTerms','lblInfo4',8,hdnTermsError.value,2);
+			p   = Validate('chkTerms','lblInfo4',8,GetEltValue('hdnTermsError'),2);
 			err = err + p;
 			ShowTick(p,'Terms',seq);
 		}
 		if ( ( pageNo == 4 && ctl == 0 ) || ctl == 100147 )
 		{
-			p   = Validate('lstPayment','lblInfo4',3,hdnPaymentError.value,73,0);
+			p   = Validate('lstPayment','lblInfo4',3,GetEltValue('hdnPaymentError'),73,0);
 			err = err + p;
 			ShowTick(p,'Payment',seq);
 		}
@@ -164,20 +164,20 @@ function ValidatePage(ctl,seq)
 	//	Page 5
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100187 )
 		{
-			p   = Validate('txtCCNumber','lblInfo5',6,hdnCCNumberError.value,8,14);
+			p   = Validate('txtCCNumber','lblInfo5',6,GetEltValue('hdnCCNumberError'),8,14);
 			err = err + p;
 			ShowTick(p,'CCNumber',seq);
 		}
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100186 )
 		{
-			p   = Validate('txtCCName','lblInfo5',1,hdnCCNameError.value,2,2);
+			p   = Validate('txtCCName','lblInfo5',1,GetEltValue('hdnCCNameError'),2,2);
 			err = err + p;
 			ShowTick(p,'CCName',seq);
 		}
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100188 )
 		{
-			p    = Validate('lstCCMonth','lblInfo5',3,hdnCCExpiryError.value,73,0)
-			     + Validate('lstCCYear' ,'lblInfo5',3,hdnCCExpiryError.value,73,0);
+			p    = Validate('lstCCMonth','lblInfo5',3,GetEltValue('hdnCCExpiryError'),73,0)
+			     + Validate('lstCCYear' ,'lblInfo5',3,GetEltValue('hdnCCExpiryError'),73,0);
 			err  = err + p;
 			if ( p.length == 0 )
 			{
@@ -195,7 +195,7 @@ function ValidatePage(ctl,seq)
 		}
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100189 )
 		{
-			p   = Validate('txtCCCVV','lblInfo5',6,hdnCCCVVError.value,7,4);
+			p   = Validate('txtCCCVV','lblInfo5',6,GetEltValue('hdnCCCVVError'),7,4);
 			err = err + p;
 			ShowTick(p,'CCCVV',seq);
 		}
