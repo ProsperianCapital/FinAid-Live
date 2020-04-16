@@ -6,7 +6,7 @@
 <head runat="server">
 	<asp:Literal runat="server" ID="lblGoogleUA"></asp:Literal>
 	<!--#include file="IncludeMain.htm" -->
-	<title>FinAid : Register</title>
+	<title>Secure Registration</title>
 	<link rel="stylesheet" href="CSS/FinAid.css" type="text/css" />
 	<link rel="shortcut icon" href="Images/favicon.ico" />
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
@@ -630,7 +630,7 @@ function OptSelect(p)
 <asp:Button runat="server" ID="btnNext"  OnClientClick="JavaScript:if (!NextPage( 1)) return false" OnClick="btnNext_Click" />
 <asp:Button runat="server" ID="btnAgree" OnClientClick="JavaScript:if (!NextPage( 1)) return false" OnClick="btnNext_Click" />
 &nbsp;&nbsp;&nbsp;&nbsp;
-<asp:Button runat="server" ID="btnBack2" OnClientClick="JavaScript:return NextPage(-1);return false" Width="200px" />
+<asp:Button runat="server" ID="btnBack2" OnClientClick="JavaScript:if (!NextPage(-1)) return false" Width="200px" />
 &nbsp;&nbsp;&nbsp;&nbsp;
 <asp:Button runat="server" ID="btnError" Text="Error ...?" OnClientClick="JavaScript:ShowElt('lblErrorDtl',true);return false" />
 <br /><br />
