@@ -84,19 +84,19 @@ function ValidatePage(ctl,seq)
 	//	Page 1
 		if ( ( pageNo == 1 && ctl == 0 ) || ctl == 100111 )
 		{
-			p   = Validate('lstTitle','lblInfo1',3,hdnTitleError.value,73,0);
+			p   = Validate('lstTitle','lblInfo1',3,GetEltValue('hdnTitleError'),73,0);
 			err = err + p;
 			ShowTick(p,'Title',seq);
 		}
 		if ( ( pageNo == 1 && ctl == 0 ) || ctl == 100114 )
 		{
-			p   = Validate('txtSurname','lblInfo1',1,hdnSurnameError.value,2,2);
+			p   = Validate('txtSurname','lblInfo1',1,GetEltValue('hdnSurnameError'),2,2);
 			err = err + p;
 			ShowTick(p,'Surname',seq);
 		}
 		if ( ( pageNo == 1 && ctl == 0 ) || ctl == 100117 )
 		{
-			p   = Validate('txtCellNo','lblInfo1',7,hdnCellNoError.value,0,0);
+			p   = Validate('txtCellNo','lblInfo1',7,GetEltValue('hdnCellNoError'),0,0);
 			err = err + p;
 			ShowTick(p,'CellNo',seq);
 		}
