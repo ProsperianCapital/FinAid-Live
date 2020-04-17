@@ -652,11 +652,20 @@ namespace PCIWebFinAid
 						{
 							string productOption  = WebTools.ListValue(lstOptions,"X");
 							string payMethod      = WebTools.ListValue(lstPayment,"X");
+							txtCCName.Text        = "";
 
-							txtCCName.Text        = txtFirstName.Text.Substring(0,1).ToUpper()
-							                      + " "
-							                      + txtSurname.Text.Substring(0,1).ToUpper()
-							                      + txtSurname.Text.Substring(1).ToLower();
+							if ( txtFirstName.Text.Length > 0 && txtSurname.Text.Length > 1 )
+								txtCCName.Text     = txtFirstName.Text.Substring(0,1).ToUpper()
+								                   + " "
+								                   + txtSurname.Text.Substring(0,1).ToUpper()
+								                   + txtSurname.Text.Substring(1).ToLower();
+							else if ( txtSurname.Text.Length > 1 )
+								txtCCName.Text     = txtSurname.Text.Substring(0,1).ToUpper()
+								                   + txtSurname.Text.Substring(1).ToLower();
+							else if ( txtFirstName.Text.Length > 1 )
+								txtCCName.Text     = txtFirstName.Text.Substring(0,1).ToUpper()
+								                   + txtFirstName.Text.Substring(1).ToLower();
+
 							lblCCDueDate.Text     = lstPayDay.SelectedItem.Text;
 							lblCCMandate.Text     = "";
 							lblCCMandateHead.Text = "";
@@ -768,8 +777,10 @@ namespace PCIWebFinAid
 								SetErrorDetail(30080,30080,"Unable to retrieve product policy text",sql,2,2);
 
 							lblp6CCType.Text = "";
-							sql = "exec WP_Get_CardAssociation"
-							    + " @BIN=" + Tools.DBString(txtCCNumber.Text.Trim().Substring(0,6));
+							sql              = txtCCNumber.Text.Trim();
+							if ( sql.Length > 6 )
+								sql = sql.Substring(0,6);
+							sql = "exec WP_Get_CardAssociation @BIN=" + Tools.DBString(sql);
 							if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
 								lblp6CCType.Text = miscList.GetColumn("Brand");
 							if ( lblp6CCType.Text.Length < 1 )
@@ -794,8 +805,11 @@ namespace PCIWebFinAid
 							lblp6PayDay.Text    = lstPayDay.SelectedItem.Text;
 //							lblp6Option.Text    = hdnOption.Value;
 							lblp6PayMethod.Text = lstPayment.SelectedItem.Text;
-//							lbl100209.Text      = lbl100209.Text.Replace("[Title]",lstTitle.SelectedItem.Text).Replace("[Initials]",txtFirstName.Text.Substring(0,1).ToUpper()).Replace("[Surname]",txtSurname.Text+"<br />");
-							lbl100209.Text      = lbl100209.Text.Replace("[Title]",lstTitle.SelectedItem.Text).Replace("[Initials]",txtFirstName.Text.Substring(0,1).ToUpper()).Replace("[Surname]",txtSurname.Text);
+							lbl100209.Text      = lbl100209.Text.Replace("[Title]",lstTitle.SelectedItem.Text).Replace("[Surname]",txtSurname.Text);
+							if ( txtFirstName.Text.Length > 0 )
+								lbl100209.Text   = lbl100209.Text.Replace("[Initials]",txtFirstName.Text.Substring(0,1).ToUpper());
+							else
+								lbl100209.Text   = lbl100209.Text.Replace("[Initials]","");
 							lblp6CCName.Text    = txtCCName.Text;
 							lblp6CCNumber.Text  = txtCCNumber.Text;
 							lblp6CCExpiry.Text  = lstCCYear.SelectedValue + "/" + lstCCMonth.SelectedValue;
