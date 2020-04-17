@@ -522,22 +522,22 @@ function OptSelect(p)
 
 	<tr>
 		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100212"></asp:Literal></td></tr>
-	<tr>
+	<tr id="trp6Title">
 		<td><asp:Literal runat="server" ID="lbl100111"></asp:Literal></td>
 		<td><asp:Literal runat="server" ID="lblp6Title"></asp:Literal></td></tr>
-	<tr>
+	<tr id="trp6FirstName">
 		<td><asp:Literal runat="server" ID="lbl100214"></asp:Literal></td>
 		<td><asp:Literal runat="server" ID="lblp6FirstName"></asp:Literal></td></tr>
-	<tr>
+	<tr id="trp6Surname">
 		<td><asp:Literal runat="server" ID="lbl100216"></asp:Literal></td>
 		<td><asp:Literal runat="server" ID="lblp6Surname"></asp:Literal></td></tr>
-	<tr>
+	<tr id="trp6EMail">
 		<td><asp:Literal runat="server" ID="lbl100218"></asp:Literal></td>
 		<td><asp:Literal runat="server" ID="lblp6EMail"></asp:Literal></td></tr>
-	<tr>
+	<tr id="trp6CellNo">
 		<td><asp:Literal runat="server" ID="lbl100219"></asp:Literal></td>
-		<td><asp:Literal runat="server" ID="lblp6Cell"></asp:Literal></td></tr>
-	<tr>
+		<td><asp:Literal runat="server" ID="lblp6CellNo"></asp:Literal></td></tr>
+	<tr id="trp6ID">
 		<td><asp:Literal runat="server" ID="lbl100220"></asp:Literal></td>
 		<td><asp:Literal runat="server" ID="lblp6ID"></asp:Literal></td></tr>
 	<tr>
@@ -546,13 +546,13 @@ function OptSelect(p)
 
 	<tr>
 		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100222"></asp:Literal></td></tr>
-	<tr>
+	<tr id="trp6Income">
 		<td><asp:Literal runat="server" ID="lbl100223"></asp:Literal></td>
 		<td><asp:Literal runat="server" ID="lblp6Income"></asp:Literal></td></tr>
-	<tr>
+	<tr id="trp6Status">
 		<td><asp:Literal runat="server" ID="lbl100230"></asp:Literal></td>
 		<td><asp:Literal runat="server" ID="lblp6Status"></asp:Literal></td></tr>
-	<tr>
+	<tr id="trp6PayDay">
 		<td><asp:Literal runat="server" ID="lbl100231"></asp:Literal></td>
 		<td><asp:Literal runat="server" ID="lblp6PayDay"></asp:Literal></td></tr>
 	<tr>
@@ -563,9 +563,9 @@ function OptSelect(p)
 		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100233"></asp:Literal></td></tr>
 	<tr>
 		<td colspan="2"><asp:Label runat="server" ID="lbl100325"></asp:Label></td></tr>
-	<tr>
+	<tr id="trp6Payment">
 		<td><asp:Literal runat="server" ID="lbl100236"></asp:Literal></td>
-		<td><asp:Literal runat="server" ID="lblp6PayMethod"></asp:Literal></td></tr>
+		<td><asp:Literal runat="server" ID="lblp6Payment"></asp:Literal></td></tr>
 	<tr>
 		<td colspan="2"><asp:Literal runat="server" ID="lbl100237"></asp:Literal></td></tr>
 	<tr><td>&nbsp;</td></tr>
@@ -590,16 +590,16 @@ function OptSelect(p)
 
 	<tr>
 		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100184"></asp:Literal></td></tr>
-	<tr>
+	<tr id="trp6CCType">
 		<td><asp:Literal runat="server" ID="lbl100185"></asp:Literal></td>
 		<td><asp:Literal runat="server" ID="lblp6CCType"></asp:Literal></td></tr>
-	<tr>
+	<tr id="trp6CCName">
 		<td><asp:Literal runat="server" ID="lbl100186"></asp:Literal></td>
 		<td><asp:Literal runat="server" ID="lblp6CCName"></asp:Literal></td></tr>
-	<tr>
+	<tr id="trp6CCNumber">
 		<td><asp:Literal runat="server" ID="lbl100187"></asp:Literal></td>
 		<td><asp:Literal runat="server" ID="lblp6CCNumber"></asp:Literal></td></tr>
-	<tr>
+	<tr id="trp6CCExpiry">
 		<td><asp:Literal runat="server" ID="lbl100188"></asp:Literal></td>
 		<td><asp:Literal runat="server" ID="lblp6CCExpiry"></asp:Literal></td></tr>
 	<tr>

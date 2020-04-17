@@ -119,12 +119,14 @@ namespace PCIWebFinAid
 				if ( ctlToHide != null ) ctlToHide.Visible = false;
 				ctlToHide       = FindControl("hdn"+controlID+"Guide");
 				if ( ctlToHide != null ) ctlToHide.Visible = false;
+				ctlToHide       = FindControl("lblp6"+controlID);
+				if ( ctlToHide != null ) ctlToHide.Visible = false;
 			}
 			catch (Exception ex)
 			{
 				Tools.LogException("Register.HideControls","",ex);
 			}
-			lblJS.Text = WebTools.JavaScriptSource("ShowElt('tr"+controlID+"',false)",lblJS.Text,1);
+			lblJS.Text = WebTools.JavaScriptSource("ShowElt('tr"+controlID+"',false);ShowElt('trp6"+controlID+"',false)",lblJS.Text,1);
 		}
 
 		private void LoadLabels()
@@ -798,13 +800,13 @@ namespace PCIWebFinAid
 							lblp6FirstName.Text = txtFirstName.Text;
 							lblp6Surname.Text   = txtSurname.Text;
 							lblp6EMail.Text     = txtEMail.Text;
-							lblp6Cell.Text      = txtCellNo.Text;
+							lblp6CellNo.Text    = txtCellNo.Text;
 							lblp6ID.Text        = txtID.Text;
 							lblp6Income.Text    = txtIncome.Text;
 							lblp6Status.Text    = lstStatus.SelectedItem.Text;
 							lblp6PayDay.Text    = lstPayDay.SelectedItem.Text;
 //							lblp6Option.Text    = hdnOption.Value;
-							lblp6PayMethod.Text = lstPayment.SelectedItem.Text;
+							lblp6Payment.Text   = lstPayment.SelectedItem.Text;
 							lbl100209.Text      = lbl100209.Text.Replace("[Title]",lstTitle.SelectedItem.Text).Replace("[Surname]",txtSurname.Text);
 							if ( txtFirstName.Text.Length > 0 )
 								lbl100209.Text   = lbl100209.Text.Replace("[Initials]",txtFirstName.Text.Substring(0,1).ToUpper());

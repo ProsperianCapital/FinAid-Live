@@ -1111,13 +1111,13 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.Literal lbl100219;
         
         /// <summary>
-        /// lblp6Cell control.
+        /// lblp6CellNo control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lblp6Cell;
+        protected global::System.Web.UI.WebControls.Literal lblp6CellNo;
         
         /// <summary>
         /// lbl100220 control.
@@ -1246,13 +1246,13 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.Literal lbl100236;
         
         /// <summary>
-        /// lblp6PayMethod control.
+        /// lblp6Payment control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lblp6PayMethod;
+        protected global::System.Web.UI.WebControls.Literal lblp6Payment;
         
         /// <summary>
         /// lbl100237 control.
