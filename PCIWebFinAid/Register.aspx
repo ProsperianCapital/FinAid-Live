@@ -258,7 +258,7 @@ function OptSelect(p)
 <asp:Literal runat="server" ID="lbl104398"></asp:Literal>
 </p>
 <table style="width:99%">
-	<tr>
+	<tr id="trTitle">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
 				<asp:Literal runat="server" ID="lblTitleLabel"></asp:Literal></div>
@@ -270,7 +270,7 @@ function OptSelect(p)
 			<asp:HiddenField runat="server" ID="hdnTitleError" />
 			<asp:HiddenField runat="server" ID="hdnTitleGuide" /></td>
 		<td class="Error" rowspan="3" id="lblInfo1" style="text-align:center;visibility:hidden;display:none"></td></tr>
-	<tr>
+	<tr id="trSurname">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
 				<asp:Literal runat="server" ID="lblSurnameLabel"></asp:Literal></div>
@@ -280,7 +280,7 @@ function OptSelect(p)
 			<asp:HiddenField runat="server" ID="hdnSurnameHelp" />
 			<asp:HiddenField runat="server" ID="hdnSurnameError" />
 			<asp:HiddenField runat="server" ID="hdnSurnameGuide" /></td></tr>
-	<tr>
+	<tr id="trCellNo">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
 				<asp:Literal runat="server" ID="lblCellNoLabel"></asp:Literal></div>
@@ -300,7 +300,7 @@ function OptSelect(p)
 <asp:Literal runat="server" ID="lblSubHead2Label"></asp:Literal>
 </p>
 <table style="width:99%">
-	<tr>
+	<tr id="trFirstName">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
 				<asp:Literal runat="server" ID="lblFirstNameLabel"></asp:Literal></div>
@@ -311,7 +311,7 @@ function OptSelect(p)
 			<asp:HiddenField runat="server" ID="hdnFirstNameError" />
 			<asp:HiddenField runat="server" ID="hdnFirstNameGuide" /></td>
 		<td class="Error" rowspan="3" id="lblInfo2" style="text-align:center;visibility:hidden;display:none"></td></tr>
-	<tr>
+	<tr id="trEMail">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
 				<asp:Literal runat="server" ID="lblEMailLabel"></asp:Literal></div>
@@ -321,7 +321,7 @@ function OptSelect(p)
 			<asp:HiddenField runat="server" ID="hdnEMailHelp" />
 			<asp:HiddenField runat="server" ID="hdnEMailError" />
 			<asp:HiddenField runat="server" ID="hdnEMailGuide" /></td></tr>
-	<tr>
+	<tr id="trID">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
 				<asp:Literal runat="server" ID="lblIDLabel"></asp:Literal></div>
@@ -339,7 +339,7 @@ function OptSelect(p)
 <asp:Literal runat="server" ID="lblSubHead3Label"></asp:Literal>
 </p>
 <table style="width:99%">
-	<tr>
+	<tr id="trIncome">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
 				<asp:Literal runat="server" ID="lblIncomeLabel"></asp:Literal></div>
@@ -350,7 +350,7 @@ function OptSelect(p)
 			<asp:HiddenField runat="server" ID="hdnIncomeError" />
 			<asp:HiddenField runat="server" ID="hdnIncomeGuide" /></td>
 		<td class="Error" rowspan="3" id="lblInfo3" style="text-align:center;visibility:hidden;display:none"></td></tr>
-	<tr>
+	<tr id="trStatus">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
 				<asp:Literal runat="server" ID="lblStatusLabel"></asp:Literal></div>
@@ -361,7 +361,7 @@ function OptSelect(p)
 			<asp:HiddenField runat="server" ID="hdnStatusHelp" />
 			<asp:HiddenField runat="server" ID="hdnStatusError" />
 			<asp:HiddenField runat="server" ID="hdnStatusGuide" /></td></tr>
-	<tr>
+	<tr id="trPayDay">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
 				<asp:Literal runat="server" ID="lblPayDayLabel"></asp:Literal></div>
@@ -383,7 +383,7 @@ function OptSelect(p)
 <asp:Literal runat="server" ID="lblSubHead4bLabel"></asp:Literal>
 </p>
 <table style="width:99%">
-	<tr>
+	<tr id="trOptions">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
 				<asp:Literal runat="server" ID="lblOptionsLabel"></asp:Literal></div>
@@ -400,7 +400,7 @@ function OptSelect(p)
 	<tr>
 		<td colspan="2" class="Header4">
 			<br /><asp:Literal runat="server" ID="lblSubHead4cLabel"></asp:Literal></td></tr>
-	<tr>
+	<tr id="trTerms">
 		<td style="white-space:nowrap" colspan="2">
 			<asp:CheckBox runat="server" ID="chkTerms" onclick="JavaScript:ValidatePage(100144,2)" />
 			<asp:Literal runat="server" ID="lblTermsLabel"></asp:Literal>
@@ -409,7 +409,7 @@ function OptSelect(p)
 			<asp:HiddenField runat="server" ID="hdnTermsHelp" />
 			<asp:HiddenField runat="server" ID="hdnTermsError" />
 			<asp:HiddenField runat="server" ID="hdnTermsGuide" /></td></tr>
-	<tr>
+	<tr id="trPayment">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
 				<asp:Literal runat="server" ID="lblPaymentLabel"></asp:Literal></div>
@@ -431,7 +431,7 @@ function OptSelect(p)
 <asp:Literal runat="server" ID="lblSubHead5Label"></asp:Literal>
 </p>
 <table style="width:99%">
-	<tr>
+	<tr id="trCCNumber">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
 			<asp:Literal runat="server" ID="lblCCNumberLabel"></asp:Literal></div>
@@ -442,7 +442,7 @@ function OptSelect(p)
 			<asp:HiddenField runat="server" ID="hdnCCNumberError" />
 			<asp:HiddenField runat="server" ID="hdnCCNumberGuide" /></td>
 		<td class="Error" rowspan="3" id="lblInfo5" style="text-align:center;visibility:hidden;display:none"></td></tr>
-	<tr>
+	<tr id="trCCName">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
 			<asp:Literal runat="server" ID="lblCCNameLabel"></asp:Literal></div>
@@ -452,7 +452,7 @@ function OptSelect(p)
 			<asp:HiddenField runat="server" ID="hdnCCNameHelp" />
 			<asp:HiddenField runat="server" ID="hdnCCNameError" />
 			<asp:HiddenField runat="server" ID="hdnCCNameGuide" /></td></tr>
-	<tr>
+	<tr id="trCCExpiry">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
 			<asp:Literal runat="server" ID="lblCCExpiryLabel"></asp:Literal></div>
@@ -476,7 +476,7 @@ function OptSelect(p)
 			<asp:HiddenField runat="server" ID="hdnCCExpiryHelp" />
 			<asp:HiddenField runat="server" ID="hdnCCExpiryError" />
 			<asp:HiddenField runat="server" ID="hdnCCExpiryGuide" /></td></tr>
-	<tr>
+	<tr id="trCCCVV">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
 			<asp:Literal runat="server" ID="lblCCCVVLabel"></asp:Literal></div>
@@ -486,7 +486,7 @@ function OptSelect(p)
 			<asp:HiddenField runat="server" ID="hdnCCCVVHelp" />
 			<asp:HiddenField runat="server" ID="hdnCCCVVError" />
 			<asp:HiddenField runat="server" ID="hdnCCCVVGuide" /></td></tr>
-	<tr>
+	<tr id="trCCDueDay">
 		<td style="white-space:nowrap" colspan="2">
 			<div class="DataLabel">
 				<asp:Literal runat="server" ID="lblCCDueDayLabel"></asp:Literal></div>

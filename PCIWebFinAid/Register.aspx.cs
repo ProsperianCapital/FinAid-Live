@@ -96,6 +96,37 @@ namespace PCIWebFinAid
 			btnAgree.PostBackUrl = url;
 		}
 
+		private void HideControls(string controlID)
+		{
+			try
+			{
+				Control ctlToHide;
+				ctlToHide       = FindControl("lbl"+controlID+"Label");
+				if ( ctlToHide != null ) ctlToHide.Visible = false;
+				ctlToHide       = FindControl("txt"+controlID);
+				if ( ctlToHide != null ) ctlToHide.Visible = false;
+				ctlToHide       = FindControl("lst"+controlID);
+				if ( ctlToHide != null ) ctlToHide.Visible = false;
+				ctlToHide       = FindControl("opt"+controlID);
+				if ( ctlToHide != null ) ctlToHide.Visible = false;
+				ctlToHide       = FindControl("chk"+controlID);
+				if ( ctlToHide != null ) ctlToHide.Visible = false;
+				ctlToHide       = FindControl("img"+controlID);
+				if ( ctlToHide != null ) ctlToHide.Visible = false;
+				ctlToHide       = FindControl("hdn"+controlID+"Help");
+				if ( ctlToHide != null ) ctlToHide.Visible = false;
+				ctlToHide       = FindControl("hdn"+controlID+"Error");
+				if ( ctlToHide != null ) ctlToHide.Visible = false;
+				ctlToHide       = FindControl("hdn"+controlID+"Guide");
+				if ( ctlToHide != null ) ctlToHide.Visible = false;
+			}
+			catch (Exception ex)
+			{
+				Tools.LogException("Register.HideControls","",ex);
+			}
+			lblJS.Text = WebTools.JavaScriptSource("ShowElt('tr"+controlID+"',false)",lblJS.Text,1);
+		}
+
 		private void LoadLabels()
 		{
 			byte logNo = 5;
@@ -114,8 +145,6 @@ namespace PCIWebFinAid
 					string      regPageNo;
 					string      controlID;
 					int         k;
-
-//					SetErrorDetail(-88,0,"","");
 
 //	Static labels, help text, etc
 					errNo = 10;
@@ -221,9 +250,17 @@ namespace PCIWebFinAid
 //							else if ( fieldCode == "100192" )
 //								lblMandateDetail.Text = fieldValue;
 
-							logNo = 20;
+							logNo = 18;
 
-							if ( controlID.Length > 0 )
+							if ( controlID.Length < 1 )
+								logNo = 20;
+
+							else if ( fieldValue.Length < 1 )
+							{
+								logNo = 21;
+								HideControls(controlID);
+							}
+							else
 							{
 								logNo      = 23;
 								ctlLiteral = (Literal)FindControl("lbl"+controlID+"Label");
@@ -399,18 +436,23 @@ namespace PCIWebFinAid
 
 //					If this fails, continue - don't stop with an error
 					lblGoogleUA.Text = "";
-					sql              = "exec sp_WP_Get_GoogleAC @ProductCode =" + Tools.DBString(productCode);
+					sql              = "exec sp_WP_Get_GoogleACA @ProductCode =" + Tools.DBString(productCode);
 					if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
+					{
+						string gaCode    = miscList.GetColumn("GoogleAnalyticCode");
+						string url       = miscList.GetColumn("URL");
 						lblGoogleUA.Text = Environment.NewLine
 						                 + "<!-- Global site tag (gtag.js) - Google Analytics -->" + Environment.NewLine
-						                 + "<script async src=\"https://www.googletagmanager.com/gtag/js?id=" +  miscList.GetColumn(0) + "\"></script>" + Environment.NewLine
+						                 + "<script async src=\"https://www.googletagmanager.com/gtag/js?id=" + gaCode + "\"></script>" + Environment.NewLine
 						                 + "<script>" + Environment.NewLine
 						                 + "window.dataLayer = window.dataLayer || [];" + Environment.NewLine
 						                 + "function gtag(){dataLayer.push(arguments);}" + Environment.NewLine
 						                 + "gtag('js', new Date());" + Environment.NewLine
-						                 + "gtag('config', '" + miscList.GetColumn(0) + "');" + Environment.NewLine
+						                 + "gtag('config', '" + gaCode + "', { 'linker': { 'accept_incoming': true } });" + Environment.NewLine
 						                 + "</script>" + Environment.NewLine;
 
+//						                 + "gtag('config', '" + gaCode + "');" + Environment.NewLine
+					}
 //					if ( miscList.ExecQuery(sql,0) != 0 )
 //						SetErrorDetail(10026,10026,"Error retrieving the Google analytics code ; please try again later",sql);
 //					else if ( miscList.EOF )
@@ -433,28 +475,28 @@ namespace PCIWebFinAid
 			if ( pageNo == 1 )
 			{
 				txtSurname.Text = txtSurname.Text.Trim();
-				if ( txtSurname.Text.Length < 2 )
+				if ( txtSurname.Visible && txtSurname.Text.Length < 2 )
 					err = err + "Invalid surname (at least 2 characters required)<br />";
 				txtCellNo.Text = txtCellNo.Text.Trim();
-				if ( txtCellNo.Text.Replace(" ","").Length < 10 )
+				if ( txtCellNo.Visible && txtCellNo.Text.Replace(" ","").Length < 10 )
 					err = err + "Invalid cell number (at least 10 digits required)<br />";
 			}
 			else if ( pageNo == 2 )
 			{
 				txtFirstName.Text = txtFirstName.Text.Trim();
-				if ( txtFirstName.Text.Length < 1 )
+				if ( txtFirstName.Visible && txtFirstName.Text.Length < 1 )
 					err = err + "Invalid first name (at least 1 character required)<br />";
 				txtEMail.Text = txtEMail.Text.Trim();
-				if ( ! Tools.CheckEMail(txtEMail.Text) )
+				if ( txtEMail.Visible && ! Tools.CheckEMail(txtEMail.Text) )
 					err = err + "Invalid email address<br />";
 				txtID.Text = txtID.Text.Trim();
-				if ( txtID.Text.Length < 3 )
+				if ( txtID.Visible && txtID.Text.Length < 3 )
 					err = err + "Invalid id number<br />";
 			}
 			else if ( pageNo == 3 )
 			{
 				int income = Tools.StringToInt(txtIncome.Text,true);
-				if ( income < 100 )
+				if ( txtIncome.Visible && income < 100 )
 					err = err + "Invalid income (it must be numeric and more than 100)<br />";
 				else
 					txtIncome.Text = income.ToString();
@@ -464,13 +506,13 @@ namespace PCIWebFinAid
 			else if ( pageNo == 5 )
 			{
 				txtCCNumber.Text = txtCCNumber.Text.Trim();
-				if ( txtCCNumber.Text.Length < 12 )
+				if ( txtCCNumber.Visible && txtCCNumber.Text.Length < 12 )
 					err = err + "Invalid credit/debit card number<br />";
 				txtCCName.Text = txtCCName.Text.Trim();
-				if ( txtCCName.Text.Length < 3 )
+				if ( txtCCName.Visible && txtCCName.Text.Length < 3 )
 					err = err + "Invalid credit/debit card name<br />";
 				txtCCCVV.Text = txtCCCVV.Text.Trim();
-				if ( txtCCCVV.Text.Length < 3 )
+				if ( txtCCCVV.Visible && txtCCCVV.Text.Length < 3 )
 					err = err + "Invalid credit/debit card CVV code<br />";
 			}
 
