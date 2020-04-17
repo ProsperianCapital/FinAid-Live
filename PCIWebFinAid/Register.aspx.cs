@@ -141,6 +141,7 @@ namespace PCIWebFinAid
 					string      fieldCode;
 					string      fieldValue;
 					string      fieldMessage;
+					string      fieldBlocked;
 					string      screenGuide;
 					string      regPageNo;
 					string      controlID;
@@ -162,6 +163,7 @@ namespace PCIWebFinAid
 							fieldFail    = miscList.GetColumn("FieldValidationFailureText");
 							fieldPass    = miscList.GetColumn("FieldValidationPassText");
 							regPageNo    = miscList.GetColumn("RegistrationPageNumber");
+							fieldBlocked = miscList.GetColumn("Blocked");
 							controlID    = "";
 							logNo        = 15;
 							errNo        = 0;
@@ -255,7 +257,8 @@ namespace PCIWebFinAid
 							if ( controlID.Length < 1 )
 								logNo = 20;
 
-							else if ( fieldValue.Length < 1 )
+//							else if ( fieldValue.Length < 1 )
+							else if ( fieldBlocked == "1" )
 							{
 								logNo = 21;
 								HideControls(controlID);
