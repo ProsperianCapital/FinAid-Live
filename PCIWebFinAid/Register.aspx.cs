@@ -468,6 +468,7 @@ namespace PCIWebFinAid
 						                 + "ga('create', '" + gaCode + "', 'auto', {'allowLinker': true});" + Environment.NewLine
 						                 + "ga('require', 'linker');" + Environment.NewLine
 						                 + "ga('linker:autoLink', ['" + url + "'] );" + Environment.NewLine
+						                 + "ga('send', 'pageview');" + Environment.NewLine
 						                 + "</script>" + Environment.NewLine;
 					}
 
