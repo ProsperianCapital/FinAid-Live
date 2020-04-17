@@ -446,18 +446,27 @@ namespace PCIWebFinAid
 					{
 						string gaCode    = miscList.GetColumn("GoogleAnalyticCode");
 						string url       = miscList.GetColumn("URL");
-						lblGoogleUA.Text = Environment.NewLine
-						                 + "<!-- Global site tag (gtag.js) - Google Analytics -->" + Environment.NewLine
-						                 + "<script async src=\"https://www.googletagmanager.com/gtag/js?id=" + gaCode + "\"></script>" + Environment.NewLine
-						                 + "<script>" + Environment.NewLine
-						                 + "window.dataLayer = window.dataLayer || [];" + Environment.NewLine
-						                 + "function gtag(){dataLayer.push(arguments);}" + Environment.NewLine
-						                 + "gtag('js', new Date());" + Environment.NewLine
-						                 + "gtag('config', '" + gaCode + "', { 'linker': { 'accept_incoming': true } });" + Environment.NewLine
-						                 + "</script>" + Environment.NewLine;
+//	V1 ... gtag.js
+//						lblGoogleUA.Text = Environment.NewLine
+//						                 + "<!-- Global site tag (gtag.js) - Google Analytics -->" + Environment.NewLine
+//						                 + "<script async src=\"https://www.googletagmanager.com/gtag/js?id=" + gaCode + "\"></script>" + Environment.NewLine
+//						                 + "<script>" + Environment.NewLine
+//						                 + "window.dataLayer = window.dataLayer || [];" + Environment.NewLine
+//						                 + "function gtag(){dataLayer.push(arguments);}" + Environment.NewLine
+//						                 + "gtag('js', new Date());" + Environment.NewLine
+//						                 + "gtag('config', '" + gaCode + "', { 'linker': { 'accept_incoming': true } });" + Environment.NewLine
+// //					                 + "gtag('config', '" + gaCode + "');" + Environment.NewLine
+//						                 + "</script>" + Environment.NewLine;
 
-//						                 + "gtag('config', '" + gaCode + "');" + Environment.NewLine
+// V2 ... Analytics.js
+						lblGoogleUA.Text = Environment.NewLine
+						                 + "<script>" + Environment.NewLine
+						                 + "ga('create', '" + gaCode + "', 'auto', {'allowLinker': true});" + Environment.NewLine
+						                 + "ga('require', 'linker');" + Environment.NewLine
+						                 + "ga('linker:autoLink', ['" + url + "'] );" + Environment.NewLine
+						                 + "</script>" + Environment.NewLine;
 					}
+
 //					if ( miscList.ExecQuery(sql,0) != 0 )
 //						SetErrorDetail(10026,10026,"Error retrieving the Google analytics code ; please try again later",sql);
 //					else if ( miscList.EOF )
