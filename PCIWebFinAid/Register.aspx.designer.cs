@@ -1534,6 +1534,15 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.Label lblVer;
         
         /// <summary>
+        /// hdnVer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnVer;
+        
+        /// <summary>
         /// lblJS control.
         /// </summary>
         /// <remarks>

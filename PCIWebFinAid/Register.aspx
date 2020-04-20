@@ -639,6 +639,8 @@ function OptSelect(p)
 <asp:Label runat="server" ID="lblErrorDtl" style="border:1px solid #000000;position:fixed;bottom:20px;right:5px;visibility:hidden;display:none;padding:5px;font-family:Verdana;background-color:pink"></asp:Label>
 <asp:Label runat="server" ID="lblVer" style="position:fixed;bottom:3px;right:5px"></asp:Label>
 
+<asp:HiddenField runat="server" ID="hdnVer" />
+
 <script type="text/javascript">
 pageNo = GetEltValueInt('hdnPageNo');
 SetEltValue('hdnBrowser',navigator.userAgent.toString());

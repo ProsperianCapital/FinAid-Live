@@ -64,6 +64,7 @@ namespace PCIWebFinAid
 
 				LoadLabels();
 
+				hdnVer.Value       = "Version " + SystemDetails.AppVersion + " (" + SystemDetails.AppDate + ")";
 				lblVer.Text        = "Version " + SystemDetails.AppVersion;
 				lblVer.Visible     = ! Tools.SystemIsLive();
 				btnBack1.Visible   = ! Tools.SystemIsLive();
@@ -497,8 +498,8 @@ namespace PCIWebFinAid
 				if ( txtSurname.Visible && txtSurname.Text.Length < 2 )
 					err = err + "Invalid surname (at least 2 characters required)<br />";
 				txtCellNo.Text = txtCellNo.Text.Trim();
-				if ( txtCellNo.Visible && txtCellNo.Text.Replace(" ","").Length < 10 )
-					err = err + "Invalid cell number (at least 10 digits required)<br />";
+				if ( txtCellNo.Visible && txtCellNo.Text.Length < 8 )
+					err = err + "Invalid cell number (at least 8 digits required)<br />";
 			}
 			else if ( pageNo == 2 )
 			{
