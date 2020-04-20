@@ -181,12 +181,13 @@ function ValidPhone(phoneNo,country)
 {
 	try
 	{
-		phoneNo = Trim(phoneNo).replace(/ /g, "");
+//		phoneNo = Trim(phoneNo).replace(/ /g, "");
+		phoneNo = Trim(phoneNo);
 
-		if ( phoneNo.length < 10 )
+		if ( phoneNo.length < 8 )
 			return false;
 
-		if ( country == 170 ) // SA
+		if ( country == 1 ) // SA
 		{
 			if ( phoneNo.substring(0,1) != '0' )
 				return false;
@@ -194,8 +195,8 @@ function ValidPhone(phoneNo,country)
 			if ( p < 100000000 || p > 999999999 ) // Valid range is 010 000 0000 to 099 999 9999
 				return false;
 		}
-		else
-			return ( phoneNo.substring(0,1) == '0' || phoneNo.substring(0,1) == '+' );
+//		else
+//			return ( phoneNo.substring(0,1) == '0' || phoneNo.substring(0,1) == '+' );
 	}
 	catch (x)
 	{ }
