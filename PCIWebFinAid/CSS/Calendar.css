@@ -1,0 +1,110 @@
+#calendarIFrame {
+	display: none;
+	left: 100px;
+	position: absolute;
+	top: 0px;
+	height: 250px;
+	width: 250px;
+	z-index: 100;
+}
+
+#ctlCalendar {
+	position: absolute;
+	background-color: #FFF;
+	margin: 0;
+	padding: 0;
+	display: none;
+	z-index: 100;
+	width: 240px;
+}
+
+#ctlCalendar table {
+	font-family: arial, Verdana, helvetica, sans-serif;
+	font-size: 10pt;
+	border-left: 1px solid #336;
+	border-right: 1px solid #336;
+}
+
+#ctlCalendar th {
+	font-weight: normal;
+}
+
+#ctlCalendar th a {
+	font-weight: bold;
+	text-decoration: none;
+	color: Yellow;
+	padding: 1px;
+}
+
+#ctlCalendar td {
+	text-align: center;
+}
+
+#ctlCalendar .header {
+	background-color: #336;
+}
+
+#ctlCalendar .weekday {
+	background-color: #DDD;
+	color: #000;
+}
+
+#ctlCalendar .weekend {
+	background-color: #FFC;
+	color: #000;
+}
+
+#ctlCalendar .current {
+	border: 1px solid #339;
+	background-color: #336;
+	color: #FFF;
+}
+
+#ctlCalendar .weekday,
+#ctlCalendar .weekend,
+#ctlCalendar .current {
+	display: block;
+	text-decoration: none;
+	border: 1px solid #FFF;
+	width: 2em;
+}
+
+#ctlCalendar .weekday:hover,
+#ctlCalendar .weekend:hover,
+#ctlCalendar .current:hover {
+	color: #FFF;
+	background-color: #336;
+	border: 1px solid #999;
+}
+
+#ctlCalendar .previous {
+	text-align: left;
+}
+
+#ctlCalendar .next {
+	text-align: right;
+}
+
+#ctlCalendar .previous,
+#ctlCalendar .next {
+	padding: 1px 3px 1px 3px;
+	font-size: 1.4em;
+}
+
+#ctlCalendar .previous a,
+#ctlCalendar .next a {
+	color: #FFF;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+#ctlCalendar .title {
+	text-align: center;
+	font-weight: bold;
+	color: #FFF;
+}
+
+#ctlCalendar .empty {
+	background-color: #CCC;
+	border: 1px solid #FFF;
+}

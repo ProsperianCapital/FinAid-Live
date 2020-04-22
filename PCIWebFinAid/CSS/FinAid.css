@@ -44,7 +44,6 @@ table td
 .Header1a
 {
 	font-size: 13px;
-	float: right;
 }
 .Header1b:hover
 {
@@ -90,7 +89,12 @@ table td
 	color: orange;
 }
 
-.Footer1
+.Header5 td
+{
+	border-bottom: 1px solid blue;
+}
+
+.Footer2
 {
 	font-family: "Trebuchet MS", serif;
 	font-size: 12px;
@@ -100,6 +104,17 @@ table td
 	position: fixed;
 	bottom: 1px;
 	width: 97%;
+}
+
+.Footer1
+{
+	display: block;
+	width: 100%;
+	text-align: center;
+	background-color: #898787;
+	color: #FFFFFF;
+	padding-top: 15px;
+	padding-bottom: 15px;
 }
 
 .DataLabel
