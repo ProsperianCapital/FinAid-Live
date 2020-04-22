@@ -489,7 +489,7 @@ namespace PCIWebFinAid
 				return ( lblError.Text.Length == 0 );
 		}
 
-		private int Validate(int pageNo)
+		private int ValidateData(int pageNo)
 		{
 			string err = "";
 			if ( pageNo == 1 )
@@ -600,7 +600,7 @@ namespace PCIWebFinAid
 				txtCCCVV.Text     = "789";
 			}
 
-			if ( Validate(pageNo) > 0 )
+			if ( ValidateData(pageNo) > 0 )
 				return;
 
 			using (MiscList miscList = new MiscList())
@@ -721,7 +721,7 @@ namespace PCIWebFinAid
 								}
 
 							if ( lblCCMandate.Text.Length < 1 )
-								SetErrorDetail(30040,30040,"Unable to retrieve collection mandate",sql+" (looking for ProductOption="+productOption+" and PaymentMethod="+payMethod+"). SQL failed or returned no data or<br />these CollectionMandateText column was missing/empty/NULL");
+								SetErrorDetail(30040,30040,"Unable to retrieve collection mandate",sql+" (looking for ProductOption="+productOption+" and PaymentMethod="+payMethod+"). SQL failed or returned no data or<br />the CollectionMandateText column was missing/empty/NULL");
 						}
 						else if ( pageNo == 6 || pageNo > 180 )
 						{
@@ -1354,7 +1354,8 @@ namespace PCIWebFinAid
 				errDetail = lblErrorDtl.Text + ( lblErrorDtl.Text.Length > 0 ? "<br /><br />" : "" ) + errDetail;
 			lblErrorDtl.Text = errDetail;
 			if ( ! lblErrorDtl.Text.StartsWith("<div") )
-				lblErrorDtl.Text = "<div style='background-color:blue;padding:3px;color:white'>Error Details</div>" + lblErrorDtl.Text;
+			//	lblErrorDtl.Text = "<div style='background-color:blue;padding:3px;color:white'>Error Details</div>" + lblErrorDtl.Text;
+				lblErrorDtl.Text = "<div style='background-color:blue;padding:3px;color:white;height:20px'>Error Details<img src='Images/Close1.png' title='Close' style='float:right' onclick=\"JavaScript:ShowElt('lblErrorDtl',false)\" /></div>" + lblErrorDtl.Text;
 
 			lblError.Visible = ( lblError.Text.Length    > 0 );
 			btnError.Visible = ( lblErrorDtl.Text.Length > 0 ) && lblError.Visible && ! Tools.SystemIsLive();
