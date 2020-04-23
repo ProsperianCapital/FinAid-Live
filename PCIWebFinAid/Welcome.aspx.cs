@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 namespace PCIWebFinAid
 {
-	public partial class Login : BasePage
+	public partial class Welcome : BasePage
 	{
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{

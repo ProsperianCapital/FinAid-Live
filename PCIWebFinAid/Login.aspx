@@ -19,9 +19,9 @@
 	Login
 	</div>
 	<p style="text-align:center">
-	<asp:TextBox runat="server" ID="txtID" placeholder="ID Number"></asp:TextBox>
+	<asp:TextBox runat="server" ID="txtID"></asp:TextBox> <!-- placeholder="ID Number" -->
 	</p><p style="text-align:center">
-	<asp:TextBox runat="server" ID="txtPW" placeholder="PIN"></asp:TextBox>
+	<asp:TextBox runat="server" ID="txtPW"></asp:TextBox> <!-- placeholder="PIN" -->
 	</p><p style="text-align:center">
 	<asp:Button runat="server" ID="btnLogin" Text="LOGIN" />
 	</p><p style="text-align:center">

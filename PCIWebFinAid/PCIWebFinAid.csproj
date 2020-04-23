@@ -74,6 +74,7 @@
     <Content Include="JS\Calendar.js" />
     <Content Include="Login.aspx" />
     <Content Include="packages.config" />
+    <Content Include="Welcome.aspx" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -157,6 +158,13 @@
       <DependentUpon>TransLookup.aspx</DependentUpon>
     </Compile>
     <Compile Include="WebTools.cs" />
+    <Compile Include="Welcome.aspx.cs">
+      <DependentUpon>Welcome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Welcome.aspx.designer.cs">
+      <DependentUpon>Welcome.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PCIBusiness\PCIBusiness.csproj">
