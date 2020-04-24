@@ -42,7 +42,7 @@ namespace PCIWebFinAid
 			}
 			else
 			{
-				lblJS.Text          = WebTools.JavaScriptSource("NextPage(0)");
+				lblJS.Text          = WebTools.JavaScriptSource("NextPage(0,null)");
 				productCode         = WebTools.RequestValueString(Request,"PC");  // ProductCode");
 				languageCode        = WebTools.RequestValueString(Request,"LC");  // LanguageCode");
 				languageDialectCode = WebTools.RequestValueString(Request,"LDC"); // LanguageDialectCode");
@@ -849,7 +849,7 @@ namespace PCIWebFinAid
 
 							try
 							{
-								File.AppendAllText(Tools.SystemFolder("Contracts")+contractCode+".htm",mailText);
+								File.AppendAllText(Tools.SystemFolder("Contracts")+contractCode+".htm",mailText,Encoding.UTF8);
 							}
 							catch (Exception ex6)
 							{
@@ -879,8 +879,8 @@ namespace PCIWebFinAid
 										string err          = "";
 										string emailFrom    = miscList.GetColumn("SenderEmailAddress");
 										string emailReply   = miscList.GetColumn("ReplyEMailAddress");
-										string emailRoute1  = miscList.GetColumn("Route1EMailAddress");
-										string emailRoute2  = miscList.GetColumn("Route2EMailAddress");
+										string emailRoute1  = miscList.GetColumn("Route1EMailAddress",0);
+										string emailRoute2  = miscList.GetColumn("Route2EMailAddress",0);
 										string emailRoute3  = miscList.GetColumn("Route3EMailAddress",0);
 										string emailRoute4  = miscList.GetColumn("Route4EMailAddress",0);
 										string emailRoute5  = miscList.GetColumn("Route5EMailAddress",0);
@@ -889,12 +889,13 @@ namespace PCIWebFinAid
 //										string emailBody    = miscList.GetColumn("EMailBodyText");
 //	Testing							string emailBody    = miscList.GetColumn("EMailBodyTextENG");
 
-										if ( ! Tools.CheckEMail(emailFrom) )
-										{
-											errNo = 30220;
-											err   = "Invalid sender email (" + emailFrom + ")";
-											throw new Exception(err);
-										}
+//	NO! Allow sender to be invalid
+//										if ( ! Tools.CheckEMail(emailFrom) )
+//										{
+//											errNo = 30220;
+//											err   = "Invalid sender email (" + emailFrom + ")";
+//											throw new Exception(err);
+//										}
 
 										errNo               = 30225;
 										string smtpServer   = Tools.ConfigValue("SMTP-Server");
@@ -909,6 +910,10 @@ namespace PCIWebFinAid
 											err   = "Invalid SMTP details, server=" + smtpServer + ", user=" + smtpUser + ", pwd=" + smtpPassword + ", port=" + smtpPort.ToString();
 											throw new Exception(err);
 										}
+
+//	If sender is invalid, use the SMTP address
+										if ( ! Tools.CheckEMail(emailFrom) )
+											emailFrom = smtpUser;
 
 										errNo                      = 30235;
 										SmtpClient smtp            = new SmtpClient(smtpServer);
@@ -938,6 +943,7 @@ namespace PCIWebFinAid
 												mailMsg.Bcc.Add(smtpBCC);
 
 											errNo              = 30245;
+											mailMsg.Sender     = new MailAddress(smtpUser);
 											mailMsg.From       = new MailAddress(emailFrom);
 											mailMsg.Subject    = "Contract " + contractCode;
 											mailMsg.Body       = mailText;

@@ -87,7 +87,6 @@
     <Content Include="Footer.ascx" />
     <Content Include="Header.ascx" />
     <Content Include="Register.aspx" />
-    <Content Include="TemplatePDF.htm" />
     <Content Include="TransLookup.aspx" />
     <Content Include="Web.config" />
     <Content Include="Bin\SelectHtmlDep.zip" />

@@ -20,23 +20,29 @@ var lastPage  = 5;
 var confPage  = 6;
 var pageNo;
 
-function NextPage(inc)
+function NextPage(inc,btn)
 {
 	try
 	{
+		DisableElt(btn,true); // Disable button immediately
+		var ret = "X";
+
 		if ( inc > 0 )
-			return ValidatePage(0,2);
+//			return ValidatePage(0,2);
+			ret = ( ValidatePage(0,2) ? 'T' : 'F' );
 		else if ( inc < 0 && pageNo > firstPage )
 			pageNo--;
 		else if ( inc != 0 )
-			return false;
-
-//		if ( inc > 0 && pageNo < lastPage )
-//			pageNo++;
-//		else if ( inc < 0 && pageNo > firstPage )
-//			pageNo--;
-//		else if ( inc != 0 )
 //			return false;
+			ret = 'F';
+
+		if ( ret == 'T' ) // Return true, leave the button DISABLED
+			return true;
+
+		DisableElt(btn,false);
+
+		if ( ret == 'F' ) // Return false, ENABLE the button
+			return false;
 
 		SetEltValue('hdnPageNo',pageNo.toString());
 
@@ -626,11 +632,11 @@ function OptSelect(p)
 </div>
 
 <br />
-<asp:Button runat="server" ID="btnBack1" OnClientClick="JavaScript:if (!NextPage(-1)) return false" Text="BACK" />
-<asp:Button runat="server" ID="btnNext"  OnClientClick="JavaScript:if (!NextPage( 1)) return false" OnClick="btnNext_Click" />
-<asp:Button runat="server" ID="btnAgree" OnClientClick="JavaScript:if (!NextPage( 1)) return false" OnClick="btnNext_Click" />
+<asp:Button runat="server" ID="btnBack1" UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage(-1,this)) return false" Text="BACK" />
+<asp:Button runat="server" ID="btnNext"  UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage( 1,this)) return false" OnClick="btnNext_Click" />
+<asp:Button runat="server" ID="btnAgree" UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage( 1,this)) return false" OnClick="btnNext_Click" />
 &nbsp;&nbsp;&nbsp;&nbsp;
-<asp:Button runat="server" ID="btnBack2" OnClientClick="JavaScript:if (!NextPage(-1)) return false" Width="200px" />
+<asp:Button runat="server" ID="btnBack2" UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage(-1,this)) return false" Width="200px" />
 &nbsp;&nbsp;&nbsp;&nbsp;
 <asp:Button runat="server" ID="btnError" Text="Error ...?" OnClientClick="JavaScript:ShowElt('lblErrorDtl',true);return false" />
 <br /><br />
