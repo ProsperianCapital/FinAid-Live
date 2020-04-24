@@ -842,9 +842,10 @@ namespace PCIWebFinAid
 
 							foreach (Control ctlOuter in Page.Controls)
 								foreach (Control ctlInner in ctlOuter.Controls)
-									if ( ctlInner.GetType() == typeof(Literal) || ctlInner.GetType() == typeof(Label) )
-										if ( mailText.Contains("#"+ctlInner.ID+"#") )
-											mailText = mailText.Replace("#"+ctlInner.ID+"#",((Literal)ctlInner).Text);
+									if ( ctlInner.GetType() == typeof(Literal) && mailText.Contains("#"+ctlInner.ID+"#") )
+										mailText = mailText.Replace("#"+ctlInner.ID+"#",((Literal)ctlInner).Text);
+									else if ( ctlInner.GetType() == typeof(Label) && mailText.Contains("#"+ctlInner.ID+"#") )
+										mailText = mailText.Replace("#"+ctlInner.ID+"#",((Label)ctlInner).Text);
 
 							try
 							{
