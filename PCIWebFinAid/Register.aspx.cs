@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Net.Mail;
@@ -14,7 +16,6 @@ namespace PCIWebFinAid
 		string languageDialectCode;
 		string contractCode;
 		string contractPIN;
-//		string pdfFileName;
 		string sql;
 		int    errNo;
 
@@ -260,8 +261,7 @@ namespace PCIWebFinAid
 							if ( controlID.Length < 1 )
 								logNo = 20;
 
-//							else if ( fieldValue.Length < 1 )
-							else if ( fieldBlocked == "1" )
+							else if ( fieldBlocked == "1" ) // Don't show this field
 							{
 								logNo = 21;
 								HideControls(controlID);
@@ -541,45 +541,8 @@ namespace PCIWebFinAid
 			return err.Length;
 		}
 
-//	NO!
-//		protected override void Render(HtmlTextWriter writer)
-//		{
-//			if (renderPDF)
-//				try
-//				{
-//					renderPDF                        = false;
-//					System.IO.TextWriter  pdfWriter  = new System.IO.StringWriter();
-//					HtmlTextWriter        htmlWriter = new HtmlTextWriter(pdfWriter);
-//					base.Render(htmlWriter);
-//
-//					string page6 = pdfWriter.ToString();
-//					int    k1    = page6.IndexOf("<!-- [PDF-Start] -->");
-//					int    k2    = page6.IndexOf("<!-- [PDF-End] -->");
-//					if ( k1 > 0 && k2 > k1 )
-//					{
-//						page6 = page6.Substring(k1+20,k2-k1-20);
-//						k1    = PCIBusiness.Tools.CreatePDF(contractCode,page6,ref pdfFileName);
-//						if ( k1 == 0 && pdfFileName.Length > 0 )
-//							SendConfirmationEmail();
-//					}
-//				}
-//				catch (Exception ex)
-//				{
-//					Tools.LogException("Register.Render","",ex);
-//				}
-//
-//			else
-//				base.Render(writer);
-//		}
-
-
 		protected void btnNext_Click(Object sender, EventArgs e)
 		{
-//	PDF test
-//			string ff = "<style>h1 {font-size:12px;}</style><h1>Test</h1><p style='font-weight:bold'>Test Bold</p>";
-//			PCIBusiness.Tools.CreatePDF(ff);
-//	PDF test
-
 			int pageNo = Tools.StringToInt(hdnPageNo.Value);
 			int pdfErr = 0;
 			errNo      = 0;
@@ -602,6 +565,8 @@ namespace PCIWebFinAid
 
 			if ( ValidateData(pageNo) > 0 )
 				return;
+
+			string mailText = "";
 
 			using (MiscList miscList = new MiscList())
 				try
@@ -807,6 +772,17 @@ namespace PCIWebFinAid
 								throw new Exception("XYZ");
 
 //	Confirmation Page
+
+							try
+							{
+								mailText = File.ReadAllText(Tools.SystemFolder("Templates")+"ConfirmationMail.htm");
+							}
+							catch (Exception ex1)
+							{
+								mailText = "";
+								SetErrorDetail(30095,30095,"Unable to open mail template (Templates/ConfirmationMail.htm)",ex1.Message);
+							}
+
 							lblReg.Visible      = false;
 							lblRegConf.Visible  = true;
 							lblp6Ref.Text       = contractCode;
@@ -834,6 +810,51 @@ namespace PCIWebFinAid
 							lblp6IP.Text        = WebTools.ClientIPAddress(Request,1);
 							lblp6Browser.Text   = WebTools.ClientBrowser(Request,hdnBrowser.Value);
 
+//							mailText            = mailText.Replace("#lblp6Ref#",lblp6Ref.Text);
+//							mailText            = mailText.Replace("#lblp6Pin#",lblp6Pin.Text);
+//							mailText            = mailText.Replace("#lblp6Title#",lblp6Title.Text);
+//							mailText            = mailText.Replace("#lblp6FirstName#",lblp6FirstName.Text);
+//							mailText            = mailText.Replace("#lblp6Surname#",lblp6Surname.Text);
+//							mailText            = mailText.Replace("#lblp6EMail#",lblp6EMail.Text);
+//							mailText            = mailText.Replace("#lblp6CellNo#",lblp6CellNo.Text);
+//							mailText            = mailText.Replace("#lblp6ID#",lblp6ID.Text);
+//							mailText            = mailText.Replace("#lblp6Income#",lblp6Income.Text);
+//							mailText            = mailText.Replace("#lblp6Status#",lblp6Status.Text);
+//							mailText            = mailText.Replace("#lblp6PayDay#",lblp6PayDay.Text);
+//							mailText            = mailText.Replace("#lblp6Payment#",lblp6Payment.Text);
+//							mailText            = mailText.Replace("#lbl100209#",lbl100209.Text);
+//							mailText            = mailText.Replace("#lblp6CCName#",lblp6CCName.Text);
+//							mailText            = mailText.Replace("#lblp6CType#",lblp6CCType.Text);
+//							mailText            = mailText.Replace("#lblp6CCNumber#",lblp6CCNumber.Text);
+//							mailText            = mailText.Replace("#lblp6CCExpiry#",lblp6CCExpiry.Text);
+//							mailText            = mailText.Replace("#lblp6Date#",lblp6Date.Text);
+//							mailText            = mailText.Replace("#lblp6IP#",lblp6IP.Text);
+//							mailText            = mailText.Replace("#lblp6Browser#",lblp6Browser.Text);
+//							mailText            = mailText.Replace("#lblp6RefundPolicy#",lblp6RefundPolicy.Text);
+//							mailText            = mailText.Replace("#lblp6MoneyBackPolicy#",lblp6MoneyBackPolicy.Text);
+//							mailText            = mailText.Replace("#lblp6CancellationPolicy#",lblp6CancellationPolicy.Text);
+//							mailText            = mailText.Replace("#lblp6Mandate#",lblp6Mandate.Text);
+//							mailText            = mailText.Replace("#lblp6MandateHead#",lblp6MandateHead.Text);
+//							mailText            = mailText.Replace("#lblp6Billing#",lblp6Billing.Text);
+
+//	Can't store the actual card number
+							mailText            = mailText.Replace("#lblp6CCNumber#",lblp6CCNumber.Text.Substring(0,6)+"******"+lblp6CCNumber.Text.Substring(12));
+
+							foreach (Control ctlOuter in Page.Controls)
+								foreach (Control ctlInner in ctlOuter.Controls)
+									if ( ctlInner.GetType() == typeof(Literal) || ctlInner.GetType() == typeof(Label) )
+										if ( mailText.Contains("#"+ctlInner.ID+"#") )
+											mailText = mailText.Replace("#"+ctlInner.ID+"#",((Literal)ctlInner).Text);
+
+							try
+							{
+								File.AppendAllText(Tools.SystemFolder("Contracts")+contractCode+".htm",mailText);
+							}
+							catch (Exception ex6)
+							{
+								SetErrorDetail(30105,30105,"Unable to create confirmation file ("+contractCode+".htm)",ex6.Message);
+							}
+
 //	Testing
 //							if ( lblp6MandateHead.Text.Length < 1 )
 //								lblp6MandateHead.Text = "Collection Mandate: " + Tools.DateToString(System.DateTime.Now,2,0);
@@ -843,220 +864,6 @@ namespace PCIWebFinAid
 //								lblp6Billing.Text     = "We confirm that we have received the above Billing Information as submitted by you";
 //	Testing
 
-//	Generate PDF, version 4 (IronPDF)
-//		and also
-//	Generate PDF, version 3 (SelectPDF)
-//
-//	PDF code removed (2020/04/08)
-/*
-							string h   = Request.Url.GetLeftPart(UriPartial.Authority);
-							string f   = Tools.SystemFolder("")+"TemplatePDF.htm";
-							string pdf = Tools.ReadFile(f);
-							int    k1  = pdf.IndexOf("<!-- [PDF-Start] -->");
-							int    k2  = pdf.IndexOf("<!-- [PDF-End] -->");
-							if ( k1 > 0 && k2 > k1 )
-								pdf = pdf.Substring(k1+20,k2-k1-20);
-							if ( h.EndsWith("/") )
-								h = h.Substring(0,h.Length-1);
-
-							if ( h.Length < 7 )
-								SetErrorDetail(30100,30100,"Unable to establish the URL to use",h);
-							if ( pdf.Length < 100 )
-								SetErrorDetail(30110,30110,"Unable to find/open the PDF template file",f);
-
-							StringBuilder pdfText = new StringBuilder(pdf);
-
-//	Heading
-							pdfText = pdfText.Replace("#URL#"           ,h)
-							                 .Replace("#PRODUCT-NAME#"  ,hdn100137.Value)
-							                 .Replace("#PRODUCT-DETAIL#",hdn100002.Value)
-							                 .Replace("#REGISTRATION#"  ,lblRegConf.Text)
-							                 .Replace("#CONGRATS#"      ,lbl100400.Text)
-							                 .Replace("#GREETING#"      ,lbl100209.Text);
-
-//	Contract details
-//	..	Labels
-							pdfText = pdfText.Replace("#CONTRACT-HEAD#"    ,lbl100372.Text)
-							                 .Replace("#CONTRACT-CODE-LBL#",lbl100210.Text)
-							                 .Replace("#CONTRACT-PIN-LBL#" ,lbl100211.Text);
-//	..	Data
-							pdfText = pdfText.Replace("#CONTRACT-CODE#",lblp6Ref.Text)
-							                 .Replace("#CONTRACT-PIN#" ,lblp6Pin.Text);
-
-//	Personal info
-//	..	Labels  
-							pdfText = pdfText.Replace("#PERSONAL-HEAD#"   ,lbl100212.Text)
-							                 .Replace("#TITLE-LBL#"       ,lbl100111.Text)
-							                 .Replace("#FIRST-NAME-LBL#"  ,lbl100214.Text)
-							                 .Replace("#SURNAME-LBL#"     ,lbl100216.Text)
-							                 .Replace("#EMAIL-LBL#"       ,lbl100218.Text)
-							                 .Replace("#CELL-NO-LBL#"     ,lbl100219.Text)
-							                 .Replace("#ID-NUMBER-LBL#"   ,lbl100220.Text)
-							                 .Replace("#PERSONAL-CONFIRM#",lbl100373.Text);
-//	..	Data
-							pdfText = pdfText.Replace("#TITLE#"     ,lblp6Title.Text)
-							                 .Replace("#FIRST-NAME#",lblp6FirstName.Text)
-							                 .Replace("#SURNAME#"   ,lblp6Surname.Text)
-							                 .Replace("#EMAIL#"     ,lblp6EMail.Text)
-							                 .Replace("#CELL-NO#"   ,lblp6Cell.Text)
-							                 .Replace("#ID-NUMBER#" ,lblp6ID.Text);
-
-//	Income
-//	..	Labels
-							pdfText = pdfText.Replace("#INCOME-HEAD#"   ,lbl100222.Text)
-							                 .Replace("#INCOME-LBL#"    ,lbl100223.Text)
-							                 .Replace("#EMPLOYMENT-LBL#",lbl100230.Text)
-							                 .Replace("#PAY-DAY-LBL#"   ,lbl100231.Text)
-							                 .Replace("#INCOME-CONFIRM#",lbl100374.Text);
-//	..	Data
-							pdfText = pdfText.Replace("#INCOME#"    ,lblp6Income.Text)
-							                 .Replace("#EMPLOYMENT#",lblp6Status.Text)
-							                 .Replace("#PAY-DAY#"   ,lblp6PayDay.Text);
-
-//	Product
-//	..	Labels
-							pdfText = pdfText.Replace("#PRODUCT-HEAD#"   ,lbl100233.Text)
-							                 .Replace("#PAY-METHOD-LBL#" ,lbl100236.Text)
-							                 .Replace("#PRODUCT-CONFIRM#",lbl100237.Text);
-//	..	Data
-							pdfText = pdfText.Replace("#PRODUCT-OPTIONS#",lbl100325.Text)
-							                 .Replace("#PAY-METHOD#"     ,lblp6PayMethod.Text);
-
-//	Credit Card
-//	..	Labels
-							pdfText = pdfText.Replace("#CCARD-HEAD#"      ,lbl100184.Text)
-							                 .Replace("#CCARD-TYPE-LBL#"  ,lbl100185.Text)
-							                 .Replace("#CCARD-NAME-LBL#"  ,lbl100186.Text)
-							                 .Replace("#CCARD-NUMBER-LBL#",lbl100187.Text)
-							                 .Replace("#CCARD-EXPIRY-LBL#",lbl100188.Text)
-							                 .Replace("#CCARD-CONFIRM#"   ,lblp6Billing.Text);
-//	..	Data
-							pdfText = pdfText.Replace("#CCARD-TYPE#"  ,lblp6CCType.Text)
-							                 .Replace("#CCARD-NAME#"  ,lblp6CCName.Text)
-							                 .Replace("#CCARD-NUMBER#",lblp6CCNumber.Text)
-							                 .Replace("#CCARD-EXPIRY#",lblp6CCExpiry.Text);
-
-//	Mandate
-//	..	Labels
-							pdfText = pdfText.Replace("#MANDATE-HEAD#",lblp6MandateHead.Text)
-							                 .Replace("#MANDATE#"     ,lblp6Mandate.Text);
-
-//	Policies
-//	..	Labels
-							pdfText = pdfText.Replace("#POLICY-HEAD#"     ,lbl100238.Text)
-							                 .Replace("#POLICY-REFUND#"   ,lblp6RefundPolicy.Text)        // refundPolicy)
-							                 .Replace("#POLICY-MONEYBACK#",lblp6MoneyBackPolicy.Text)     // moneyBackPolicy)
-							                 .Replace("#POLICY-CANCEL#"   ,lblp6CancellationPolicy.Text); // cancellationPolicy);
-
-//	Connection
-//	..	Labels
-							pdfText = pdfText.Replace("#CONN-HEAD#"     ,lbl100259.Text)
-							                 .Replace("#DATE-TIME-LBL#" ,lbl100375.Text)
-							                 .Replace("#IP-ADDRESS-LBL#",lbl100376.Text);
-//	..	Data
-							pdfText = pdfText.Replace("#DATE-TIME#" ,lblp6Date.Text)
-							                 .Replace("#IP-ADDRESS#",lblp6IP.Text)
-							                 .Replace("#BROWSER#"   ,lblp6Browser.Text);
-
-//	Version
-//	.. Do not include in live version
-							if ( Tools.SystemIsLive() )
-								pdfText = pdfText.Replace("#SYSTEM-DETAILS#","")
-								                 .Replace("#SYSTEM-OWNER#","");
-							else
-								pdfText = pdfText.Replace("#SYSTEM-DETAILS#","FinAid, Version " + SystemDetails.AppVersion + " (" + SystemDetails.AppDate + ")")
-								                 .Replace("#SYSTEM-OWNER#","(c) " + SystemDetails.Owner);
-
-							errNo = Tools.CreatePDF(contractCode,pdfText.ToString(),ref pdfFileName);
-							if ( errNo < 1 && pdfFileName.Length < 5 )
-								errNo = 30120;
-							SetErrorDetail(errNo,errNo,"Unable to create PDF file",pdfFileName);
-*/
-
-//	Generate PDF, version 1 (iTextSharp)
-/*
-							string pdfFileName = "";
- 
-							using (PdfFile pdf = new PdfFile())
-							{
-								pdfErr =          pdf.Create("FinAid",contractCode);
-								pdfErr = pdfErr + pdf.AddParagraph(hdn100137.Value,(int)Constants.PdfFontSize.HugeHeading,1,(int)Constants.PdfAlign.Centre,"Orange"); // Prime Assist (product Name)
-								pdfErr = pdfErr + pdf.AddParagraph(hdn100002.Value,(int)Constants.PdfFontSize.TableCell,2,(int)Constants.PdfAlign.Centre); // Emergency mobile, blah
-								pdfErr = pdfErr + pdf.AddParagraph(lblRegConf.Text,(int)Constants.PdfFontSize.MajorHeading,2,(int)Constants.PdfAlign.Centre); // Registration confirmation
-								pdfErr = pdfErr + pdf.AddParagraph(lbl100400.Text,(int)Constants.PdfFontSize.MinorHeading,2,(int)Constants.PdfAlign.Centre); // Congratulations
-								pdfErr = pdfErr + pdf.AddParagraph(lbl100209.Text,(int)Constants.PdfFontSize.TableCell,2,(int)Constants.PdfAlign.Left); // Dear Mr Smith
-
-								pdfErr = pdfErr + pdf.TableOpen(2);
-
-								pdfErr = pdfErr + pdf.TableWriteLine(lbl100372.Text);
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100210.Text,lblp6Ref.Text});
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100211.Text,lblp6Pin.Text});
-								pdfErr = pdfErr + pdf.TableWriteLine();
-
-								pdfErr = pdfErr + pdf.TableWriteLine(lbl100212.Text);
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100111.Text,lblp6Title.Text});
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100214.Text,lblp6FirstName.Text});
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100216.Text,lblp6Surname.Text});
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100218.Text,lblp6EMail.Text});
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100219.Text,lblp6Cell.Text});
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100220.Text,lblp6ID.Text});
-								pdfErr = pdfErr + pdf.TableWriteLine(lbl100373.Text,2);
-								pdfErr = pdfErr + pdf.TableWriteLine();
-
-								pdfErr = pdfErr + pdf.TableWriteLine(lbl100222.Text);
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100223.Text,lblp6Income.Text});
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100230.Text,lblp6Status.Text});
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100231.Text,lblp6PayDay.Text});
-								pdfErr = pdfErr + pdf.TableWriteLine(lbl100374.Text,2);
-								pdfErr = pdfErr + pdf.TableWriteLine();
-
-								pdfErr = pdfErr + pdf.TableWriteLine(lbl100233.Text);
-								pdfErr = pdfErr + pdf.TableWriteLine(lbl100325.Text,2);
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100236.Text,lblp6PayMethod.Text});
-								pdfErr = pdfErr + pdf.TableWriteLine(lbl100237.Text,2);
-								pdfErr = pdfErr + pdf.TableWriteLine();
-
-								pdfErr = pdfErr + pdf.TableWriteLine(lbl100184.Text);
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100185.Text,lblp6CCType.Text});
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100186.Text,lblp6CCName.Text});
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100187.Text,lblp6CCNumber.Text});
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100188.Text,lblp6CCExpiry.Text});
-								pdfErr = pdfErr + pdf.TableWriteLine(lblp6Billing.Text,2);
-								pdfErr = pdfErr + pdf.TableWriteLine();
-
-								pdfErr = pdfErr + pdf.TableWriteLine(lblp6MandateHead.Text);
-								pdfErr = pdfErr + pdf.TableWriteLine(lblp6Mandate.Text,2);
-								pdfErr = pdfErr + pdf.TableWriteLine();
-
-								pdfErr = pdfErr + pdf.TableWriteLine(lbl100238.Text);
-								pdfErr = pdfErr + pdf.TableWriteLine(refundPolicy,2,2);
-								pdfErr = pdfErr + pdf.TableWriteLine(moneyBackPolicy,2,2);
-								pdfErr = pdfErr + pdf.TableWriteLine(cancellationPolicy,2);
-								pdfErr = pdfErr + pdf.TableWriteLine();
-
-								pdfErr = pdfErr + pdf.TableWriteLine(lbl100259.Text);
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100375.Text,lblp6Date.Text});
-								pdfErr = pdfErr + pdf.TableWriteRow(new string[] {lbl100376.Text,lblp6IP.Text});
-								pdfErr = pdfErr + pdf.TableWriteLine(lblp6Browser.Text,2);
-
-								pdfErr = pdfErr + pdf.TableClose();
-								pdf.Close();
-
-								if ( pdfErr == 0 )
-									pdfFileName = pdf.SavedFileNameAndFolder;
-								else
-									SetErrorDetail(pdfErr,30150,"Unable to create PDF file","");
-							}
-//	Generate PDF, version 1
-*/
-
-//	Send email
-//	Code removed, 2020/04/08
-//	Instead ...
-							errNo = 0;
-
-/*
-// Code removed 2020/04/08
 							errNo = 30200;
 							sql   = "exec sp_WP_Get_ProductEmail"
 							      + " @ProductCode="  + Tools.DBString(productCode)
@@ -1076,10 +883,10 @@ namespace PCIWebFinAid
 										string emailRoute3  = miscList.GetColumn("Route3EMailAddress",0);
 										string emailRoute4  = miscList.GetColumn("Route4EMailAddress",0);
 										string emailRoute5  = miscList.GetColumn("Route5EMailAddress",0);
-										string emailHeader  = miscList.GetColumn("EMailHeaderText");
-//										string emailHeader  = miscList.GetColumn("EMailHeaderTextENG");
-										string emailBody    = miscList.GetColumn("EMailBodyText");
-//										string emailBody    = miscList.GetColumn("EMailBodyTextENG");
+//										string emailHeader  = miscList.GetColumn("EMailHeaderText");
+// Testing							string emailHeader  = miscList.GetColumn("EMailHeaderTextENG");
+//										string emailBody    = miscList.GetColumn("EMailBodyText");
+//	Testing							string emailBody    = miscList.GetColumn("EMailBodyTextENG");
 
 										if ( ! Tools.CheckEMail(emailFrom) )
 										{
@@ -1131,9 +938,9 @@ namespace PCIWebFinAid
 
 											errNo              = 30245;
 											mailMsg.From       = new MailAddress(emailFrom);
-											mailMsg.Subject    = emailHeader.Replace("[ContractCode]",contractCode);
-											mailMsg.Body       = emailBody.Replace("[ContractCode]",contractCode);
-											mailMsg.IsBodyHtml = emailBody.ToUpper().Contains("<HTML");
+											mailMsg.Subject    = "Contract " + contractCode;
+											mailMsg.Body       = mailText;
+											mailMsg.IsBodyHtml = mailText.ToUpper().Contains("<HTML");
 //											errNo              = 30250;
 //	Do NOT send PDF					if ( pdfFileName.Length > 0 )
 //												mailMsg.Attachments.Add(new Attachment(pdfFileName));
@@ -1147,34 +954,32 @@ namespace PCIWebFinAid
 													lblError.Text = "";
 													break;
 												}
-												catch (Exception ex1)
+												catch (Exception ex3)
 												{
 													if ( k > 1 ) // After 2 failed attempts
 														smtp.UseDefaultCredentials = false;
 													if ( k > 2 ) // After 3 failed attempts
-														Tools.LogException("Register.aspx/84","Mail send failure, errNo=" + errNo.ToString() + " (" + txtEMail.Text+")",ex1);
+														Tools.LogException("Register.aspx/84","Mail send failure, errNo=" + errNo.ToString() + " (" + txtEMail.Text+")",ex3);
 												}
 										}
 										SetErrorDetail(errNo,errNo,"Unable to send confirmation email (5 failed attempts)","");
 										smtp  = null;
 										errNo = 0;
 									}
-									catch (Exception ex2)
+									catch (Exception ex4)
 									{
-										SetErrorDetail(99,errNo,"Unable to send confirmation email (SMTP error)",ex2.Message);
+										SetErrorDetail(99,errNo,"Unable to send confirmation email (SMTP error)",ex4.Message);
 										errNo = 0;
 									}
 
 							SetErrorDetail(errNo,errNo,"Unable to send confirmation email (SQL error)",sql);
-*/
-//	Email code removed, 2020/04/08
 						}
 					}
 				}
-				catch (Exception ex3)
+				catch (Exception ex5)
 				{
-					if ( ex3.Message != "XYZ" )
-						SetErrorDetail(99,errNo,"Internal database error ; please try again later",ex3.Message);
+					if ( ex5.Message != "XYZ" )
+						SetErrorDetail(99,errNo,"Internal database error ; please try again later",ex5.Message);
 				}
 
 			if ( lblError.Text.Length == 0 && errNo + pdfErr > 0 )
@@ -1182,150 +987,9 @@ namespace PCIWebFinAid
 
 			if ( lblError.Text.Length == 0 ) // No errors, can continue
 			{
-				hdnPageNo.Value     = pageNo.ToString();
-//				btnNext.PostBackUrl = "Register.aspx?PageNo=" + (pageNo+1).ToString();
+				hdnPageNo.Value = pageNo.ToString();
 				SetPostBackURL();
 			}
-		}
-
-		private int SendConfirmationEmail()
-		{
-			if ( Tools.ConfigValue("SMTP-Mode") == "1" )
-			{
-				SetErrorDetail(99,30117,"Mail not sent (SMTP-Mode=1)","");
-				return 30117;
-			}
-
-			string err         = "";
-			string emailFrom   = "";
-			string emailReply  = "";
-			string emailRoute1 = "";
-			string emailRoute2 = "";
-			string emailRoute3 = "";
-			string emailRoute4 = "";
-			string emailRoute5 = "";
-			string emailHeader = "";
-//			string emailHeader = "";
-			string emailBody   = "";
-//			string emailBody   = "";
-
-			errNo = 30200;
-			sql   = "exec sp_WP_Get_ProductEmail"
-			      + " @ProductCode="  + Tools.DBString(productCode)
-			      + ",@LanguageCode=" + Tools.DBString(languageCode);
-
-			using (MiscList mList = new MiscList())
-				if ( mList.ExecQuery(sql,0) != 0 )
-					errNo = 30210;
-				else if ( mList.EOF )
-					errNo = 30220;
-				else
-				{
-					errNo       = 30230;
-					err         = "";
-					emailFrom   = mList.GetColumn("SenderEmailAddress");
-					emailReply  = mList.GetColumn("ReplyEMailAddress");
-					emailRoute1 = mList.GetColumn("Route1EMailAddress");
-					emailRoute2 = mList.GetColumn("Route2EMailAddress");
-					emailRoute3 = mList.GetColumn("Route3EMailAddress",0);
-					emailRoute4 = mList.GetColumn("Route4EMailAddress",0);
-					emailRoute5 = mList.GetColumn("Route5EMailAddress",0);
-					emailHeader = mList.GetColumn("EMailHeaderText");
-//					emailHeader = mList.GetColumn("EMailHeaderTextENG");
-					emailBody   = mList.GetColumn("EMailBodyText");
-//					emailBody   = mList.GetColumn("EMailBodyTextENG");
-
-					if ( emailFrom.Length > 5 && emailHeader.Length > 0 && emailBody.Length > 0 )
-						errNo = 0;
-				}
-
-			if ( errNo > 0 )
-			{
-				SetErrorDetail(99,errNo,"Unable to obtain email details from SQL",sql);
-				return errNo;
-			}
-
-			try
-			{
-				errNo               = 30225;
-				string smtpServer   = Tools.ConfigValue("SMTP-Server");
-				string smtpUser     = Tools.ConfigValue("SMTP-User");
-				string smtpPassword = Tools.ConfigValue("SMTP-Password");
-				string smtpBCC      = Tools.ConfigValue("SMTP-BCC");
-				int    smtpPort     = Tools.StringToInt(Tools.ConfigValue("SMTP-Port"));
-
-				if ( smtpServer.Length < 3 || smtpUser.Length < 3 || smtpPassword.Length < 3 )
-				{
-					errNo = 30230;
-					err   = "Invalid SMTP details, server=" + smtpServer + ", user=" + smtpUser + ", pwd=" + smtpPassword + ", port=" + smtpPort.ToString();
-					throw new Exception(err);
-				}
-
-				errNo                      = 30235;
-				SmtpClient smtp            = new SmtpClient(smtpServer);
-				smtp.Credentials           = new System.Net.NetworkCredential(smtpUser,smtpPassword);
-				if ( smtpPort > 0 )
-					smtp.Port               = smtpPort;
-//				smtp.UseDefaultCredentials = false;
-//				smtp.EnableSsl             = true;
-
-				using (MailMessage mailMsg = new MailMessage())
-				{
-					errNo = 30240;
-					mailMsg.To.Add(txtEMail.Text);
-					if ( Tools.CheckEMail(emailReply) )
-						mailMsg.ReplyToList.Add(emailReply);
-					if ( Tools.CheckEMail(emailRoute1) )
-						mailMsg.Bcc.Add(emailRoute1);
-					if ( Tools.CheckEMail(emailRoute2) )
-						mailMsg.Bcc.Add(emailRoute2);
-					if ( Tools.CheckEMail(emailRoute3) )
-						mailMsg.Bcc.Add(emailRoute3);
-					if ( Tools.CheckEMail(emailRoute4) )
-						mailMsg.Bcc.Add(emailRoute4);
-					if ( Tools.CheckEMail(emailRoute5) )
-						mailMsg.Bcc.Add(emailRoute5);
-					if ( Tools.CheckEMail(smtpBCC) )
-						mailMsg.Bcc.Add(smtpBCC);
-
-					errNo              = 30245;
-					mailMsg.From       = new MailAddress(emailFrom);
-					mailMsg.Subject    = emailHeader.Replace("[ContractCode]",contractCode);
-					mailMsg.Body       = emailBody.Replace("[ContractCode]",contractCode);
-					mailMsg.IsBodyHtml = emailBody.ToUpper().Contains("<HTML");
-//					errNo              = 30250;
-//					if ( pdfFileName.Length > 0 )
-//						mailMsg.Attachments.Add(new Attachment(pdfFileName));
-					errNo              = 30255;
-
-					for ( int k = 0 ; k < 5 ; k++ )
-						try
-						{
-							smtp.Send(mailMsg);
-							errNo         = 0;
-							lblError.Text = "";
-							break;
-						}
-						catch (Exception ex1)
-						{
-							if ( k > 1 ) // After 2 failed attempts
-								smtp.UseDefaultCredentials = false;
-							if ( k > 2 ) // After 3 failed attempts
-								Tools.LogException("Register.aspx/84","Mail send failure, errNo=" + errNo.ToString() + " (" + txtEMail.Text+")",ex1);
-						}
-				}
-				SetErrorDetail(errNo,errNo,"Unable to send confirmation email (5 failed attempts)","");
-				smtp  = null;
-				errNo = 0;
-			}
-			catch (Exception ex2)
-			{
-				SetErrorDetail(99,errNo,"Unable to send confirmation email (SMTP error)",ex2.Message);
-				return errNo;
-			}
-
-			SetErrorDetail(errNo,errNo,"Unable to send confirmation email (SQL error)",sql);
-			return errNo;
 		}
 
 		private void SetErrorDetail(int errCode,int logNo,string errBrief,string errDetail,byte briefMode=2,byte detailMode=1)

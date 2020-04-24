@@ -66,6 +66,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ContractLookup.aspx" />
     <Content Include="CSS\Calendar.css" />
     <Content Include="Images\Calendar.gif" />
     <Content Include="Images\Chat.png" />
@@ -112,11 +113,19 @@
     <Content Include="Images\Flag-TH.png" />
     <Content Include="Images\Tick.png" />
     <Content Include="Images\Cross.png" />
+    <Content Include="Templates\ConfirmationMail.htm" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDetails.cs" />
     <Compile Include="BasePage.cs">
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ContractLookup.aspx.cs">
+      <DependentUpon>ContractLookup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ContractLookup.aspx.designer.cs">
+      <DependentUpon>ContractLookup.aspx</DependentUpon>
     </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
