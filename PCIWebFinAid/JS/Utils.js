@@ -203,6 +203,40 @@ function ValidPhone(phoneNo,country)
 	return true;
 }
 
+function ValidCardNumber(cardNo)
+{
+	try
+	{
+		cardNo = Trim(cardNo);
+		if ( cardNo.length < 10 || cardNo.length > 20 )
+			return false;
+		
+		var digit;
+		var total = 0;
+		var even  = false;
+
+		for (var k = cardNo.length - 1; k >= 0; k--)
+		{
+			digit = cardNo.charAt(k);
+			if ( isNaN(digit) )
+				return false;
+			digit = parseInt(digit, 10);
+			if (even)
+			{
+				digit = digit * 2;
+				if ( digit > 9 )
+					digit = digit - 9;
+			}
+			total = total + digit;
+			even  = ! even;
+		}
+		return (total % 10) == 0;
+	}
+	catch (x)
+	{ }
+	return false;
+}
+
 function ValidEmail(email)
 {
 	try
@@ -493,6 +527,12 @@ function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 		else if ( eltType == 5 ) // EMail
 		{
 			if ( ! ValidEmail(eltValue) )
+				err = eltDesc;
+		}
+
+		else if ( eltType == 9 ) // Card number
+		{
+			if ( ! ValidCardNumber(eltValue) )
 				err = eltDesc;
 		}
 
