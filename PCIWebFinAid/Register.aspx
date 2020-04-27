@@ -170,7 +170,7 @@ function ValidatePage(ctl,seq)
 	//	Page 5
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100187 )
 		{
-			p   = Validate('txtCCNumber','lblInfo5',6,GetEltValue('hdnCCNumberError'),8,14);
+			p   = Validate('txtCCNumber','lblInfo5',9,GetEltValue('hdnCCNumberError'));
 			err = err + p;
 			ShowTick(p,'CCNumber',seq);
 		}
