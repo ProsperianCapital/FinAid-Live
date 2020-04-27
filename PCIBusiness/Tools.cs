@@ -408,6 +408,15 @@ namespace PCIBusiness
 			return "";
 		}
 
+		public static string HTMLSafe(string str)
+		{
+      // Converts a string to safe format for HTML:
+    
+			if ( string.IsNullOrWhiteSpace(str) )
+				return "";
+         return str.Replace("<","&lt;").Replace(">","&gt;").Replace("'","&#39;").Replace(Environment.NewLine,"<br />");
+		}
+
 		public static string XMLSafe(string str,byte encoding=0)
 		{
       // Converts a string to safe format for XML:
@@ -515,20 +524,6 @@ namespace PCIBusiness
 //				return ret9;
 			}
 */
-         return str;
-		}
-
-		public static string XMLString(string str)
-		{
-      // Converts an XML string for use in an SQL statement:
-      // (1) Removes leading and trailing spaces
-      // (2) Replaces each single quote with a \"
-      // (3) Puts a single quote at front and back
-    
-			if ( string.IsNullOrWhiteSpace(str) )
-				return "''";
-			str = str.Trim();
-         str = "'" + str.Replace("'","\"") + "'";
          return str;
 		}
 
