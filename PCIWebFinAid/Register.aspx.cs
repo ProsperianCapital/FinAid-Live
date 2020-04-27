@@ -10,14 +10,14 @@ namespace PCIWebFinAid
 {
 	public partial class Register : BasePage
 	{
-		byte   logDebug = 240;
-		string productCode;
-		string languageCode;
-		string languageDialectCode;
-		string contractCode;
-		string contractPIN;
-		string sql;
-		int    errNo;
+		private   byte   logDebug = 240;
+		private   string productCode;
+		private   string languageCode;
+		private   string languageDialectCode;
+		private   string contractCode;
+		private   string contractPIN;
+		private   string sql;
+		private   int    errNo;
 
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
@@ -133,7 +133,8 @@ namespace PCIWebFinAid
 
 		private void LoadLabels()
 		{
-			byte logNo = 5;
+			byte logNo      = 5;
+			hdn100187.Value = "X";
 
 			using (MiscList miscList = new MiscList())
 				try
@@ -226,12 +227,15 @@ namespace PCIWebFinAid
 							else if ( fieldCode == "100144" ) controlID = "Terms";
 
 						//	Page 5
-							else if ( fieldCode == "100187" ) controlID = "CCNumber";
 							else if ( fieldCode == "100186" ) controlID = "CCName";
 							else if ( fieldCode == "100188" ) controlID = "CCExpiry";
 							else if ( fieldCode == "100189" ) controlID = "CCCVV";
 							else if ( fieldCode == "100190" ) controlID = "CCDueDay";
-
+							else if ( fieldCode == "100187" ) // Credit card number
+							{
+								controlID        = "CCNumber";
+								hdn100187.Value  = miscList.GetColumn("ValidationLuhnTest").ToUpper();
+							}
 							else if ( fieldCode == "100107" )
 							{
 								lblSubHead1Label.Text = fieldValue;
@@ -838,14 +842,21 @@ namespace PCIWebFinAid
 //							mailText            = mailText.Replace("#lblp6Billing#",lblp6Billing.Text);
 
 //	Can't store the actual card number
-							mailText            = mailText.Replace("#lblp6CCNumber#",lblp6CCNumber.Text.Substring(0,6)+"******"+lblp6CCNumber.Text.Substring(12));
+							sql      = "******";
+							if ( lblp6CCNumber.Text.Length > 12 )
+								sql   = lblp6CCNumber.Text.Substring(0,6) + sql + lblp6CCNumber.Text.Substring(12);
+							else if (  lblp6CCNumber.Text.Length > 8 )
+								sql   = lblp6CCNumber.Text.Substring(0,4) + sql;
+							else if (  lblp6CCNumber.Text.Length > 4 )
+								sql   = lblp6CCNumber.Text.Substring(0,2) + sql;
+							mailText = mailText.Replace("#lblp6CCNumber#", sql);
 
 							foreach (Control ctlOuter in Page.Controls)
 								foreach (Control ctlInner in ctlOuter.Controls)
 									if ( ctlInner.GetType() == typeof(Literal) && mailText.Contains("#"+ctlInner.ID+"#") )
-										mailText = mailText.Replace("#"+ctlInner.ID+"#",((Literal)ctlInner).Text);
+										mailText = mailText.Replace("#"+ctlInner.ID+"#",Tools.HTMLSafe(((Literal)ctlInner).Text));
 									else if ( ctlInner.GetType() == typeof(Label) && mailText.Contains("#"+ctlInner.ID+"#") )
-										mailText = mailText.Replace("#"+ctlInner.ID+"#",((Label)ctlInner).Text);
+										mailText = mailText.Replace("#"+ctlInner.ID+"#",Tools.HTMLSafe(((Label)ctlInner).Text));
 
 							try
 							{
@@ -942,16 +953,17 @@ namespace PCIWebFinAid
 											if ( Tools.CheckEMail(smtpBCC) )
 												mailMsg.Bcc.Add(smtpBCC);
 
-											errNo              = 30245;
-											mailMsg.Sender     = new MailAddress(smtpUser);
-											mailMsg.From       = new MailAddress(emailFrom);
-											mailMsg.Subject    = "Contract " + contractCode;
-											mailMsg.Body       = mailText;
-											mailMsg.IsBodyHtml = mailText.ToUpper().Contains("<HTML");
-//											errNo              = 30250;
+											errNo                = 30245;
+											mailMsg.Sender       = new MailAddress(smtpUser);
+											mailMsg.From         = new MailAddress(emailFrom);
+											mailMsg.Subject      = "Contract " + contractCode;
+											mailMsg.BodyEncoding = Encoding.UTF8;
+											mailMsg.Body         = mailText;
+											mailMsg.IsBodyHtml   = mailText.ToUpper().Contains("<HTML");
+//											errNo                = 30250;
 //	Do NOT send PDF					if ( pdfFileName.Length > 0 )
 //												mailMsg.Attachments.Add(new Attachment(pdfFileName));
-											errNo              = 30255;
+											errNo                = 30255;
 
 											for ( int k = 0 ; k < 5 ; k++ )
 												try

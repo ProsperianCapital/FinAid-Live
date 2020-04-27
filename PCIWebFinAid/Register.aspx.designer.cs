@@ -67,6 +67,15 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.HiddenField hdn100137;
         
         /// <summary>
+        /// hdn100187 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdn100187;
+        
+        /// <summary>
         /// lblReg control.
         /// </summary>
         /// <remarks>

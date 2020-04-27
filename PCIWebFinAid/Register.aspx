@@ -28,12 +28,10 @@ function NextPage(inc,btn)
 		var ret = "X";
 
 		if ( inc > 0 )
-//			return ValidatePage(0,2);
 			ret = ( ValidatePage(0,2) ? 'T' : 'F' );
 		else if ( inc < 0 && pageNo > firstPage )
 			pageNo--;
 		else if ( inc != 0 )
-//			return false;
 			ret = 'F';
 
 		if ( ret == 'T' ) // Return true, leave the button DISABLED
@@ -80,7 +78,7 @@ function ShowTick(err,ctl,seq)
 	}
 	SetEltValue('lblInfo'+pageNo.toString(),h);
 }
-function ValidatePage(ctl,seq)
+function ValidatePage(ctl,seq,misc)
 {
 	var err = "";
 	var p;
@@ -170,8 +168,11 @@ function ValidatePage(ctl,seq)
 	//	Page 5
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100187 )
 		{
-			p   = Validate('txtCCNumber','lblInfo5',9,GetEltValue('hdnCCNumberError'));
-			err = err + p;
+			if ( GetEltValue('hdn100187') == 'Y' ) // Validate card number using Luhn check digit
+				p = Validate('txtCCNumber','lblInfo5',9,GetEltValue('hdnCCNumberError'));
+			else
+				p = Validate('txtCCNumber','lblInfo5',6,GetEltValue('hdnCCNumberError'),8,14);
+			err  = err + p;
 			ShowTick(p,'CCNumber',seq);
 		}
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100186 )
@@ -249,6 +250,7 @@ function OptSelect(p)
 <asp:HiddenField runat="server" id="hdnBrowser" />
 <asp:HiddenField runat="server" id="hdn100002" />
 <asp:HiddenField runat="server" id="hdn100137" />
+<asp:HiddenField runat="server" id="hdn100187" />
 
 <div class="Header3">
 	<asp:Literal runat="server" ID="lblReg"></asp:Literal><asp:Literal runat="server" ID="lblRegConf"></asp:Literal>
@@ -436,6 +438,7 @@ function OptSelect(p)
 <p class="Header4">
 <asp:Literal runat="server" ID="lblSubHead5Label"></asp:Literal>
 </p>
+
 <table style="width:99%">
 	<tr id="trCCNumber">
 		<td style="white-space:nowrap">
