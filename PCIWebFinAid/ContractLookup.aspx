@@ -32,7 +32,7 @@
 </div>
 <p>
 Contract Code<br />
-<asp:TextBox runat="server" ID="txtContractCode"></asp:TextBox>
+<asp:TextBox runat="server" ID="txtContractCode" Width="240px"></asp:TextBox>
 </p><p>
 <asp:Button runat="server" ID="btnSearch" text="Search" OnClick="btnSearch_Click" />
 <asp:Button runat="server" ID="btnError" Text="Error ...?" OnClientClick="JavaScript:ShowElt('lblErrorDtl',true);return false" />
