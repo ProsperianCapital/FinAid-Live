@@ -248,7 +248,7 @@ namespace PCIWebFinAid
 					lblEventUserCode.Text                     = miscList.GetColumn("EventUserCode");
 				}
 
-			if ( productCode.Length < 1 )
+			if ( lblError.Text.Length < 1 && productCode.Length < 1 )
 				SetErrorDetail(30014,30014,"Contract corrupted - product code is blank/empty",sql,2,0);
 
 			if ( lblError.Text.Length > 0 )
