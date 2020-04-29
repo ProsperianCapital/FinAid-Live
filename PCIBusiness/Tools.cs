@@ -695,12 +695,23 @@ namespace PCIBusiness
 				LogWrite("LogFileInfo",component,msg);
 		}
 
-		public static bool CheckEMail(string email)
+		public static bool CheckEMail(string email,byte mode=2)
 		{
-		//	Simple, quick check ...
+		//	Mode = 1. Only 1 address allowed.
+		//	Mode = 2. Multiple addresses allowed.
+		//	Mode = 3. Multiple addresses allowed OR blank (no addresses).
+
 			email = NullToString(email);
-			if ( email.Length < 6 || email.Contains("(") || email.Contains(")") || email.Contains("<") || email.Contains(">") || email.Contains(" ") )
+
+			if ( email.Length < 1 )
+				return ( mode == 3 );
+
+			if ( email.Length < 6 || email.Contains("(") || email.Contains(")") || email.Contains("<") || email.Contains(">") )
 				return false;
+		
+			if ( mode == 1 && ( email.Contains(",") || email.Contains(";") || email.Contains(" ") ) ) 
+				return false;
+
 			int at  = email.IndexOf("@");
 			int dot = email.LastIndexOf(".");
 			return ( at > 0 && dot > at );
