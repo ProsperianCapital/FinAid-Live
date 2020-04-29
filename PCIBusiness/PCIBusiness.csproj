@@ -68,6 +68,7 @@
     <Compile Include="BaseData.cs" />
     <Compile Include="BaseList.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Mail.cs" />
     <Compile Include="MiscData.cs" />
     <Compile Include="MiscList.cs" />
     <Compile Include="Payment.cs" />
