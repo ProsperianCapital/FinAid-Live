@@ -12,38 +12,42 @@ namespace PCIBusiness
 		private MailMessage  msg;
 		private string       mailSender;
 
+		private void AddMail(MailAddressCollection mailList,string mail)
+		{
+			try
+			{
+				mail = Tools.NullToString(mail);
+				if ( mail.Length > 5 && ( mail.Contains(",") || mail.Contains(";") ) )
+				{
+					mail          = mail.Replace(";",",");
+					string[] mArr = mail.Split(',');
+					for ( int k = 0; k < mArr.Length ; k++ )
+						if ( mArr[k].Length > 5 )
+							mailList.Add(mArr[k].Trim());
+				}
+				else if ( Tools.CheckEMail(mail) )
+					mailList.Add(mail);
+			}
+			catch
+			{ }
+		}
+
 		public  string BCC
 		{
-			set
-			{
-				if ( ! string.IsNullOrWhiteSpace(value) )
-					msg.Bcc.Add(value);
-			}
+			set { AddMail(msg.Bcc,value); }
 		}
 
 		public  string CC
 		{
-			set
-			{
-				if ( ! string.IsNullOrWhiteSpace(value) )
-					msg.CC.Add(value);
-			}
+			set { AddMail(msg.CC,value); }
 		}
 		public  string To
 		{
-			set
-			{
-				if ( ! string.IsNullOrWhiteSpace(value) )
-					msg.To.Add(value);
-			}
+			set { AddMail(msg.To,value); }
 		}
 		public  string ReplyTo
 		{
-			set
-			{
-				if ( ! string.IsNullOrWhiteSpace(value) )
-					msg.ReplyToList.Add(value);
-			}
+			set { AddMail(msg.ReplyToList,value); }
 		}
 		public  string From
 		{
