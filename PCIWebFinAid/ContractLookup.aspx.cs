@@ -55,6 +55,17 @@ namespace PCIWebFinAid
 			if ( ! pnlView1.Visible || hdnProductCode.Value.Length < 1 )
 				return;
 
+			txtTo.Text  = txtTo.Text.Trim();
+			txtCC.Text  = txtCC.Text.Trim();
+			txtBCC.Text = txtBCC.Text.Trim();
+
+			if ( ! Tools.CheckEMail(txtTo.Text,2) || ! Tools.CheckEMail(txtCC.Text,3) || ! Tools.CheckEMail(txtBCC.Text,3) )
+			{
+				lblError2.Text = "Invalid email address(es)";
+				lblJS.Text     = WebTools.JavaScriptSource("ShowElt('pnlMail',true)");
+				return;
+			}
+
 			try
 			{
 				string mailText = File.ReadAllText(Tools.SystemFolder("Templates")+"ConfirmationMail.htm");
@@ -449,7 +460,9 @@ namespace PCIWebFinAid
 
 			if ( errCode <  0 )
 			{
+				lblJS.Text       = "";
 				lblError.Text    = "";
+				lblError2.Text   = "";
 				lblErrorDtl.Text = "";
 				lblError.Visible = false;
 				btnError.Visible = false;

@@ -49,17 +49,18 @@ Contract Code<br />
 <asp:HiddenField runat="server" id="hdnMailReply"></asp:HiddenField>
 
 <div id="pnlMail" class="Popup2" style="visibility:hidden;display:none;width:400px">
-<div class="Header4" style="background-color:lightpink;padding:5px">Send contract by email</div>
-<table>
-<tr><td>From : </td><td><asp:TextBox runat="server" ID="txtFrom"  Width="320px" ReadOnly="true"></asp:TextBox></td></tr>
-<tr><td>To : </td><td><asp:TextBox runat="server" ID="txtTo"  Width="320px"></asp:TextBox></td></tr>
-<tr><td>CC : </td><td><asp:TextBox runat="server" ID="txtCC"  Width="320px"></asp:TextBox></td></tr>
-<tr><td>BCC : </td><td><asp:TextBox runat="server" ID="txtBCC" Width="320px"></asp:TextBox></td></tr>
-</table>
-<div>
-<asp:Button runat="server" ID="btnSend" Text="Send"  OnClick="btnSend_Click" />&nbsp;
-<input type="button" value="Cancel" onclick="JavaScript:ShowElt('pnlMail',false)" />
-</div>
+	<div class="Header4" style="background-color:lightpink;padding:5px">Send contract by email</div>
+	<table>
+		<tr><td>From : </td><td><asp:TextBox runat="server" ID="txtFrom"  Width="320px" ReadOnly="true"></asp:TextBox></td></tr>
+		<tr><td>To : </td><td><asp:TextBox runat="server" ID="txtTo"  Width="320px"></asp:TextBox></td></tr>
+		<tr><td>CC : </td><td><asp:TextBox runat="server" ID="txtCC"  Width="320px"></asp:TextBox></td></tr>
+		<tr><td>BCC : </td><td><asp:TextBox runat="server" ID="txtBCC" Width="320px"></asp:TextBox></td></tr>
+	</table>
+	<div>
+		<asp:Button runat="server" ID="btnSend" Text="Send"  OnClick="btnSend_Click" />&nbsp;
+		<input type="button" value="Cancel" onclick="JavaScript:ShowElt('pnlMail',false)" />
+	</div>
+	<asp:Label runat="server" ID="lblError2" CssClass="Error"></asp:Label>
 </div>
 
 <asp:PlaceHolder runat="server" ID="pnlView1">
