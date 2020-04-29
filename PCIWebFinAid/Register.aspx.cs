@@ -814,34 +814,7 @@ namespace PCIWebFinAid
 							lblp6IP.Text        = WebTools.ClientIPAddress(Request,1);
 							lblp6Browser.Text   = WebTools.ClientBrowser(Request,hdnBrowser.Value);
 
-//							mailText            = mailText.Replace("#lblp6Ref#",lblp6Ref.Text);
-//							mailText            = mailText.Replace("#lblp6Pin#",lblp6Pin.Text);
-//							mailText            = mailText.Replace("#lblp6Title#",lblp6Title.Text);
-//							mailText            = mailText.Replace("#lblp6FirstName#",lblp6FirstName.Text);
-//							mailText            = mailText.Replace("#lblp6Surname#",lblp6Surname.Text);
-//							mailText            = mailText.Replace("#lblp6EMail#",lblp6EMail.Text);
-//							mailText            = mailText.Replace("#lblp6CellNo#",lblp6CellNo.Text);
-//							mailText            = mailText.Replace("#lblp6ID#",lblp6ID.Text);
-//							mailText            = mailText.Replace("#lblp6Income#",lblp6Income.Text);
-//							mailText            = mailText.Replace("#lblp6Status#",lblp6Status.Text);
-//							mailText            = mailText.Replace("#lblp6PayDay#",lblp6PayDay.Text);
-//							mailText            = mailText.Replace("#lblp6Payment#",lblp6Payment.Text);
-//							mailText            = mailText.Replace("#lbl100209#",lbl100209.Text);
-//							mailText            = mailText.Replace("#lblp6CCName#",lblp6CCName.Text);
-//							mailText            = mailText.Replace("#lblp6CType#",lblp6CCType.Text);
-//							mailText            = mailText.Replace("#lblp6CCNumber#",lblp6CCNumber.Text);
-//							mailText            = mailText.Replace("#lblp6CCExpiry#",lblp6CCExpiry.Text);
-//							mailText            = mailText.Replace("#lblp6Date#",lblp6Date.Text);
-//							mailText            = mailText.Replace("#lblp6IP#",lblp6IP.Text);
-//							mailText            = mailText.Replace("#lblp6Browser#",lblp6Browser.Text);
-//							mailText            = mailText.Replace("#lblp6RefundPolicy#",lblp6RefundPolicy.Text);
-//							mailText            = mailText.Replace("#lblp6MoneyBackPolicy#",lblp6MoneyBackPolicy.Text);
-//							mailText            = mailText.Replace("#lblp6CancellationPolicy#",lblp6CancellationPolicy.Text);
-//							mailText            = mailText.Replace("#lblp6Mandate#",lblp6Mandate.Text);
-//							mailText            = mailText.Replace("#lblp6MandateHead#",lblp6MandateHead.Text);
-//							mailText            = mailText.Replace("#lblp6Billing#",lblp6Billing.Text);
-
-//	Can't store the actual card number
+//	Can't store or email the actual card number
 							sql      = "******";
 							if ( lblp6CCNumber.Text.Length > 12 )
 								sql   = lblp6CCNumber.Text.Substring(0,6) + sql + lblp6CCNumber.Text.Substring(12);
@@ -852,11 +825,22 @@ namespace PCIWebFinAid
 							mailText = mailText.Replace("#lblp6CCNumber#", sql);
 
 							foreach (Control ctlOuter in Page.Controls)
-								foreach (Control ctlInner in ctlOuter.Controls)
-									if ( ctlInner.GetType() == typeof(Literal) && mailText.Contains("#"+ctlInner.ID+"#") )
-										mailText = mailText.Replace("#"+ctlInner.ID+"#",Tools.HTMLSafe(((Literal)ctlInner).Text));
-									else if ( ctlInner.GetType() == typeof(Label) && mailText.Contains("#"+ctlInner.ID+"#") )
-										mailText = mailText.Replace("#"+ctlInner.ID+"#",Tools.HTMLSafe(((Label)ctlInner).Text));
+								if ( ctlOuter.GetType() == typeof(Literal) && mailText.Contains("#"+ctlOuter.ID+"#") )
+									mailText = mailText.Replace("#"+ctlOuter.ID+"#",((Literal)ctlOuter).Text);
+								else if ( ctlOuter.GetType() == typeof(Label) && mailText.Contains("#"+ctlOuter.ID+"#") )
+									mailText = mailText.Replace("#"+ctlOuter.ID+"#",((Label)ctlOuter).Text);
+								else
+									foreach (Control ctlInner in ctlOuter.Controls)
+										if ( ctlInner.GetType() == typeof(Literal) && mailText.Contains("#"+ctlInner.ID+"#") )
+											mailText = mailText.Replace("#"+ctlInner.ID+"#",((Literal)ctlInner).Text);
+										else if ( ctlInner.GetType() == typeof(Label) && mailText.Contains("#"+ctlInner.ID+"#") )
+											mailText = mailText.Replace("#"+ctlInner.ID+"#",((Label)ctlInner).Text);
+										else
+											foreach (Control ctlDeep in ctlInner.Controls)
+												if ( ctlDeep.GetType() == typeof(Literal) && mailText.Contains("#"+ctlDeep.ID+"#") )
+													mailText = mailText.Replace("#"+ctlDeep.ID+"#",((Literal)ctlDeep).Text);
+												else if ( ctlDeep.GetType() == typeof(Label) && mailText.Contains("#"+ctlDeep.ID+"#") )
+													mailText = mailText.Replace("#"+ctlDeep.ID+"#",((Label)ctlDeep).Text);
 
 							try
 							{

@@ -71,15 +71,15 @@ namespace PCIWebFinAid
 				foreach (Control ctlOuter in pnlView1.Controls)
 				{
 					if ( ctlOuter.GetType() == typeof(Literal) && mailText.Contains("#"+ctlOuter.ID+"#") )
-						mailText = mailText.Replace("#"+ctlOuter.ID+"#",Tools.HTMLSafe(((Literal)ctlOuter).Text));
+						mailText = mailText.Replace("#"+ctlOuter.ID+"#",((Literal)ctlOuter).Text);
 					else if ( ctlOuter.GetType() == typeof(Label) && mailText.Contains("#"+ctlOuter.ID+"#") )
-						mailText = mailText.Replace("#"+ctlOuter.ID+"#",Tools.HTMLSafe(((Label)ctlOuter).Text));
+						mailText = mailText.Replace("#"+ctlOuter.ID+"#",((Label)ctlOuter).Text);
 					else
 						foreach (Control ctlInner in ctlOuter.Controls)
 							if ( ctlInner.GetType() == typeof(Literal) && mailText.Contains("#"+ctlInner.ID+"#") )
-								mailText = mailText.Replace("#"+ctlInner.ID+"#",Tools.HTMLSafe(((Literal)ctlInner).Text));
+								mailText = mailText.Replace("#"+ctlInner.ID+"#",((Literal)ctlInner).Text);
 							else if ( ctlInner.GetType() == typeof(Label) && mailText.Contains("#"+ctlInner.ID+"#") )
-								mailText = mailText.Replace("#"+ctlInner.ID+"#",Tools.HTMLSafe(((Label)ctlInner).Text));
+								mailText = mailText.Replace("#"+ctlInner.ID+"#",((Label)ctlInner).Text);
 				}
 
 				using ( Mail msg = new Mail() )
@@ -134,14 +134,14 @@ namespace PCIWebFinAid
 					SetErrorDetail(30011,30011,"Contract not found. Please try again",sql,2,0);
 				else
 				{
-					lblWebsiteCode.Text                   = miscList.GetColumn("WebsiteCode");
-					lblContractCode.Text                  = miscList.GetColumn("ContractCode");
-					lblp6Ref.Text                         = miscList.GetColumn("ContractCode");
-					lblContractApplicationStatusCode.Text = miscList.GetColumn("ContractApplicationStatusCode");
-					lblProspectingStatusCode.Text         = miscList.GetColumn("ProspectingStatusCode");
-					lblClientCode.Text                    = miscList.GetColumn("ClientCode");
-					lblClientCodeTypeCode.Text            = miscList.GetColumn("ClientCodeTypeCode");
-					productCode                           = miscList.GetColumn("ProductCode");
+					lblWebsiteCode.Text                       = miscList.GetColumn("WebsiteCode");
+					lblContractCode.Text                      = miscList.GetColumn("ContractCode");
+					lblp6Ref.Text                             = miscList.GetColumn("ContractCode");
+					lblContractApplicationStatusCode.Text     = miscList.GetColumn("ContractApplicationStatusCode");
+					lblProspectingStatusCode.Text             = miscList.GetColumn("ProspectingStatusCode");
+					lblClientCode.Text                        = miscList.GetColumn("ClientCode");
+					lblClientCodeTypeCode.Text                = miscList.GetColumn("ClientCodeTypeCode");
+					productCode                               = miscList.GetColumn("ProductCode");
 					hdnProductCode.Value                      = productCode;
 					lblProductCode.Text                       = productCode;
 					productOptionCode                         = miscList.GetColumn("ProductOptionCode");
