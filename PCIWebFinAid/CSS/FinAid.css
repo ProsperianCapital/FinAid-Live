@@ -149,7 +149,23 @@ table td
 	color: #FFFFFF;
 	-moz-box-shadow: 1px 1px 3px 1px #999;
 	-webkit-box-shadow: 1px 1px 3px 1px #999;
-	box-shadow: 1px 1px 3px 1px #999; }}
+	box-shadow: 1px 1px 3px 1px #999;
+}
+
+.Popup2
+{
+	top: 20%;
+	left: 20%;
+	position: fixed; /* absolute; */
+	z-index: 100;
+	border: 1px solid #999999;
+	padding: 5px;
+	background-color: aqua;
+	color: #000000;
+	-moz-box-shadow: 1px 1px 3px 1px #999;
+	-webkit-box-shadow: 1px 1px 3px 1px #999;
+	box-shadow: 1px 1px 3px 1px #999;
+}
 
 /* Testing stuff below, not used */
 
