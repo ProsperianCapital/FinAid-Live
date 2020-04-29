@@ -140,6 +140,7 @@ namespace PCIWebFinAid
 					lblContractApplicationStatusCode.Text     = miscList.GetColumn("ContractApplicationStatusCode");
 					lblProspectingStatusCode.Text             = miscList.GetColumn("ProspectingStatusCode");
 					lblClientCode.Text                        = miscList.GetColumn("ClientCode");
+					lblp6ID.Text                              = miscList.GetColumn("ClientCode");
 					lblClientCodeTypeCode.Text                = miscList.GetColumn("ClientCodeTypeCode");
 					productCode                               = miscList.GetColumn("ProductCode");
 					hdnProductCode.Value                      = productCode;
@@ -246,6 +247,12 @@ namespace PCIWebFinAid
 					lblEventTrigger.Text                      = miscList.GetColumn("EventTrigger");
 					lblEventUserCode.Text                     = miscList.GetColumn("EventUserCode");
 				}
+
+			if ( productCode.Length < 1 )
+				SetErrorDetail(30014,30014,"Contract corrupted - product code is blank/empty",sql,2,0);
+
+			if ( lblError.Text.Length > 0 )
+				return;
 
 			if ( rdoView2.Checked )
 				ShowControls(2,true);
