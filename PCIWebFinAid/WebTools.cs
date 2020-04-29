@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace PCIWebFinAid
@@ -339,5 +342,55 @@ namespace PCIWebFinAid
 				h = h + " : " + otherInfo;
 			return h;
 		}
+
+/* Not complete
+
+		public static int EMailContractConfirmation(string contractCode,string cardNumber,ControlCollection controls)
+		{
+			string mailText;
+			int    errCode;
+
+			try
+			{
+				errCode  = 20;
+				mailText = File.ReadAllText(PCIBusiness.Tools.SystemFolder("Templates")+"ConfirmationMail.htm");
+				errCode  = 30;
+
+				if ( cardNumber.Length > 12 )
+					cardNumber = cardNumber.Substring(0,6) + "******" + cardNumber.Substring(12);
+				else if (  cardNumber.Length > 8 )
+					cardNumber = cardNumber.Substring(0,4) + "******";
+				else if (  cardNumber.Length > 4 )
+					cardNumber = cardNumber.Substring(0,2) + "******";
+
+				errCode  = 40;
+				mailText = mailText.Replace("#lblp6CCNumber#", cardNumber);
+				errCode  = 50;
+
+				foreach (Control ctlOuter in controls)
+					foreach (Control ctlInner in ctlOuter.Controls)
+						if ( ctlInner.GetType() == typeof(Literal) && mailText.Contains("#"+ctlInner.ID+"#") )
+							mailText = mailText.Replace("#"+ctlInner.ID+"#",PCIBusiness.Tools.HTMLSafe(((Literal)ctlInner).Text));
+						else if ( ctlInner.GetType() == typeof(Label) && mailText.Contains("#"+ctlInner.ID+"#") )
+							mailText = mailText.Replace("#"+ctlInner.ID+"#",PCIBusiness.Tools.HTMLSafe(((Label)ctlInner).Text));
+
+				errCode  = 60;
+				File.AppendAllText(PCIBusiness.Tools.SystemFolder("Contracts")+contractCode+".htm",mailText,Encoding.UTF8);
+
+							}
+							catch (Exception ex6)
+							{
+								SetErrorDetail(30105,30105,"Unable to create confirmation file ("+contractCode+".htm)",ex6.Message);
+							}
+
+			}
+			catch (Exception ex1)
+			{
+				mailText = "";
+				SetErrorDetail(30095,30095,"Unable to open mail template (Templates/ConfirmationMail.htm)",ex1.Message);
+			}
+		}
+*/
+
 	}
 }

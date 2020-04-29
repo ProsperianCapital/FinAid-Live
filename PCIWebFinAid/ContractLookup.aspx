@@ -6,7 +6,7 @@
 <head runat="server">
 	<!--#include file="IncludeMain.htm" -->
 	<title>Contract Lookup</title>
-	<link rel="stylesheet" href="CSS/FinAid.css" type="text/css" />
+	<link rel="stylesheet" href="CSS/FinAid.css?v=4" type="text/css" />
 	<link rel="stylesheet" href="CSS/Calendar.css" type="text/css" />
 	<link rel="shortcut icon" href="Images/favicon.ico" />
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
@@ -34,13 +34,150 @@
 Contract Code<br />
 <asp:TextBox runat="server" ID="txtContractCode" Width="240px"></asp:TextBox>
 </p><p>
-<asp:Button runat="server" ID="btnSearch" text="Search" OnClick="btnSearch_Click" />
-<asp:Button runat="server" ID="btnError" Text="Error ...?" OnClientClick="JavaScript:ShowElt('lblErrorDtl',true);return false" />
+<asp:RadioButton runat="server" ID="rdoView1" GroupName="rdoView" />Original view (as per the customer Confirmation page)<br />
+<asp:RadioButton runat="server" ID="rdoView2" GroupName="rdoView" />Summary view
+</p><p>
+<asp:Button runat="server" ID="btnSearch" Text="Search" OnClick="btnSearch_Click" />&nbsp;
+<asp:Button runat="server" ID="btnPrint"  Text="Print"  OnClientClick="JavaScript:window.print();return false" />&nbsp;
+<asp:Button runat="server" ID="btnMail"   Text="EMail"  OnClientClick="JavaScript:ShowElt('pnlMail',true);GetElt('txtTo').focus();return false" />&nbsp;
+<asp:Button runat="server" ID="btnError"  Text="Error ...?" OnClientClick="JavaScript:ShowElt('lblErrorDtl',true);return false" />
 </p>
-
 <asp:Label runat="server" ID="lblError" CssClass="Error"></asp:Label>
 
-<asp:PlaceHolder runat="server" ID="pnlData">
+<asp:HiddenField runat="server" id="hdnProductCode"></asp:HiddenField>
+<asp:HiddenField runat="server" id="hdnMailFrom"></asp:HiddenField>
+<asp:HiddenField runat="server" id="hdnMailReply"></asp:HiddenField>
+
+<div id="pnlMail" class="Popup2" style="visibility:hidden;display:none;width:400px">
+<div class="Header4" style="background-color:lightpink;padding:5px">Send contract by email</div>
+<table>
+<tr><td>From : </td><td><asp:TextBox runat="server" ID="txtFrom"  Width="320px" ReadOnly="true"></asp:TextBox></td></tr>
+<tr><td>To : </td><td><asp:TextBox runat="server" ID="txtTo"  Width="320px"></asp:TextBox></td></tr>
+<tr><td>CC : </td><td><asp:TextBox runat="server" ID="txtCC"  Width="320px"></asp:TextBox></td></tr>
+<tr><td>BCC : </td><td><asp:TextBox runat="server" ID="txtBCC" Width="320px"></asp:TextBox></td></tr>
+</table>
+<div>
+<asp:Button runat="server" ID="btnSend" Text="Send"  OnClick="btnSend_Click" />&nbsp;
+<input type="button" value="Cancel" onclick="JavaScript:ShowElt('pnlMail',false)" />
+</div>
+</div>
+
+<asp:PlaceHolder runat="server" ID="pnlView1">
+<hr />
+<p class="Header4">
+<asp:Literal runat="server" ID="lbl100400"></asp:Literal>
+</p><p>
+<asp:Literal runat="server" ID="lbl100209"></asp:Literal>
+</p>
+<table class="Confirmation" style="width:99%">
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100372"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100210"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Ref"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100211"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Pin"></asp:Literal></td></tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100212"></asp:Literal></td></tr>
+	<tr id="trp6Title">
+		<td><asp:Literal runat="server" ID="lbl100111"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Title"></asp:Literal></td></tr>
+	<tr id="trp6FirstName">
+		<td><asp:Literal runat="server" ID="lbl100214"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6FirstName"></asp:Literal></td></tr>
+	<tr id="trp6Surname">
+		<td><asp:Literal runat="server" ID="lbl100216"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Surname"></asp:Literal></td></tr>
+	<tr id="trp6EMail">
+		<td><asp:Literal runat="server" ID="lbl100218"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6EMail"></asp:Literal></td></tr>
+	<tr id="trp6CellNo">
+		<td><asp:Literal runat="server" ID="lbl100219"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6CellNo"></asp:Literal></td></tr>
+	<tr id="trp6ID">
+		<td><asp:Literal runat="server" ID="lbl100220"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6ID"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lbl100373"></asp:Literal></td></tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100222"></asp:Literal></td></tr>
+	<tr id="trp6Income">
+		<td><asp:Literal runat="server" ID="lbl100223"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Income"></asp:Literal></td></tr>
+	<tr id="trp6Status">
+		<td><asp:Literal runat="server" ID="lbl100230"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Status"></asp:Literal></td></tr>
+	<tr id="trp6PayDay">
+		<td><asp:Literal runat="server" ID="lbl100231"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6PayDay"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lbl100374"></asp:Literal></td></tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100233"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Label runat="server" ID="lbl100325"></asp:Label></td></tr>
+	<tr id="trp6Payment">
+		<td><asp:Literal runat="server" ID="lbl100236"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Payment"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lbl100237"></asp:Literal></td></tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100238"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lblp6RefundPolicy"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lblp6MoneyBackPolicy"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lblp6CancellationPolicy"></asp:Literal></td></tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100184"></asp:Literal></td></tr>
+	<tr id="trp6CCType">
+		<td><asp:Literal runat="server" ID="lbl100185"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6CCType"></asp:Literal></td></tr>
+	<tr id="trp6CCName">
+		<td><asp:Literal runat="server" ID="lbl100186"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6CCName"></asp:Literal></td></tr>
+	<tr id="trp6CCNumber">
+		<td><asp:Literal runat="server" ID="lbl100187"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6CCNumber"></asp:Literal></td></tr>
+	<tr id="trp6CCExpiry">
+		<td><asp:Literal runat="server" ID="lbl100188"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6CCExpiry"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lblp6Billing"></asp:Literal></td></tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lblp6MandateHead"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lblp6Mandate"></asp:Literal></td></tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100259"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100375"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6Date"></asp:Literal></td></tr>
+	<tr>
+		<td><asp:Literal runat="server" ID="lbl100376"></asp:Literal></td>
+		<td><asp:Literal runat="server" ID="lblp6IP"></asp:Literal></td></tr>
+	<tr>
+		<td colspan="2"><asp:Literal runat="server" ID="lblp6Browser"></asp:Literal></td></tr>
+</table>
+</asp:PlaceHolder>
+
+<asp:PlaceHolder runat="server" ID="pnlView2">
 <hr />
 <table style="width:99%">
 	<tr><td class="DLabel">Contract Code</td><td class="DData"><asp:Literal runat="server" id="lblContractCode"></asp:Literal></td></tr>
