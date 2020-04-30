@@ -697,9 +697,9 @@ namespace PCIBusiness
 
 		public static bool CheckEMail(string email,byte mode=2)
 		{
-		//	Mode = 1. Only 1 address allowed.
-		//	Mode = 2. Multiple addresses allowed.
-		//	Mode = 3. Multiple addresses allowed OR blank (no addresses).
+		//	Mode = 1. Exactly 1 address allowed (ie. no commas, semi-colons or spaces).
+		//	Mode = 2. 1 or more (multiple) addresses allowed, but not blank.
+		//	Mode = 3. 0 or more (multiple) addresses allowed, OR blank (no addresses).
 
 			email = NullToString(email);
 

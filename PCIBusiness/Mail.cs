@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Net;
 using System.Net.Mail;
 
@@ -7,10 +6,9 @@ namespace PCIBusiness
 {
 	public class Mail : StdDisposable
 	{
-		private SmtpClient   smtp;
-//		private StreamReader msgFile;
-		private MailMessage  msg;
-		private string       mailSender;
+		private SmtpClient  smtp;
+		private MailMessage msg;
+		private string      mailSender;
 
 		private void AddMail(MailAddressCollection mailList,string mail)
 		{
@@ -64,12 +62,14 @@ namespace PCIBusiness
 
 		public byte Send()
 		{
-			if ( msg == null )
+			if ( smtp == null )
 				return 10;
-			if ( msg.Body.Length < 10 )
+			if ( msg == null )
 				return 20;
-			if ( msg.To.Count < 1 )
+			if ( msg.Body.Length < 10 )
 				return 30;
+			if ( msg.To.Count < 1 )
+				return 40;
 
 			msg.IsBodyHtml = msg.Body.ToUpper().Contains("<HTML");
 
@@ -81,8 +81,8 @@ namespace PCIBusiness
 				}
 				catch (Exception ex)
 				{
-					if ( q >= 3 )
-						Tools.LogException("Mail.Send/1","EMail failure (try " + q.ToString() + "), to " + msg.To.ToString(), ex);
+					if ( q >= 3 ) // Log an error on the 3'rd failed attempt
+						Tools.LogException("Mail.Send","EMail failure (try " + q.ToString() + "), to " + msg.To.ToString(), ex);
 				}
 
 			return 90;
