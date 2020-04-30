@@ -167,6 +167,15 @@ table td
 	box-shadow: 1px 1px 3px 1px #999;
 }
 
+.PopupHead
+{
+	background-color: lightpink;
+	color: black;
+	padding: 5px;
+	font-size: 16px;
+	font-weight: bold;
+}
+
 /* Testing stuff below, not used */
 
 .Detail
