@@ -69,15 +69,6 @@ namespace PCIWebFinAid
 			try
 			{
 				string mailText = File.ReadAllText(Tools.SystemFolder("Templates")+"ConfirmationMail.htm");
-				string tmp      = "******";
-
-				if ( lblp6CCNumber.Text.Length > 12 )
-					tmp   = lblp6CCNumber.Text.Substring(0,6) + tmp + lblp6CCNumber.Text.Substring(12);
-				else if (  lblp6CCNumber.Text.Length > 8 )
-					tmp   = lblp6CCNumber.Text.Substring(0,4) + tmp;
-				else if (  lblp6CCNumber.Text.Length > 4 )
-					tmp   = lblp6CCNumber.Text.Substring(0,2) + tmp;
-				mailText = mailText.Replace("#lblp6CCNumber#", tmp);
 
 				foreach (Control ctlOuter in pnlView1.Controls)
 				{
@@ -136,13 +127,14 @@ namespace PCIWebFinAid
 			string  paymentMethodCode    = "";
 			string  employmentStatusCode = "";
 			string  ccNumber             = "";
+			string  ccAssociation        = "";
 			string  sql                  = "exec WP_Get_ContractApplication @ContractCode = " + Tools.DBString(txtContractCode.Text);
 	
 			using ( MiscList miscList = new MiscList() )
 				if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-					SetErrorDetail(30010,30010,"Internal database error (WP_Get_ContractApplication)",sql,2,2);
+					SetErrorDetail(30010,30010,"Internal database error (WP_Get_ContractApplication)",sql);
 				else if ( miscList.EOF )
-					SetErrorDetail(30011,30011,"Contract not found. Please try again",sql,2,0);
+					SetErrorDetail(30011,30011,"Contract not found. Please try again",sql);
 				else
 				{
 					lblWebsiteCode.Text                       = miscList.GetColumn("WebsiteCode");
@@ -210,8 +202,6 @@ namespace PCIWebFinAid
 					lblCardTypeCode.Text                      = miscList.GetColumn("CardTypeCode");
 					lblp6CCType.Text                          = miscList.GetColumn("CardTypeCode");
 					ccNumber                                  = miscList.GetColumn("CardNumber");
-					lblCardNumber.Text                        = ccNumber;
-					lblp6CCNumber.Text                        = ccNumber;
 					lblCardExpiryMonth.Text                   = miscList.GetColumn("CardExpiryMonth");
 					lblCardExpiryYear.Text                    = miscList.GetColumn("CardExpiryYear");
 					lblp6CCExpiry.Text                        = lblCardExpiryYear.Text + "/" + lblCardExpiryMonth.Text;
@@ -219,7 +209,6 @@ namespace PCIWebFinAid
 					lblThirdPartyCollectorCode.Text           = miscList.GetColumn("ThirdPartyCollectorCode");
 					lblThirdPartyCollectorReference.Text      = miscList.GetColumn("ThirdPartyCollectorReference");
 					lblGrossIncome.Text                       = miscList.GetColumn("GrossIncome");
-					lblp6Income.Text                          = miscList.GetColumn("GrossIncome");
 					lblNetIncome.Text                         = miscList.GetColumn("NetIncome");
 					lblExpenditureCellPhone.Text              = miscList.GetColumn("ExpenditureCellPhone");
 					lblExpenditureGroceries.Text              = miscList.GetColumn("ExpenditureGroceries");
@@ -227,6 +216,7 @@ namespace PCIWebFinAid
 					lblExpenditureInsurance.Text              = miscList.GetColumn("ExpenditureInsurance");
 					lblExpenditureOther.Text                  = miscList.GetColumn("ExpenditureOther");
 					lblDisposableIncome.Text                  = miscList.GetColumn("DisposableIncome");
+					lblp6Income.Text                          = miscList.GetColumn("DisposableIncome");
 					lblLegalRestrictionCode.Text              = miscList.GetColumn("LegalRestrictionCode");
 					employmentStatusCode                      = miscList.GetColumn("ClientEmploymentStatusCode");
 					lblClientEmploymentStatusCode.Text        = employmentStatusCode;
@@ -260,10 +250,26 @@ namespace PCIWebFinAid
 				}
 
 			if ( lblError.Text.Length < 1 && productCode.Length < 1 )
-				SetErrorDetail(30014,30014,"Contract corrupted - product code is blank/empty",sql,2,0);
+				SetErrorDetail(30014,30014,"Contract corrupted - product code is blank/empty",sql);
 
 			if ( lblError.Text.Length > 0 )
 				return;
+
+			if ( ccNumber.Length >= 6 )
+				ccAssociation = ccNumber.Substring(0,6);
+
+//	Mask card number
+			if ( ccNumber.Length > 12 )
+				ccNumber = ccNumber.Substring(0,6) + "******" + ccNumber.Substring(12);
+			else if ( ccNumber.Length > 8 )
+				ccNumber = ccNumber.Substring(0,4) + "******";
+			else if ( ccNumber.Length > 4 )
+				ccNumber = ccNumber.Substring(0,2) + "******";
+			else if ( ccNumber.Length > 2 )
+				ccNumber = "******";
+
+			lblCardNumber.Text = ccNumber;
+			lblp6CCNumber.Text = ccNumber;
 
 			if ( rdoView2.Checked )
 				ShowControls(2,true);
@@ -275,9 +281,9 @@ namespace PCIWebFinAid
 				//	Field labels
 					sql = "exec sp_WP_CRM_Get_ProductWebsiteRegContent @ProductCode=" + Tools.DBString(productCode);
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(30020,30020,"Internal database error (sp_WP_CRM_Get_ProductWebsiteRegContent)",sql,2,2);
+						SetErrorDetail(30020,30020,"Internal database error (sp_WP_CRM_Get_ProductWebsiteRegContent)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(30021,30021,"Product details not found (" + productCode + "). Please try again",sql,2,0);
+						SetErrorDetail(30021,30021,"Product details not found (" + productCode + "). Please try again",sql);
 					else
 						while ( ! miscList.EOF )
 						{
@@ -292,9 +298,9 @@ namespace PCIWebFinAid
 				//	Title
 					sql = "exec sp_WP_CRM_Get_Title";
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(30030,30030,"Internal database error (sp_WP_CRM_Get_Title)",sql,2,2);
+						SetErrorDetail(30030,30030,"Internal database error (sp_WP_CRM_Get_Title)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(30031,30031,"Title descriptions not found. Please try again",sql,2,0);
+						SetErrorDetail(30031,30031,"Title descriptions not found. Please try again",sql);
 					else
 						while ( ! miscList.EOF )
 							if ( miscList.GetColumn("TitleCode") == titleCode )
@@ -308,9 +314,9 @@ namespace PCIWebFinAid
 				//	Payment method
 					sql = "exec sp_WP_CRM_Get_PaymentMethod @ProductCode=" + Tools.DBString(productCode);
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(30040,30040,"Internal database error (sp_WP_CRM_Get_PaymentMethod)",sql,2,2);
+						SetErrorDetail(30040,30040,"Internal database error (sp_WP_CRM_Get_PaymentMethod)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(30041,30041,"Payment methods not found. Please try again",sql,2,0);
+						SetErrorDetail(30041,30041,"Payment methods not found. Please try again",sql);
 					else
 						while ( ! miscList.EOF )
 							if ( miscList.GetColumn("PaymentMethodCode") == paymentMethodCode )
@@ -324,9 +330,9 @@ namespace PCIWebFinAid
 				//	Pay Date
 					sql = "exec sp_WP_CRM_Get_PayDate";
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(30050,30050,"Internal database error (sp_WP_CRM_Get_PayDate)",sql,2,2);
+						SetErrorDetail(30050,30050,"Internal database error (sp_WP_CRM_Get_PayDate)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(30051,30051,"Pay dates not found. Please try again",sql,2,0);
+						SetErrorDetail(30051,30051,"Pay dates not found. Please try again",sql);
 					else
 						while ( ! miscList.EOF )
 							if ( miscList.GetColumn("PayDateCode") == payDateCode )
@@ -340,9 +346,9 @@ namespace PCIWebFinAid
 				//	Employment status
 					sql = "exec sp_WP_CRM_Get_EmploymentStatus";
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(30060,30060,"Internal database error (sp_WP_CRM_Get_EmploymentStatus)",sql,2,2);
+						SetErrorDetail(30060,30060,"Internal database error (sp_WP_CRM_Get_EmploymentStatus)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(30061,30061,"Employment statuses not found. Please try again",sql,2,0);
+						SetErrorDetail(30061,30061,"Employment statuses not found. Please try again",sql);
 					else
 						while ( ! miscList.EOF )
 							if ( miscList.GetColumn("EmploymentStatusCode") == employmentStatusCode )
@@ -354,13 +360,13 @@ namespace PCIWebFinAid
 								miscList.NextRow();
 
 				//	Card association
-					if ( ccNumber.Length > 6 )
-						ccNumber = ccNumber.Substring(0,6);
-					sql = "exec WP_Get_CardAssociation @BIN=" + Tools.DBString(ccNumber);
-					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(30070,30070,"Internal database error (WP_Get_CardAssociation)",sql,2,2);
+					sql = "exec WP_Get_CardAssociation @BIN=" + Tools.DBString(ccAssociation);
+					if ( ccAssociation.Length < 1 )
+						lblp6CCType.Text = "N/A";
+					else if ( miscList.ExecQuery(sql,0,"",false) != 0 )
+						SetErrorDetail(30070,30070,"Internal database error (WP_Get_CardAssociation)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(30071,30071,"Bank card association not found. Please try again",sql,2,0);
+						SetErrorDetail(30071,30071,"Bank card association not found (" + ccAssociation + "). Please try again",sql);
 					else
 						lblp6CCType.Text = miscList.GetColumn("Brand");
 
@@ -369,24 +375,24 @@ namespace PCIWebFinAid
 					    + " @ProductCode="       + Tools.DBString(productCode)
 					    + ",@ProductOptionCode=" + Tools.DBString(productOptionCode);
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(30080,30080,"Internal database error (sp_WP_CRM_Get_WebsiteProductoptionA)",sql,2,2);
+						SetErrorDetail(30080,30080,"Internal database error (sp_WP_CRM_Get_WebsiteProductoptionA)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(30081,30081,"Product option details not found. Please try again",sql,2,0);
+						SetErrorDetail(30081,30081,"Product option details not found. Please try again",sql);
 					else
 					{
 						lbl100325.Text = miscList.GetColumn("FieldValue");
 						if ( lbl100325.Text.Length > 0 )
 							lbl100325.Text = lbl100325.Text.Replace(Environment.NewLine,"<br />");
 						else
-							SetErrorDetail(30082,30082,"Product option data is empty/blank (sp_WP_CRM_Get_WebsiteProductOptionA, column 'FieldValue')",sql,2,2);
+							SetErrorDetail(30082,30082,"Product option data is empty/blank (sp_WP_CRM_Get_WebsiteProductOptionA, column 'FieldValue')",sql);
 					}
 
 				//	EMail details
 					sql = "exec sp_WP_Get_ProductEmail @LanguageCode='ENG', @ProductCode=" + Tools.DBString(productCode);
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(30120,30120,"Internal database error (sp_WP_Get_ProductEmail)",sql,2,2);
+						SetErrorDetail(30120,30120,"Internal database error (sp_WP_Get_ProductEmail)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(30121,30121,"Product email details not found. Please try again",sql,2,0);
+						SetErrorDetail(30121,30121,"Product email details not found. Please try again",sql);
 					else
 					{
 						txtFrom.Text       = miscList.GetColumn("SenderEmailAddress");
@@ -397,9 +403,9 @@ namespace PCIWebFinAid
 				//	Product policy
 					sql = "exec sp_WP_CRM_Get_ProductPolicy @ProductCode=" + Tools.DBString(productCode);
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(30090,30090,"Internal database error (sp_WP_CRM_Get_ProductPolicy)",sql,2,2);
+						SetErrorDetail(30090,30090,"Internal database error (sp_WP_CRM_Get_ProductPolicy)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(30091,30091,"Product policy details not found. Please try again",sql,2,0);
+						SetErrorDetail(30091,30091,"Product policy details not found. Please try again",sql);
 					else
 					{
 						string refundPolicy          = miscList.GetColumn("RefundPolicyText");
@@ -413,9 +419,9 @@ namespace PCIWebFinAid
 				//	Collection mandate
 					sql = "exec sp_WP_CRM_Get_ProductOptionMandateA @ProductCode=" + Tools.DBString(productCode);
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(30100,30100,"Internal database error (sp_WP_CRM_Get_ProductOptionMandateA)",sql,2,2);
+						SetErrorDetail(30100,30100,"Internal database error (sp_WP_CRM_Get_ProductOptionMandateA)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(30101,30101,"Collection mandate details not found. Please try again",sql,2,0);
+						SetErrorDetail(30101,30101,"Collection mandate details not found. Please try again",sql);
 					else
 						while ( ! miscList.EOF )
 						{
@@ -453,7 +459,7 @@ namespace PCIWebFinAid
 			}
 		}
 
-		private void SetErrorDetail(int errCode,int logNo,string errBrief,string errDetail,byte briefMode=2,byte detailMode=1)
+		private void SetErrorDetail(int errCode,int logNo,string errBrief,string errDetail,byte briefMode=2,byte detailMode=2)
 		{
 			if ( errCode == 0 )
 				return;

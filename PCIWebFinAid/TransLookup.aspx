@@ -6,7 +6,7 @@
 <head runat="server">
 	<!--#include file="IncludeMain.htm" -->
 	<title>Transaction Lookup</title>
-	<link rel="stylesheet" href="CSS/FinAid.css" type="text/css" />
+	<link rel="stylesheet" href="CSS/FinAid.css?v=6" type="text/css" />
 	<link rel="stylesheet" href="CSS/Calendar.css" type="text/css" />
 	<link rel="shortcut icon" href="Images/favicon.ico" />
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />

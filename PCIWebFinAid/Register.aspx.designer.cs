@@ -1471,6 +1471,15 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.Literal lblp6Browser;
         
         /// <summary>
+        /// pnlDisabled control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlDisabled;
+        
+        /// <summary>
         /// btnBack1 control.
         /// </summary>
         /// <remarks>
@@ -1543,6 +1552,33 @@ namespace PCIWebFinAid {
         protected global::System.Web.UI.WebControls.Label lblVer;
         
         /// <summary>
+        /// pnlWarning control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlWarning;
+        
+        /// <summary>
+        /// lblWarnP control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal lblWarnP;
+        
+        /// <summary>
+        /// lblWarnB control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal lblWarnB;
+        
+        /// <summary>
         /// hdnVer control.
         /// </summary>
         /// <remarks>
@@ -1550,6 +1586,15 @@ namespace PCIWebFinAid {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnVer;
+        
+        /// <summary>
+        /// lblChat control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal lblChat;
         
         /// <summary>
         /// lblJS control.

@@ -7,7 +7,7 @@
 	<asp:Literal runat="server" ID="lblGoogleUA"></asp:Literal>
 	<!--#include file="IncludeMain.htm" -->
 	<title>Secure Registration</title>
-	<link rel="stylesheet" href="CSS/FinAid.css" type="text/css" />
+	<link rel="stylesheet" href="CSS/FinAid.css?v=6" type="text/css" />
 	<link rel="shortcut icon" href="Images/favicon.ico" />
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
 </head>
@@ -633,8 +633,12 @@ function OptSelect(p)
 		<td colspan="2"><asp:Literal runat="server" ID="lblp6Browser"></asp:Literal></td></tr>
 </table>
 </div>
-
 <br />
+
+<asp:Panel runat="server" ID="pnlDisabled" CssClass="PopupHead">
+Disabled
+</asp:Panel>
+
 <asp:Button runat="server" ID="btnBack1" UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage(-1,this)) return false" Text="BACK" />
 <asp:Button runat="server" ID="btnNext"  UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage( 1,this)) return false" OnClick="btnNext_Click" />
 <asp:Button runat="server" ID="btnAgree" UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage( 1,this)) return false" OnClick="btnNext_Click" />
@@ -648,7 +652,21 @@ function OptSelect(p)
 <asp:Label runat="server" ID="lblErrorDtl" style="border:1px solid #000000;position:fixed;bottom:20px;right:5px;visibility:hidden;display:none;padding:5px;font-family:Verdana;background-color:pink"></asp:Label>
 <asp:Label runat="server" ID="lblVer" style="position:fixed;bottom:3px;right:5px"></asp:Label>
 
+<asp:Panel runat="server" ID="pnlWarning" Visible="false" CssClass="Popup2">
+<div class="PopupHead">Warning</div>
+<p>
+Your IP address is not listed as from the country this product is sold.
+</p><p>
+<asp:Literal runat="server" ID="lblWarnP">But you may continue anyway. Press "OK" to proceed.</asp:Literal>
+<asp:Literal runat="server" ID="lblWarnB">We're sorry, but you cannot continue.</asp:Literal>
+</p>
+<hr />
+<input type="button" value="OK" onclick="JavaScript:ShowElt('pnlWarning',false);return false" />
+</asp:Panel>
+
 <asp:HiddenField runat="server" ID="hdnVer" />
+
+<asp:Literal runat="server" id="lblChat"></asp:Literal>
 
 <script type="text/javascript">
 pageNo = GetEltValueInt('hdnPageNo');

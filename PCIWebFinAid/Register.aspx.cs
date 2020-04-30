@@ -31,6 +31,7 @@ namespace PCIWebFinAid
 
 			SetErrorDetail(-88,0,"","");
 			SetPostBackURL();
+			SetWarning("");
 
 			if ( Page.IsPostBack )
 			{
@@ -57,21 +58,26 @@ namespace PCIWebFinAid
 //				if ( languageCode.Length        < 1 ) languageCode        = "THA";
 //				if ( languageDialectCode.Length < 1 ) languageDialectCode = "0001";
 
-				GetContractCode();
-
 				ViewState["ProductCode"]         = productCode;
 				ViewState["LanguageCode"]        = languageCode;
 				ViewState["LanguageDialectCode"] = languageDialectCode;
-
-				LoadLabels();
 
 				hdnVer.Value       = "Version " + SystemDetails.AppVersion + " (" + SystemDetails.AppDate + ")";
 				lblVer.Text        = "Version " + SystemDetails.AppVersion;
 				lblVer.Visible     = ! Tools.SystemIsLive();
 				btnBack1.Visible   = ! Tools.SystemIsLive();
-				btnNext.Visible    = ( lblError.Text.Length == 0 );
 				lblReg.Visible     = true;
 				lblRegConf.Visible = false;
+
+				LoadGoogleAnalytics();
+				LoadChat();
+				LoadLabels();
+
+				if ( CheckIP() != "B" ) // Blocked
+				{
+					LoadContractCode();
+					btnNext.Visible = ( lblError.Text.Length == 0 );
+				}
 
 //	Testing 2
 				if ( hdn100137.Value.Length < 1 ) hdn100137.Value = "PRIME" + Environment.NewLine + "ASSIST";
@@ -85,6 +91,25 @@ namespace PCIWebFinAid
 					hdnPageNo.Value = WebTools.RequestValueString(Request,"PageNoX");
 					btnNext_Click(null,null);
 				}
+			}
+		}
+
+		private void SetWarning(string action="")
+		{
+			action                = Tools.NullToString(action).ToUpper();
+			pnlWarning.Visible    = ( action.Length > 0 );
+			lblWarnP.Visible      = ( action == "P" );
+			lblWarnB.Visible      = ( action == "B" );
+			pnlDisabled.Visible   = ( action == "B" );
+			if ( action == "B" )
+			{
+				btnBack1.Visible   = false;
+				btnBack2.Visible   = false;
+				btnNext.Visible    = false;
+				lstTitle.Enabled   = false;
+				txtSurname.Enabled = false;
+				txtCellNo.Enabled  = false;
+				chkAgree.Enabled   = false;
 			}
 		}
 
@@ -130,6 +155,106 @@ namespace PCIWebFinAid
 			}
 			lblJS.Text = WebTools.JavaScriptSource("ShowElt('tr"+controlID+"',false);ShowElt('trp6"+controlID+"',false)",lblJS.Text,1);
 		}
+
+		private void LoadGoogleAnalytics()
+		{
+			lblGoogleUA.Text = "";
+
+			using (MiscList miscList = new MiscList())
+				try
+				{
+					sql = "exec sp_WP_Get_GoogleACA @ProductCode=" + Tools.DBString(productCode);
+
+					if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
+					{
+						string gaCode    = miscList.GetColumn("GoogleAnalyticCode");
+						string url       = miscList.GetColumn("URL");
+//	V1 ... gtag.js
+//						lblGoogleUA.Text = Environment.NewLine
+//						                 + "<!-- Global site tag (gtag.js) - Google Analytics -->" + Environment.NewLine
+//						                 + "<script async src=\"https://www.googletagmanager.com/gtag/js?id=" + gaCode + "\"></script>" + Environment.NewLine
+//						                 + "<script>" + Environment.NewLine
+//						                 + "window.dataLayer = window.dataLayer || [];" + Environment.NewLine
+//						                 + "function gtag(){dataLayer.push(arguments);}" + Environment.NewLine
+//						                 + "gtag('js', new Date());" + Environment.NewLine
+//						                 + "gtag('config', '" + gaCode + "', { 'linker': { 'accept_incoming': true } });" + Environment.NewLine
+// //					                 + "gtag('config', '" + gaCode + "');" + Environment.NewLine
+//						                 + "</script>" + Environment.NewLine;
+
+// V2 ... Analytics.js
+						lblGoogleUA.Text = Environment.NewLine
+						                 + "<script>" + Environment.NewLine
+						                 + "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){"
+						                 + "(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),"
+						                 + "m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)"
+						                 + "})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');" + Environment.NewLine
+						                 + "ga('create', '" + gaCode + "', 'auto', {'allowLinker': true});" + Environment.NewLine
+						                 + "ga('require', 'linker');" + Environment.NewLine
+						                 + "ga('linker:autoLink', ['" + url + "'] );" + Environment.NewLine
+						                 + "ga('send', 'pageview');" + Environment.NewLine
+						                 + "</script>" + Environment.NewLine;
+					}
+					else
+					{
+						Tools.LogInfo     ("Register.LoadGoogleAnalytics/1","Failed to load Google UA code");
+						Tools.LogException("Register.LoadGoogleAnalytics/2",sql,null);
+					}
+				}
+				catch (Exception ex)
+				{
+					Tools.LogInfo     ("Register.LoadGoogleAnalytics/8","Failed to load Google UA code");
+					Tools.LogException("Register.LoadGoogleAnalytics/9",sql,ex);
+				}
+		}
+
+		private void LoadChat()
+		{
+			lblChat.Text = "";
+
+			using (MiscList miscList = new MiscList())
+				try
+				{
+					sql = "exec sp_WP_Get_ChatSnip @ProductCode=" + Tools.DBString(productCode);
+					if ( miscList.ExecQuery(sql,0) != 0 )
+						SetErrorDetail(90010,90010,"Internal database error (sp_WP_Get_ChatSnip)",sql,2,2);
+					else if ( miscList.EOF )
+						SetErrorDetail(90011,90011,"Chat widget code cannot be found (sp_WP_Get_ChatSnip)",sql,2,2);
+					else
+						lblChat.Text = miscList.GetColumn("ChatSnippet");
+				}
+				catch (Exception ex)
+				{
+					Tools.LogException("Register.LoadChat",sql,ex);
+					SetErrorDetail(90099,90099,"Internal error ; please try again later",ex.Message + " (" + sql + ")");
+				}
+		}	
+
+		private string CheckIP()
+		{
+			string action = "";
+
+			using (MiscList miscList = new MiscList())
+				try
+				{
+					sql = "exec sp_Check_IPLocation"
+					    + " @ProductCode=" + Tools.DBString(productCode)
+					    + ",@IPAddress="   + Tools.DBString(WebTools.ClientIPAddress(Request,1));
+					if ( miscList.ExecQuery(sql,0) != 0 )
+						SetErrorDetail(91010,91010,"Internal database error (sp_Check_IPLocation)",sql,2,2);
+					else if ( miscList.EOF )
+						SetErrorDetail(91011,91011,"Country/IP address check failed (sp_Check_IPLocation)",sql,2,2);
+					else if ( miscList.GetColumn("Result") == "1" )
+						action = miscList.GetColumn("Action");
+				}
+				catch (Exception ex)
+				{
+					Tools.LogException("RegisterCheckIP",sql,ex);
+					SetErrorDetail(91099,91099,"Internal error ; please try again later",ex.Message + " (" + sql + ")");
+				}
+
+			SetWarning(action);
+			return action;
+		}	
 
 		private void LoadLabels()
 		{
@@ -398,7 +523,7 @@ namespace PCIWebFinAid
 			lstCCYear.SelectedIndex = 1;
 		}
 
-		private bool GetContractCode()
+		private bool LoadContractCode()
 		{
 			contractCode              = "";
 			contractPIN               = "";
@@ -444,6 +569,8 @@ namespace PCIWebFinAid
 						}
 					}
 
+/* Moved to "LoadGoogleAnalytics()
+
 //					If this fails, continue - don't stop with an error
 					lblGoogleUA.Text = "";
 					sql              = "exec sp_WP_Get_GoogleACA @ProductCode =" + Tools.DBString(productCode);
@@ -483,10 +610,11 @@ namespace PCIWebFinAid
 //						SetErrorDetail(10028,10028,"Error retrieving the Google analytics code ; please try again later",sql);
 //					else
 //						lblGoogleUA.Text = "Blah, blah" + miscList.GetColumn(0);
+*/
 				}
 				catch (Exception ex)
 				{
-					Tools.LogException("Register.GetContractCode/99",sql,ex);
+					Tools.LogException("Register.LoadContractCode/99",sql,ex);
 					SetErrorDetail(10033,10033,"Error retrieving new contract details ; please try again later",ex.Message + " (" + sql + ")");
 					return false;
 				}
