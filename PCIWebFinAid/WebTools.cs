@@ -11,10 +11,15 @@ namespace PCIWebFinAid
 	{
 		static short debugMode = -888;
 
-		public static string RequestValueString (HttpRequest req,string parmName)
+		public static string RequestValueString (HttpRequest req,string parmName,byte method=0)
 		{
+		//	Method = 0, Anything
+		//	Method = 1, GET
+		//	Method = 2, POST
 			try
 			{
+				if ( method == (byte)PCIBusiness.Constants.HttpMethod.Post ) // Must be HTML form variables
+					return PCIBusiness.Tools.ObjectToString(req.Form[parmName]);
 				return PCIBusiness.Tools.ObjectToString(req[parmName]);
 			}
 			catch
@@ -103,7 +108,8 @@ namespace PCIWebFinAid
 		}
 
 		public static string ListValue ( ListControl listBox,
-		                                 string      defaultValue )
+		                                 string      defaultValue,
+		                                 byte        codeColumn = 0 )
 		{
 			string sel = "";
 			try
@@ -111,6 +117,12 @@ namespace PCIWebFinAid
 				sel = listBox.SelectedValue;
 				if ( sel == null || sel.Length < 1 )
 					sel = defaultValue;
+				else if ( codeColumn > 1 ) // Means the "code" contains more than 1 column and we we want the x'th one
+				{
+					string[] codes   = sel.Split('/');
+					if ( codeColumn <= codes.Length )
+						sel = codes[codeColumn-1];
+				}
 			}
 			catch
 			{
@@ -175,45 +187,73 @@ namespace PCIWebFinAid
 		                              string      selectValue = "",
 		                              short       selectIndex = -888 )
 		{
+			if ( PCIBusiness.Tools.NullToString(sql).Length > 0 )
+				return ListBindMultiKey ( listBox,
+				                          sql,
+				                          new string[] {dataFieldKey},
+				                          dataFieldShow,
+				                          addZeroRow,
+				                          selectValue,
+				                          selectIndex );
+
+			else if ( dataSource != null )
+			{
+				listBox.DataSource     = dataSource;
+				listBox.DataValueField = dataFieldKey;
+				listBox.DataTextField  = dataFieldShow;
+				listBox.DataBind();
+				return 0;
+			}
+			return 99;
+		}
+
+		public static byte ListBindMultiKey ( ListControl listBox,
+		                                      string      sql,
+		                                      string[]    dataFieldKey,
+		                                      string      dataFieldShow,
+		                                      string      addZeroRow  = "",
+		                                      string      selectValue = "",
+		                                      short       selectIndex = -888 )
+		{
 			listBox.Items.Clear();
 
 			try
 			{
-				if ( PCIBusiness.Tools.NullToString(sql).Length > 0 )
-				{
-					string dataValue;
-					string keyValue;
-					using (PCIBusiness.MiscList dList = new PCIBusiness.MiscList())
-						if ( dList.ExecQuery(sql,0) == 0 )
-							while ( ! dList.EOF )
+				if ( PCIBusiness.Tools.NullToString(sql).Length < 5 )
+					return 22;
+
+				string dataValue;
+				string keyValue;
+				int    k;
+
+				using (PCIBusiness.MiscList dList = new PCIBusiness.MiscList())
+					if ( dList.ExecQuery(sql,0) == 0 )
+						while ( ! dList.EOF )
+						{
+							if ( dataFieldKey.Length == 1 )
+								keyValue = dList.GetColumn(dataFieldKey[0]);
+							else
 							{
-								dataValue = dList.GetColumn(dataFieldShow);
-								keyValue  = dList.GetColumn(dataFieldKey);
-								listBox.Items.Add(new ListItem(dataValue,keyValue));
-								dList.NextRow();
+								keyValue = "";
+								for ( k = 0 ; k < dataFieldKey.Length ; k++ )
+									keyValue = keyValue + "/" + dList.GetColumn(dataFieldKey[k]);
+								if ( keyValue.StartsWith("/") )
+									keyValue = keyValue.Substring(1);
 							}
-						else
-							return 5;
-				}
-				else if ( dataSource != null )
-				{
-					listBox.DataSource     = dataSource;
-					listBox.DataValueField = dataFieldKey;
-					listBox.DataTextField  = dataFieldShow;
-					listBox.DataBind();
-				}
-				else
-					return 10;
+							dataValue = dList.GetColumn(dataFieldShow);
+							listBox.Items.Add(new ListItem(dataValue,keyValue));
+							dList.NextRow();
+						}
+					else
+						return 5;
 
 				if ( addZeroRow.Length > 0 )
-					listBox.Items.Insert(0,(new ListItem(addZeroRow,"0")));
+					listBox.Items.Insert(0,(new ListItem(addZeroRow,"")));
 
 				if ( listBox.Items.Count > 0 )
 				{
 					if ( selectValue.Length > 0 )
 						ListSelect(listBox,selectValue,"0");
-				//	else if ( selectIndex == 0 )
-				//		listBox.SelectedIndex = 0;
 					else if ( selectIndex >= listBox.Items.Count )
 						listBox.SelectedIndex = listBox.Items.Count - 1;
 					else if ( selectIndex >= 0 )
@@ -221,10 +261,10 @@ namespace PCIWebFinAid
 				}
 				return 0;
 			}
-			catch (Exception ex)
-			{
-				return 99;
-			}
+			catch
+			{ }
+
+			return 99; 
 		}
 
 		public static void Redirect (HttpResponse response,string url)
@@ -342,6 +382,287 @@ namespace PCIWebFinAid
 				h = h + " : " + otherInfo;
 			return h;
 		}
+
+		public static string ClientReferringURL(HttpRequest req,byte logInfo=0,string logSource="")
+		{
+			string refer = PCIBusiness.Tools.ObjectToString(req.UrlReferrer);
+			if ( refer.Length < 5 )
+				refer = PCIBusiness.Tools.ObjectToString(req.Headers["Referer"]); // Yes, this is spelt CORRECTLY! Do not change
+
+			if ( logInfo > 0 )
+			{
+				if ( logSource.Length < 1 )
+					logSource = req.Url.AbsoluteUri;
+				PCIBusiness.Tools.LogInfo ( "WebTools.ClientReferringURL", logSource + " (" + logInfo.ToString() + "), Referring URL=" + refer );
+			}
+			return refer;
+		}
+
+		public static string DecodeWebException(System.Net.WebException ex)
+		{
+			try
+			{
+				System.Net.HttpWebResponse errorResponse = ex.Response as System.Net.HttpWebResponse;
+				if ( errorResponse == null )
+					return "";
+
+				string responseContent = "";
+				int    k               = 0;
+
+				using ( StreamReader sR = new StreamReader(errorResponse.GetResponseStream()) )
+					responseContent = sR.ReadToEnd();
+
+				responseContent = responseContent + Environment.NewLine + Environment.NewLine;
+				foreach (string key in errorResponse.Headers.AllKeys )
+					responseContent = responseContent + "[" + (k++).ToString() + "] " + key + " : " + errorResponse.Headers[key] + Environment.NewLine;
+
+				return responseContent;
+			}
+			catch
+			{ }
+			return "";
+		}
+
+		public static byte CheckProductProvider(string productCode,string urlOld,HttpRequest req=null,HttpResponse resp=null)
+		{
+			if ( string.IsNullOrWhiteSpace(productCode) || PCIBusiness.Tools.SystemLiveTestOrDev() == PCIBusiness.Constants.SystemMode.Development )
+				return 10;
+
+			string urlNew     = "";
+			string sql        = "exec sp_WP_Get_ProductTokenBureau @ProductCode=" + PCIBusiness.Tools.DBString(productCode);
+			int    bureauCode = 0;
+
+			using (PCIBusiness.MiscList mList = new PCIBusiness.MiscList())
+				if ( mList.ExecQuery(sql,0) == 0 )
+					bureauCode = PCIBusiness.Tools.StringToInt(mList.GetColumn("TokenBureauCode"));
+
+			if ( bureauCode < 1 )
+				return 20;
+			else if ( bureauCode  == (int)PCIBusiness.Constants.PaymentProvider.TokenEx ||			
+			          bureauCode  == (int)PCIBusiness.Constants.PaymentProvider.CyberSource )				
+				urlNew = "RegisterEx3.aspx";
+			else
+				urlNew = "Register.aspx";
+
+			if ( urlOld.ToUpper() == urlNew.ToUpper() )
+				return 30;
+			if ( req == null || resp == null )
+				return 40;
+				
+			string parms = req.Url.Query;
+			try
+			{
+				if ( parms.Length == 0 )
+					resp.Redirect(urlNew);
+				else if ( parms.StartsWith("?") )
+					resp.Redirect(urlNew+parms);
+				else
+					resp.Redirect(urlNew+"?"+parms);
+			}
+			catch
+			{ }
+			return 0;
+		}
+		public static byte ReplaceControlText(Page webPage,string ctlID,string fieldValue,string fieldURL,Control subCtl1=null,Control subCtl2=null)
+		{
+			Control ctl;
+
+			fieldValue = fieldValue.Replace(Environment.NewLine,"<br />").Replace("\r\n","<br />");
+			
+			for ( int k = 1 ; k < 4 ; k++ )
+			{
+				ctl = null;
+				if ( k == 1 && webPage != null )
+					ctl = webPage.FindControl(ctlID);
+				else if ( k == 2 && subCtl1 != null )
+					ctl = subCtl1.FindControl(ctlID);
+				else if ( k == 3 && subCtl2 != null )
+					ctl = subCtl2.FindControl(ctlID);
+				if ( ctl == null )
+					continue;
+				else if (ctl.GetType()  == typeof(Literal))
+					((Literal)ctl).Text   = fieldValue;
+				else if (ctl.GetType()  == typeof(Label))
+					((Label)ctl).Text     = fieldValue;
+				else if (ctl.GetType()  == typeof(TableCell))
+					((TableCell)ctl).Text = fieldValue;
+				else if (ctl.GetType()  == typeof(CheckBox))
+					((CheckBox)ctl).Text  = fieldValue;
+				else if (ctl.GetType()  == typeof(Button))
+				{
+					Button btn            = (Button)ctl;
+					btn.Text              = fieldValue;
+					if ( fieldURL.Length  > 0 )
+						btn.OnClientClick  = "JavaScript:location.href='" + fieldURL + "';return false";
+				}
+				else if (ctl.GetType()  == typeof(HyperLink))
+				{
+					HyperLink lnk         = (HyperLink)ctl;
+					lnk.Text              = fieldValue;
+					if ( fieldURL.Length  > 0 )
+						lnk.NavigateUrl = fieldURL;
+				}
+				else if (ctl.GetType()  == typeof(TextBox))
+					((TextBox)ctl).Attributes.Add("placeholder",fieldValue);
+			}
+			return 0;
+		}
+
+		public static byte LoadProductFromURL(HttpRequest req,
+		                                  ref string      productCode,
+		                                  ref string      languageCode,
+		                                  ref string      languageDialectCode,
+		                                      bool        checkURLParms = false)
+		{
+			byte   ret          = 10;
+			string sql          = "";
+			productCode         = "";
+			languageCode        = "";
+			languageDialectCode = "";
+
+			using (PCIBusiness.MiscList mList = new PCIBusiness.MiscList())
+				try
+				{
+					ret             = 20;
+					string pageName = System.IO.Path.GetFileName(req.Url.AbsolutePath);
+					string refer    = req.Url.AbsoluteUri.Trim();
+					int    k        = refer.IndexOf("://");
+					refer           = refer.Substring(k+3);
+
+					if ( ! pageName.StartsWith("/") )
+						pageName = "/" + pageName;
+
+					ret = 30;
+					k   = refer.ToUpper().IndexOf(pageName.ToUpper());
+					if ( k > 0 )
+						refer = refer.Substring(0,k);
+
+					ret = 40;
+					sql = "exec sp_WP_Get_WebsiteInfoByURL " + PCIBusiness.Tools.DBString(refer);
+					if ( mList.ExecQuery(sql,0) != 0 )
+						PCIBusiness.Tools.LogInfo("WebTools.LoadProductFromURL/3","SQL failed: " + sql,229);
+					else if ( mList.EOF )
+						PCIBusiness.Tools.LogInfo("WebTools.LoadProductFromURL/6","SQL returned no data: " + sql,229);
+					else
+					{
+						ret                 = 70;
+						productCode         = mList.GetColumn("ProductCode");
+						languageCode        = mList.GetColumn("LanguageCode");
+						languageDialectCode = mList.GetColumn("LanguageDialectCode");
+						ret                 = 0;
+					}
+				}
+				catch (Exception ex)
+				{
+					PCIBusiness.Tools.LogInfo     ("WebTools.LoadProductFromURL/8","ret="+ret.ToString()+" ("+ex.Message+")",229);
+					PCIBusiness.Tools.LogException("WebTools.LoadProductFromURL/9","ret="+ret.ToString(),ex);
+				}
+
+			if ( checkURLParms )
+			{
+				string h = RequestValueString(req,"ProductCode");
+				if ( h.Length > 0 ) productCode = h;
+				h        = RequestValueString(req,"LanguageCode");
+				if ( h.Length > 0 ) languageCode = h;
+				h        = RequestValueString(req,"LanguageDialectCode");
+				if ( h.Length > 0 ) languageDialectCode = h;
+			}
+
+			return ret;
+		}
+
+		public static byte ReplaceImage ( Page    webPage,
+		                                  string  ctlID,
+		                                  string  imgFileName,
+		                                  string  imgTooltip,
+		                                  string  imgHyperlink="",
+		                                  int     imgHeight=0,
+		                                  int     imgWidth=0,
+		                                  Control subCtl1=null,
+		                                  Control subCtl2=null)
+		{
+			try
+			{
+//				Control ctl = webPage.FindControl("P"+ctlID);
+//				if ( ctl.GetType() == typeof(Literal) )
+//				{
+//					Literal lbl = (Literal)ctl;
+//					if ( lbl   != null ) // Favicon
+//						lbl.Text = "<link rel='shortcut icon' href='" + PCIBusiness.Tools.ImageFolder("ImagesCA") + imgFileName + "' />";
+//					else
+//					{
+//						lbl = (Literal)webPage.FindControl("H"+ctlID);
+//						if ( lbl != null )
+//							lbl.Text = "<img src='" + PCIBusiness.Tools.ImageFolder("ImagesCA") + imgFileName + "' title='" + imgTooltip + "' />";
+//					}
+//					return 0;
+//				}
+
+				Image ctl = (Image)webPage.FindControl("P"+ctlID);
+				if ( ctl == null && subCtl1 != null )
+					ctl    = (Image)subCtl1.FindControl("P"+ctlID);
+				if ( ctl == null && subCtl2 != null )
+					ctl    = (Image)subCtl2.FindControl("P"+ctlID);
+
+				if ( ctl == null )
+				{
+					Literal lbl = (Literal)webPage.FindControl("F"+ctlID);
+					if ( lbl   != null ) // Favicon
+						lbl.Text = "<link rel='shortcut icon' href='" + PCIBusiness.Tools.ImageFolder("ImagesCA") + imgFileName + "' />";
+					else
+					{
+						lbl = (Literal)webPage.FindControl("H"+ctlID);
+						if ( lbl != null )
+							lbl.Text = "<img src='" + PCIBusiness.Tools.ImageFolder("ImagesCA") + imgFileName + "' title='" + imgTooltip + "' />";
+					}
+					return 0;
+				}
+
+//				if ( ctl.GetType() != typeof(Image) )
+//					return 20;
+
+				ctl.ToolTip   = imgTooltip;
+				ctl.ImageUrl  = PCIBusiness.Tools.ImageFolder("ImagesCA") + imgFileName;
+				if ( imgHeight > 0 )
+					ctl.Height = imgHeight;
+				else if ( imgWidth > 0 )
+					ctl.Width  = imgWidth;
+
+				if ( imgHyperlink.Length < 1 )
+					return 0;
+
+				HyperLink lnk = (HyperLink)webPage.FindControl("H"+ctlID);
+				if ( lnk == null && subCtl1 != null )
+					lnk    = (HyperLink)subCtl1.FindControl("H"+ctlID);
+				if ( lnk == null && subCtl2 != null )
+					lnk    = (HyperLink)subCtl2.FindControl("H"+ctlID);
+				if ( lnk == null )
+					return 30;
+				if ( lnk.GetType() != typeof(HyperLink) )
+					return 40;
+				lnk.NavigateUrl = imgHyperlink;
+				return 0;
+			}
+			catch (Exception ex)
+			{
+				PCIBusiness.Tools.LogException("WebTools.ReplaceImage","",ex);
+			}
+			return 90;
+		}
+
+//		Moved to PCIBusiness.Tools
+//		public static string ImageFolder(string defaultDir="")
+//		{
+//			string folder = PCIBusiness.Tools.ConfigValue("ImageFolder");
+//			if ( folder.Length < 1 )
+//				if ( defaultDir.Length < 1 )
+//					return "Images/";
+//				else
+//					folder = defaultDir;
+//			if ( folder.EndsWith("/") )
+//				return folder;
+//			return folder + "/";
+//		}
 
 /* Not complete
 
