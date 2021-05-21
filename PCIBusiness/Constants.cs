@@ -7,26 +7,39 @@ namespace PCIBusiness
 
 	//	General stand-alone constants
 	//	-----------------------------
-		public static DateTime C_NULLDATE()
+		public static DateTime DateNull
 		{
-			return System.Convert.ToDateTime("1799/12/31");
+			get { return Convert.ToDateTime("1799/12/31"); }
 		}
-		public static string C_HTMLBREAK()
+		public static short MaxRowsSQL
 		{
-			return "<br />";
+			get {  return 1000; }
 		}
-//		public static string C_TEXTBREAK()
+		public static short MaxRowsPayment
+		{
+			get {  return 50; }
+		}
+		public static string HTMLBreak
+		{
+			get { return "<br />"; }
+		}
+		public static byte LogSeverity
+		{
+			get { return 233; }
+		}
+//		public static string TextBreak
 //		{
-//			return Environment.NewLine; // "\n";
+//			return { Environment.NewLine; }
 //		}
-		public static short C_MAXSQLROWS()
+
+		public enum SystemPassword : int
 		{
-			return 100;
+			Login     = 901317,
+			BackDoor  = 615702,
+			Technical = 463228,
+			MobileDev = 183206
 		}
-		public static short C_MAXPAYMENTROWS()
-		{
-			return 50;
-		}
+
 		public enum DBColumnStatus : byte
 		{
 			InvalidColumn = 1,
@@ -46,18 +59,36 @@ namespace PCIBusiness
 
 		public enum PaymentProvider : int
 		{
-			MyGate     =  2,
-			T24        =  6,
-			Ikajo      = 15,
-			PayU       = 16,
-			PayGate    = 17,
-			PayGenius  = 18,
-			Ecentric   = 19,
-			eNETS      = 20
+			MyGate           =  2,
+			T24              =  6,
+			Ikajo            = 15,
+			PayU             = 16,
+			PayGate          = 17,
+			PayGenius        = 18,
+			Ecentric         = 19,
+			eNETS            = 20,
+			Peach            = 21,
+			TokenEx          = 22,
+			SatchelPay       = 23,
+			FNB              = 24,
+			CyberSource      = 25,
+			CyberSource_Moto = 26,
+			PaymentsOS       = 27, // PayU Hub
+			Stripe           = 28
+		}
 
-//	Not implemented yet
-//			DinersClub = 21
-//			PayFast    = 22
+		public enum MessageProvider : int
+		{
+			ClickaTell = 1,
+			GlobalSMS  = 2,
+			SendGrid   = 3,
+			SocketLabs = 4
+		}
+
+		public enum TradingProvider : int
+		{
+			InteractiveBrokers = 1,
+			FinnHub            = 2
 		}
 
 		public enum CreditCardType : byte
@@ -88,6 +119,7 @@ namespace PCIBusiness
 			Development = 1,
 			Test        = 2,
 			Live        = 3
+//			Debug       = 4
 		}
 		public enum ProcessMode : int
 		{
@@ -101,11 +133,16 @@ namespace PCIBusiness
 		}
 		public enum TransactionType : byte
 		{
-			GetToken       =  1,
-			TokenPayment   =  2,
-			CardPayment    =  3,
-			DeleteToken    =  4,
-			ManualPayment  = 73
+			GetToken              =   1,
+			GetTokenThirdParty    =   8,
+			CardPayment           =   3,
+			CardPaymentThirdParty =   6,
+			TokenPayment          =   2,
+			DeleteToken           =   4,
+			GetCardFromToken      =   5,
+			ThreeDSecurePayment   =   7,
+			ManualPayment         =  73,
+			Test                  = 197
 		}
 
 //	iTextSharp stuff
@@ -129,6 +166,85 @@ namespace PCIBusiness
 			Centre = 1,
 			Middle = 5
 		}
+
+		public enum TickerType : int
+		{
+			IBStockPrices          =  1,
+			IBExchangeRates        =  2,
+			IBPortfolio            =  3,
+			IBOrders               =  4, // Not implemented yet
+			IBExchangeCandles      =  5,
+			FinnHubStockPrices     = 21,
+			FinnHubStockHistory    = 22,
+			FinnHubExchangeRates   = 23,
+			FinnHubStockTicks      = 24,
+			FinnHubExchangeCandles = 29
+		}
+
+		public enum TickerStatus : byte
+		{
+			Stopped  = 11,
+			Stopping = 21,
+			Starting = 31,
+			Running  = 41,
+			Disabled = 88,
+			Unused   = 99
+		}
+
+		public enum TickerAction : byte
+		{
+			ShutDown = 1,
+			Stop     = 2,
+			Run      = 3
+		}
+
+		public enum DataFormat : int
+		{
+			CSV = 31,
+			PDF = 32			
+		}
+
+		public enum HttpMethod : int
+		{
+			Get  = 1,
+			Post = 2			
+		}
+
+		public enum TechnicalQuery : byte
+		{
+		//	Values greater than 99 need the system password
+			SQLStatus       =   1,
+			SQLObject       = 102,
+			SQLExecute      = 103,
+			ConfigNet       =   4,
+			ConfigSoftware  =   5,
+			ConfigApp       = 106,
+			ErrorLogView    =   7,
+			InfoLogView     =   8,
+			ErrorLogWrite   = 109,
+			InfoLogWrite    = 110,
+			EMailSend       = 111,
+			ClientDetails   =  12,
+			CertDetails     =  13,
+			ServerVariables =  14
+		}
+
+
+		public enum MessageType : byte
+		{
+			EMail    = 1,
+			SMS      = 2,
+			WhatsApp = 3
+		}
+
+		public enum WebDataType : byte
+		{
+			FormGetOrPost = 1,
+			FormPost      = 2,
+			JSON          = 3,
+			XML           = 4
+		}
+
 //		public enum PaymentType : byte
 //		{
 //			Tokens      = 10,

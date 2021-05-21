@@ -2,11 +2,11 @@ using System;
 using System.Text;
 using System.Net;
 using System.IO;
-using System.Security.Cryptography;
+using Stripe;
 
 namespace PCIBusiness
 {
-	public class TransactionPayGenius : Transaction
+	public class TransactionStripe : Transaction
 	{
 		public  bool Successful
 		{
@@ -15,12 +15,34 @@ namespace PCIBusiness
 
 		public override int GetToken(Payment payment)
 		{
+			return 99010;
+
 			int ret  = 10;
 			payToken = "";
 
 			try
 			{
 				Tools.LogInfo("GetToken/10","Merchant Ref=" + payment.MerchantReference,10,this);
+
+				var customerOptions = new CustomerCreateOptions
+				{
+					Name  = (payment.FirstName + " " + payment.LastName).Trim(),
+					Email = payment.EMail,
+					Phone = payment.PhoneCell
+				};
+				var customerservice = new CustomerService();
+				var customer        = customerservice.Create(customerOptions);
+
+				var paymentOptions  = new PaymentIntentCreateOptions
+				{
+					Amount   = payment.PaymentAmount,
+					Currency = payment.CurrencyCode,
+					Customer = customer.Id,
+				};
+				var paymentIntentservice = new PaymentIntentService();
+				var paymentIntent        = paymentIntentservice.Create(paymentOptions);	
+
+
 
 				xmlSent  = "{ \"creditCard\" : " + Tools.JSONPair("number"     ,payment.CardNumber,1,"{")
 				                                 + Tools.JSONPair("cardHolder" ,payment.CardName,1)
@@ -30,9 +52,6 @@ namespace PCIBusiness
 				                                 + Tools.JSONPair("cvv"        ,payment.CardCVV,1,"","}") // Changed to STRING from NUMERIC
 				         + "}";
 				ret      = 20;
-//				ret      = TestService(0); // Dev
-//				ret      = TestService(1); // Live
-//				ret      = CallWebService(payment,"/pg/api/v2/card/register");
 				ret      = CallWebService(payment,(byte)Constants.TransactionType.GetToken);
 				ret      = 30;
 				payToken = Tools.JSONValue(XMLResult,"token");
@@ -52,6 +71,8 @@ namespace PCIBusiness
 
 		public override int TokenPayment(Payment payment)
 		{
+			return 99020;
+
 			if ( ! EnabledFor3d(payment.TransactionType) )
 				return 590;
 
@@ -70,7 +91,6 @@ namespace PCIBusiness
 				        + "}";
 
 				ret     = 20;
-//				ret     = CallWebService(payment,"/pg/api/v2/payment/create");
 				ret     = CallWebService(payment,(byte)Constants.TransactionType.TokenPayment);
 				ret     = 30;
 				payRef  = Tools.JSONValue(XMLResult,"reference");
@@ -84,6 +104,39 @@ namespace PCIBusiness
 			{
 				Tools.LogInfo     ("TokenPayment/98","Ret="+ret.ToString()+", JSON Sent="+xmlSent,255,this);
 				Tools.LogException("TokenPayment/99","Ret="+ret.ToString()+", JSON Sent="+xmlSent,ex ,this);
+			}
+			return ret;
+		}
+
+		public override int CardPayment(Payment payment)
+		{
+			return 99030;
+
+			int ret = 10;
+
+			try
+			{
+				xmlSent =  "merchant_id="   + Tools.URLString(payment.ProviderUserID)
+				        + "&merchant_key="  + Tools.URLString(payment.ProviderKey)
+				        + "&notify_url="    + Tools.URLString("")
+				        + "&name_first="    + Tools.URLString(payment.FirstName)
+				        + "&name_last="     + Tools.URLString(payment.LastName)
+				        + "&email_address=" + Tools.URLString(payment.EMail)
+				        + "&m_payment_id="  + Tools.URLString(payment.MerchantReference)
+				        + "&amount="        + Tools.URLString(payment.PaymentAmountDecimal)
+				        + "&item_name="     + Tools.URLString(payment.PaymentDescription)
+				        + "&subscription_type=2";
+
+				ret     = 40;
+//				xmlSent = xmlSent + "&signature=" + HashMD5(xmlSent);
+//				ret     = PostHTML(payment.ProviderURL);
+
+				Tools.LogInfo("CardPayment/10","Merchant Ref=" + payment.MerchantReference,10,this);
+			}
+			catch (Exception ex)
+			{
+				Tools.LogInfo     ("CardPayment/98","Ret="+ret.ToString()+", JSON Sent="+xmlSent,255,this);
+				Tools.LogException("CardPayment/99","Ret="+ret.ToString()+", JSON Sent="+xmlSent,ex ,this);
 			}
 			return ret;
 		}
@@ -115,18 +168,6 @@ namespace PCIBusiness
 			else
 			{ }
 
-//			if ( Tools.NullToString(urlDetail).Length > 0 )
-//			{
-//				ret = 30;
-//				if ( url.EndsWith("/") )
-//					url = url.Substring(0,url.Length-1);
-//				ret = 40;
-//				if ( urlDetail.StartsWith("/") )
-//					urlDetail = urlDetail.Substring(1);
-//				ret = 50;
-//				url = url + "/" + urlDetail;
-//			}
-
 			ret        = 60;
 			strResult  = "";
 			resultCode = "98";
@@ -135,7 +176,7 @@ namespace PCIBusiness
 
 			try
 			{
-				string         sig;
+//				string         sig;
 				byte[]         page               = Encoding.UTF8.GetBytes(xmlSent);
 				HttpWebRequest webRequest         = (HttpWebRequest)WebRequest.Create(url);
 				webRequest.ContentType            = "application/json";
@@ -144,8 +185,8 @@ namespace PCIBusiness
 				ret                               = 60;
 				webRequest.Headers["X-Token"]     = payment.ProviderKey;
 				ret                               = 90;
-				sig                               = GetSignature(payment.ProviderPassword,url,xmlSent);
-				webRequest.Headers["X-Signature"] = sig;
+//				sig                               = GetSignature(payment.ProviderPassword,url,xmlSent);
+//				webRequest.Headers["X-Signature"] = sig;
 				ret                               = 100;
 
 				Tools.LogInfo("CallWebService/20",
@@ -153,7 +194,6 @@ namespace PCIBusiness
 				            ", URL=" + url +
 				            ", Token=" + payment.ProviderKey +
 				            ", Key=" + payment.ProviderPassword +
-				            ", Signature=" + sig +
 				            ", JSON Sent=" + xmlSent, 10, this);
 
 				using (Stream stream = webRequest.GetRequestStream())
@@ -204,7 +244,7 @@ namespace PCIBusiness
 			}
 			catch (WebException ex1)
 			{
-				Tools.DecodeWebException(ex1,"TransactionPayGenius.CallWebService/297","ret="+ret.ToString());
+				Tools.DecodeWebException(ex1,"TransactionStripe.CallWebService/297","ret="+ret.ToString());
 			}
 			catch (Exception ex2)
 			{
@@ -216,60 +256,25 @@ namespace PCIBusiness
 
 		private int TestService(byte live=0)
       {
-//			Testing only!
 			try
 			{
-//				string         url        = ( live == 0 ? "https://developer.paygenius.co.za/pg/api/v2/util/validate" : "https://www.paygenius.co.za/pg/api/v2/util/validate" );
-				string         url        = BureauURL + "/pg/api/v2/util/validate";
-				string         key        = ( live == 0 ? "f1a7d3b1-e90b-42c0-a304-459382a47aba" : "bb3a0012-74a5-4e74-bc46-03afa3c30850" );
-				string         data       = "{\"data\":\"value\"}";
-				byte[]         page       = Encoding.UTF8.GetBytes(data);
-				HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
-
-				webRequest.ContentType    = "application/json";
-				webRequest.Accept         = "application/json";
-				webRequest.Method         = "POST";
-				webRequest.Headers["X-Token"]     = ( live == 0 ? "60977662-6640-4701-96c8-ca6accbaac11" : "5403bd05-93da-49f7-8118-7a2713316dfe" );
-				webRequest.Headers["X-Signature"] = GetSignature(key,url,data);
-
-				using (Stream stream = webRequest.GetRequestStream())
-				{
-					stream.Write(page, 0, page.Length);
-					stream.Flush();
-					stream.Close();
-				}
-
-				using (WebResponse webResponse = webRequest.GetResponse())
-				{
-					using (StreamReader rd = new StreamReader(webResponse.GetResponseStream()))
-						strResult = rd.ReadToEnd();
-				}
 			}
 			catch (Exception ex)
 			{
 				Tools.LogException("TestService/99","",ex,this);
 			}
-			return 0;
+			return 99040;;
 		}
 
-		private string GetSignature(string secretKey,string endPoint,string jsonData)
+		public TransactionStripe() : base()
 		{
-			HMACSHA256 hmac = new HMACSHA256 (Encoding.Default.GetBytes(secretKey));
-			byte[]     hash = hmac.ComputeHash (Encoding.Default.GetBytes(endPoint + "\n" + jsonData));
-			string     sig  = "";
-			hmac            = null;
+			base.LoadBureauDetails(Constants.PaymentProvider.Stripe);
+			xmlResult = null;
 
-			for (int k = 0; k < hash.Length; k++)
-				sig = sig + hash[k].ToString("X2"); // Hexadecimal
-
-			return sig.ToLower();
-		}
-
-		public TransactionPayGenius() : base()
-		{
-			base.LoadBureauDetails(Constants.PaymentProvider.PayGenius);
-		//	bureauCode = Tools.BureauCode(Constants.PaymentProvider.PayGenius);
-			xmlResult  = null;
+			if ( Tools.SystemIsLive() )
+				StripeConfiguration.ApiKey = "sk_live";
+			else
+				StripeConfiguration.ApiKey = "sk_test_51It78gGmZVKtO2iKwt179k2NOmHVUNab70RO7EcbRm7AZmvunvtgD4S0srMXQWIpvj3EAWq7QLJ4kcRIMRHPzPxq00n0dLN01U"; // Secret key
 		}
 	}
 }

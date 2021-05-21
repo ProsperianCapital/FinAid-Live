@@ -126,7 +126,7 @@ namespace PCIBusiness
 			return ret;
 		}
 
-		public override int ProcessPayment(Payment payment)
+		public override int CardPayment(Payment payment)
 		{
 			int ret = 10;
 
@@ -147,13 +147,13 @@ namespace PCIBusiness
 				ret     = 40;
 				xmlSent = xmlSent + "&signature=" + HashMD5(xmlSent);
 
-				Tools.LogInfo("TransactionPayFast.ProcessPayment/20","Post="+xmlSent+", Key="+payment.ProviderKey,30);
+				Tools.LogInfo("TransactionPayFast.CardPayment/20","Post="+xmlSent+", Key="+payment.ProviderKey,30);
 
 				ret     = PostHTML(payment.ProviderURL);
 			}
 			catch (Exception ex)
 			{
-				Tools.LogException("TransactionPayFast.ProcessPayment/90","Ret="+ret.ToString()+", XML Sent=" + xmlSent,ex);
+				Tools.LogException("TransactionPayFast.CardPayment/90","Ret="+ret.ToString()+", XML Sent=" + xmlSent,ex);
 			}
 			return ret;
 		}
