@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Net;
 using System.IO;
-using Stripe;
+// using Stripe;
 
 namespace PCIBusiness
 {
@@ -24,25 +24,23 @@ namespace PCIBusiness
 			{
 				Tools.LogInfo("GetToken/10","Merchant Ref=" + payment.MerchantReference,10,this);
 
-				var customerOptions = new CustomerCreateOptions
-				{
-					Name  = (payment.FirstName + " " + payment.LastName).Trim(),
-					Email = payment.EMail,
-					Phone = payment.PhoneCell
-				};
-				var customerservice = new CustomerService();
-				var customer        = customerservice.Create(customerOptions);
-
-				var paymentOptions  = new PaymentIntentCreateOptions
-				{
-					Amount   = payment.PaymentAmount,
-					Currency = payment.CurrencyCode,
-					Customer = customer.Id,
-				};
-				var paymentIntentservice = new PaymentIntentService();
-				var paymentIntent        = paymentIntentservice.Create(paymentOptions);	
-
-
+//				var customerOptions = new CustomerCreateOptions
+//				{
+//					Name  = (payment.FirstName + " " + payment.LastName).Trim(),
+//					Email = payment.EMail,
+//					Phone = payment.PhoneCell
+//				};
+//				var customerservice = new CustomerService();
+//				var customer        = customerservice.Create(customerOptions);
+//
+//				var paymentOptions  = new PaymentIntentCreateOptions
+//				{
+//					Amount   = payment.PaymentAmount,
+//					Currency = payment.CurrencyCode,
+//					Customer = customer.Id,
+//				};
+//				var paymentIntentservice = new PaymentIntentService();
+//				var paymentIntent        = paymentIntentservice.Create(paymentOptions);	
 
 				xmlSent  = "{ \"creditCard\" : " + Tools.JSONPair("number"     ,payment.CardNumber,1,"{")
 				                                 + Tools.JSONPair("cardHolder" ,payment.CardName,1)
@@ -271,10 +269,10 @@ namespace PCIBusiness
 			base.LoadBureauDetails(Constants.PaymentProvider.Stripe);
 			xmlResult = null;
 
-			if ( Tools.SystemIsLive() )
-				StripeConfiguration.ApiKey = "sk_live";
-			else
-				StripeConfiguration.ApiKey = "sk_test_51It78gGmZVKtO2iKwt179k2NOmHVUNab70RO7EcbRm7AZmvunvtgD4S0srMXQWIpvj3EAWq7QLJ4kcRIMRHPzPxq00n0dLN01U"; // Secret key
+//			if ( Tools.SystemIsLive() )
+//				StripeConfiguration.ApiKey = "sk_live";
+//			else
+//				StripeConfiguration.ApiKey = "sk_test_51It78gGmZVKtO2iKwt179k2NOmHVUNab70RO7EcbRm7AZmvunvtgD4S0srMXQWIpvj3EAWq7QLJ4kcRIMRHPzPxq00n0dLN01U"; // Secret key
 		}
 	}
 }
