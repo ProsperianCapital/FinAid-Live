@@ -204,7 +204,7 @@ namespace PCIBusiness
 			}
 			catch (WebException ex1)
 			{
-				Tools.DecodeWebException(ex1,"TransactionPayGenius.CallWebService/297","ret="+ret.ToString());
+				Tools.DecodeWebException(ex1,ClassName+".CallWebService/297","ret="+ret.ToString());
 			}
 			catch (Exception ex2)
 			{
@@ -268,8 +268,6 @@ namespace PCIBusiness
 		public TransactionPayGenius() : base()
 		{
 			base.LoadBureauDetails(Constants.PaymentProvider.PayGenius);
-		//	bureauCode = Tools.BureauCode(Constants.PaymentProvider.PayGenius);
-			xmlResult  = null;
 		}
 	}
 }

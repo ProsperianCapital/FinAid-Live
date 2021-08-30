@@ -1,253 +1,335 @@
 using System;
-using System.Text;
-using System.Net;
-using System.IO;
-// using Stripe;
+using Stripe;
 
 namespace PCIBusiness
 {
 	public class TransactionStripe : Transaction
 	{
-		public  bool Successful
-		{
-			get { return Tools.JSONValue(strResult,"success").ToUpper() == "TRUE"; }
-		}
+		private string err;
+
+	//	Moved to Transaction.cs
+	//	private string customerId;
+	//	private string paymentMethodId;
 
 		public override int GetToken(Payment payment)
 		{
-			return 99010;
+			int ret         = 10;
+			err             = "";
+			payToken        = "";
+			customerId      = "";
+			paymentMethodId = "";
+			strResult       = "";
+			resultCode      = "991";
+			resultMsg       = "Fail";
 
-			int ret  = 10;
-			payToken = "";
+			Tools.LogInfo("GetToken/10","Merchant Ref=" + payment.MerchantReference,10,this);
 
 			try
 			{
-				Tools.LogInfo("GetToken/10","Merchant Ref=" + payment.MerchantReference,10,this);
+//	Testing
+//				StripeConfiguration.ApiKey = "sk_test_51It78gGmZVKtO2iKBZF7DA5JisJzRqvibQdXSfBj9eQh4f5UDvgCShZIjznOWCxu8MtcJG5acVkDcd8K184gIegx001uXlHI5g";
+//	Testing
+				ret                        = 20;
+				StripeConfiguration.ApiKey = payment.ProviderPassword; // Secret key
 
-//				var customerOptions = new CustomerCreateOptions
-//				{
-//					Name  = (payment.FirstName + " " + payment.LastName).Trim(),
-//					Email = payment.EMail,
-//					Phone = payment.PhoneCell
-//				};
-//				var customerservice = new CustomerService();
-//				var customer        = customerservice.Create(customerOptions);
-//
-//				var paymentOptions  = new PaymentIntentCreateOptions
-//				{
-//					Amount   = payment.PaymentAmount,
-//					Currency = payment.CurrencyCode,
-//					Customer = customer.Id,
-//				};
-//				var paymentIntentservice = new PaymentIntentService();
-//				var paymentIntent        = paymentIntentservice.Create(paymentOptions);	
+				ret                        = 30;
+				var tokenOptions           = new TokenCreateOptions
+				{
+					Card = new TokenCardOptions
+					{
+						Number   = payment.CardNumber,
+						ExpMonth = payment.CardExpiryMonth,
+						ExpYear  = payment.CardExpiryYear,
+						Cvc      = payment.CardCVV
+					}
+				};
+				ret              = 40;
+				var tokenService = new TokenService();
+				var token        = tokenService.Create(tokenOptions);
+				payToken         = token.Id;
+				err              = err + ", tokenId="+Tools.NullToString(payToken);
 
-				xmlSent  = "{ \"creditCard\" : " + Tools.JSONPair("number"     ,payment.CardNumber,1,"{")
-				                                 + Tools.JSONPair("cardHolder" ,payment.CardName,1)
-				                                 + Tools.JSONPair("expiryYear" ,payment.CardExpiryYYYY,11)
-				                                 + Tools.JSONPair("expiryMonth",payment.CardExpiryMonth.ToString(),11) // Not padded, so 7 not 07
-				                                 + Tools.JSONPair("type"       ,payment.CardType,1)
-				                                 + Tools.JSONPair("cvv"        ,payment.CardCVV,1,"","}") // Changed to STRING from NUMERIC
-				         + "}";
-				ret      = 20;
-				ret      = CallWebService(payment,(byte)Constants.TransactionType.GetToken);
-				ret      = 30;
-				payToken = Tools.JSONValue(XMLResult,"token");
-				ret      = 40;
-				if ( Successful && payToken.Length > 0 )
-					ret   = 0;
-//				else
-//					Tools.LogInfo("GetToken/50","JSON Sent="+xmlSent+", JSON Rec="+XMLResult,199,this);
+				ret                      = 50;
+				var paymentMethodOptions = new PaymentMethodCreateOptions
+				{
+					Type = "card",
+					Card = new PaymentMethodCardOptions
+					{
+						Token = token.Id
+					}
+				};
+				ret                      = 60;
+				var paymentMethodService = new PaymentMethodService();
+				var paymentMethod        = paymentMethodService.Create(paymentMethodOptions);
+				paymentMethodId          = paymentMethod.Id;
+				err                      = err + ", paymentMethodId="+Tools.NullToString(paymentMethodId);
+
+				ret                 = 70;
+				string tmp          = (payment.FirstName + " " + payment.LastName).Trim();
+				var customerOptions = new CustomerCreateOptions
+				{
+					Name          = payment.CardName, // (payment.FirstName + " " + payment.LastName).Trim(),
+					Email         = payment.EMail,
+					Phone         = payment.PhoneCell,
+					Description   = payment.MerchantReference + ( tmp.Length > 0 ? " (" + tmp + ")" : "" ),
+					PaymentMethod = paymentMethod.Id
+				};
+				ret = 75;
+				if ( payment.Address1(0).Length > 0 || payment.Address2(0).Length > 0 || payment.ProvinceCode.Length > 0 || payment.CountryCode(0).Length > 0 )
+				{
+					ret                     = 80;
+					customerOptions.Address = new AddressOptions()
+					{
+						Line1      = payment.Address1(0),
+					//	Line2      = payment.Address2(0),
+						City       = payment.Address2(0),
+						State      = payment.ProvinceCode,
+						PostalCode = payment.PostalCode(0)
+					};
+					ret = 85;
+					if ( payment.CountryCode(0).Length == 2 )
+						customerOptions.Address.Country = payment.CountryCode(0).ToUpper();
+				}
+
+				ret                 = 90;
+				var customerService = new CustomerService();
+				var customer        = customerService.Create(customerOptions);
+//				customer.Currency   = payment.CurrencyCode.ToLower();
+				customerId          = customer.Id;
+				err                 = err + ", customerId="+Tools.NullToString(customerId);
+
+				ret                 = 100;
+				strResult           = customer.StripeResponse.Content;
+//				resultMsg           = Tools.JSONValue(strResult,"status");
+				resultCode          = customer.StripeResponse.ToString();
+				int k               = resultCode.ToUpper().IndexOf(" STATUS=");
+				ret                 = 110;
+				err                 = err + ", StripeResponse="+Tools.NullToString(resultCode);
+
+//	customer.StripeResponse.ToString() is as follows:
+//	<Stripe.StripeResponse status=200 Request-Id=req_bI0B5glG6r6DNe Date=2021-05-28T09:35:23>
+
+				if ( k > 0 )
+				{
+					resultCode = resultCode.Substring(k+8).Trim();
+					k          = resultCode.IndexOf(" ");
+					if ( k > 0 )
+						resultCode = resultCode.Substring(0,k);
+				}
+				else
+					resultCode = "999";
+
+				ret                  = 120;
+				err                  = err + ", strResult=" +Tools.NullToString(strResult)
+				                           + ", resultCode="+Tools.NullToString(resultCode);
+				customer             = null;
+				customerService      = null;
+				customerOptions      = null;
+				paymentMethod        = null;
+				paymentMethodService = null;
+				paymentMethodOptions = null;
+				token                = null;
+				tokenService         = null;
+				tokenOptions         = null;
+
+				if ( resultCode.StartsWith("2") && payToken.Length > 0 && paymentMethodId.Length > 0 && customerId.Length > 0 )
+				{
+					resultMsg = "Success";
+					ret       = 0;
+				//	Tools.LogInfo ("GetToken/189","Ret=0"                 + err,255,this);
+				}
+				else
+					Tools.LogInfo ("GetToken/197","Ret=" + ret.ToString() + err,231,this);
 			}
 			catch (Exception ex)
 			{
-				Tools.LogInfo     ("GetToken/98","Ret="+ret.ToString()+", JSON Sent="+xmlSent,255,this);
-				Tools.LogException("GetToken/99","Ret="+ret.ToString()+", JSON Sent="+xmlSent,ex ,this);
+				err = "Ret=" + ret.ToString() + err;
+				Tools.LogInfo     ("GetToken/198",err,231,this);
+				Tools.LogException("GetToken/199",err,ex ,this);
 			}
 			return ret;
 		}
 
 		public override int TokenPayment(Payment payment)
 		{
-			return 99020;
-
 			if ( ! EnabledFor3d(payment.TransactionType) )
 				return 590;
 
-			int ret = 10;
-			payRef  = "";
+			int ret    = 610;
+			payRef     = "";
+			strResult  = "";
+			err        = "";
+			resultMsg  = "Fail";
+			resultCode = "981";
 
 			Tools.LogInfo("TokenPayment/10","Merchant Ref=" + payment.MerchantReference,10,this);
 
 			try
 			{
-				xmlSent = "{ \"creditCard\" : "  + Tools.JSONPair("token"    ,payment.CardToken,1,"{","}")
-				        + ", \"transaction\" : " + Tools.JSONPair("reference",payment.MerchantReference,1,"{")
-				                                 + Tools.JSONPair("currency" ,payment.CurrencyCode,1)
-				                                 + Tools.JSONPair("amount"   ,payment.PaymentAmount.ToString(),11,"","}")
-				        + ", "                   + Tools.JSONPair("threeDSecure","false",12,"","")
-				        + "}";
+				ret                        = 620;
+				StripeConfiguration.ApiKey = payment.ProviderPassword; // Secret key
 
-				ret     = 20;
-				ret     = CallWebService(payment,(byte)Constants.TransactionType.TokenPayment);
-				ret     = 30;
-				payRef  = Tools.JSONValue(XMLResult,"reference");
-				ret     = 40;
-				if ( Successful && payRef.Length > 0 )
-					ret  = 0;
+				ret                        = 624;
+				err                        = err + ", customerId="      + Tools.NullToString(payment.CustomerID)
+				                                 + ", paymentMethodId=" + Tools.NullToString(payment.PaymentMethodID)
+				                                 + ", tokenId="         + Tools.NullToString(payment.CardToken);
+				ret                        = 630;
+				var paymentIntentOptions   = new PaymentIntentCreateOptions
+				{
+					Amount              = payment.PaymentAmount,
+					Currency            = payment.CurrencyCode.ToLower(), // Must be "usd" not "USD"
+					StatementDescriptor = payment.PaymentDescriptionLeft(22),
+					Customer            = payment.CustomerID,
+					PaymentMethod       = payment.PaymentMethodID,
+					Description         = payment.MerchantReference,
+					ConfirmationMethod  = "manual"
+//					SetupFutureUsage    = "off_session",
+//					Confirm             = true,
+//					PaymentMethodData   = new PaymentIntentPaymentMethodDataOptions
+//					{
+//						Type = "card"
+//					},
+				};
+
+//	Create a separate mandate
+//				string mandateId = "";
+//				if ( payment.MandateDateTime > Constants.DateNull && payment.MandateIPAddress.Length > 2 )
+//				{
+//					ret         = 640;
+//					var mandate = new Mandate
+//					{
+//						CustomerAcceptance = new MandateCustomerAcceptance
+//						{
+//							AcceptedAt = payment.MandateDateTime,
+//							Online     = new MandateCustomerAcceptanceOnline
+//							{
+//								IpAddress = payment.MandateIPAddress,
+//								UserAgent = payment.MandateBrowser
+//							}
+//						}
+//					};
+//					mandateId = mandate.Id;
+//					err       = err + ", mandateId="+Tools.NullToString(mandateId);
+//				}
 //				else
-//					Tools.LogInfo("TokenPayment/50","JSON Sent="+xmlSent+", JSON Rec="+XMLResult,199,this);
+//					err       = err + ", No mandate";
+
+				ret                      = 690;
+				var paymentIntentService = new PaymentIntentService();
+				var paymentIntent        = paymentIntentService.Create(paymentIntentOptions);	
+				err                      = err + ", paymentIntentId="+Tools.NullToString(paymentIntent.Id);
+
+				ret                = 700;
+				var confirmOptions = new PaymentIntentConfirmOptions
+				{
+					PaymentMethod = payment.PaymentMethodID,
+					OffSession    = true
+//					Mandate       = mandateId
+//					MandateData   = new PaymentIntentMandateDataOptions
+//					{
+//						CustomerAcceptance = new PaymentIntentMandateDataCustomerAcceptanceOptions
+//						{
+//							AcceptedAt = payment.MandateDateTime,
+//							Online     = new PaymentIntentMandateDataCustomerAcceptanceOnlineOptions
+//							{
+//								IpAddress = payment.MandateIPAddress,
+//								UserAgent = payment.MandateBrowser
+//							}
+//						}
+//					}
+				};
+
+				if ( payment.MandateDateTime > Constants.DateNull && payment.MandateIPAddress.Length > 2 )
+				{
+					ret = 710;
+					confirmOptions.MandateData = new PaymentIntentMandateDataOptions
+					{
+						CustomerAcceptance = new PaymentIntentMandateDataCustomerAcceptanceOptions
+						{
+							AcceptedAt = payment.MandateDateTime,
+							Type       = "online",
+							Online     = new PaymentIntentMandateDataCustomerAcceptanceOnlineOptions
+							{
+								IpAddress = payment.MandateIPAddress,
+								UserAgent = payment.MandateBrowser
+							}
+						}
+					};
+				}
+
+				ret                = 720;
+				var paymentConfirm = paymentIntentService.Confirm(paymentIntent.Id,confirmOptions);
+				payRef             = paymentConfirm.Id;
+				err                = err + ", paymentConfirmId="+Tools.NullToString(payRef);
+
+				ret                = 730;
+				strResult          = paymentConfirm.StripeResponse.Content;
+				resultMsg          = Tools.JSONValue(strResult,"status");
+				resultCode         = paymentConfirm.StripeResponse.ToString();
+				int k              = resultCode.ToUpper().IndexOf(" STATUS=");
+				ret                = 740;
+				err                = err + ", StripeResponse="+Tools.NullToString(resultCode);
+
+				if ( k > 0 )
+				{
+					ret        = 750;
+					resultCode = resultCode.Substring(k+8).Trim();
+					k          = resultCode.IndexOf(" ");
+					if ( k > 0 )
+						resultCode = resultCode.Substring(0,k);
+				}
+				else
+					resultCode = "989";
+
+				ret                  = 760;
+				err                  = err + ", strResult=" +Tools.NullToString(strResult)
+				                           + ", resultCode="+Tools.NullToString(resultCode);
+//				mandate              = null;
+				paymentIntentService = null;
+				paymentIntent        = null;
+				confirmOptions       = null;
+				paymentConfirm       = null;
+
+				if ( ! resultCode.StartsWith("2") || payRef.Length < 1 )
+				{
+					resultCode = ( resultMsg.Length > 0 ? resultMsg : "Fail" );
+				//	resultCode = "Fail/" + resultCode + ( resultMsg.Length > 0 ? " : " + resultMsg : "" );
+					Tools.LogInfo ("TokenPayment/197","Ret=" + ret.ToString() + err,231,this);
+				}
+				else if ( resultMsg.ToUpper().StartsWith("SUCCE") || resultMsg.Length == 0 )
+				{
+					ret        = 0;
+					resultCode = "Success";
+				//	resultCode = "Success/" + resultCode;
+				//	Tools.LogInfo ("TokenPayment/189","Ret=0" + err,255,this);
+				}
+				else
+					resultCode = resultMsg;
 			}
 			catch (Exception ex)
 			{
-				Tools.LogInfo     ("TokenPayment/98","Ret="+ret.ToString()+", JSON Sent="+xmlSent,255,this);
-				Tools.LogException("TokenPayment/99","Ret="+ret.ToString()+", JSON Sent="+xmlSent,ex ,this);
+				resultCode = ex.Message;
+			//	resultCode = "Fail/" + ret.ToString() + " : " + ex.Message + ( resultMsg.Length > 0 ? " (" + resultMsg + ")" : "" );
+				err        = "Ret=" + ret.ToString() + err;
+				Tools.LogInfo     ("TokenPayment/198",err,231,this);
+				Tools.LogException("TokenPayment/199",err,ex ,this);
 			}
 			return ret;
 		}
 
 		public override int CardPayment(Payment payment)
 		{
-			return 99030;
-
 			int ret = 10;
+			err     = "";
 
 			try
 			{
-				xmlSent =  "merchant_id="   + Tools.URLString(payment.ProviderUserID)
-				        + "&merchant_key="  + Tools.URLString(payment.ProviderKey)
-				        + "&notify_url="    + Tools.URLString("")
-				        + "&name_first="    + Tools.URLString(payment.FirstName)
-				        + "&name_last="     + Tools.URLString(payment.LastName)
-				        + "&email_address=" + Tools.URLString(payment.EMail)
-				        + "&m_payment_id="  + Tools.URLString(payment.MerchantReference)
-				        + "&amount="        + Tools.URLString(payment.PaymentAmountDecimal)
-				        + "&item_name="     + Tools.URLString(payment.PaymentDescription)
-				        + "&subscription_type=2";
-
-				ret     = 40;
-//				xmlSent = xmlSent + "&signature=" + HashMD5(xmlSent);
-//				ret     = PostHTML(payment.ProviderURL);
-
 				Tools.LogInfo("CardPayment/10","Merchant Ref=" + payment.MerchantReference,10,this);
 			}
 			catch (Exception ex)
 			{
-				Tools.LogInfo     ("CardPayment/98","Ret="+ret.ToString()+", JSON Sent="+xmlSent,255,this);
-				Tools.LogException("CardPayment/99","Ret="+ret.ToString()+", JSON Sent="+xmlSent,ex ,this);
-			}
-			return ret;
-		}
-
-		private int CallWebService(Payment payment,byte transactionType)
-      {
-			int    ret      = 10;
-			string url      = payment.ProviderURL;
-			string tranDesc = "";
-
-			if ( Tools.NullToString(url).Length == 0 )
-				url = BureauURL;
-
-			ret = 20;
-			if ( url.EndsWith("/") )
-				url = url.Substring(0,url.Length-1);
-
-			ret = 30;
-			if ( transactionType == (byte)Constants.TransactionType.GetToken )
-			{
-				url      = url + "/pg/api/v2/card/register";
-				tranDesc = "Get Token";
-			}
-			else if ( transactionType == (byte)Constants.TransactionType.TokenPayment )
-			{
-				url      = url + "/pg/api/v2/payment/create";
-				tranDesc = "Process Payment";
-			}
-			else
-			{ }
-
-			ret        = 60;
-			strResult  = "";
-			resultCode = "98";
-			resultMsg  = "(98) Internal error connecting to " + url;
-			ret        = 70;
-
-			try
-			{
-//				string         sig;
-				byte[]         page               = Encoding.UTF8.GetBytes(xmlSent);
-				HttpWebRequest webRequest         = (HttpWebRequest)WebRequest.Create(url);
-				webRequest.ContentType            = "application/json";
-				webRequest.Accept                 = "application/json";
-				webRequest.Method                 = "POST";
-				ret                               = 60;
-				webRequest.Headers["X-Token"]     = payment.ProviderKey;
-				ret                               = 90;
-//				sig                               = GetSignature(payment.ProviderPassword,url,xmlSent);
-//				webRequest.Headers["X-Signature"] = sig;
-				ret                               = 100;
-
-				Tools.LogInfo("CallWebService/20",
-				              "Transaction Type=" + tranDesc +
-				            ", URL=" + url +
-				            ", Token=" + payment.ProviderKey +
-				            ", Key=" + payment.ProviderPassword +
-				            ", JSON Sent=" + xmlSent, 10, this);
-
-				using (Stream stream = webRequest.GetRequestStream())
-				{
-					ret = 110;
-					stream.Write(page, 0, page.Length);
-					stream.Flush();
-					stream.Close();
-				}
-
-				ret = 120;
-				using (WebResponse webResponse = webRequest.GetResponse())
-				{
-					ret = 130;
-					using (StreamReader rd = new StreamReader(webResponse.GetResponseStream()))
-					{
-						ret        = 140;
-						strResult  = rd.ReadToEnd();
-					}
-					if ( strResult.Length == 0 )
-					{
-						ret        = 150;
-						resultMsg  = "No data returned from " + url;
-						Tools.LogInfo("CallWebService/30","Failed, JSON Rec=(empty)",199,this);
-					}
-					else
-					{
-						ret        = 160;
-						resultCode = Tools.JSONValue(strResult,"code");
-						resultMsg  = Tools.JSONValue(strResult,"message");
-
-						if (Successful)
-						{
-							ret        = 170;
-							resultCode = "00";
-							Tools.LogInfo("CallWebService/40","Successful, JSON Rec=" + strResult,255,this);
-						}
-						else
-						{
-							ret = 180;
-							Tools.LogInfo("CallWebService/50","Failed, JSON Rec=" + strResult,199,this);
-							if ( Tools.StringToInt(resultCode) == 0 )
-								resultCode = "99";
-						}
-					}
-				}
-				ret = 0;
-			}
-			catch (WebException ex1)
-			{
-				Tools.DecodeWebException(ex1,"TransactionStripe.CallWebService/297","ret="+ret.ToString());
-			}
-			catch (Exception ex2)
-			{
-				Tools.LogInfo     ("CallWebService/298","ret="+ret.ToString(),220,this);
-				Tools.LogException("CallWebService/299","ret="+ret.ToString(),ex2,this);
+				Tools.LogInfo     ("CardPayment/198","Ret="+ret.ToString(),255,this);
+				Tools.LogException("CardPayment1/99","Ret="+ret.ToString(),ex ,this);
 			}
 			return ret;
 		}
@@ -259,20 +341,184 @@ namespace PCIBusiness
 			}
 			catch (Exception ex)
 			{
-				Tools.LogException("TestService/99","",ex,this);
+				Tools.LogException("TestService/199","",ex,this);
 			}
-			return 99040;;
+			return 99040;
 		}
-
-		public TransactionStripe() : base()
+		public override int ThreeDSecureCheck(string transID)
 		{
-			base.LoadBureauDetails(Constants.PaymentProvider.Stripe);
-			xmlResult = null;
+//	Return
+//	   0     : Payment succeeded
+//	   1-999 : Payment processed but declined or rejected
+// 1001-    : Internal error
 
-//			if ( Tools.SystemIsLive() )
-//				StripeConfiguration.ApiKey = "sk_live";
-//			else
-//				StripeConfiguration.ApiKey = "sk_test_51It78gGmZVKtO2iKwt179k2NOmHVUNab70RO7EcbRm7AZmvunvtgD4S0srMXQWIpvj3EAWq7QLJ4kcRIMRHPzPxq00n0dLN01U"; // Secret key
+			int    ret = 10010;
+			resultCode = "XX";
+			resultMsg  = "Internal failure";
+			err        = "";
+
+			try
+			{
+				ret                        = 10020;
+				StripeConfiguration.ApiKey = Tools.ProviderCredentials("Stripe","SecretKey");
+				ret                        = 10030;
+				var paymentIntentService   = new PaymentIntentService();
+				ret                        = 10040;
+			//	var paymentIntent          = paymentIntentService.Get(clientSecretId);
+				var paymentIntent          = paymentIntentService.Get(transID);
+				ret                        = 10050;
+				resultCode                 = paymentIntent.Status;
+				ret                        = 10060;
+				if ( resultCode.ToUpper().StartsWith("SUCCE") )
+				{
+					resultMsg = "Payment successful";
+					return 0;
+				}
+				resultMsg = "Payment NOT successful; further action required";
+				return 37;
+			}
+			catch (Exception ex)
+			{
+				Tools.LogInfo     ("ThreeDSecureCheck/198","Ret="+ret.ToString(),222,this);
+				Tools.LogException("ThreeDSecureCheck/199","Ret="+ret.ToString(), ex,this);
+			}
+			return ret;
 		}
+
+		public override int ThreeDSecurePayment(Payment payment,Uri postBackURL,string languageCode="",string languageDialectCode="")
+		{
+			int    ret = 10;
+			string url = "";
+			err        = "";
+
+			try
+			{
+				StripeConfiguration.ApiKey = payment.ProviderPassword; // Secret key
+
+				if ( postBackURL == null )
+					url = Tools.ConfigValue("SystemURL");
+				else
+					url = postBackURL.GetLeftPart(UriPartial.Authority);
+				if ( ! url.EndsWith("/") )
+					url = url + "/";
+				d3Form = "";
+				ret    = 20;
+				url    = url + "RegisterThreeD.aspx?ProviderCode="+bureauCode
+				             +                    "&TransRef="+Tools.XMLSafe(payment.MerchantReference);
+
+				ret                      = 50;
+				var paymentMethodOptions = new PaymentMethodCreateOptions
+				{
+					Type = "card",
+					Card = new PaymentMethodCardOptions
+					{
+						Number   = payment.CardNumber,
+						ExpMonth = payment.CardExpiryMonth,
+						ExpYear  = payment.CardExpiryYear,
+						Cvc      = payment.CardCVV
+					}
+				};
+				ret                      = 60;
+				var paymentMethodService = new PaymentMethodService();
+				var paymentMethod        = paymentMethodService.Create(paymentMethodOptions);
+				err                      = err + ", paymentMethodId="+Tools.NullToString(paymentMethod.Id);
+
+				ret                 = 70;
+				var customerOptions = new CustomerCreateOptions
+				{
+					Name          = payment.CardName, // (payment.FirstName + " " + payment.LastName).Trim(),
+					Email         = payment.EMail,
+					Phone         = payment.PhoneCell,
+					PaymentMethod = paymentMethod.Id
+				};
+				ret                  = 80;
+				var customerService  = new CustomerService();
+				var customer         = customerService.Create(customerOptions);
+				err                  = err + ", customerId="+Tools.NullToString(customer.Id);
+
+//				if ( payment.PaymentDescription.Length < 1 )
+//					payment.PaymentDescription = "CareAssist";
+//				else if ( payment.PaymentDescription.Length > 22 )
+//					payment.PaymentDescription = payment.PaymentDescription.Substring(0,22);
+
+//	Stripe needs a minimum payment of 50 US cents
+				var paymentIntentOptions = new PaymentIntentCreateOptions
+				{
+					Amount                = 050,   // payment.PaymentAmount,
+					Currency              = "usd", // payment.CurrencyCode.ToLower(), // Must be "usd" not "USD"
+					StatementDescriptor   = payment.PaymentDescriptionLeft(22),
+					Customer              = customer.Id,
+					PaymentMethod         = paymentMethod.Id,
+					Description           = payment.MerchantReference,
+					ConfirmationMethod    = "manual"
+				};
+				ret                      = 40;
+				var paymentIntentService = new PaymentIntentService();
+				var paymentIntent        = paymentIntentService.Create(paymentIntentOptions);	
+				err                      = err + ", paymentIntentId="+Tools.NullToString(paymentIntent.Id);
+
+				ret                = 50;
+				var confirmOptions = new PaymentIntentConfirmOptions
+				{
+					PaymentMethod   = paymentMethod.Id,
+					ReturnUrl       = url
+				};
+				ret                = 60;
+				var paymentConfirm = paymentIntentService.Confirm(paymentIntent.Id,confirmOptions);
+				payRef             = paymentConfirm.Id;
+				err                = err + ", paymentConfirmId="+Tools.NullToString(payRef);
+
+				ret                = 70;
+				strResult          = paymentConfirm.StripeResponse.Content;
+				d3Form             = Tools.JSONValue(strResult,"url","next_action");
+				d3Form             = Tools.JSONRaw(d3Form);
+				resultMsg          = Tools.JSONValue(strResult,"status");
+				ret                = 80;
+				resultCode         = paymentConfirm.StripeResponse.ToString();
+				int k              = resultCode.ToUpper().IndexOf(" STATUS=");
+				err                = err + ", StripeResponse="+Tools.NullToString(resultCode);
+				ret                = 90;
+
+				Tools.LogInfo("ThreeDSecurePayment/60","strResult="+strResult,221,this);
+
+				string sql = "exec sp_WP_PaymentRegister3DSecA @ContractCode="    + Tools.DBString(payment.MerchantReference)
+				           +                                 ",@ReferenceNumber=" + Tools.DBString(payRef)
+				           +                                 ",@Status='77'"; // Means payment pending
+				if ( languageCode.Length > 0 )
+					sql = sql + ",@LanguageCode="        + Tools.DBString(languageCode);
+				if ( languageDialectCode.Length > 0 )
+					sql = sql + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
+				using (MiscList mList = new MiscList())
+					mList.ExecQuery(sql,0,"",false,true);
+
+				Tools.LogInfo("ThreeDSecurePayment/80","PayRef=" + payRef + "; SQL=" + sql + "; " + d3Form,10,this);
+				return 0;
+			}
+			catch (Exception ex)
+			{
+				Tools.LogException("ThreeDSecurePayment/99","Ret="+ret.ToString(),ex,this);
+			}
+			return ret;
+		}
+
+		public TransactionStripe() : base(Constants.PaymentProvider.Stripe_USA)
+		{
+			err = "";
+		}
+		public TransactionStripe(Constants.PaymentProvider provider) : base(provider)
+		{
+			err = "";
+		}
+
+//		public TransactionStripe(string provider) : base()
+//		{
+//			base.LoadBureauDetails((Constants.PaymentProvider)Tools.StringToInt(provider));
+//			err = "";
+//		}
+//		public TransactionStripe(Constants.PaymentProvider provider) : base()
+//		{
+//			base.LoadBureauDetails(provider);
+//			err = "";
+//		}
 	}
 }

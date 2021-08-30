@@ -33,7 +33,7 @@ namespace PCIBusiness
 			get { return fileName; }
 		}
 
-		public int Create(string appName,string fileSource,string mainHeading="",string subHeading="")
+		public int Create(string appName,string appVersion,string fileSource,string mainHeading="",string subHeading="")
 		{
 			try
 			{
@@ -50,13 +50,20 @@ namespace PCIBusiness
 				writer           = PdfWriter.GetInstance(doc,new FileStream(fileName,FileMode.OpenOrCreate));
 				writer.PageEvent = new PdfHeaderFooter();
 
+				if ( appName.Length < 1 )
+					appName = Tools.ConfigValue("AppDescription");
+				if ( appName.Length < 1 )
+					appName = "Prosperian Capital International";
+				if ( appVersion.Length < 1 )
+					appVersion = SystemDetails.AppVersion;
+
 //	Set up unicode font ... in constructor
 //				BaseFont fontBase = BaseFont.CreateFont("C:\\Dev\\Prosperian\\Application\\PCIWebFinAid\\CSS\\raleway-medium-webfont.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 //				Font     fontUse  = new Font(fontBase, 12, Font.NORMAL);
 
 			//	Document attributes
 				doc.Open();
-				doc.AddCreator (appName + ", Version " + SystemDetails.AppVersion);
+				doc.AddCreator (appName + ", Version " + appVersion);
 				doc.AddProducer();
 				doc.AddKeywords("Developed by " + SystemDetails.Developer);
 				doc.AddAuthor  (SystemDetails.Owner);
@@ -89,7 +96,7 @@ namespace PCIBusiness
 				AddParagraph(mainHeading,PDF_FONTSIZE_MAJORHEADING,2,Element.ALIGN_CENTER,"",iTextSharp.text.Font.BOLD);
 				AddParagraph(subHeading,PDF_FONTSIZE_MINORHEADING ,5,Element.ALIGN_CENTER,"",iTextSharp.text.Font.BOLD);
 				AddParagraph("(c) " + SystemDetails.Owner,PDF_FONTSIZE_SUBHEADING,2,Element.ALIGN_CENTER);
-				AddParagraph(appName + ", Version " + SystemDetails.AppVersion + " (" + Tools.DateToString(System.DateTime.Now,2,1) + ")",PDF_FONTSIZE_TABLEHEADING,0,Element.ALIGN_LEFT);
+				AddParagraph(appName + ", Version " + appVersion + " (" + Tools.DateToString(System.DateTime.Now,2,1) + ")",PDF_FONTSIZE_TABLEHEADING,0,Element.ALIGN_LEFT);
 
 				doc.NewPage();
 			}

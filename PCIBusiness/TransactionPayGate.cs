@@ -149,7 +149,7 @@ namespace PCIBusiness
 
 //	Not needed
 //					        +   "<pay:ThreeDSecure>"
-//					        +     "<pay:BillingDescriptor>Prosperian Capital</pay:BillingDescriptor>"
+//					        +     "<pay:BillingDescriptor>" + Tools.XMLSafe(payment.PaymentDescription) + "</pay:BillingDescriptor>"
 //					        +     "<pay:Enrolled>Y</pay:Enrolled>"
 //					        +   "</pay:ThreeDSecure>"
 //					        +   "<pay:Redirect>"
@@ -229,7 +229,7 @@ namespace PCIBusiness
 			{
 				using ( WebClient wc = new WebClient() )
 				{
-					Tools.LogInfo("CallWebService/10",payment.TransactionTypeName+", XML Sent="+xmlSent,10,this);
+					Tools.LogInfo("CallWebService/10",Tools.TransactionTypeName(payment.TransactionType)+", XML Sent="+xmlSent,10,this);
 
 					ret           = 20;
 					wc.Encoding   = System.Text.Encoding.UTF8;
@@ -250,7 +250,7 @@ namespace PCIBusiness
 					resultStatus = Tools.XMLNode(xmlResult,"StatusName"       ,nsPrefix,nsURL);
 					ret          = 50;
 
-					Tools.LogInfo("CallWebService/50",payment.TransactionTypeName+", XML Rec="+xmlOut,10,this);
+					Tools.LogInfo("CallWebService/50",Tools.TransactionTypeName(payment.TransactionType)+", XML Rec="+xmlOut,10,this);
 
 					if ( payment.TransactionType == (byte)Constants.TransactionType.ManualPayment &&
 					     resultStatus.ToUpper() == ("ThreeDSecureRedirectRequired").ToUpper() )

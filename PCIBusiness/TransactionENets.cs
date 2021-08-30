@@ -20,17 +20,23 @@ namespace PCIBusiness
 		}
 
 //		Not used by eNETS
+
 //		public override int GetToken(Payment payment)
 //		{
 //			return 0;
 //		}
+
+//		public override int TokenPayment(Payment payment)
+//		{
+//			return 0;
+//		}
+
       public override bool EnabledFor3d(byte transactionType)
 		{
 			return true;
 		}
 
-
-		public override int ProcessPayment(Payment payment)
+		public override int CardPayment(Payment payment)
 		{
 			if ( ! EnabledFor3d(payment.TransactionType) )
 				return 590;
@@ -38,7 +44,7 @@ namespace PCIBusiness
 			int ret = 10;
 			payRef  = "";
 
-			Tools.LogInfo("TransactionENets.ProcessPayment/10","Merchant Ref=" + payment.MerchantReference,199);
+			Tools.LogInfo("TransactionENets.CardPayment/10","Merchant Ref=" + payment.MerchantReference,10);
 
 			try
 			{
@@ -68,8 +74,8 @@ namespace PCIBusiness
 			}
 			catch (Exception ex)
 			{
-				Tools.LogInfo("TransactionENets.ProcessPayment/98","Ret="+ret.ToString()+", JSON Sent="+xmlSent,255);
-				Tools.LogException("TransactionENets.ProcessPayment/99","Ret="+ret.ToString()+", JSON Sent="+xmlSent,ex);
+				Tools.LogInfo("TransactionENets.CardPayment/98","Ret="+ret.ToString()+", JSON Sent="+xmlSent,255);
+				Tools.LogException("TransactionENets.CardPayment/99","Ret="+ret.ToString()+", JSON Sent="+xmlSent,ex);
 			}
 			return ret;
 		}
@@ -80,15 +86,17 @@ namespace PCIBusiness
 			string url = payment.ProviderURL;
 
 			if ( Tools.NullToString(url).Length == 0 )
-				if ( Tools.LiveTestOrDev() != Constants.SystemMode.Live )
-					url = "https://uat-api.nets.com.sg:9065/GW2/TxnReqListener";
+				url = BureauURL;
+
+			if ( Tools.NullToString(url).Length == 0 )
+				return 20;
 
 			ret        = 30;
 			acsUrl     = "";
 			txnStatus  = "";
 			strResult  = "";
 			resultCode = "99999";
-			resultMsg  = "Internal error connecting to " + url;
+			resultMsg  = "(99999) Internal error connecting to " + url;
 			ret        = 50;
 
 			try
@@ -108,11 +116,11 @@ namespace PCIBusiness
 				ret                         = 100;
 
 				Tools.LogInfo("TransactionENets.CallWebService/10",
-				              "Transaction=" + payment.TransactionTypeName +
+				              "Transaction=" + Tools.TransactionTypeName(payment.TransactionType) +
 				            ", URL=" + url +
 				            ", MID=" + payment.ProviderAccount +
 				            ", KeyId=" + payment.ProviderKey +
-				            ", SecretKey=" + payment.ProviderPassword +
+//				            ", SecretKey=" + payment.ProviderPassword +
 				            ", Signature=" + sig +
 				            ", JSON Sent=" + xmlSent, 10);
 
@@ -137,11 +145,11 @@ namespace PCIBusiness
 					{
 						ret        = 150;
 						resultMsg  = "No data returned from " + url;
-						Tools.LogInfo("TransactionENets.CallWebService/20",payment.TransactionTypeName+", JSON Rec=(blank)",199);
+						Tools.LogInfo("TransactionENets.CallWebService/20",Tools.TransactionTypeName(payment.TransactionType)+", JSON Rec=(blank)",199);
 					}
 					else
 					{
-						Tools.LogInfo("TransactionENets.CallWebService/30",payment.TransactionTypeName+", JSON Rec=" + strResult,255);
+						Tools.LogInfo("TransactionENets.CallWebService/30",Tools.TransactionTypeName(payment.TransactionType)+", JSON Rec=" + strResult,255);
 
 						ret        = 160;
 						txnStatus  = Tools.JSONValue(strResult,"netsTxnStatus");
@@ -181,10 +189,14 @@ namespace PCIBusiness
 				}
 				ret = 0;
 			}
-			catch (Exception ex)
+			catch (WebException ex1)
 			{
-				Tools.LogInfo("TransactionENets.CallWebService/298","ret="+ret.ToString(),220);
-				Tools.LogException("TransactionENets.CallWebService/299","ret="+ret.ToString(),ex);
+				Tools.DecodeWebException(ex1,"TransactionENets.CallWebService/297","ret="+ret.ToString());
+			}
+			catch (Exception ex2)
+			{
+				Tools.LogInfo     ("TransactionENets.CallWebService/298","ret="+ret.ToString(),220);
+				Tools.LogException("TransactionENets.CallWebService/299","ret="+ret.ToString(),ex2);
 			}
 			return ret;
 		}
@@ -200,7 +212,8 @@ namespace PCIBusiness
 
 		public TransactionENets() : base()
 		{
-			bureauCode = Tools.BureauCode(Constants.PaymentProvider.eNETS);
+			base.LoadBureauDetails(Constants.PaymentProvider.eNETS);
+		//	bureauCode = Tools.BureauCode(Constants.PaymentProvider.eNETS);
 
 		//	Force TLS 1.2
 			ServicePointManager.Expect100Continue = true;

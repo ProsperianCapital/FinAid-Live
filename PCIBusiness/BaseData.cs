@@ -58,8 +58,8 @@ namespace PCIBusiness
 				if ( execMode == 1 )
 				{
 					returnCode    = dbConn.ColLong  ("ReturnCode");
-					returnMessage = dbConn.ColString("ReturnMessage");
-					returnData    = dbConn.ColString("ReturnData");
+					returnMessage = dbConn.ColString("ReturnMessage",0,0);
+					returnData    = dbConn.ColString("ReturnData",0,0);
 				}
 				else if ( execMode == 2 )
 					returnCode    = dbConn.ReturnValue;
@@ -71,7 +71,8 @@ namespace PCIBusiness
 
 		protected int ExecuteSQL (object[][] parms          =null,
 		                          byte       execMode       =1,
-		                          bool       closeConnection=true)
+		                          bool       closeConnection=true,
+		                          string     connectionName ="")
 		{
 		//	"execMode" can be
 		//	1 : Execute and expect a result set with at least 1 row
@@ -82,10 +83,11 @@ namespace PCIBusiness
 			returnMessage = "";
 			returnData    = "";
 
-			if ( ! Tools.OpenDB(ref dbConn) )
+			if ( ! Tools.OpenDB(ref dbConn,connectionName) )
 			{
 				returnCode    = 1;
-				returnMessage = "[BaseData.ExecuteSQL/1] Unable to connect to SQL database";
+				returnMessage = "[BaseData.ExecuteSQL/1] Unable to connect to SQL database"
+				              + ( connectionName.Length > 0 ? ", connection '" + connectionName + "'" : "" );
 			}
 			else if ( ! dbConn.Execute(sql,closeConnection,parms) )
 			{
@@ -100,7 +102,7 @@ namespace PCIBusiness
 			else if ( execMode == 2 && dbConn.ReturnValue < 0 )
 			{
 				returnCode    = 4;
-				returnMessage = "[BaseData.ExecuteSQL/4 SQL successfully executed, but the return code was invalid/missing";
+				returnMessage = "[BaseData.ExecuteSQL/4] SQL successfully executed, but the return code was invalid/missing";
 			}
 			return returnCode;
 		}
@@ -123,6 +125,10 @@ namespace PCIBusiness
 		public string   ReturnData
 		{
 			get { return Tools.NullToString(returnData); }
+		}
+		public string   SQL
+		{
+			get { return Tools.NullToString(sql); }
 		}
 	}
 }

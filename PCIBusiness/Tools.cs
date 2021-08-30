@@ -10,14 +10,15 @@ namespace PCIBusiness
 	public static class Tools
 	{
 //		Date formats:
-//		 1	 dd/mm/yyyy                (31/12/2009)
-//		 2	 yyyy/mm/dd                (2006/04/22)
-//		 3	 DD 3-char Month Abbr YYYY (22 Sep 2008)
-//		 4	 DD full Month Name YYYY   (19 August 2003)
+//		 1	 dd/mm/yyyy                    (31/12/2009)
+//		 2	 yyyy/mm/dd                    (2006/04/22)
+//		 3	 DD 3-char Month Abbr YYYY     (22 Sep 2008)
+//		 4	 DD full Month Name YYYY       (19 August 2003)
 //		 5	 yyyymmdd
-//		 6  DayName DD MonthName YYYY (Saturday 13 October 2010)
+//		 6  DayName DD MonthName YYYY     (Saturday 13 October 2010)
 //		 7  YYYY-MM-DD
 //		 8	 Day DD 3-char Month Abbr YYYY (Fri 22 Sep 2008)
+//		 9  YYMMDD                        (210131)
 //		19	 yyyy/mm/dd (for SQL)
 
 //		Time formats:
@@ -27,6 +28,8 @@ namespace PCIBusiness
 //		 4  at HH:mm                  (at 17:03)
 //		11  HH:mm:ss                  Hard-code to 00:00:00
 //		12  HH:mm:ss                  Hard-code to 23:59:59
+//		23  HH:mm:ss                  Use time if non-zero, else hard-code to 00:00:00
+//		24  HH:mm:ss                  Use time if non-zero, else hard-code to 23:59:59
 
 		static byte logSeverity;
 
@@ -144,38 +147,57 @@ namespace PCIBusiness
 			string   hh  = "";
 			string   mi  = "";
 			string   ss  = "";
+			byte     pos = 0;
 
 			theDate = theDate.Trim();
 
-			if ( dateFormat == 1 && theDate.Length == 10 )
+			if ( dateFormat == 1 && theDate.Length >= 10 ) // dd/mm/yyyy
 			{
-				dd = theDate.Substring(0,2);	
-				mm = theDate.Substring(3,2);	
-				yy = theDate.Substring(6,4);	
+				dd  = theDate.Substring(0,2);	
+				mm  = theDate.Substring(3,2);	
+				yy  = theDate.Substring(6,4);
+				pos = 12;
 			}
-			else if ( ( dateFormat == 2 || dateFormat == 7 ) && theDate.Length == 10 )
+			else if ( dateFormat == 5 && theDate.Length >= 8 ) // yyyymmdd
 			{
-				dd = theDate.Substring(8,2);	
-				mm = theDate.Substring(5,2);	
-				yy = theDate.Substring(0,4);	
+				dd  = theDate.Substring(6,2);	
+				mm  = theDate.Substring(4,2);	
+				yy  = theDate.Substring(0,4);	
+				pos = 10;
 			}
-			else if ( dateFormat == 13 && ( theDate.Length == 16 || theDate.Length == 19 ) )
+			else if ( ( dateFormat == 2 || dateFormat == 7 ) && theDate.Length >= 10 ) // yyyy/mm/dd
 			{
-				dd = theDate.Substring(0,2);	
-				mm = theDate.Substring(3,2);	
-				yy = theDate.Substring(6,4);	
-				hh = theDate.Substring(11,2);	
-				mi = theDate.Substring(14,2);
-				if ( theDate.Length == 19 )
-					ss = theDate.Substring(17,2);
+				dd  = theDate.Substring(8,2);	
+				mm  = theDate.Substring(5,2);	
+				yy  = theDate.Substring(0,4);	
+				pos = 12;
 			}
-			else if ( dateFormat == 0 && timeFormat == 3 && theDate.Length == 5 )
+//			else if ( dateFormat == 13 && ( theDate.Length == 16 || theDate.Length == 19 ) )
+//			{
+//				dd = theDate.Substring(0,2);	
+//				mm = theDate.Substring(3,2);	
+//				yy = theDate.Substring(6,4);	
+//				hh = theDate.Substring(11,2);	
+//				mi = theDate.Substring(14,2);
+//				if ( theDate.Length == 19 )
+//					ss = theDate.Substring(17,2);
+//			}
+			else if ( dateFormat == 0 && timeFormat > 0 && theDate.Length > 0 )
 			{
 				dd = "31";
 				mm = "12";
 				yy = "1999";
-				hh = theDate.Substring(0,2);	
-				mi = theDate.Substring(3,2);
+				pos = 1;
+			}
+
+			if ( pos > 0 && timeFormat > 0 )
+			{
+				pos--;
+				hh = theDate.Substring(pos,2);
+				if ( theDate.Length > pos+3 )
+					mi = theDate.Substring(pos+3,2);
+				if ( theDate.Length > pos+6 )
+					ss = theDate.Substring(pos+6,2);
 			}
 
 			try
@@ -247,6 +269,16 @@ namespace PCIBusiness
 				theTime = "00:00:00";
 			else if ( timeFormat == 12 )  // 23:59:59
 				theTime = "23:59:59";
+			else if ( timeFormat == 23 )
+				if ( whatDate.Hour > 0 || whatDate.Minute > 0 || whatDate.Second > 0 )
+					theTime = whatDate.ToString("HH:mm:ss",CultureInfo.InvariantCulture);
+				else
+					theTime = "00:00:00";
+			else if ( timeFormat == 24 )
+				if ( whatDate.Hour > 0 || whatDate.Minute > 0 || whatDate.Second > 0 )
+					theTime = whatDate.ToString("HH:mm:ss",CultureInfo.InvariantCulture);
+				else
+					theTime = "23:59:59";
 
 			return ( quotes ? "'" : "" ) + (theDate + " " + theTime).Trim() + ( quotes ? "'" : "" );
 		}
@@ -324,7 +356,31 @@ namespace PCIBusiness
 			     + suffix;
 		}
 
-		public static string JSONValue(string data,string tag,short arrayPosition=0)
+		public static string JSONRaw(string data)
+		{
+			if ( string.IsNullOrWhiteSpace(data) )
+				return "";
+
+			data          = data.Trim();
+			string[,] fix = new string[,] {{ "26", "&"  },
+			                               { "40", "@"  },
+			                               { "3F", "?"  },
+			                               { "2F", "/"  },
+			                               { "5C", "\\" }};
+//			Unicode
+			if ( data.Contains("\\u00") )
+				for ( int k = 0 ; k < fix.GetLength(0) ; k++ )
+					data = data.Replace("\\u00"+fix[k,0],fix[k,1]);
+
+//			ASCII
+			if ( data.Contains("%") )
+				for ( int k = 0 ; k < fix.GetLength(0) ; k++ )
+					data = data.Replace("%"+fix[k,0],fix[k,1]);
+			
+			return data;
+		}
+
+		public static string JSONValue(string data,string tag,string tagOuter="",short arrayPosition=0,byte decode=0)
 		{
 		//	Handle data in the format
 		//	{"key1":"value","key2":"value","key3":"value"}
@@ -341,7 +397,33 @@ namespace PCIBusiness
 				string value = "";
 				tag          = "\"" + tag.ToUpper() + "\"";
 
-//	Find the tag
+//	Find the outer tag
+				if ( tagOuter.Length > 0 ) // So the tag is embedded in another tag
+				{
+					tagOuter = "\"" + tagOuter.ToUpper() + "\"";
+					while ( value.Length == 0 )
+					{
+						k = data.ToUpper().IndexOf(tagOuter,k);
+						if ( k < 0 )
+							return "";
+						for ( j = k+tagOuter.Length ; j < data.Length ; j++ )
+							if ( data.Substring(j,1) == " " )
+								continue;
+							else
+							{
+								if ( data.Substring(j,1) == ":" )
+									value = data.Substring(j+1).Trim();
+								else
+									k = j;
+								break;
+							}
+					}
+					data  = value;
+					value = "";
+					k     = 0;
+				}
+
+//	Find the inner (main) tag
 				while ( value.Length == 0 )
 				{
 					k = data.ToUpper().IndexOf(tag,k);
@@ -375,7 +457,14 @@ namespace PCIBusiness
 							k = value.IndexOf("}",h+1);
 							if ( h >= 0 && k > h )
 								if ( j == arrayPosition )
-									return value.Substring(h+1,k-h-1).Trim();
+								{
+									value = value.Substring(h+1,k-h-1).Trim();
+		  							if ( decode == 1 ) // URL decode
+										return System.Net.WebUtility.UrlDecode(value);
+									if ( decode == 2 ) // HTML decode
+										return System.Net.WebUtility.HtmlDecode(value);
+									return value;
+								}
 								else
 									value = value.Substring(k+1).Trim();
 							else
@@ -398,36 +487,16 @@ namespace PCIBusiness
 				}
 				if ( k <= h )
 					return "";
+
+				value = value.Substring(h,k-h).Trim();
+
+				if ( decode == 1 ) // URL decode
+					return System.Net.WebUtility.UrlDecode(value);
 				
-				return value.Substring(h,k-h).Trim();
-
-//	Version 2
-//				k = data.IndexOf("\"",h);
-//				if ( k < 0 )
-//					k = data.IndexOf(",",h);
-//				if ( k < 0 )
-//					k = data.IndexOf("{",h);
-//				if ( k < 0 )
-//					k = data.IndexOf("}",h);
-//				if ( k < 0 )
-//					return "";
-//				j = data.IndexOf("\"",k+1);
-//				if ( j <= k )
-//					return "";
-//				return data.Substring(k+1,j-k-1).Trim();
-
-//	Version 1
-//				j = data.IndexOf(":",k+tag.Length);
-//					
-//				if ( k < 0 )
-//					return "";
-//				k = data.IndexOf("\"",k+tag.Length);
-//				if ( k < 0 )
-//					return "";
-//				 j = data.IndexOf("\"",k+1);
-//				if ( j <= k )
-//					return "";
-//				return data.Substring(k+1,j-k-1);
+				if ( decode == 2 ) // HTML decode
+					return System.Net.WebUtility.HtmlDecode(value);
+				
+				return value;
 			}
 			catch
 			{ }
@@ -748,7 +817,8 @@ namespace PCIBusiness
 			{
 				if ( caller != null )
 				{
-					string h = caller.ToString();
+					string h = caller.GetType().ToString();
+				//	string h = caller.ToString();
 					int    p = h.IndexOf(",");
 					if ( p > 0 )
 						h = h.Substring(0,p).Trim();
@@ -1276,9 +1346,27 @@ namespace PCIBusiness
 			return Constants.SystemMode.Development;
 		}
 
+//		public static Constants.PaymentProvider BureauCode(string providerCode)
+//		{
+//			int   provider    = Tools.StringToInt(providerCode);
+//			int[] bureauCodes = (int[])Enum.GetValues(typeof(Constants.PaymentProvider));
+//
+//			for ( int k = 0 ; k < bureauCodes.Length ; k++ )
+//				if ( bureauCodes[k] == provider )
+//					return Constants.PaymentProvider[]
+//				{
+//					base.LoadBureauDetails(Tools.BureauCode()
+//				}
+//		}
+
 		public static string BureauCode(Constants.PaymentProvider providerCode)
 		{
 			return ((short)providerCode).ToString().PadLeft(3,'0');
+		}
+
+		public static string SystemCode(Constants.ApplicationCode appCode)
+		{
+			return ((short)appCode).ToString().PadLeft(3,'0');
 		}
 
 		public static string TradingProviderCode(Constants.TradingProvider providerCode)
@@ -1349,19 +1437,25 @@ namespace PCIBusiness
 		}
 
 
-		public static string MaskCardNumber(string cardNo)
+		public static string MaskedValue(string strToMask)
 		{
-			cardNo = NullToString(cardNo);
-			if ( cardNo.Length >= 13 )
-				return cardNo.Substring(0,6) + "******" + cardNo.Substring(12);
-			if ( cardNo.Length >= 11 )
-				return cardNo.Substring(0,6) + "****"   + cardNo.Substring(10);
-			if ( cardNo.Length >=  9 )
-				return cardNo.Substring(0,4) + "****"   + cardNo.Substring( 8);
-			if ( cardNo.Length >=  5 )
-				return cardNo.Substring(0,2) + "**"     + cardNo.Substring( 4);
-			if ( cardNo.Length >=  1 )
-				return cardNo.Substring(0,1) + "****";
+			strToMask = NullToString(strToMask);
+			if ( strToMask.Length >= 40 )
+				return strToMask.Substring(0,10) + "****************" + strToMask.Substring(26);
+			if ( strToMask.Length >= 30 )
+				return strToMask.Substring(0, 8) + "**********"       + strToMask.Substring(18);
+			if ( strToMask.Length >= 20 )
+				return strToMask.Substring(0, 6) + "********"         + strToMask.Substring(14);
+			if ( strToMask.Length >= 13 )
+				return strToMask.Substring(0, 6) + "******"           + strToMask.Substring(12);
+			if ( strToMask.Length >= 11 )
+				return strToMask.Substring(0, 6) + "****"             + strToMask.Substring(10);
+			if ( strToMask.Length >=  9 )
+				return strToMask.Substring(0, 4) + "****"             + strToMask.Substring( 8);
+			if ( strToMask.Length >=  5 )
+				return strToMask.Substring(0, 2) + "**"               + strToMask.Substring( 4);
+			if ( strToMask.Length >=  1 )
+				return strToMask.Substring(0, 1) + "****";
 			return "";
 		}
 
@@ -1497,8 +1591,9 @@ namespace PCIBusiness
 		public static string DecodeWebException(System.Net.WebException ex1,string callingModule="",string extraData="")
 		{
 			string responseContent = "";
-			callingModule = callingModule + "[DecodeWebException/";
-			extraData     = extraData.Trim() + " ";
+			string errorContent    = "";
+			callingModule          = callingModule + "[DecodeWebException/";
+			extraData              = extraData.Trim() + " ";
 
 			try
 			{
@@ -1515,24 +1610,24 @@ namespace PCIBusiness
 				using ( StreamReader sR = new StreamReader(errorResponse.GetResponseStream()) )
 					responseContent = sR.ReadToEnd();
 
-				responseContent = responseContent + Environment.NewLine + Environment.NewLine;
+				errorContent = responseContent + ", Response Headers=";
 				foreach (string key in errorResponse.Headers.AllKeys )
-					responseContent = responseContent + "[" + (k++).ToString() + "] " + key + " : " + errorResponse.Headers[key] + Environment.NewLine;
+					errorContent = errorContent + Environment.NewLine + "[" + (k++).ToString() + "] " + key + " : " + errorResponse.Headers[key];
 
-				Tools.LogInfo     (callingModule+"5]",extraData + responseContent,245);
-				Tools.LogException(callingModule+"6]",extraData + responseContent,ex1);
+				Tools.LogInfo     (callingModule+"4]",extraData + errorContent,245);
+				Tools.LogException(callingModule+"5]",extraData + errorContent,ex1);
 
 //				if ( callingModule.Length > 0 )
 //				{
 //					extraData = ( extraData.Length == 0 ? "" : extraData + ". " ) + "(WebException) ";
-//					Tools.LogInfo     (callingModule+"5]",extraData + responseContent,245);
-//					Tools.LogException(callingModule+"6]",extraData + responseContent,ex1);
+//					Tools.LogInfo     (callingModule+"6]",extraData + errorContent,245);
+//					Tools.LogException(callingModule+"7]",extraData + errorContent,ex1);
 //				}
 			}
 			catch (Exception ex2)
 			{
-				Tools.LogInfo     (callingModule+"8]",extraData + responseContent,245);
-				Tools.LogException(callingModule+"9]",extraData + responseContent,ex2);
+				Tools.LogInfo     (callingModule+"8]",extraData + errorContent,245);
+				Tools.LogException(callingModule+"9]",extraData + errorContent,ex2);
 			}
 			return responseContent;
 		}
@@ -1586,11 +1681,33 @@ namespace PCIBusiness
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Peach)            ) return new TransactionPeach();
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.TokenEx)          ) return new TransactionTokenEx();
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentsOS)       ) return new TransactionPaymentsOS();
-			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe)           ) return new TransactionStripe();
+			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_USA)       ) return new TransactionStripe(Constants.PaymentProvider.Stripe_USA);
+			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_EU)        ) return new TransactionStripe(Constants.PaymentProvider.Stripe_EU);
+			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_Asia)      ) return new TransactionStripe(Constants.PaymentProvider.Stripe_Asia);
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.CyberSource)      ) return new TransactionCyberSource(Constants.PaymentProvider.CyberSource);
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.CyberSource_Moto) ) return new TransactionCyberSource(Constants.PaymentProvider.CyberSource_Moto);
 			return null;
 		}
+
+		public static string TransactionTypeName(byte transactionType)
+		{
+			if ( transactionType == (byte)Constants.TransactionType.CardPayment           ) return "Card Payment";
+			if ( transactionType == (byte)Constants.TransactionType.CardPaymentThirdParty ) return "Payment via 3rd Party";
+			if ( transactionType == (byte)Constants.TransactionType.DeleteToken           ) return "Delete Token";
+			if ( transactionType == (byte)Constants.TransactionType.GetCardFromToken      ) return "Get Card from Token";
+			if ( transactionType == (byte)Constants.TransactionType.GetToken              ) return "Get Token from Card";
+			if ( transactionType == (byte)Constants.TransactionType.GetTokenThirdParty    ) return "Token via 3rd Party";
+			if ( transactionType == (byte)Constants.TransactionType.ManualPayment         ) return "Manual Payment";
+			if ( transactionType == (byte)Constants.TransactionType.ThreeDSecurePayment   ) return "3d Secure Payment";
+			if ( transactionType == (byte)Constants.TransactionType.TokenPayment          ) return "Token Payment";
+			if ( transactionType == (byte)Constants.TransactionType.Reversal              ) return "Payment Reversal";
+			if ( transactionType == (byte)Constants.TransactionType.Refund                ) return "Refund";
+			if ( transactionType == (byte)Constants.TransactionType.Transfer              ) return "Transfer";
+			if ( transactionType == (byte)Constants.TransactionType.TransactionLookup     ) return "Transaction Lookup";
+			if ( transactionType == (byte)Constants.TransactionType.Test                  ) return "Test";
+			return "Unknown (transactionType=" + transactionType.ToString() + ")";
+		}
+
 
 		public static string LoadGoogleAnalytics(string productCode)
 		{
@@ -1626,6 +1743,9 @@ namespace PCIBusiness
 				}
 			return "";
 		}
+
+//		public static string LoadChat(string productCode)
+//		{
 
 		public static string LoadChat(string productCode)
 		{

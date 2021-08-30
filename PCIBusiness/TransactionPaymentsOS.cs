@@ -203,7 +203,7 @@ namespace PCIBusiness
 //				Example:
 //				The remote server returned an error: (400) Bad Request.
 
-				strResult = Tools.DecodeWebException(ex1,"TransactionPaymentsOS.CallWebService/297","ret="+ret.ToString());
+				strResult = Tools.DecodeWebException(ex1,ClassName+".CallWebService/297","ret="+ret.ToString());
 				resultMsg = "";
 				if ( strResult.Length > 0 )
 				{
@@ -275,7 +275,6 @@ namespace PCIBusiness
 			base.LoadBureauDetails(Constants.PaymentProvider.PaymentsOS);
 			ServicePointManager.Expect100Continue = true;
 			ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
-			xmlResult                             = null;
 		}
 	}
 }

@@ -394,9 +394,9 @@ namespace PCIBusiness
 			if ( payment == null )
 			{
 				payment              = new Payment();
-				payment.BureauCode   = bureauCode;
+				payment.BureauCode   = BureauCode;
+				payment.ProviderURL  = BureauURL;
 			//	payment.BureauCode   = Tools.BureauCode(Constants.PaymentProvider.CyberSource);
-				payment.ProviderURL  = "https://apitest.cybersource.com";
 			}
 
 //	TESTING
@@ -496,6 +496,9 @@ namespace PCIBusiness
 //				webReq.Headers["Date"]            = theDate.ToString();        // "Fri, 11 Dec 2020 07:18:03 GMT";
 //				webReq.Headers["Host"]            = "apitest.cybersource.com"; // NO! Cannot set this here
 				webReq.Headers["Digest"]          = digest;
+//	Not needed for REST, but include it if supplied
+				if ( payment.ProviderProfileID.Length > 0 )
+					webReq.Headers["profile-id"]   = payment.ProviderProfileID;
 
 //				ret                               = 175;
 //				sigSource                         = "host: "            + webRequest.Host            + "\n"
@@ -521,23 +524,26 @@ namespace PCIBusiness
 				                                  + ", signature=" + sep + sigCoded + sep;
 				ret                               = 200;
 
-				Tools.LogInfo("CallWebService/200", "Tran="             + tranDesc                + Environment.NewLine
-				                                  + "pURL="             + pURL                    + Environment.NewLine
-				                                  + "tURL="             + tURL                    + Environment.NewLine
-				                                  + "Merchant Id="      + payment.ProviderAccount + Environment.NewLine
-				                                  + "Key Detail/Id="    + payment.ProviderUserID  + Environment.NewLine
-				                                  + "Secret Key="       + payment.ProviderKey     + Environment.NewLine
-				                                  + "JSON Sent="        + xmlSent                 + Environment.NewLine
-				                                  + "Signature Input="  + sigSource               + Environment.NewLine
-				                                  + "Signature Output=" + sigCoded                + Environment.NewLine
-				                                  + "Request Header[v-c-merchant-id]=" + webReq.Headers["v-c-merchant-id"] + Environment.NewLine
-				                                  + "Request Header[Date]="            + webReq.Headers["Date"]            + Environment.NewLine
-				                                  + "Request Header[Host]="            + webReq.Host                       + Environment.NewLine
-				                                  + "Request Header[Digest]="          + webReq.Headers["Digest"]          + Environment.NewLine
-				                                  + "Request Header[Signature]="       + webReq.Headers["Signature"]
-				                                  , 10, this);
-
-				Tools.LogInfo("CallWebService/203", "(In) Tran=" + tranDesc + Environment.NewLine + xmlSent, 220, this);
+				if ( Tools.SystemIsLive() )
+					Tools.LogInfo("CallWebService/201", "(In) Tran=" + tranDesc + Environment.NewLine + xmlSent, 220, this);
+				else
+					Tools.LogInfo("CallWebService/202", "Tran="             + tranDesc                  + Environment.NewLine
+					                                  + "pURL="             + pURL                      + Environment.NewLine
+					                                  + "tURL="             + tURL                      + Environment.NewLine
+					                                  + "Merchant Id="      + payment.ProviderAccount   + Environment.NewLine
+					                                  + "Profile Id="       + payment.ProviderProfileID + Environment.NewLine
+					                                  + "Key Detail/Id="    + payment.ProviderUserID    + Environment.NewLine
+					                                  + "Secret Key="       + payment.ProviderKey       + Environment.NewLine
+					                                  + "JSON Sent="        + xmlSent                   + Environment.NewLine
+					                                  + "Signature Input="  + sigSource                 + Environment.NewLine
+					                                  + "Signature Output=" + sigCoded                  + Environment.NewLine
+					                                  + "Request Header[v-c-merchant-id]=" + webReq.Headers["v-c-merchant-id"] + Environment.NewLine
+					                                  + "Request Header[Date]="            + webReq.Headers["Date"]            + Environment.NewLine
+					                                  + "Request Header[Host]="            + webReq.Host                       + Environment.NewLine
+					                                  + "Request Header[Digest]="          + webReq.Headers["Digest"]          + Environment.NewLine
+					                                  + "Request Header[Signature]="       + webReq.Headers["Signature"]       + Environment.NewLine
+					                                  + "Request Header[profile-id]="      + payment.ProviderProfileID
+					                                  , 231, this);
 
 				using (Stream stream = webReq.GetRequestStream())
 				{
@@ -729,7 +735,7 @@ namespace PCIBusiness
 
 				Tools.LogInfo("TestTransactionV2/10","Profile Id="+profileId,222,this);
 				Tools.LogInfo("TestTransactionV2/20","Access Key="+accessKey,222,this);
-				Tools.LogInfo("TestTransactionV2/30","Secret Key="+secretKey,222,this);
+//				Tools.LogInfo("TestTransactionV2/30","Secret Key="+secretKey,222,this);
 				Tools.LogInfo("TestTransactionV2/40","Signature Input="+sigX,222,this);
 				Tools.LogInfo("TestTransactionV2/50","Signature Output="+sigF,222,this);
 				Tools.LogInfo("TestTransactionV2/60","Web form="+webForm,222,this);
@@ -772,8 +778,6 @@ namespace PCIBusiness
 					d3Form = strResult;
 					return 0;
 				}
-//				xmlResult = new XmlDocument();
-//				xmlResult.LoadXml(xmlReceived.ToString());
 			}
 			catch (WebException ex1)
 			{
@@ -917,8 +921,6 @@ namespace PCIBusiness
 				ret       = 20;
 				urlReturn = urlReturn + "RegisterThreeD.aspx?ProviderCode="+bureauCode
 				                      +                    "&TransRef="+Tools.XMLSafe(payment.MerchantReference);
-//				urlReturn = urlReturn + "RegisterThreeD.aspx?ProviderCode="+Tools.BureauCode(Constants.PaymentProvider.CyberSource)
-//				                      +                    "&TransRef="+Tools.XMLSafe(payment.MerchantReference);
 
 				if ( payment.TokenizerCode == Tools.BureauCode(Constants.PaymentProvider.TokenEx) )
 					ccNo = "{{{" + payment.CardToken + "}}}";
@@ -928,7 +930,7 @@ namespace PCIBusiness
 				fieldS = new string[,] { { "reference_number"                   , Tools.JSONSafe(payment.MerchantReference) }
 				                       , { "transaction_type"                   , "sale,create_payment_token" }
 				                       , { "currency"                           , "ZAR" }
-				                       , { "amount"                             , "1.49" }
+				                       , { "amount"                             , "1.00" } // "1.49" }
 				                       , { "locale"                             , "en" }
 				                       , { "profile_id"                         , profileId }
 				                       , { "access_key"                         , accessKey }
@@ -936,8 +938,8 @@ namespace PCIBusiness
 				                       , { "signed_date_time"                   , dt.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'") } // "2021-01-10T03:16:54Z"
 				                       , { "payment_method"                     , "card" }
 				                       , { "card_cvn"                           , Tools.JSONSafe(payment.CardCVV) }
-				                       , { "bill_to_forename"                   , Tools.JSONSafe(payment.FirstName) }
-				                       , { "bill_to_surname"                    , Tools.JSONSafe(payment.LastName) }
+				                       , { "bill_to_forename"                   , Tools.JSONSafe(payment.CardNameSplit(1)) }
+				                       , { "bill_to_surname"                    , Tools.JSONSafe(payment.CardNameSplit(2)) }
 				                       , { "bill_to_email"                      , Tools.JSONSafe(payment.EMail,1) }
 				                       , { "bill_to_phone"                      , Tools.JSONSafe(payment.PhoneCell) }
 				                       , { "bill_to_address_line1"              , Tools.JSONSafe(payment.Address1(65)) }
@@ -985,8 +987,8 @@ namespace PCIBusiness
 				                  + "&signature="            + Tools.URLString(sigF);
 
 				Tools.LogInfo("ThreeDSecurePayment/10","Profile Id="+profileId
-				                                   + ", Access Key="+accessKey
-				                                   + ", Secret Key="+secretKey
+//				                                   + ", Access Key="+accessKey
+//				                                   + ", Secret Key="+secretKey
 				                                   + ", Signature Input="+sigX
 				                                   + ", Signature Output="+sigF
 				                                   + ", URL params="+xmlSent,222,this);
@@ -1067,5 +1069,12 @@ namespace PCIBusiness
 			ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
 			base.LoadBureauDetails(provider);
 		}
+
+//		public TransactionCyberSource(string provider) : base()
+//		{
+//			ServicePointManager.Expect100Continue = true;
+//			ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
+//			base.LoadBureauDetails((Constants.PaymentProvider)Tools.StringToInt(provider));
+//		}
 	}
 }

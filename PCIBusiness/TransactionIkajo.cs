@@ -27,7 +27,7 @@ namespace PCIBusiness
 			string url = Tools.ConfigValue("SystemURL") + "/Succeed.aspx?TransRef=" + Tools.XMLSafe(payment.MerchantReference);
 			int    ret = 300;
 
-			Tools.LogInfo("TransactionIkajo.GetToken/10","Sale, Merchant Ref=" + payment.MerchantReference,199);
+			Tools.LogInfo("TransactionIkajo.GetToken/10","Sale, Merchant Ref=" + payment.MerchantReference,10);
 
 			try
 			{
@@ -35,15 +35,15 @@ namespace PCIBusiness
                                           + Tools.XMLSafe(payment.CardNumber)                       
 				                              + Tools.XMLSafe(payment.CardType)                         
 				                              + Tools.XMLSafe(payment.CardCVV)                          
-				                              + Tools.XMLSafe(payment.Address1)                         
-				                              + Tools.XMLSafe(payment.Address2)                         
-				                              + Tools.XMLSafe(payment.CountryCode)                      
+				                              + Tools.XMLSafe(payment.Address1())                         
+				                              + Tools.XMLSafe(payment.Address2())                         
+				                              + Tools.XMLSafe(payment.CountryCode())                      
 				                              + Tools.XMLSafe(payment.EMail)                            
-				                              + Tools.XMLSafe(payment.IPAddress)                          
+				                              + Tools.XMLSafe(payment.MandateIPAddress)                          
 				                              + Tools.XMLSafe(payment.FirstName+" "+payment.LastName)   
 				                              + Tools.XMLSafe(payment.PhoneCell)                        
 				                              + Tools.XMLSafe(payment.State)                            
-				                              + Tools.XMLSafe(payment.PostalCode)                       
+				                              + Tools.XMLSafe(payment.PostalCode())                       
 				                              + Tools.XMLSafe("YES")                                                  
 				                              + Tools.XMLSafe(payment.ProviderUserID)                  
 				                              + Tools.XMLSafe(payment.PaymentAmountDecimal)             
@@ -60,15 +60,15 @@ namespace PCIBusiness
 				saleReq.cardNumber           = Tools.XMLSafe(payment.CardNumber);
 				saleReq.cardType             = Tools.XMLSafe(payment.CardType); 
 				saleReq.cardVerificationCode = Tools.XMLSafe(payment.CardCVV); 
-				saleReq.customerAddress      = Tools.XMLSafe(payment.Address1);
-				saleReq.customerCity         = Tools.XMLSafe(payment.Address2);
-				saleReq.customerCountry      = Tools.XMLSafe(payment.CountryCode);
+				saleReq.customerAddress      = Tools.XMLSafe(payment.Address1());
+				saleReq.customerCity         = Tools.XMLSafe(payment.Address2());
+				saleReq.customerCountry      = Tools.XMLSafe(payment.CountryCode());
 				saleReq.customerEmail        = Tools.XMLSafe(payment.EMail);
-				saleReq.customerIP           = Tools.XMLSafe(payment.IPAddress);
+				saleReq.customerIP           = Tools.XMLSafe(payment.MandateIPAddress);
 				saleReq.customerName         = Tools.XMLSafe(payment.FirstName+" "+payment.LastName);
 				saleReq.customerPhoneNumber  = Tools.XMLSafe(payment.PhoneCell);
 				saleReq.customerState        = Tools.XMLSafe(payment.State);
-				saleReq.customerZipCode      = Tools.XMLSafe(payment.PostalCode);
+				saleReq.customerZipCode      = Tools.XMLSafe(payment.PostalCode());
 				saleReq.initRecurring        = "YES";
 				saleReq.merchantID           = Tools.XMLSafe(payment.ProviderUserID);
 				saleReq.orderAmount          = Tools.XMLSafe(payment.PaymentAmountDecimal);
@@ -85,9 +85,9 @@ namespace PCIBusiness
 
 				PCIBusiness.IkajoService.SaleResult result = ikajo.sale(saleReq);
 				string                              x      = "[TokenResult] StatusCode=" + result.statusCode
-				                                                     + " | TransactionStatus=" + result.transactionStatus
-				                                                     + " | TransactionError=" + result.transactionError
-				                                                     + " | RecurringToken=" + result.recurringToken;
+				                                                      + " | TransactionStatus=" + result.transactionStatus
+				                                                      + " | TransactionError=" + result.transactionError
+				                                                      + " | RecurringToken=" + result.recurringToken;
 
 				Tools.LogInfo("TransactionIkajo.GetToken/30",x,10);
 
@@ -107,14 +107,14 @@ namespace PCIBusiness
 			return ret;
 		}
 
-		public override int ProcessPayment(Payment payment)
+		public override int TokenPayment(Payment payment)
 		{
 			if ( ! EnabledFor3d(payment.TransactionType) )
 				return 590;
 
 			int ret = 300;
 
-			Tools.LogInfo("TransactionIkajo.ProcessPayment/10","Sale, Merchant Ref=" + payment.MerchantReference,199);
+			Tools.LogInfo("TransactionIkajo.TokenPayment/10","Sale, Merchant Ref=" + payment.MerchantReference,10);
 
 			try
 			{
@@ -137,7 +137,7 @@ namespace PCIBusiness
 				rebillReq.recurringToken         = Tools.XMLSafe(payment.CardToken);
 				rebillReq.signature              = md5Signature;
 
-				Tools.LogInfo("TransactionIkajo.ProcessPayment/20","",10);
+				Tools.LogInfo("TransactionIkajo.TokenPayment/20","",10);
 
 				if ( ikajo == null )
 					ikajo    = new PtCardService();
@@ -147,7 +147,7 @@ namespace PCIBusiness
 				                                                          + " | TransactionStatus=" + result.transactionStatus
 				                                                          + " | TransactionError=" + result.transactionError;
 
-				Tools.LogInfo("TransactionIkajo.ProcessPayment/30",x,10);
+				Tools.LogInfo("TransactionIkajo.TokenPayment/30",x,10);
 
 				payRef     = result.orderReference;
 				resultCode = result.transactionStatus;
@@ -158,8 +158,8 @@ namespace PCIBusiness
 			}
 			catch (Exception ex)
 			{
-				Tools.LogInfo("TransactionIkajo.ProcessPayment/98","Ret="+ret.ToString()+", XML Sent="+xmlSent,255);
-				Tools.LogException("TransactionIkajo.ProcessPayment/99","Ret="+ret.ToString()+", XML Sent="+xmlSent,ex);
+				Tools.LogInfo("TransactionIkajo.TokenPayment/98","Ret="+ret.ToString()+", XML Sent="+xmlSent,255);
+				Tools.LogException("TransactionIkajo.TokenPayment/99","Ret="+ret.ToString()+", XML Sent="+xmlSent,ex);
 			}
 			return ret;
 		}
@@ -196,7 +196,7 @@ namespace PCIBusiness
 
 		public TransactionIkajo() : base()
 		{
-			bureauCode = Tools.BureauCode(Constants.PaymentProvider.Ikajo);
+			base.LoadBureauDetails(Constants.PaymentProvider.Ikajo);
 		}
 
 		public override void Close()

@@ -19,6 +19,11 @@ namespace PCIBusiness
 			Close();
 		}
 
+		public string ClassName
+		{
+			get { return this.GetType().ToString(); }
+		}
+
 		public void Dispose() 
 		{
 			Dispose(true);

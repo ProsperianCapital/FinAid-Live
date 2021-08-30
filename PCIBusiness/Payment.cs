@@ -24,7 +24,7 @@ namespace PCIBusiness
 		private string   regionalId;
 		private string   email;
 		private string   phoneCell;
-		private string   ipAddress;
+//		private string   ipAddress;
 		private int      paymentAmount;
 //		private byte     paymentStatus;
 		private string   paymentDescription;
@@ -39,15 +39,21 @@ namespace PCIBusiness
 		private string   ccPIN;
 		private string   ccToken;
 
+//	Contract/mandate for payment
+		private DateTime mandateDateTime;
+		private string   mandateIPAddress;
+		private string   mandateBrowser;
+		private string   contractCode;
+
 //	Payment Provider (eg. Peach)
 		private string   bureauCode;
 		private string   providerAccount;
 		private string   providerKey;
-//		private string   providerKeyPublic;
+		private string   providerKeyPublic;
 		private string   providerUserID;
 		private string   providerPassword;
 		private string   providerURL;
-//		private string   providerHost;
+		private string   providerProfileID;
 
 //	Token Provider (eg. TokenEx)
 		private string   tokenizerCode;
@@ -58,6 +64,10 @@ namespace PCIBusiness
 		private int      processMode;
 		private byte     transactionType;
 		private string   webForm;
+
+//	Stripe-specific fields
+		private string   customerID;
+		private string   paymentMethodID;
 
 		private Transaction transaction;
 
@@ -83,6 +93,48 @@ namespace PCIBusiness
 //			get { return  Tools.NullToString(tokenizerURL); }
 //			set { tokenizerURL = Tools.NullToString(value); }
 //		}
+
+		public DateTime  MandateDateTime
+		{
+			get
+			{
+				return     mandateDateTime;
+
+//	This code was in case the mandate date/time was returned as string
+//				try
+//				{
+//					DateTime x = System.Convert.ToDateTime(mandateDateTime);
+//					if ( x < new DateTime(1950,01,01) || x > System.DateTime.Now.AddDays(1) )
+//						return Constants.DateNull;
+//					return x;
+//				}
+//				catch
+//				{ }
+//				return Constants.DateNull;
+			}
+		}
+		public string    MandateIPAddress
+		{
+			get { return  Tools.NullToString(mandateIPAddress); }
+		}
+		public string    MandateBrowser
+		{
+			get { return  Tools.NullToString(mandateBrowser); }
+		}
+		public string    ContractCode
+		{
+			get { return  Tools.NullToString(contractCode); }
+		}
+
+//		Stripe stuff
+		public string    CustomerID
+		{
+			get { return  Tools.NullToString(customerID); }
+		}
+		public string    PaymentMethodID
+		{
+			get { return  Tools.NullToString(paymentMethodID); }
+		}
 
 //		Payment Provider stuff
 		public string    BureauCode
@@ -122,6 +174,8 @@ namespace PCIBusiness
 					return "000000002744639";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentsOS) )
 					return "mu.prosperian.rtr";
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
+					return "100000001099570";
 				return "";
 			}
 			set { providerAccount = value.Trim(); }
@@ -138,8 +192,13 @@ namespace PCIBusiness
 					return "";
 
 //	Testing
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU) )
+					return "{A580B3C7-3EF3-47F1-9B90-4047CE0EC54C}";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate) )
 					return "27ededae-4ba3-486a-a243-8da1e4c1a067";
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
+					return "REVqzPb4PTiD4n7Fo3e1p1VyQUbvmy5YZuhxhUpqL0EcUTGWHPchIUd8m3LeixLf";
+//					return "yZgqflutOnJ3nSN7s9ylGMAZDNpmllGzuPMHPVBwDOW8riDT3qu8Uivbg7xlWbeK";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Peach) )
 					return "OGFjN2E0Yzc3MmI3N2RkZjAxNzJiN2VkMDFmODA2YTF8akE0aEVaOG5ZQQ==";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.CyberSource) )
@@ -151,28 +210,42 @@ namespace PCIBusiness
 					return "IcJSjbVloKPQsS5PJrCdGOz8W/pLOBjzO4QVqKG4Ai8=";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentsOS) )
 					return "daea1771-d849-4fa4-a648-230a54186964"; // Public key
-				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe) )
-					return "pk_test_51It78gGmZVKtO2iKc4eB6JveDn9HZAWR7F9cbiISEcYHGquyNoqb1YNnSQuzlJlR8maNlTUmaH0pBHHw4tZAOUBc00KZH2PeKW"; // Public key
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_USA) ) // Public key
+					return "pk_test_51It78gGmZVKtO2iKXD0LEFRDvEs1Wkld93qRjifDLyWRoOgxXwGDJZzs9i902shBJqEk8v3XYg1WLLdButIK0QfU00xtFyxDQf";
+//					return "pk_test_51It78gGmZVKtO2iKc4eB6JveDn9HZAWR7F9cbiISEcYHGquyNoqb1YNnSQuzlJlR8maNlTUmaH0pBHHw4tZAOUBc00KZH2PeKW";
+				return "";
+			}
+		}
+		public string    ProviderKeyPublic
+		{
+			set { providerKeyPublic = value.Trim(); }
+			get
+			{
+				if ( Tools.NullToString(providerKeyPublic).Length > 0 )
+					return providerKeyPublic;
+				else if ( Tools.SystemIsLive() )
+					return "";
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentsOS) )
+					return "daea1771-d849-4fa4-a648-230a54186964";
+//				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
+//					return "Blah";
 
 				return "";
 			}
 		}
-//		public string    ProviderKeyPublic
-//		{
-//			set { providerKeyPublic = value.Trim(); }
-//			get
-//			{
-//				if ( Tools.NullToString(providerKeyPublic).Length > 0 )
-//					return providerKeyPublic;
-//
-//				else if ( Tools.SystemIsLive() )
-//					return "";
-//				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentsOS) )
-//					return "daea1771-d849-4fa4-a648-230a54186964";
-//
-//				return "";
-//			}
-//		}
+		public string    ProviderProfileID
+		{
+			set { providerProfileID = value.Trim(); }
+			get
+			{
+				if ( Tools.NullToString(providerProfileID).Length > 0 )
+					return providerProfileID;
+//				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.CyberSource) )
+//					return "601591F8-04DA-4E9D-94E1-A5D7649C0EB7";
+				return "";
+			}
+		}
+
 		public string    ProviderUserID
 		{
 			set { providerUserID = value.Trim(); }
@@ -188,6 +261,8 @@ namespace PCIBusiness
 					return "";
 
 //	Testing
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU) )
+					return "200208";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.TokenEx) )
 					return "4311038889209736";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Peach) )
@@ -216,10 +291,17 @@ namespace PCIBusiness
 					return providerPassword;
 				else if ( Tools.SystemIsLive() )
 					return "";
+
+//	Testing
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU) )
+					return "g1Kzk8GY";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentsOS) )
 					return "3790d1d5-4847-43e6-a29a-f22180cc9fda"; // Private/secret key
-				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe) )
-					return "sk_test_51It78gGmZVKtO2iKwt179k2NOmHVUNab70RO7EcbRm7AZmvunvtgD4S0srMXQWIpvj3EAWq7QLJ4kcRIMRHPzPxq00n0dLN01U"; // Secret key
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_USA) ) // Secret key
+					return "sk_test_51It78gGmZVKtO2iKBZF7DA5JisJzRqvibQdXSfBj9eQh4f5UDvgCShZIjznOWCxu8MtcJG5acVkDcd8K184gIegx001uXlHI5g";
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
+					return "sbyq0CUAvUSPMifwRH0f68fByQ5ZgSjyEpbeKg77o1Cuh9BD30ucakuXtpCCUMJN"; // Instance key
+				//	return "sxuAbskjc5AVdQ5qbyja7ClSAZQ9NmMYmzoTGQ1ucRB6Jxg3LAq9tOZLWFYorWpl";
 
 				return "";
 			}
@@ -232,25 +314,43 @@ namespace PCIBusiness
 				if ( Tools.NullToString(providerURL).Length > 0 )
 					return providerURL;
 
+//	Providers where live and test are the same URL
+
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_USA) ||
+				          bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_EU)  ||
+				          bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_Asia) )
+					return "https://api.stripe.com";
+
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate) )
+					return "https://secure.paygate.co.za/payhost/process.trans";
+
+//	Providers where live and test are different
+//	LIVE
 				else if ( Tools.SystemIsLive() )
 				{
 					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.eNETS) )
 						return "https://api.nets.com.sg/GW2/TxnReqListener";
-					else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.MyGate) )
+					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.MyGate) )
 						return "https://www.mygate.co.za/Collections/1x0x0/pinManagement.cfc?wsdl";
-					else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate) )
-						return "https://secure.paygate.co.za/payhost/process.trans";
-					else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.CyberSource) )
+					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.CyberSource) )
 						return "https://secureacceptance.cybersource.com/silent";
-					else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.CyberSource_Moto) )
+					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.CyberSource_Moto) )
 						return "https://secureacceptance.cybersource.com/silent";
-					else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentsOS) )
+					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentsOS) )
 						return "https://api.paymentsos.com";
-//					else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe) )
-//						return "https://test.stripe.com";
-					return "";
+					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU) )
+						return "https://secure.payu.co.za";
+					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
+						return "https://pay.ms.fnb.co.za";
 				}
-
+//	TESTING
+				else
+				{
+					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU) )
+						return "https://staging.payu.co.za";
+					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
+						return "https://sandbox.ms.fnb.co.za";
+				}
 				return "";
 			}
 		}
@@ -364,6 +464,7 @@ namespace PCIBusiness
 		public string    RegionalId
 		{
 			get { return  Tools.NullToString(regionalId); }
+			set { regionalId = value.Trim(); }
 		}
 		public string    Address1(byte mode=0)
 		{
@@ -407,16 +508,13 @@ namespace PCIBusiness
 		{
 			get
 			{
-				string x = Tools.NullToString(countryCode).ToUpper();
-				if ( x.Length > 1 && x.StartsWith("US") )
-					return ProvinceCode;
+				string p = Tools.NullToString(provinceCode);
+				string y = Tools.NullToString(countryCode).ToUpper();
+				if ( p.Length > 0 && y.Length >= 2 && y.StartsWith("US") )
+					return p;
 				return "";
 			}
 		}
-//		public string    CountryCode
-//		{
-//			get { return  Tools.NullToString(countryCode); }
-//		}
 
 //		payment stuff
 //		public string    OrderNumber
@@ -425,7 +523,12 @@ namespace PCIBusiness
 //		}
 		public string    MerchantReference
 		{
-			get { return  Tools.NullToString(merchantReference); }
+			get
+			{
+				if ( string.IsNullOrWhiteSpace(merchantReference) )
+					merchantReference = contractCode;
+				return Tools.NullToString(merchantReference);
+			}
 			set { merchantReference = value.Trim(); }
 		}
 		public string    MerchantReferenceOriginal
@@ -440,24 +543,46 @@ namespace PCIBusiness
 					transactionID = (Guid.NewGuid()).ToString();
 				return Tools.NullToString(transactionID);
 			}
+			set { transactionID = value.Trim(); }
 		}
 //		public string    AuthorizationCode
 //		{
 //			get { return  Tools.NullToString(authorizationCode); }
+//		}
+//		public string    IPAddress
+//		{
+//			get { return  Tools.NullToString(ipAddress); }
 //		}
 		public string    CurrencyCode
 		{
 			get { return  Tools.NullToString(currencyCode); }
 			set { currencyCode = value.Trim().ToUpper(); }
 		}
-		public string    IPAddress
-		{
-			get { return  Tools.NullToString(ipAddress); }
-		}
 		public string    PaymentDescription
 		{
-			get { return  Tools.NullToString(paymentDescription); }
 			set { paymentDescription = value.Trim(); }
+			get
+			{
+				paymentDescription = Tools.NullToString(paymentDescription);
+				if ( paymentDescription.Length > 0 )
+					return paymentDescription;
+				paymentDescription = Tools.ConfigValue("AppDescription");
+				if ( paymentDescription.Length > 0 )
+					return paymentDescription;
+				paymentDescription = SystemDetails.Owner;
+				if ( paymentDescription.Length > 0 )
+					return paymentDescription;
+				return "Prosperian Capital International";
+			}	
+		}
+		public string    PaymentDescriptionLeft(short maxLength)
+		{
+			string h = Tools.NullToString(paymentDescription);
+			if ( h.Length < 1 )
+				h = "CareAssist";
+			if ( maxLength <= 0 || maxLength >= h.Length )
+				return h;
+			return h.Substring(0,maxLength);
 		}
 		public  int      PaymentAmount
 		{
@@ -523,7 +648,37 @@ namespace PCIBusiness
 				catch
 				{ }
 				return 12;
-//				return 0;
+			}
+		}
+		public  int      CardExpiryYear
+		{
+			get
+			{
+				try
+				{
+					int x = Convert.ToInt32(ccExpiryYear);
+					if ( x > 1900 && x < 9999 )
+						return x;
+				}
+				catch
+				{ }
+				return System.DateTime.Now.Year+1;
+			}
+		}
+		public  string   CardExpiryDD // Always the last day of the month
+		{
+			get
+			{
+				byte mm = CardExpiryMonth;
+				if ( mm == 1 || mm == 3 || mm == 5 || mm == 7 || mm == 8 || mm == 10 || mm == 12 )
+					return "31";
+				if ( mm == 4 || mm == 6 || mm == 9 || mm == 11 )
+					return "30";
+				if ( CardExpiryYear == 2100 || CardExpiryYear == 2200 || CardExpiryYear == 2300 ) // Not leap years
+					return "28";
+				if ( ( CardExpiryYear % 4 ) == 0 )
+					return "29";
+				return "28";
 			}
 		}
 		public  string   CardExpiryMM // Pad with zeroes, eg. 07
@@ -575,10 +730,58 @@ namespace PCIBusiness
 					ccExpiryYear = "";
 			}
 		}
+
+		public long CardExpiryMilliSeconds
+		{
+			get
+			{
+				try
+				{
+//	Version 3, no need to bother with the hours, minutes or seconds
+					DateTimeOffset expDate = new DateTime ( System.Convert.ToInt32(CardExpiryYYYY),
+					                                        System.Convert.ToInt32(CardExpiryMM),
+					                                        System.Convert.ToInt32(CardExpiryDD) );
+					return expDate.ToUnixTimeMilliseconds();
+
+//	Version 2
+//					DateTime jan1970 = new DateTime ( 1970, 01, 01, 00, 00, 00 , System.DateTimeKind.Utc );
+//					DateTime expDate = new DateTime ( System.Convert.ToInt32(CardExpiryYYYY),
+//					                                  System.Convert.ToInt32(CardExpiryMM),
+//					                                  System.Convert.ToInt32(CardExpiryDD), 23, 59, 59, 59 );
+//					TimeSpan diff    = expDate - jan1970;
+//					return System.Convert.ToInt64(diff.TotalMilliseconds);
+
+//	Version 1
+//					DateTime jan1970 = new DateTime ( 1970, 01, 01, 00, 00, 00 );
+//					DateTime expDate = new DateTime ( System.Convert.ToInt32(CardExpiryYYYY),
+//					                                  System.Convert.ToInt32(CardExpiryMM),
+//					                                  System.Convert.ToInt32(CardExpiryDD), 23, 59, 59, 59 );
+//					TimeSpan diff    = expDate - jan1970;
+//					return System.Convert.ToInt64(diff.TotalMilliseconds);
+				}
+				catch
+				{ }
+				DateTimeOffset h = System.DateTime.Now.AddYears(1);
+				return h.ToUnixTimeMilliseconds();
+			}
+		}
+
 		public  string   CardName
 		{
 			get { return  Tools.NullToString(ccName); }
 			set { ccName = value.Trim(); }
+		}
+		public  string   CardNameSplit(byte firstLast)
+		{
+			string nm = Tools.NullToString(ccName);
+			if ( nm.Length < 1 )
+				return "";
+			int k = nm.IndexOf(" ");
+			if ( k < 1 )
+				return nm;
+			if ( firstLast <= 1 )
+				return nm.Substring(0,k);
+			return nm.Substring(k).Trim();
 		}
 		public  string   CardCVV
 		{
@@ -590,30 +793,12 @@ namespace PCIBusiness
 			get { return  transactionType; }
 			set { transactionType = value; }
 		}
-		public  string   TransactionTypeName
-		{
-			get
-			{
-				if ( transactionType == (byte)Constants.TransactionType.CardPayment           ) return "Card Payment";
-				if ( transactionType == (byte)Constants.TransactionType.CardPaymentThirdParty ) return "Payment via 3rd Party";
-				if ( transactionType == (byte)Constants.TransactionType.DeleteToken           ) return "Delete Token";
-				if ( transactionType == (byte)Constants.TransactionType.GetCardFromToken      ) return "Get Card from Token";
-				if ( transactionType == (byte)Constants.TransactionType.GetToken              ) return "Get Token from Card";
-				if ( transactionType == (byte)Constants.TransactionType.GetTokenThirdParty    ) return "Token via 3rd Party";
-				if ( transactionType == (byte)Constants.TransactionType.ManualPayment         ) return "Manual Payment";
-				if ( transactionType == (byte)Constants.TransactionType.ThreeDSecurePayment   ) return "3d Secure Payment";
-				if ( transactionType == (byte)Constants.TransactionType.TokenPayment          ) return "Token Payment";
-				if ( transactionType == (byte)Constants.TransactionType.Test                  ) return "Test";
-				return "Unknown (transactionType=" + transactionType.ToString() + ")";
-			}
-		}
 
 		public int Detokenize()
 		{
-//			int processMode = Tools.StringToInt(Tools.ConfigValue("ProcessMode"));
-			int retProc     = 87020;
-			int retSQL      = 87020;
-			sql             = "";
+			int retProc = 87020;
+			int retSQL  = 87020;
+			sql         = "";
 			Tools.LogInfo("Detokenize/10","Token=" + CardToken,10,this);
 
 			if ( transaction == null || transaction.BureauCode != bureauCode )
@@ -670,12 +855,89 @@ namespace PCIBusiness
 			return retProc;
 		}
 
+		public int Reversal()
+		{
+			int retProc = 64020;
+			int retSQL  = 64020;
+			sql         = "";
+
+			if ( transaction == null || transaction.BureauCode != bureauCode )
+				transaction = Tools.CreateTransaction(bureauCode);
+			if ( transaction == null )
+				return retProc;
+
+			retProc = transaction.Reversal(this);
+//	To Do
+//			sql     = "exec sp_Upd_Reversal @MerchantReference = "     + Tools.DBString(merchantReference) // nvarchar(20),
+//				                         + ",@PaymentBureauCode = "     + Tools.DBString(bureauCode)        // char(3),
+//			                            + ",@CardToken = "             + Tools.DBString(transaction.PaymentToken)
+//			                            + ",@TransactionId = "         + Tools.DBString(transaction.PaymentReference)
+//			                            + ",@ReversalId = "            + Tools.DBString(transaction.OtherReference)
+//			                            + ",@BureauSubmissionSoap = "  + Tools.DBString(transaction.XMLSent,3)
+//			                            + ",@BureauResultSoap = "      + Tools.DBString(transaction.XMLResult,3)
+//			                            + ",@TransactionStatusCode = " + Tools.DBString(transaction.ResultCode)
+//		                               + ",@ReversalStatusCode = '" + ( retProc == 0 ? "007'" : "001'" );
+//			retSQL = ExecuteSQLUpdate();
+//			Tools.LogInfo("Reversal/90","retProc=" + retProc.ToString()+", retSQL=" + retSQL.ToString()+", SQL=" + sql,240,this);
+
+			return retProc;
+		}
+
+		public int Lookup()
+		{
+			int retProc = 64120;
+			int retSQL  = 64120;
+			sql         = "";
+
+			if ( transaction == null || transaction.BureauCode != bureauCode )
+				transaction = Tools.CreateTransaction(bureauCode);
+			if ( transaction == null )
+				return retProc;
+
+			retProc = transaction.Lookup(this);
+			sql     = "exec sp_Upd_CardPayment_Ref @TransactionID = "           + Tools.DBString(TransactionID)
+			                                   + ",@TransactionStatusCode = "   + Tools.DBString(transaction.ResultCode);
+//			                                   + ",@TransactionStatusReason = " + Tools.DBString(transaction.ResultMessage);
+			Tools.LogInfo("Lookup/20","SQL=" + sql,20,this);
+			retSQL = ExecuteSQLUpdate();
+
+			return retProc;
+		}
+
+		public int Refund()
+		{
+			int retProc = 64020;
+			int retSQL  = 64020;
+			sql         = "";
+
+			if ( transaction == null || transaction.BureauCode != bureauCode )
+				transaction = Tools.CreateTransaction(bureauCode);
+			if ( transaction == null )
+				return retProc;
+
+			retProc = transaction.Refund(this);
+
+//	To Do
+//			sql     = "exec sp_Upd_Refund @MerchantReference = "     + Tools.DBString(merchantReference) // nvarchar(20),
+//				                       + ",@PaymentBureauCode = "     + Tools.DBString(bureauCode)        // char(3),
+//			                          + ",@CardToken = "             + Tools.DBString(transaction.PaymentToken)
+//			                          + ",@TransactionId = "         + Tools.DBString(transaction.PaymentReference)
+//			                          + ",@RefundId = "              + Tools.DBString(transaction.OtherReference)
+//			                          + ",@BureauSubmissionSoap = "  + Tools.DBString(transaction.XMLSent,3)
+//			                          + ",@BureauResultSoap = "      + Tools.DBString(transaction.XMLResult,3)
+//			                          + ",@TransactionStatusCode = " + Tools.DBString(transaction.ResultCode)
+//		                             + ",@RefundStatusCode = '"     + ( retProc == 0 ? "007'" : "001'" );
+//			retSQL = ExecuteSQLUpdate();
+//			Tools.LogInfo("Refund/90","retProc=" + retProc.ToString()+", retSQL=" + retSQL.ToString()+", SQL=" + sql,240,this);
+
+			return retProc;
+		}
+
 		public int GetToken()
 		{
-//			int processMode = Tools.StringToInt(Tools.ConfigValue("ProcessMode"));
-			int retProc     = 64020;
-			int retSQL      = 64020;
-			sql             = "";
+			int retProc = 64020;
+			int retSQL  = 64020;
+			sql         = "";
 			Tools.LogInfo("GetToken/10","Merchant Ref=" + merchantReference,10,this);
 
 			if ( transaction == null || transaction.BureauCode != bureauCode )
@@ -694,6 +956,8 @@ namespace PCIBusiness
 				sql = "exec sp_Upd_CardTokenVault @MerchantReference = "           + Tools.DBString(merchantReference) // nvarchar(20),
 				                              + ",@PaymentBureauCode = "           + Tools.DBString(bureauCode)        // char(3),
 			                                 + ",@PaymentBureauToken = "          + Tools.DBString(transaction.PaymentToken)
+			                                 + ",@PaymentMethodId = "             + Tools.DBString(transaction.PaymentMethodId)
+			                                 + ",@CustomerId = "                  + Tools.DBString(transaction.CustomerId)
 			                                 + ",@BureauSubmissionSoap = "        + Tools.DBString(transaction.XMLSent,3)
 			                                 + ",@BureauResultSoap = "            + Tools.DBString(transaction.XMLResult,3)
 			                                 + ",@TransactionStatusCode = "       + Tools.DBString(transaction.ResultCode)
@@ -724,7 +988,8 @@ namespace PCIBusiness
 			          processMode == (int)Constants.ProcessMode.UpdatePaymentStep1 ||
 			          processMode == (int)Constants.ProcessMode.UpdatePaymentStep1AndStep2 )
 			{
-				sql = "exec sp_Upd_CardPayment @MerchantReference = " + Tools.DBString(merchantReference)
+				sql = "exec sp_Upd_CardPayment @MerchantReference     = " + Tools.DBString(merchantReference)
+			                              + ",@TransactionID         = " + Tools.DBString(transaction.PaymentReference)
 			                              + ",@TransactionStatusCode = '77'";
 				Tools.LogInfo("ProcessPayment/30","SQL 1=" + sql,20,this);
 				retSQL = ExecuteSQLUpdate();
@@ -770,8 +1035,9 @@ namespace PCIBusiness
 			          processMode == (int)Constants.ProcessMode.UpdatePaymentStep2 ||
 			          processMode == (int)Constants.ProcessMode.UpdatePaymentStep1AndStep2 )
 			{
-				sql = "exec sp_Upd_CardPayment @MerchantReference = " + Tools.DBString(merchantReference)
-			                              + ",@TransactionStatusCode = " + Tools.DBString(transaction.ResultCode);
+				sql = "exec sp_Upd_CardPayment @MerchantReference = "     + Tools.DBString(merchantReference)
+			                              + ",@TransactionStatusCode = " + Tools.DBString(transaction.ResultCode)
+			                              + ",@TransactionID = "         + Tools.DBString(transaction.PaymentReference);
 				Tools.LogInfo("ProcessPayment/70","SQL 2=" + sql,20,this);
 				retSQL = ExecuteSQLUpdate();
 				Tools.LogInfo("ProcessPayment/80","SQL 2 complete",20,this);
@@ -787,64 +1053,96 @@ namespace PCIBusiness
 			if ( dbConn.ColStatus("PaymentBureauToken") == Constants.DBColumnStatus.ColumnOK )
 			{
 				ccToken           = dbConn.ColString("PaymentBureauToken");
-				merchantReference = dbConn.ColString("ContractCode");
 				providerUserID    = dbConn.ColString("TxID");
 				providerKey       = dbConn.ColString("TxKey");
 				providerURL       = dbConn.ColString("TxURL");
+				contractCode      = dbConn.ColString("ContractCode");
+				merchantReference = contractCode;
 				return;
 			}
 
 		//	Payment Provider
 			providerKey       = dbConn.ColString("SafeKey");
-		//	providerKeyPublic = dbConn.ColString("PublicKey");
-			providerURL       = dbConn.ColString("url");
-			providerAccount   = dbConn.ColString("MerchantAccount",0,0);
-			providerUserID    = dbConn.ColString("MerchantUserId",0,0);
+			providerURL       = dbConn.ColString("url"                 ,0,0);
+			providerAccount   = dbConn.ColString("MerchantAccount"     ,0,0);
+			providerProfileID = dbConn.ColString("MerchantProfileId"   ,0,0);
+			providerUserID    = dbConn.ColString("MerchantUserId"      ,0,0);
 			providerPassword  = dbConn.ColString("MerchantUserPassword",0,0);
+			providerKeyPublic = dbConn.ColString("MerchantKeyPublic"   ,0,0);
+
+		//	Lookup
+			if ( dbConn.ColStatus("TransactionId") == Constants.DBColumnStatus.ColumnOK &&
+			     dbConn.ColStatus("CardNumber")    != Constants.DBColumnStatus.ColumnOK &&
+			     dbConn.ColStatus("Token")         != Constants.DBColumnStatus.ColumnOK )
+			{
+				transactionID = dbConn.ColString("TransactionId");
+				return;
+			}
 
 		//	Customer
 			if ( dbConn.ColStatus("lastName") == Constants.DBColumnStatus.ColumnOK )
 			{
-				firstName     = dbConn.ColUniCode("firstName");
-				lastName      = dbConn.ColUniCode("lastName");
-				email         = dbConn.ColString ("email");
-				phoneCell     = dbConn.ColString ("mobile");
-				regionalId    = dbConn.ColString ("regionalId");
-				address1      = dbConn.ColUniCode("address1");
-				address2      = dbConn.ColUniCode("city");
-				postalCode    = dbConn.ColString ("zip_code");
-				provinceCode  = dbConn.ColString ("state");
-				countryCode   = dbConn.ColString ("countryCode");
-				ipAddress     = dbConn.ColString ("IPAddress",0,0);
+				firstName     = dbConn.ColUniCode("firstName"  ,0,0);
+				lastName      = dbConn.ColUniCode("lastName"   ,0,0);
+				email         = dbConn.ColString ("email"      ,0,0);
+				phoneCell     = dbConn.ColString ("mobile"     ,0,0);
+				regionalId    = dbConn.ColString ("regionalId" ,0,0);
+				address1      = dbConn.ColUniCode("address1"   ,0,0);
+				address2      = dbConn.ColUniCode("city"       ,0,0);
+			//	address3      = dbConn.ColUniCode("blah"       ,0,0);
+				postalCode    = dbConn.ColString ("zip_code"   ,0,0);
+				provinceCode  = dbConn.ColString ("state"      ,0,0);
+				countryCode   = dbConn.ColString ("countryCode",0,0);
+			//	ipAddress     = dbConn.ColString ("IPAddress"  ,0,0);
 			}
 
+
 		//	Payment
-			merchantReference         = dbConn.ColString("merchantReference",0,0);
+			merchantReference         = dbConn.ColString("merchantReference"        ,0,0);
 			merchantReferenceOriginal = dbConn.ColString("merchantReferenceOriginal",0,0); // Only really for Ikajo, don't log error
-			paymentAmount             = dbConn.ColLong  ("amountInCents",0,0);
-			currencyCode              = dbConn.ColString("currencyCode",0,0);
-			paymentDescription        = dbConn.ColString("description",0,0);
+			paymentAmount             = dbConn.ColLong  ("amountInCents"            ,0,0);
+			currencyCode              = dbConn.ColString("currencyCode"             ,0,0);
+			paymentDescription        = dbConn.ColString("description"              ,0,0);
 
 		//	Card/token/transaction details, not always present, don't log errors
-			ccName        = dbConn.ColString("nameOnCard",0,0);
-			ccNumber      = dbConn.ColString("cardNumber",0,0);
-			ccExpiryMonth = dbConn.ColString("cardExpiryMonth",0,0);
-			ccExpiryYear  = dbConn.ColString("cardExpiryYear",0,0);
-			ccType        = dbConn.ColString("cardType",0,0);
-			ccCVV         = dbConn.ColString("cvv",0,0);
-			ccToken       = dbConn.ColString("token",0,0);
-			ccPIN         = dbConn.ColString("PIN",0,0);
-			transactionID = dbConn.ColString("transactionId",0,0);
+			ccName           = dbConn.ColUniCode("NameOnCard"     ,0,0);
+			ccNumber         = dbConn.ColString ("CardNumber"     ,0,0);
+			ccExpiryMonth    = dbConn.ColString ("CardExpiryMonth",0,0);
+			ccExpiryYear     = dbConn.ColString ("CardExpiryYear" ,0,0);
+			ccType           = dbConn.ColString ("CardType"       ,0,0);
+			ccCVV            = dbConn.ColString ("CVV"            ,0,0);
+			ccToken          = dbConn.ColString ("Token"          ,0,0);
+			ccPIN            = dbConn.ColString ("PIN"            ,0,0);
+			transactionID    = dbConn.ColString ("TransactionId"  ,0,0);
+		//	Used by Stripe (bureauCode 028)
+			customerID       = dbConn.ColString ("CustomerId"     ,0,0);
+			paymentMethodID  = dbConn.ColString ("PaymentMethodId",0,0);
+
+		//	Contract/customer mandate
+			mandateDateTime  = dbConn.ColDate   ("ContractDate"   ,0,0);
+			mandateIPAddress = dbConn.ColString ("IPAddres"       ,0,0);
+			mandateBrowser   = dbConn.ColString ("Browser"        ,0,0);
+			contractCode     = dbConn.ColString ("ContractCode"   ,0,0);
 
 		//	Token Provider (if empty, then it is the same as the payment provider)
 			if ( dbConn.ColStatus("TxKey") == Constants.DBColumnStatus.ColumnOK )
 			{
-				tokenizerID  = dbConn.ColString("TxID");
-				tokenizerKey = dbConn.ColString("TxKey");
-				tokenizerURL = dbConn.ColString("TxURL");
+				tokenizerID   = dbConn.ColString("TxID");
+				tokenizerKey  = dbConn.ColString("TxKey");
+				tokenizerURL  = dbConn.ColString("TxURL");
 			}
 			if ( dbConn.ColStatus("TxToken") == Constants.DBColumnStatus.ColumnOK )
-				ccToken      = dbConn.ColString("TxToken");
+				ccToken       = dbConn.ColString("TxToken");
+
+//	Testing
+//			countryCode      = "ZA";
+//			address1         = "231 Lagoon's Edge";
+//			address2         = "Port Alfred";
+//			email            = "Joe@DontPhoneMe.net";
+//			phoneCell        = "084 666 8888";
+//			mandateDateTime  = "2019/12/31 23:59:59";
+//			mandateIPAddress = "10.0.231.45";
+//			mandateBrowser   = "FireFox 89.0.1";
 		}
 
 		public override void CleanUp()

@@ -6,8 +6,11 @@ namespace PCIBusiness
 {
 	public abstract class Transaction : StdDisposable
 	{
+		protected string      otherRef;
 		protected string      payRef;
 		protected string      payToken;
+		protected string      customerId;
+		protected string      paymentMethodId;
 		protected string      cardNumber;
 //		protected string      authCode;
 		protected string      resultCode;
@@ -29,14 +32,26 @@ namespace PCIBusiness
 		protected string      keyValuePairs;
 		protected string      d3Form;
 
+		public  string      OtherReference // For reversals, refunds, etc
+		{
+			get { return     Tools.NullToString(otherRef); }
+		}
 		public  string      PaymentReference
 		{
 			get { return     Tools.NullToString(payRef); }
 		}
-//		public  string      AuthorizationCode
-//		{
-//			get { return     Tools.NullToString(authCode); }
-//		}
+		public  string      PaymentToken
+		{
+			get { return     Tools.NullToString(payToken); }
+		}
+		public  string      CustomerId
+		{
+			get { return     Tools.NullToString(customerId); }
+		}
+		public  string      PaymentMethodId
+		{
+			get { return     Tools.NullToString(paymentMethodId); }
+		}
 		public  string      BureauCode
 		{
 			get { return     Tools.NullToString(bureauCode); }
@@ -48,10 +63,6 @@ namespace PCIBusiness
 		public  string      CardNumber
 		{
 			get { return     Tools.NullToString(cardNumber); }
-		}
-		public  string      PaymentToken
-		{
-			get { return     Tools.NullToString(payToken); }
 		}
 		public  string      ResultCode
 		{
@@ -76,23 +87,21 @@ namespace PCIBusiness
 			{
 				try
 				{
-					return     xmlResult.InnerXml;
+					if ( xmlResult != null )
+						return  xmlResult.InnerXml;
 				}
 				catch
 				{ }
 				try
 				{
-					return     Tools.NullToString(strResult);
+					if ( strResult != null )
+						return  strResult.Trim();
 				}
 				catch
 				{ }
 				return "";
 			}
 		}
-//		public  XmlDocument XMLResult
-//		{
-//			get { return     xmlResult; }
-//		}
 
 //		public  Constants.BureauStatus ProviderStatus
 //		{
@@ -140,7 +149,6 @@ namespace PCIBusiness
 			get { return   Tools.NullToString(d3Form); }
 		}
 
-
 		public virtual string WebForm
 		{
 			get { return ""; }
@@ -176,14 +184,29 @@ namespace PCIBusiness
 			return 14040;
 		}
 
-		public virtual int CardTest(Payment payment)
+		public virtual int Refund(Payment payment)
 		{
 			return 14050;
 		}
 
-		public virtual int CardPayment3rdParty(Payment payment)
+		public virtual int Reversal(Payment payment)
 		{
 			return 14060;
+		}
+
+		public virtual int Lookup(Payment payment)
+		{
+			return 14065;
+		}
+
+		public virtual int CardTest(Payment payment)
+		{
+			return 14070;
+		}
+
+		public virtual int CardPayment3rdParty(Payment payment)
+		{
+			return 14080;
 		}
 
 		public virtual int ThreeDSecurePayment(Payment payment,Uri postBackURL,string languageCode="",string languageDialectCode="")
@@ -213,20 +236,30 @@ namespace PCIBusiness
 			if ( bureauURL.Length > 0 )
 				return;
 
-			if ( Tools.SystemIsLive() )
+//	Providers where live and test are the same URL
+
+			if ( bureau == Constants.PaymentProvider.PayGate )
+				bureauURL = "https://secure.paygate.co.za/payhost/process.trans";
+
+			else if ( bureau == Constants.PaymentProvider.Stripe_USA ||
+			          bureau == Constants.PaymentProvider.Stripe_EU  ||
+			          bureau == Constants.PaymentProvider.Stripe_Asia )
+				bureauURL = "https://api.stripe.com";
+
+			else if ( Tools.SystemIsLive() )
 			{
 				if ( bureau == Constants.PaymentProvider.Peach )
 					bureauURL = "https://oppwa.com/v1";
-				else if ( bureau == Constants.PaymentProvider.PayGate )
-					bureauURL = "https://secure.paygate.co.za/payhost/process.trans";
+				else if ( bureau == Constants.PaymentProvider.PayU )
+					bureauURL = "https://secure.payu.co.za";
 				else if ( bureau == Constants.PaymentProvider.TokenEx )
 					bureauURL = "https://api.tokenex.com";
 				else if ( bureau == Constants.PaymentProvider.FNB )
-					bureauURL = "https://pay.ms.fnb.co.za/eCommerce/v2";
+					bureauURL = "https://pay.ms.fnb.co.za";
 				else if ( bureau == Constants.PaymentProvider.PaymentsOS )
 					bureauURL = "https://api.paymentsos.com";
 			}
-			else
+			else // Testing
 			{
 				if ( bureau == Constants.PaymentProvider.Peach )
 					bureauURL = "https://test.oppwa.com/v1";
@@ -234,8 +267,6 @@ namespace PCIBusiness
 					bureauURL = "https://sandbox.ecentricswitch.co.za:8443/paymentgateway/v1";
 				else if ( bureau == Constants.PaymentProvider.eNETS )
 					bureauURL = "https://uat-api.nets.com.sg:9065/GW2/TxnReqListener";
-				else if ( bureau == Constants.PaymentProvider.PayGate )
-					bureauURL = "https://secure.paygate.co.za/payhost/process.trans";
 				else if ( bureau == Constants.PaymentProvider.PayGenius )
 					bureauURL = "https://developer.paygenius.co.za";
 				else if ( bureau == Constants.PaymentProvider.PayU )
@@ -245,15 +276,12 @@ namespace PCIBusiness
 				else if ( bureau == Constants.PaymentProvider.TokenEx )
 					bureauURL = "https://test-api.tokenex.com";
 				else if ( bureau == Constants.PaymentProvider.FNB )
-					bureauURL = "https://sandbox.ms.fnb.co.za/eCommerce/v2";
+				//	bureauURL = "https://sandbox.ms.fnb.co.za/eCommerce/v2";
+					bureauURL = "https://sandbox.ms.fnb.co.za";
 				else if ( bureau == Constants.PaymentProvider.CyberSource )
 					bureauURL = "https://apitest.cybersource.com";
 				else if ( bureau == Constants.PaymentProvider.CyberSource_Moto )
 					bureauURL = "https://apitest.cybersource.com";
-				else if ( bureau == Constants.PaymentProvider.PaymentsOS )
-					bureauURL = "https://api.paymentsos.com";
-//				else if ( bureau == Constants.PaymentProvider.Stripe )
-//					bureauURL = "https://test.stripe.com";
 			}
 		}
 
@@ -262,20 +290,21 @@ namespace PCIBusiness
 			xmlResult = null;
 		}
 
-		protected string ClassName
-		{
-			get { return this.GetType().ToString(); }
-		}
+//		protected string ClassName
+//		{
+//			get { return this.GetType().ToString(); }
+//		}
 
-
-		public Transaction()
+		private void Clear()
 		{
 			bureauCodeTokenizer = Tools.BureauCode(Constants.PaymentProvider.TokenEx);
 			bureauCode          = "";
 			bureauURL           = "";
 			payRef              = "";
+			otherRef            = "";
 			payToken            = "";
-//			authCode            = "";
+			customerId          = "";
+			paymentMethodId     = "";
 			resultCode          = "";
 			resultMsg           = "";
 			xmlSent             = "";
@@ -288,6 +317,16 @@ namespace PCIBusiness
 			keyValuePairs       = "";
 			d3Form              = "";
 			xmlResult           = null;
+		}
+
+		public Transaction()
+		{
+			Clear();
+		}
+		public Transaction(Constants.PaymentProvider provider)
+		{
+			Clear();
+			LoadBureauDetails(provider);
 		}
 	}
 }

@@ -94,12 +94,11 @@ namespace PCIBusiness
 
 		public virtual byte LoadProvider()
 		{
-			if ( providerID.Length > 0 && userID.Length > 0 )
+			if ( providerID.Length > 0 ) // && userID.Length > 0 )
 				if ( provider == null || provider.BureauCode != providerID || provider.UserCode != userID )
 					provider = (new Providers()).LoadOne(1,providerID,userID);
 
 			if ( provider == null || provider.BureauCode != providerID || provider.UserCode != userID )
-//			if ( provider == null || provider.BureauCode != providerID )
 				return 10;
 
 			return 0;
