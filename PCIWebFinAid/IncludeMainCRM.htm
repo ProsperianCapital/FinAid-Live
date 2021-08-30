@@ -1,0 +1,23 @@
+<!--
+HTML, XML, AJAX, CSS, JavaScript and server-side code developed by
+	Paul Kilfoil
+	Software Development & IT Consulting
+	PaulKilfoil..[at]..gmail.com
+	www.PaulKilfoil.co.za
+-->
+<title>CareAssist</title>
+<link rel="stylesheet" href="CSS/BackOffice.css?v=93" type="text/css" />
+<link rel="stylesheet" href="CSS/Calendar.css" type="text/css" />
+<link rel="shortcut icon" href="Images/favicon.ico" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<script type="text/javascript">
+var startPage   = "pgLogonCRM.aspx";
+var sessionTime = "<% =Session.Timeout %>";
+var userMode    = "<% = ( sessionGeneral == null ? (byte)0 : sessionGeneral.CheckExpiry ) %>";
+var colorOK     = "green";
+var colorErr    = "crimson";
+</script>
+
+<script type="text/javascript" src="JS/Utils.js"></script>
+<script type="text/javascript" src="JS/Timeout.js"></script>
