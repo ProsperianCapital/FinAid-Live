@@ -66,32 +66,92 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ContractLookup.aspx" />
-    <Content Include="CSS\Calendar.css" />
-    <Content Include="Images\Calendar.gif" />
-    <Content Include="Images\Chat.png" />
-    <Content Include="Images\Close1.png" />
-    <Content Include="IncludeMain.htm" />
-    <Content Include="JS\Calendar.js" />
-    <Content Include="Login.aspx" />
-    <Content Include="packages.config" />
-    <Content Include="Welcome.aspx" />
-    <None Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="AJAXProcess.aspx" />
+    <Content Include="CAFooter.ascx" />
+    <Content Include="CAHeader.ascx" />
+    <Content Include="CAHome.aspx" />
+    <Content Include="CALegal.aspx" />
+    <Content Include="CALogin.aspx" />
+    <Content Include="Detokenize.aspx" />
     <Content Include="Footer.ascx" />
     <Content Include="Header.ascx" />
+    <Content Include="Home.aspx" />
+    <Content Include="ISCRM.aspx" />
+    <Content Include="ISHeader.ascx" />
+    <Content Include="ISHome.aspx" />
+    <Content Include="LGHeader.ascx" />
+    <Content Include="LGHome.aspx" />
+    <Content Include="pgChangeAddress.aspx" />
+    <Content Include="pgChangeEMail.aspx" />
+    <Content Include="pgChangeEMailOnly.aspx" />
+    <Content Include="pgChangePIN.aspx" />
+    <Content Include="pgChangeSubscriptionOption.aspx" />
+    <Content Include="pgContractLookUp.aspx" />
+    <Content Include="pgDeactivateSubscription.aspx" />
+    <Content Include="pgLogonCRM.aspx" />
+    <Content Include="pgPayOutstandingFees.aspx" />
+    <Content Include="pgRequestCashReward.aspx" />
+    <Content Include="pgTransactionLookUp.aspx" />
+    <Content Include="pgVerifyEMail.aspx" />
+    <Content Include="pgVerifyIdentity.aspx" />
+    <Content Include="pgVerifyMobile.aspx" />
+    <Content Include="pgViewCurrentBalances.aspx" />
+    <Content Include="pgVieweWallets.aspx" />
+    <Content Include="pgViewFundingMethods.aspx" />
+    <Content Include="pgViewMiniStatement.aspx" />
+    <Content Include="pgViewProductActivityLog.aspx" />
+    <Content Include="pgViewProductDashboard.aspx" />
+    <Content Include="pgViewProfile.aspx" />
+    <Content Include="pgViewRewardTransactions.aspx" />
+    <Content Include="pgViewSubscriptionDetail.aspx" />
+    <Content Include="Policies.aspx" />
+    <Content Include="PYHeader.ascx" />
+    <Content Include="PYHome.aspx" />
     <Content Include="Register.aspx" />
+    <Content Include="RegisterEx3.aspx" />
+    <Content Include="RegisterThreeD.aspx" />
     <Content Include="TransLookup.aspx" />
-    <Content Include="Web.config" />
-    <Content Include="Bin\SelectHtmlDep.zip" />
+    <Content Include="ContractLookup.aspx" />
+    <Content Include="LAdmin.aspx" />
+    <Content Include="LChange.aspx" />
+    <Content Include="LFinnHub.aspx" />
+    <Content Include="LGet.aspx" />
+    <Content Include="Login.aspx" />
+    <Content Include="LOther.aspx" />
+    <Content Include="LPay.aspx" />
+    <Content Include="LView.aspx" />
+    <Content Include="LWelcome.aspx" />
+    <Content Include="Menu.ascx" />
+    <Content Include="UIApplicationQuery.aspx" />
+    <Content Include="UIApplicationTest.aspx" />
+    <Content Include="XFooter.ascx" />
+    <Content Include="XHeader.ascx" />
+    <Content Include="XHome.aspx" />
+    <Content Include="XMenu.ascx" />
+    <Content Include="XRecurring.aspx" />
+    <Content Include="XTechnical.aspx" />
+    <Content Include="pgAccountingCaptureCashbook.aspx" />
+    <Content Include="pgViewDashboardProsperianWealth.aspx" />
+    <Content Include="pgLogon.aspx" />
+    <Content Include="IncludeBusy.htm" />
+    <Content Include="IncludeErrorDtl.htm" />
+    <Content Include="IncludeLogin1.htm" />
+    <Content Include="IncludeLogin2.htm" />
+    <Content Include="IncludeMainSimple.htm" />
+    <Content Include="IncludeMainAdmin.htm" />
+    <Content Include="IncludeMainCRM.htm" />
+    <Content Include="IncludeMainCA.htm" />
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="JS\AJAXUtils.js" />
     <Content Include="JS\Utils.js" />
+    <Content Include="JS\Calendar.js" />
+    <Content Include="JS\Timeout.js" />
+    <Content Include="CSS\CAFinAid.css" />
     <Content Include="CSS\FinAid.css" />
+    <Content Include="CSS\BackOffice.css" />
+    <Content Include="CSS\Calendar.css" />
     <Content Include="CSS\raleway-bold-webfont.eot" />
     <Content Include="CSS\raleway-semibold-webfont.eot" />
     <Content Include="CSS\raleway-medium-webfont.eot" />
@@ -104,20 +164,247 @@
     <Content Include="CSS\raleway-bold-webfont.svg" />
     <Content Include="CSS\raleway-semibold-webfont.svg" />
     <Content Include="CSS\raleway-medium-webfont.svg" />
+    <Content Include="CSS\atlanta-webfont.woff" />
+    <Content Include="ImagesCA\X1.png" />
+    <Content Include="ImagesCA\X2.png" />
+    <Content Include="ImagesCA\X3.png" />
+    <Content Include="ImagesCA\CA-isos.png" />
+    <Content Include="ImagesCA\CA-Tick.png" />
+    <Content Include="ImagesCA\CA-LifeGuru.png" />
+    <Content Include="ImagesCA\CA-Assist1.jpg" />
+    <Content Include="ImagesCA\CA-Assist2.jpg" />
+    <Content Include="ImagesCA\CA-Assist3.jpg" />
+    <Content Include="ImagesCA\CA-Gold.png" />
+    <Content Include="ImagesCA\CA-Silver.png" />
+    <Content Include="ImagesCA\CA-Bronze.png" />
+    <Content Include="ImagesCA\LogoENG.png" />
+    <Content Include="ImagesCA\isos.png" />
+    <Content Include="ImagesCA\Legal.jpg" />
+    <Content Include="ImagesCA\Loyalty.png" />
+    <Content Include="Images\DownArrow.png" />
+    <Content Include="Images\LightG.png" />
+    <Content Include="Images\LightR.png" />
+    <Content Include="Images\LightY.png" />
     <Content Include="Images\FinAid.png" />
     <Content Include="Images\Phone.png" />
+    <Content Include="Images\PayPayYa.png" />
+    <Content Include="Images\PlaNetBig-Black.png" />
+    <Content Include="Images\PlaNetSmall-Black.png" />
+    <Content Include="Images\PlaNet-White.png" />
     <Content Include="Images\VeriSign.png" />
     <Content Include="Images\Visa.png" />
     <Content Include="Images\MasterCard.png" />
-    <Content Include="Images\Flag-TH.png" />
+    <Content Include="Images\HamburgerMenu.png" />
+    <Content Include="Images\Flag-THA.png" />
+    <Content Include="Images\Flag-USA.png" />
+    <Content Include="Images\Flag-EUR.png" />
+    <Content Include="Images\Flag-GBR.png" />
+    <Content Include="Images\Flag-RSA.png" />
+    <Content Include="Images\eWallet.png" />
     <Content Include="Images\Tick.png" />
     <Content Include="Images\Cross.png" />
+    <Content Include="Images\Calendar.gif" />
+    <Content Include="Images\Chat.png" />
+    <Content Include="Images\Close1.png" />
+    <Content Include="Images\LogoENG.png" />
+    <Content Include="Images\LogoPlaNet.png" />
+    <Content Include="Images\LogoVisa.jpg" />
+    <Content Include="Images\Bell1.png" />
+    <Content Include="Images\Busy.gif" />
+    <Content Include="Images\imgMenuItemPCI.png" />
+    <Content Include="Images\imgMenuItemFinTech.png" />
+    <Content Include="Images\imgMenuItemOLICO.png" />
+    <Content Include="Images\imgMenuItemWealth.png" />
     <Content Include="Templates\ConfirmationMail.htm" />
+    <Content Include="Bin\PCIUnattended.EXE" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppDetails.cs" />
+    <Compile Include="CALegal.aspx.cs">
+      <DependentUpon>CALegal.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CALegal.aspx.designer.cs">
+      <DependentUpon>CALegal.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Detokenize.aspx.cs">
+      <DependentUpon>Detokenize.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Detokenize.aspx.designer.cs">
+      <DependentUpon>Detokenize.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ISCRM.aspx.cs">
+      <DependentUpon>ISCRM.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ISCRM.aspx.designer.cs">
+      <DependentUpon>ISCRM.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ISHeader.ascx.cs">
+      <DependentUpon>ISHeader.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ISHeader.ascx.designer.cs">
+      <DependentUpon>ISHeader.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ISHome.aspx.cs">
+      <DependentUpon>ISHome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ISHome.aspx.designer.cs">
+      <DependentUpon>ISHome.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LGHeader.ascx.cs">
+      <DependentUpon>LGHeader.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LGHeader.ascx.designer.cs">
+      <DependentUpon>LGHeader.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="LGHome.aspx.cs">
+      <DependentUpon>LGHome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LGHome.aspx.designer.cs">
+      <DependentUpon>LGHome.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgChangeEMailOnly.aspx.cs">
+      <DependentUpon>pgChangeEMailOnly.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgChangeEMailOnly.aspx.designer.cs">
+      <DependentUpon>pgChangeEMailOnly.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgChangeSubscriptionOption.aspx.cs">
+      <DependentUpon>pgChangeSubscriptionOption.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgChangeSubscriptionOption.aspx.designer.cs">
+      <DependentUpon>pgChangeSubscriptionOption.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgPayOutstandingFees.aspx.cs">
+      <DependentUpon>pgPayOutstandingFees.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgPayOutstandingFees.aspx.designer.cs">
+      <DependentUpon>pgPayOutstandingFees.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgVerifyEMail.aspx.cs">
+      <DependentUpon>pgVerifyEMail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgVerifyEMail.aspx.designer.cs">
+      <DependentUpon>pgVerifyEMail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgVerifyIdentity.aspx.cs">
+      <DependentUpon>pgVerifyIdentity.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgVerifyIdentity.aspx.designer.cs">
+      <DependentUpon>pgVerifyIdentity.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgVerifyMobile.aspx.cs">
+      <DependentUpon>pgVerifyMobile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgVerifyMobile.aspx.designer.cs">
+      <DependentUpon>pgVerifyMobile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgViewFundingMethods.aspx.cs">
+      <DependentUpon>pgViewFundingMethods.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgViewFundingMethods.aspx.designer.cs">
+      <DependentUpon>pgViewFundingMethods.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgViewRewardTransactions.aspx.cs">
+      <DependentUpon>pgViewRewardTransactions.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgViewRewardTransactions.aspx.designer.cs">
+      <DependentUpon>pgViewRewardTransactions.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgViewSubscriptionDetail.aspx.cs">
+      <DependentUpon>pgViewSubscriptionDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgViewSubscriptionDetail.aspx.designer.cs">
+      <DependentUpon>pgViewSubscriptionDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Policies.aspx.cs">
+      <DependentUpon>Policies.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Policies.aspx.designer.cs">
+      <DependentUpon>Policies.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PYHeader.ascx.cs">
+      <DependentUpon>PYHeader.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PYHeader.ascx.designer.cs">
+      <DependentUpon>PYHeader.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="PYHome.aspx.cs">
+      <DependentUpon>PYHome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PYHome.aspx.designer.cs">
+      <DependentUpon>PYHome.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="XMenuItem.cs" />
+    <Compile Include="AJAXProcess.aspx.cs">
+      <DependentUpon>AJAXProcess.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AJAXProcess.aspx.designer.cs">
+      <DependentUpon>AJAXProcess.aspx</DependentUpon>
+    </Compile>
     <Compile Include="BasePage.cs">
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePageAdmin.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePageCRM.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePageCRMv1.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePageLogin.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePageRegister.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CAFooter.ascx.cs">
+      <DependentUpon>CAFooter.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CAFooter.ascx.designer.cs">
+      <DependentUpon>CAFooter.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="CAHeader.ascx.cs">
+      <DependentUpon>CAHeader.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CAHeader.ascx.designer.cs">
+      <DependentUpon>CAHeader.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="CAHome.aspx.cs">
+      <DependentUpon>CAHome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CAHome.aspx.designer.cs">
+      <DependentUpon>CAHome.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CALogin.aspx.cs">
+      <DependentUpon>CALogin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CALogin.aspx.designer.cs">
+      <DependentUpon>CALogin.aspx</DependentUpon>
     </Compile>
     <Compile Include="ContractLookup.aspx.cs">
       <DependentUpon>ContractLookup.aspx</DependentUpon>
@@ -126,12 +413,190 @@
     <Compile Include="ContractLookup.aspx.designer.cs">
       <DependentUpon>ContractLookup.aspx</DependentUpon>
     </Compile>
+    <Compile Include="DownLoad.ashx.cs">
+      <DependentUpon>DownLoad.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Home.aspx.cs">
+      <DependentUpon>Home.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Home.aspx.designer.cs">
+      <DependentUpon>Home.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LAdmin.aspx.cs">
+      <DependentUpon>LAdmin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LAdmin.aspx.designer.cs">
+      <DependentUpon>LAdmin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LChange.aspx.cs">
+      <DependentUpon>LChange.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LChange.aspx.designer.cs">
+      <DependentUpon>LChange.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LFinnHub.aspx.cs">
+      <DependentUpon>LFinnHub.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LFinnHub.aspx.designer.cs">
+      <DependentUpon>LFinnHub.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LGet.aspx.cs">
+      <DependentUpon>LGet.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LGet.aspx.designer.cs">
+      <DependentUpon>LGet.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LOther.aspx.cs">
+      <DependentUpon>LOther.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LOther.aspx.designer.cs">
+      <DependentUpon>LOther.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LPay.aspx.cs">
+      <DependentUpon>LPay.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LPay.aspx.designer.cs">
+      <DependentUpon>LPay.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LView.aspx.cs">
+      <DependentUpon>LView.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LView.aspx.designer.cs">
+      <DependentUpon>LView.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LWelcome.aspx.cs">
+      <DependentUpon>LWelcome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LWelcome.aspx.designer.cs">
+      <DependentUpon>LWelcome.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Menu.ascx.cs">
+      <DependentUpon>Menu.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Menu.ascx.designer.cs">
+      <DependentUpon>Menu.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="pgChangeAddress.aspx.cs">
+      <DependentUpon>pgChangeAddress.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgChangeAddress.aspx.designer.cs">
+      <DependentUpon>pgChangeAddress.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgChangeEMail.aspx.cs">
+      <DependentUpon>pgChangeEMail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgChangeEMail.aspx.designer.cs">
+      <DependentUpon>pgChangeEMail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgChangePIN.aspx.cs">
+      <DependentUpon>pgChangePIN.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgChangePIN.aspx.designer.cs">
+      <DependentUpon>pgChangePIN.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgDeactivateSubscription.aspx.cs">
+      <DependentUpon>pgDeactivateSubscription.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgDeactivateSubscription.aspx.designer.cs">
+      <DependentUpon>pgDeactivateSubscription.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgLogonCRM.aspx.cs">
+      <DependentUpon>pgLogonCRM.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgLogonCRM.aspx.designer.cs">
+      <DependentUpon>pgLogonCRM.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgRequestCashReward.aspx.cs">
+      <DependentUpon>pgRequestCashReward.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgRequestCashReward.aspx.designer.cs">
+      <DependentUpon>pgRequestCashReward.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgViewCurrentBalances.aspx.cs">
+      <DependentUpon>pgViewCurrentBalances.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgViewCurrentBalances.aspx.designer.cs">
+      <DependentUpon>pgViewCurrentBalances.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgViewMiniStatement.aspx.cs">
+      <DependentUpon>pgViewMiniStatement.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgViewMiniStatement.aspx.designer.cs">
+      <DependentUpon>pgViewMiniStatement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgViewProductActivityLog.aspx.cs">
+      <DependentUpon>pgViewProductActivityLog.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgViewProductActivityLog.aspx.designer.cs">
+      <DependentUpon>pgViewProductActivityLog.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgViewProductDashboard.aspx.cs">
+      <DependentUpon>pgViewProductDashboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgViewProductDashboard.aspx.designer.cs">
+      <DependentUpon>pgViewProductDashboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgViewProfile.aspx.cs">
+      <DependentUpon>pgViewProfile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgViewProfile.aspx.designer.cs">
+      <DependentUpon>pgViewProfile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="UIApplicationTest.aspx.cs">
+      <DependentUpon>UIApplicationTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UIApplicationTest.aspx.designer.cs">
+      <DependentUpon>UIApplicationTest.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgContractLookUp.aspx.cs">
+      <DependentUpon>pgContractLookUp.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgContractLookUp.aspx.designer.cs">
+      <DependentUpon>pgContractLookUp.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgTransactionLookUp.aspx.cs">
+      <DependentUpon>pgTransactionLookUp.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgTransactionLookUp.aspx.designer.cs">
+      <DependentUpon>pgTransactionLookUp.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgVieweWallets.aspx.cs">
+      <DependentUpon>pgVieweWallets.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgVieweWallets.aspx.designer.cs">
+      <DependentUpon>pgVieweWallets.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Register.aspx.cs">
@@ -155,9 +620,25 @@
     <Compile Include="Footer.ascx.designer.cs">
       <DependentUpon>Footer.ascx</DependentUpon>
     </Compile>
+    <Compile Include="RegisterEx3.aspx.cs">
+      <DependentUpon>RegisterEx3.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RegisterEx3.aspx.designer.cs">
+      <DependentUpon>RegisterEx3.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RegisterThreeD.aspx.cs">
+      <DependentUpon>RegisterThreeD.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RegisterThreeD.aspx.designer.cs">
+      <DependentUpon>RegisterThreeD.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SessionGeneral.cs" />
     <Compile Include="StdDisposable.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="SystemDetails.cs" />
     <Compile Include="TransLookup.aspx.cs">
       <DependentUpon>TransLookup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -165,13 +646,76 @@
     <Compile Include="TransLookup.aspx.designer.cs">
       <DependentUpon>TransLookup.aspx</DependentUpon>
     </Compile>
-    <Compile Include="WebTools.cs" />
-    <Compile Include="Welcome.aspx.cs">
-      <DependentUpon>Welcome.aspx</DependentUpon>
+    <Compile Include="UIApplicationQuery.aspx.cs">
+      <DependentUpon>UIApplicationQuery.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Welcome.aspx.designer.cs">
-      <DependentUpon>Welcome.aspx</DependentUpon>
+    <Compile Include="UIApplicationQuery.aspx.designer.cs">
+      <DependentUpon>UIApplicationQuery.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WebTools.cs" />
+    <Compile Include="pgAccountingCaptureCashbook.aspx.cs">
+      <DependentUpon>pgAccountingCaptureCashbook.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgAccountingCaptureCashbook.aspx.designer.cs">
+      <DependentUpon>pgAccountingCaptureCashbook.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="XFooter.ascx.cs">
+      <DependentUpon>XFooter.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="XFooter.ascx.designer.cs">
+      <DependentUpon>XFooter.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="XHeader.ascx.cs">
+      <DependentUpon>XHeader.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="XHeader.ascx.designer.cs">
+      <DependentUpon>XHeader.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="XHome.aspx.cs">
+      <DependentUpon>XHome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="XHome.aspx.designer.cs">
+      <DependentUpon>XHome.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgLogon.aspx.cs">
+      <DependentUpon>pgLogon.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgLogon.aspx.designer.cs">
+      <DependentUpon>pgLogon.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="XMenu.ascx.cs">
+      <DependentUpon>XMenu.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="XMenu.ascx.designer.cs">
+      <DependentUpon>XMenu.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="XRecurring.aspx.cs">
+      <DependentUpon>XRecurring.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="XRecurring.aspx.designer.cs">
+      <DependentUpon>XRecurring.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="XTechnical.aspx.cs">
+      <DependentUpon>XTechnical.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="XTechnical.aspx.designer.cs">
+      <DependentUpon>XTechnical.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pgViewDashboardProsperianWealth.aspx.cs">
+      <DependentUpon>pgViewDashboardProsperianWealth.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pgViewDashboardProsperianWealth.aspx.designer.cs">
+      <DependentUpon>pgViewDashboardProsperianWealth.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +723,18 @@
       <Project>{24be56c3-fd48-4d4f-abb5-9d78b3aff620}</Project>
       <Name>PCIBusiness</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DownLoad.ashx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web.config" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

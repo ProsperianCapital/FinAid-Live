@@ -5,7 +5,7 @@ using PCIBusiness;
 
 namespace PCIWebFinAid
 {
-	public partial class CAHome : BasePage
+	public partial class PYHome : BasePage
 	{
 		byte   errPriority;
 		int    ret;
@@ -15,13 +15,12 @@ namespace PCIWebFinAid
 		string productCode;
 		string languageCode;
 		string languageDialectCode;
-		string promoCode;
 
 		protected Literal F12014; // Favicon
 
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
-			ApplicationCode = "100";
+			ApplicationCode = "170";
 			errPriority     = 19;
 
 			if ( Page.IsPostBack )
@@ -30,7 +29,6 @@ namespace PCIWebFinAid
 				productCode         = hdnProductCode.Value;
 				languageCode        = hdnLangCode.Value;
 				languageDialectCode = hdnLangDialectCode.Value;
-				promoCode           = hdnPromoCode.Value;
 				ListItem lang       = ascxHeader.lstLanguage.SelectedItem;
 				if ( lang != null && ( lang.Text != languageCode || lang.Value != languageDialectCode ) )
 				{
@@ -43,7 +41,6 @@ namespace PCIWebFinAid
 			}
 			else
 			{
-				LoadPromo();
 				LoadProduct();
 				LoadStaticDetails();
 				LoadDynamicDetails();
@@ -64,7 +61,7 @@ namespace PCIWebFinAid
 				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("ENG","0002"));
 				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("THA","0001"));
 				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("GER","0298"));
-				Tools.LogInfo("LoadStaticDetails/10003","BackDoor, PC/LC/LDC/Promo="+productCode+"/"+languageCode+"/"+languageDialectCode+"/"+promoCode,222,this);
+				Tools.LogInfo("LoadStaticDetails/10003","BackDoor, PC/LC/LDC="+productCode+"/"+languageCode+"/"+languageDialectCode,222,this);
 			}
 			else
 				using (MiscList mList = new MiscList())
@@ -135,7 +132,7 @@ namespace PCIWebFinAid
 				{
 					ret = 10110;
 					spr = "sp_WP_Get_ProductContent";
-					sql = "exec " + spr + stdParms + ",@PromoCode=" + Tools.DBString(promoCode);
+					sql = "exec " + spr + stdParms;
 					if ( mList.ExecQuery(sql,0) != 0 )
 						SetErrorDetail("LoadDynamicDetails", 10120, "Internal database error (" + spr + " failed)", sql, 2, 2, null, false, errPriority);
 					else if ( mList.EOF )
@@ -181,8 +178,8 @@ namespace PCIWebFinAid
 							                                   ascxHeader,
 							                                   ascxFooter);
 							if ( err != 0 )
-								SetErrorDetail("LoadDynamicDetails", 10197, "Unrecognized Image code ("+fieldCode + "/" + fieldValue.ToString() + ")", "WebTools.ReplaceImage('"+fieldCode+"') => "+err.ToString(), 2, 0, null, false, errPriority);
-							Tools.LogInfo("LoadDynamicDetails/10201","ImageCode="+fieldCode+"/"+fieldValue,errPriority,this);
+								SetErrorDetail("LoadDynamicDetails", 10195, "Unrecognized Image code ("+fieldCode + "/" + fieldValue.ToString() + ")", "WebTools.ReplaceImage('"+fieldCode+"') => "+err.ToString(), 2, 0, null, false, errPriority);
+							Tools.LogInfo("LoadDynamicDetails/10202","ImageCode="+fieldCode+"/"+fieldValue,errPriority,this);
 							mList.NextRow();
 						}
 
@@ -199,7 +196,7 @@ namespace PCIWebFinAid
 					ret       = 10210;
 					xHIW.Text = "";
 					spr       = "sp_WP_Get_ProductHIWInfo";
-					sql       = "exec " + spr + stdParms + ",@PromoCode=" + Tools.DBString(promoCode);
+					sql       = "exec " + spr + stdParms;
 					if ( mList.ExecQuery(sql,0) != 0 )
 						SetErrorDetail("LoadDynamicDetails", 10220, "Internal database error (" + spr + " failed)", sql, 2, 2, null, false, errPriority);
 					else if ( mList.EOF )
@@ -278,23 +275,9 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-					Tools.LogException("LoadDynamicDetails/99","ret="+ret.ToString(),ex,this);
+					PCIBusiness.Tools.LogException("LoadDynamicDetails/99","ret="+ret.ToString(),ex,this);
 				}
-
-//	Testing
-//				WebTools.ReplaceControlText(this.Page,"X090909","1","X","",ascxHeader,ascxFooter);
-//				WebTools.ReplaceControlText(this.Page,"X105141","1","X","",ascxHeader,ascxFooter);
-//				WebTools.ReplaceControlText(this.Page,"X105146","1","X","",ascxHeader,ascxFooter);
-//	Testing
 		}
-
-		private void LoadPromo()
-		{
-			promoCode          = WebTools.RequestValueString(Request,"PromoCode");
-			if ( promoCode.Length < 1 )
-				promoCode       = "10001"; // Default
-			hdnPromoCode.Value = promoCode;
-		}	
 
 		private void LoadProduct()
 		{

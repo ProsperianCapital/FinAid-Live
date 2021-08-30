@@ -32,6 +32,7 @@ namespace PCIWebFinAid
 		private string        languageCode;
 		private string        languageDialectCode;
 		private string        mobileNumber;
+		private string        appMode;
 
 		private enum ResultCode
 		{
@@ -48,6 +49,8 @@ namespace PCIWebFinAid
 
 		private int QueryData()
 		{
+//			string msg = "";
+
 			try
 			{
 				string secretKey   = "";
@@ -55,6 +58,7 @@ namespace PCIWebFinAid
 				inputDataType      = (byte)Constants.WebDataType.FormPost;
 				errorCode          = 0;
 				errorMsg           = "";
+//				msg                = msg + contentType;
 
 				if ( contentType.Contains("JSON") || contentType.Contains("XML") )
 				{
@@ -70,6 +74,7 @@ namespace PCIWebFinAid
 					strIn.Close();
 					strIn         = null;
 					inputDataJSON = inputDataJSON.Replace(Environment.NewLine,"");
+//					msg           = msg + "=" + inputDataJSON;
 
 					if ( contentType.Contains("JSON") )
 						inputDataType = (byte)Constants.WebDataType.JSON;
@@ -93,6 +98,7 @@ namespace PCIWebFinAid
 				userCode            = ParmValue("UserCode");
 				secretKey           = ParmValue("SecretKey");
 				mobileNumber        = ParmValue("MobileNumber");
+				appMode             = ParmValue("AppMode").ToUpper();
 
 				if ( inputDataType != (byte)Constants.WebDataType.FormPost )
 					Tools.LogInfo("QueryData/10","dataType="+inputDataType.ToString()
@@ -120,11 +126,17 @@ namespace PCIWebFinAid
 				if ( queryName == ("Test").ToUpper() )
 					GetTestData();
 
+				else if ( queryName == ("FinTechHelp").ToUpper() )
+					GetHelp();
+
 				else if ( queryName == ("FinTechGetApplicationCode").ToUpper() )
 					GetApplicationCode();
 
 				else if ( queryName == ("FinTechGetApplicationInfo").ToUpper() )
 					GetApplicationInfo();
+
+				else if ( queryName == ("FinTechGetPageInfoStart").ToUpper() )
+					GetPageInfoStart();
 
 				else if ( queryName == ("FinTechGetPageInfoLogin").ToUpper() )
 					GetPageInfoLogin();
@@ -147,9 +159,6 @@ namespace PCIWebFinAid
 				else if ( queryName == ("FinTechGeteWalletList").ToUpper() )
 					GetEWalletList();
 
-				else if ( queryName == ("FinTechGetPageInfoCreateNeweWallet").ToUpper() )
-					GetPageInfoCreateNeweWallet();
-
 				else if ( queryName == ("FinTechGeteWalletAccountCURList").ToUpper() )
 					GeteWalletAccountCURList();
 
@@ -171,11 +180,25 @@ namespace PCIWebFinAid
 				else if ( queryName == ("FinTechGetiSOSInfo").ToUpper() )
 					GetiSOSInfo();
 
+				else if ( queryName == ("FinTechGetiSOSInfo(v2)").ToUpper() )
+					GetiSOSInfo(2);
+
+//				else if ( queryName == ("FinTechGetiSOSInfo(Test)").ToUpper() )
+//					GetiSOSInfo(199);
+
 				else if ( queryName == ("FinTechRegisteriSOSEvent").ToUpper() )
 					RegisteriSOSEvent();
 
 				else if ( queryName == ("FinTechSendSMS").ToUpper() )
 					SendSMS();
+
+				else if ( queryName == ("FinTechGetGuruCalendar").ToUpper() )
+					GetGuruCalendar();
+
+//	Should this be here at all?
+				else if ( queryName == ("FinTechGetPageContent").ToUpper() )
+					GetPageContent();
+//	Should this be here at all?
 
 				else
 					SetError(10007,"Invalid query name");
@@ -242,9 +265,38 @@ namespace PCIWebFinAid
 			return errorCode;
 		}
 
+		private int GetHelp()
+		{
+			json.Append ( "\"FinTechAPI\":"
+		               + Tools.JSONPair("Help","",1,"{")
+		               + Tools.JSONPair("GetApplicationCode","")
+		               + Tools.JSONPair("GetApplicationInfo","App,Country,Lang,Dialect")
+		               + Tools.JSONPair("GetPageInfoStart"  ,"App,Country,Lang,Dialect")
+		               + Tools.JSONPair("GetPageInfoLogin"  ,"App,Country,Lang,Dialect")
+		               + Tools.JSONPair("GetPageInfo2FA"    ,"App,Country,Lang,Dialect")
+		               + Tools.JSONPair("GetMenuStructure"  ,"App,Lang,Dialect,User")
+		               + Tools.JSONPair("RegisteriSOSEvent" ,"Mobile,ButtonCode,Location")
+		               + Tools.JSONPair("GetiSOSInfo"       ,"Mobile")
+		               + Tools.JSONPair("GetPageContent"    ,"")
+		               + Tools.JSONPair("LogOn"             ,"App,UserName,UserPassword")
+		               + Tools.JSONPair("LogOn2FA"          ,"App,User,2FAChannelCode")
+		               + Tools.JSONPair("GetEWalletList"    ,"App,Country,Lang,Dialect,User")
+		               + Tools.JSONPair("Dashboard"         ,"App,Country,Lang,Dialect,User")
+		               + Tools.JSONPair("GetGuruCalendar"   ,"GuruCode,StartDate,EndDate")
+		               + Tools.JSONPair("GetPageInfoCreateNeweWallet"             ,"App,Country,Lang,Dialect,User")
+		               + Tools.JSONPair("GeteWalletAccountCURList"                ,"App,Country,Lang,Dialect,User")
+		               + Tools.JSONPair("GeteWalletFundingMethodList"             ,"App,Country,Lang,Dialect,User")
+		               + Tools.JSONPair("GetPageInfoEditeWalletAccountDescription","App,Country,Lang,Dialect,User")
+		               + Tools.JSONPair("CreateNeweWalletAccount"                 ,"App,Country,Lang,Dialect,User,CurrencyCode,FundingMethodCode,eWalletDescription")
+		               + Tools.JSONPair("EditeWalletAccountDescription"           ,"App,Country,Lang,Dialect,User,eWalletAccountCode,eWalletDescription")
+		               + Tools.JSONPair("SendSMS","App,Mobile,Message",1,"","}"));
+			return 0;
+		}
+
 		private int GetApplicationCode()
 		{
-			json.Append ( Tools.JSONPair("ApplicationCode","003") );
+		//	json.Append ( Tools.JSONPair("ApplicationCode",Tools.SystemCode(Constants.ApplicationCode.PayPayYa)) );
+			json.Append ( Tools.JSONPair("ApplicationCode",Tools.SystemCode(Constants.ApplicationCode.Mobile)) );
 			return 0;
 		}
 
@@ -260,12 +312,25 @@ namespace PCIWebFinAid
 			return 0;
 		}
 
+		private int GetPageInfoStart()
+		{
+			if ( CheckParameters("App,Country,Lang,Dialect") > 0 )
+				return errorCode;
+
+			json.Append ( Tools.JSONPair("StartHeading","Mobile Banking User Interface")
+			            + Tools.JSONPair("StartLogo","PayPayYaWide.png")
+			            + Tools.JSONPair("StartButtonText","Login Here") );
+			return 0;
+		}
+
 		private int GetPageInfoLogin()
 		{
 			if ( CheckParameters("App,Country,Lang,Dialect") > 0 )
 				return errorCode;
 
-			json.Append ( Tools.JSONPair("LoginLine1","Your Email Address")
+			json.Append ( Tools.JSONPair("LoginHeading","Customer Login")
+			            + Tools.JSONPair("LoginLogo","PayPayYa.png")
+			            + Tools.JSONPair("LoginLine1","Your Email Address")
 			            + Tools.JSONPair("LoginLine2","Password")
 			            + Tools.JSONPair("LoginButtonText","Login")
 			            + Tools.JSONPair("ForgotPasswordText","Forgot Password") );
@@ -310,12 +375,140 @@ namespace PCIWebFinAid
 			return SetError(13999,"Internal error: SQL " + sqlSP,sql,sql);
 		}
 
-		private int GetiSOSInfo()
+		private int GetPageContent()
+		{
+//			Don't need language
+//			if ( CheckParameters("Lang") > 0 )
+//				return errorCode;
+
+			sqlSP = "sp_iSOS_Get_iSOSContent";
+
+			using (MiscList mList = new MiscList())
+				try
+				{
+					if ( appMode == "TEST" )
+						sql = "create table #X (FieldCode varchar(50),MobileFieldName varchar(100),MobileFieldValue varchar(100)) "
+						    + "insert into  #X values "
+						    + "('1','Name 1','Value 1'),"
+						    + "('2','Name 2','Value 2'),"
+						    + "('3','Name 3','Value 3'),"
+						    + "('4','Name 4','Value 4') "
+						    + "select *,'ENG' as LanguageCode from #X";
+					else if ( languageCode.Length == 3 )
+						sql = "exec " + sqlSP + " @LanguageCode=" + Tools.DBString(languageCode);
+					else
+						sql = "exec " + sqlSP;
+
+					if ( mList.ExecQuery(sql,0,"",false) != 0 )
+						return SetError(11705,"Internal error: SQL " + sqlSP,sql,sql);
+
+					if ( mList.EOF )
+						return SetError(11710,"No data returned: SQL " + sqlSP,sql);
+
+					json.Append("\"FieldData\":[");
+
+					while ( ! mList.EOF )
+					{
+						json.Append ( Tools.JSONPair("FieldCode"       ,mList.GetColumn("FieldCode"), 1, "{")
+						            + Tools.JSONPair("LanguageCode"    ,mList.GetColumn("LanguageCode"))
+						            + Tools.JSONPair("MobileFieldName" ,mList.GetColumn("MobileFieldName"))
+						            + Tools.JSONPair("MobileFieldValue",mList.GetColumn("MobileFieldValue"), 1, "", "},") );
+						mList.NextRow();
+					}
+					json.Append("]");
+					return 0;
+				}
+				catch (Exception ex)
+				{
+					Tools.LogException("GetPageContent",sql,ex,this);
+				}
+
+			return SetError(11715,"Internal error: SQL " + sqlSP,sql,sql);
+		}
+
+
+		private int GetGuruCalendar()
+		{
+			string   guruCode  = ParmValue("GuruCode");
+			string   startTime = ParmValue("StartDate");
+			string   endTime   = ParmValue("EndDate");
+			DateTime sessionDate;
+
+			sql = ( guruCode.Length  > 0 ? ",@GuruCode=" + Tools.DBString(guruCode) : "" );
+
+			if ( startTime.Length > 0 )
+			{
+				sessionDate = Tools.StringToDate(startTime,2,3); // yyyy/mm/dd hh:mm
+				if ( sessionDate <= Constants.DateNull )
+					sessionDate    = Tools.StringToDate(startTime,1,3); // dd/mm/yyyy hh:mm
+				if ( sessionDate <= Constants.DateNull )
+					return SetError(21710,"Invalid start date");
+				sql = sql + ",@StartDateTime=" + Tools.DateToSQL(sessionDate,23);
+			}
+
+			if ( endTime.Length > 0 )
+			{
+				sessionDate = Tools.StringToDate(endTime,2,3); // yyyy/mm/dd hh:mm
+				if ( sessionDate <= Constants.DateNull )
+					sessionDate    = Tools.StringToDate(endTime,1,3); // dd/mm/yyyy hh:mm
+				if ( sessionDate <= Constants.DateNull )
+					return SetError(21720,"Invalid end date");
+				sql = sql + ",@EndDatetime=" + Tools.DateToSQL(sessionDate,24);
+			}
+
+			sqlSP  = "sp_LG_Get_Calendar";
+			if ( sql.StartsWith(",") )
+				sql = "  " + sql.Substring(1);
+			sql = "exec " + sqlSP + sql;
+
+			using (MiscList mList = new MiscList())
+				try
+				{
+					if ( mList.ExecQuery(sql,0,"",false) != 0 )
+						return SetError(21730,"Internal error: SQL " + sqlSP,sql,sql);
+
+					if ( mList.EOF )
+						return SetError(21740,"No data returned: SQL " + sqlSP,sql);
+
+					json.Append("\"Calendar\":[");
+
+					while ( ! mList.EOF )
+					{
+						sessionDate = mList.GetColumnDate("SessionStartDateTime");
+						startTime   = sessionDate.Hour.ToString().PadLeft(2,'0') + ":" + sessionDate.Minute.ToString().PadLeft(2,'0');
+						sessionDate = mList.GetColumnDate("SessionEndDateTime");
+						endTime     = sessionDate.Hour.ToString().PadLeft(2,'0') + ":" + sessionDate.Minute.ToString().PadLeft(2,'0');
+						json.Append ( Tools.JSONPair("GuruName"             ,mList.GetColumn("GuruName"), 1, "{")
+						            + Tools.JSONPair("SessionDate"          ,Tools.DateToString(sessionDate,2))
+						            + Tools.JSONPair("StartTime"            ,startTime)
+						            + Tools.JSONPair("EndTime"              ,endTime)
+					//	            + Tools.JSONPair("GuruStatusCode"       ,mList.GetColumn("GuruStatusCode"))
+						            + Tools.JSONPair("GuruStatusDescription",mList.GetColumn("GuruStatusDescription"))
+						            + Tools.JSONPair("ClientDetails"        ,mList.GetColumn("ClientDetails"), 1, "", "},") );
+						mList.NextRow();
+					}
+					json.Append("]");
+					return 0;
+				}
+				catch (Exception ex)
+				{
+					Tools.LogException("GetGuruCalendar",sql,ex,this);
+				}
+
+			return SetError(21750,"Internal error: SQL " + sqlSP,sql,sql);
+		}
+
+		private int GetiSOSInfo(byte verNo=0) // Use verNo = 199 for testing
 		{
 			if ( CheckParameters("Mobile") > 0 )
 				return errorCode;
 
-			sqlSP = "sp_iSOS_Get_iSOSAppDataA";
+			if ( appMode == "TEST" )
+				sqlSP = "sp_iSOS_Get_iSOSAppDataA";
+			else if ( verNo == 2 )
+				sqlSP = "sp_iSOS_Get_iSOSAppDataB";
+			else
+				sqlSP = "sp_iSOS_Get_iSOSAppDataA";
 
 			using (MiscList mList = new MiscList())
 				try
@@ -352,7 +545,12 @@ namespace PCIWebFinAid
 						            + Tools.JSONPair("Text"         ,buttonText)
 						            + Tools.JSONPair("ImageCode"    ,mList.GetColumn(colName+"ImageCode"))
 						            + Tools.JSONPair("ImageFileName",mList.GetColumn(colName+"ImageFileName"))
-						            + Tools.JSONPair("NumberToDial" ,mList.GetColumn(colName+"NumberToDial"),1,"","},") );
+						            + Tools.JSONPair("NumberToDial" ,mList.GetColumn(colName+"NumberToDial"),1,"","") );
+						if ( verNo == 2 )
+							json.Append ( Tools.JSONPair("SMSText"   ,mList.GetColumn(colName+"SMSText"),1,",","") );
+						else if ( appMode == "TEST" )
+							json.Append ( Tools.JSONPair("SMSText"   ,"This is some SMS text",1,",","") );
+						json.Append("},");
 					}
 					JSONAppend("]");
 					return 0;
@@ -400,7 +598,7 @@ namespace PCIWebFinAid
 
 		private int GetEWalletList()
 		{
-			if ( CheckParameters("App,User,Country,Lang,Dialect") > 0 )
+			if ( CheckParameters("App,Country,Lang,Dialect,User") > 0 )
 				return errorCode;
 
 			sqlSP = "sp_FinTechGeteWalletList";
@@ -469,7 +667,7 @@ namespace PCIWebFinAid
 
 		private int GetMenuStructure()
 		{
-			if ( CheckParameters("App,User") > 0 )
+			if ( CheckParameters("App,Lang,Dialect,User") > 0 )
 				return errorCode;
 
 			List<MenuItem> menuList;
@@ -488,6 +686,7 @@ namespace PCIWebFinAid
 			{
 				json.Append ( Tools.JSONPair("MenuLevel","1",11,"{")
 				            + Tools.JSONPair("MenuDescription",m1.Description)
+				            + Tools.JSONPair("Blocked",m1.Blocked)
 				            + Tools.JSONPair("MenuImage",m1.ImageName)
 				            + Tools.JSONPair("SubItems",m1.SubItems.Count.ToString(),11)
 				            + Tools.JSONPair("RouterLink",m1.RouterLink) );
@@ -498,6 +697,7 @@ namespace PCIWebFinAid
 					{
 						json.Append ( Tools.JSONPair("MenuLevel","2",11,"{")
 						            + Tools.JSONPair("MenuDescription",m2.Description)
+				                  + Tools.JSONPair("Blocked",m2.Blocked)
 				                  + Tools.JSONPair("SubItems",m2.SubItems.Count.ToString(),11)
 				                  + Tools.JSONPair("RouterLink",m2.RouterLink) );
 						if ( m2.SubItems.Count > 0 )
@@ -507,6 +707,7 @@ namespace PCIWebFinAid
 							{
 								json.Append ( Tools.JSONPair("MenuLevel","3",11,"{")
 								            + Tools.JSONPair("MenuDescription",m3.Description)
+				                        + Tools.JSONPair("Blocked",m3.Blocked)
 				                        + Tools.JSONPair("SubItems",m3.SubItems.Count.ToString(),11)
 				                        + Tools.JSONPair("RouterLink",m3.RouterLink) );
 								if ( m3.SubItems.Count > 0 )
@@ -515,6 +716,7 @@ namespace PCIWebFinAid
 									foreach (MenuItem m4 in m3.SubItems)
 										json.Append ( Tools.JSONPair("MenuLevel","4",11,"{")
 										            + Tools.JSONPair("MenuDescription",m4.Description)
+				                              + Tools.JSONPair("Blocked",m4.Blocked)
 				                              + Tools.JSONPair("SubItems","0",11)
 				                              + Tools.JSONPair("RouterLink",m4.RouterLink)
 										            + Tools.JSONPair("Url",m4.URL,1,"","},") );
@@ -597,7 +799,9 @@ namespace PCIWebFinAid
 			json.Append ( Tools.JSONPair("FundingMethodCode","DER",1,"{")
 			            + Tools.JSONPair("FundingMethodDescription","Robbed a bank",1,"","},") );
 			json.Append ( Tools.JSONPair("FundingMethodCode","FAW",1,"{")
-			            + Tools.JSONPair("FundingMethodDescription","Got lucky in Las Vegas",1,"","}") );
+			            + Tools.JSONPair("FundingMethodDescription","Got lucky in Sun City",1,"","}") );
+			json.Append ( Tools.JSONPair("FundingMethodCode","MNS",1,"{")
+			            + Tools.JSONPair("FundingMethodDescription","Sold moonshine during lockdown",1,"","}") );
 			json.Append("]");
 
 			return 0;
@@ -665,8 +869,12 @@ namespace PCIWebFinAid
 
 			using (SMS sms = new SMS())
 			{
+			//	Clickatell
 				sms.ProviderID  = ((int)Constants.MessageProvider.ClickaTell).ToString().PadLeft(3,'0');
-				sms.UserID      = "X";
+				sms.UserID      = "002";
+			//	Other, add here
+			//	sms.ProviderID  = ((int)Constants.MessageProvider.Blah).ToString().PadLeft(3,'0');
+			//	sms.UserID      = "Blah";
 				sms.MessageID   = 0;
 				sms.MessageBody = msgText;
 				if ( mobileNumber.StartsWith("+") )
@@ -722,14 +930,14 @@ namespace PCIWebFinAid
 			if ( errCode == 0 && json != null && json.Length > 0 )
 				data = data + json.ToString();
 
-			data = data.Trim();
+			data = data.Trim().Replace(",]","]").Replace("[,","[");
 			if ( data.EndsWith(",") )
 				data = data.Substring(0,data.Length-1);
 			data = "{" + data + "}";
 
 			try
 			{
-				Tools.LogInfo("UIApplicationQuery.SendJSON/1",data,10);
+				Tools.LogInfo("UIApplicationQuery.SendJSON/1",data,220);
 
 				Response.Clear();
 				Response.ContentType = "application/json; charset=utf-8";

@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
+using PCIBusiness;
 
 // Developed by Paul Kilfoil
 // http://www.PaulKilfoil.co.za
@@ -11,15 +9,9 @@ namespace PCIWebFinAid
 {
 	public abstract class BasePage : StdDisposable
 	{
-//		protected SessionGeneral sessionGeneral;
-
-//		private struct WebSetup
-//		{
-//			string productCode;
-//			string languageCode;
-//			string languageDialect;
-//		}
-//		private WebSetup webSetup;
+		protected Label  lblError;
+		protected Label  lblErrorDtl;
+		protected Button btnErrorDtl;
 
 		override protected void OnInit(EventArgs e) // You must set AutoEventWireup="false" in the ASPX page
 		{
@@ -27,46 +19,11 @@ namespace PCIWebFinAid
 			this.Load += new System.EventHandler(this.PageLoad);
 		}
 
-//		protected void SessionSave()
-//		{
-//			if ( sessionGeneral == null )
-//				sessionGeneral = new SessionGeneral();
-//			Session["SessionGeneral"] = sessionGeneral;
-//		}
-
-//		protected void SessionClear()
-//		{
-//			sessionGeneral            = null;
-//			Session["SessionGeneral"] = null;
-//		}
-
-		protected int PageCheck(byte mode=0)
+		protected virtual void StartOver(int errNo,string pageName="")
 		{
-			return 0;
-		}
-
-		protected int SessionCheck(byte sslMode, byte requireSession, byte requireUser)
-		{
-			return 0;
-		}
-
-		protected void CheckSSL(byte sslMode=0)
-		{
-			if ( sslMode < 1 )
-				return;
-
-			HttpContext context  = HttpContext.Current;
-			bool        isSecure = context.Request.IsSecureConnection;
-			string      url      = context.Request.Url.ToString();
-			string      urlLive  = PCIBusiness.Tools.ConfigValue("HttpsURLString").ToString();
-
-			if ( sslMode == 76 )
-			{
-				if ( isSecure ) // Force "http"
-					context.Response.Redirect(url.Replace("https:","http:"),true);
-			}
-			else if ( ! isSecure && urlLive.Length > 0 && url.ToUpper().Contains(urlLive.ToUpper()) ) // Force "https"
-				context.Response.Redirect(url.Replace("http:","https:"),true);
+			if ( pageName.Length < 6 )
+				pageName = "pgLogon.aspx"; // The LOGON ADMIN version
+			Response.Redirect ( pageName + ( errNo > 0 ? "?ErrNo=" + errNo.ToString() : "" ) , true );
 		}
 
 		public override void Close()
@@ -94,5 +51,120 @@ namespace PCIWebFinAid
 		//	Put this in the derived class:
 		//	protected override void PageLoad(object sender, EventArgs e)
 
+		public string ApplicationCode
+		{
+			get
+			{
+				try
+				{
+					if ( Session["ApplicationCode"] == null )
+						return "";
+					string appCode = Session["ApplicationCode"].ToString().Trim();
+					return appCode;
+				}
+				catch
+				{ }
+				return "";
+			}
+			set
+			{
+				Session["ApplicationCode"] = value;
+			}
+		}
+
+		protected void SetErrorDetail(string method,int errCode,string errBrief="",string errDetail="",byte briefMode=2,byte detailMode=2,Exception ex=null,bool alwaysShow=false,byte errPriority=0)
+		{
+			if ( errCode == 0 )
+				return;
+
+			if ( lblError == null && detailMode == 0 ) // No brief msg holder and no detailed msg
+				return;
+
+			if ( errCode < 0 )
+			{
+				if ( lblError != null )
+				{
+					lblError.Text    = "";
+					lblError.Visible = false;
+				}
+				if ( lblErrorDtl != null ) lblErrorDtl.Text    = "";
+				if ( btnErrorDtl != null ) btnErrorDtl.Visible = false;
+				return;
+			}
+
+			if ( lblError == null )
+				lblError = new Label();
+
+			string pageName = System.IO.Path.GetFileNameWithoutExtension(Page.AppRelativeVirtualPath);
+			if ( Tools.NullToString(pageName).Length < 1 )
+				pageName = "BasePage";
+
+//	This will put (eg) "PCIWebFinAid." in front of the page name
+//			try
+//			{
+//				string x = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+//				pageName = x + "." + pageName;
+//			}		
+//			catch
+//			{ }	
+
+			method = ( Tools.NullToString(method).Length > 0 ? method+"[SetErrorDetail]." : "SetErrorDetail/" ) + errCode.ToString();
+			if ( errPriority < 10 )
+				errPriority = 10;
+			Tools.LogInfo(pageName+"."+method,errBrief+" ("+errDetail+")",errPriority);
+
+			if ( ex != null )
+			{
+				Tools.LogException(pageName+"."+method,errBrief,ex);
+				if ( Tools.NullToString(errDetail).Length < 1 )
+					errDetail = ex.Message;
+			}
+
+			if ( briefMode == 2 ) // Append
+				lblError.Text = lblError.Text + ( lblError.Text.Length > 0 ? "<br />" : "" ) + errBrief;
+			else if ( briefMode == 101 ) // Overwrite, add in 1 <br /> BEFORE
+				lblError.Text = "<br />" + errBrief;
+			else if ( briefMode == 102 ) // Overwrite, add in 2 <br /> BEFORE
+				lblError.Text = "<br /><br />" + errBrief;
+			else if ( briefMode == 201 ) // Overwrite, add in 1 <br /> AFTER
+				lblError.Text = errBrief + "<br />";
+			else if ( briefMode == 202 ) // Overwrite, add in 2 <br /> AFTER
+				lblError.Text = errBrief + "<br /><br />";
+
+			else if ( briefMode == 23 ) // Use "lblErr2", <p></p>
+				try
+				{
+					((Label)FindControl("lblErr2")).Text = "<p>" + errBrief + "</p>";
+				}
+				catch {}
+
+			else if ( briefMode == 33 ) // Use "lblErr3", <br />
+				try
+				{
+					((Label)FindControl("lblErr3")).Text = "<br />" + errBrief;
+				}
+				catch {}
+			else
+				lblError.Text = errBrief;
+
+			lblError.Visible = ( lblError.Text.Length > 0 && lblError.Enabled );
+
+			if ( lblErrorDtl == null || detailMode == 0 ) // Do not log a detailed message at all
+				return;
+
+			if ( errDetail.Length < 1 )
+				errDetail = errBrief;
+			errDetail = "[" + errCode.ToString() + "] " + errDetail;
+			errDetail = errDetail.Replace(",","<br />,").Replace(";","<br />;").Trim();
+			if ( detailMode == 2 ) // Append
+				errDetail = lblErrorDtl.Text + ( lblErrorDtl.Text.Length > 0 ? "<br /><br />" : "" ) + errDetail;
+			lblErrorDtl.Text = errDetail;
+			if ( ! lblErrorDtl.Text.StartsWith("<div") )
+				lblErrorDtl.Text = "<div style='background-color:blue;padding:3px;color:white;height:20px'>Error Details<img src='"
+				                 + Tools.ImageFolder()
+				                 + "Close1.png' title='Close' style='float:right' onclick=\"JavaScript:ShowElt('lblErrorDtl',false)\" /></div>" + lblErrorDtl.Text;
+
+			btnErrorDtl.Visible = ( lblErrorDtl.Text.Length > 0 ) && ( ! Tools.SystemIsLive() || alwaysShow );
+		}
 	}
 }

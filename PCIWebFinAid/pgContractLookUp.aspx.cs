@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Developed by Paul Kilfoil
+// www.PaulKilfoil.co.za
+
+using System;
 using System.IO;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -6,20 +9,22 @@ using PCIBusiness;
 
 namespace PCIWebFinAid
 {
-	public partial class ContractLookup : BasePageAdmin
+	public partial class pgContractLookUp : BasePageAdmin
 	{
 		protected override void PageLoad(object sender, EventArgs e)
 		{
-//		Put in when login is live
-//			if ( SessionCheck()    != 0 )
-//				return;
-//			if ( SecurityCheck(19) != 0 ) // Admin only
-//				return;
+			if ( SessionCheck(19) != 0 )
+				return;
+			if ( PageCheck()      != 0 )
+				return;
+			if ( Page.IsPostBack )
+				return;
 
-			SetErrorDetail("",-888);
-
-			if ( ! Page.IsPostBack )
+			if ( ascxXMenu.LoadMenu(ApplicationCode,sessionGeneral) != 0 )
+				StartOver(11888);
+			else
 			{
+				SetErrorDetail("",-888);
 				ShowControls(0,false);
 				rdoView2.Checked = false;
 				rdoView1.Checked = true;
@@ -32,7 +37,7 @@ namespace PCIWebFinAid
 			pnlView1.Visible = show;
 			pnlView2.Visible = show;
 
-			if ( view == 1 &&  show )
+			if      ( view == 1 &&  show )
 				pnlView2.Visible = ! show;
 			else if ( view == 2 &&  show )
 				pnlView1.Visible = ! show;
@@ -46,14 +51,11 @@ namespace PCIWebFinAid
 		private int ValidateData()
 		{
 			txtContractCode.Text = txtContractCode.Text.Trim();
-			string err           = "";
-			if ( txtContractCode.Text.Length < 2 )
-			{
-				err = "Invalid contract code<br />";
-				txtContractCode.Focus();
-				SetErrorDetail("ValidateData",100,err,err);
-			}
-			return err.Length;
+			txtContractCode.Focus();
+			if ( txtContractCode.Text.Length > 1 )
+				return 0;
+			SetErrorDetail("ValidateData",22010,"Invalid contract code<br />","The contract code is blank or too short");
+			return 11010;
 		}
 
 		protected void btnSend_Click(Object sender, EventArgs e)
@@ -69,8 +71,9 @@ namespace PCIWebFinAid
 
 			if ( ! Tools.CheckEMail(txtTo.Text,2) || ! Tools.CheckEMail(txtCC.Text,3) || ! Tools.CheckEMail(txtBCC.Text,3) )
 			{
-				lblErr2.Text = "Invalid email address(es)";
-				lblJS.Text   = WebTools.JavaScriptSource("ShowElt('pnlMail',true)");
+				lblErr2.Text       = "Invalid email address(es)";
+//				lblJS.Text         = WebTools.JavaScriptSource("ShowElt('pnlMail',true)");
+				ascxXFooter.JSText = WebTools.JavaScriptSource("ShowElt('pnlMail',true)");
 				return;
 			}
 
@@ -137,14 +140,14 @@ namespace PCIWebFinAid
 			string  employmentStatusCode = "";
 			string  ccNumber             = "";
 			string  ccAssociation        = "";
-			string  moduleName           = "btnSearch_Click";
-			string  sql                  = "exec WP_Get_ContractApplication @ContractCode = " + Tools.DBString(txtContractCode.Text);
+
+			sql = "exec WP_Get_ContractApplication @ContractCode = " + Tools.DBString(txtContractCode.Text);
 	
 			using ( MiscList miscList = new MiscList() )
 				if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-					SetErrorDetail(moduleName,30010,"Internal database error (WP_Get_ContractApplication)",sql);
+					SetErrorDetail("btnSearch_Click",22020,"Internal database error (WP_Get_ContractApplication)",sql);
 				else if ( miscList.EOF )
-					SetErrorDetail(moduleName,30011,"Contract not found. Please try again",sql);
+					SetErrorDetail("btnSearch_Click",22021,"Contract not found. Please try again",sql);
 				else
 				{
 					lblWebsiteCode.Text                       = miscList.GetColumn("WebsiteCode");
@@ -263,23 +266,13 @@ namespace PCIWebFinAid
 				}
 
 			if ( lblError.Text.Length < 1 && productCode.Length < 1 )
-				SetErrorDetail(moduleName,30014,"Contract corrupted - product code is blank/empty",sql);
+				SetErrorDetail("btnSearch_Click",22030,"Contract corrupted - product code is blank/empty",sql);
 
 			if ( lblError.Text.Length > 0 )
 				return;
 
 			if ( ccNumber.Length >= 6 )
 				ccAssociation = ccNumber.Substring(0,6);
-
-//	Mask card number
-//			if ( ccNumber.Length > 12 )
-//				ccNumber = ccNumber.Substring(0,6) + "******" + ccNumber.Substring(12);
-//			else if ( ccNumber.Length > 8 )
-//				ccNumber = ccNumber.Substring(0,4) + "******";
-//			else if ( ccNumber.Length > 4 )
-//				ccNumber = ccNumber.Substring(0,2) + "******";
-//			else if ( ccNumber.Length > 2 )
-//				ccNumber = "******";
 
 			ccNumber           = Tools.MaskedValue(ccNumber);
 			lblCardNumber.Text = ccNumber;
@@ -295,9 +288,9 @@ namespace PCIWebFinAid
 				//	Field labels
 					sql = "exec sp_WP_CRM_Get_ProductWebsiteRegContent @ProductCode=" + Tools.DBString(productCode);
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(moduleName,30020,"Internal database error (sp_WP_CRM_Get_ProductWebsiteRegContent)",sql);
+						SetErrorDetail("btnSearch_Click",22040,"Internal database error (sp_WP_CRM_Get_ProductWebsiteRegContent)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(moduleName,30021,"Product details not found (" + productCode + "). Please try again",sql);
+						SetErrorDetail("btnSearch_Click",22041,"Product details not found (" + productCode + "). Please try again",sql);
 					else
 						while ( ! miscList.EOF )
 						{
@@ -312,9 +305,9 @@ namespace PCIWebFinAid
 				//	Title
 					sql = "exec sp_WP_CRM_Get_Title";
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(moduleName,30030,"Internal database error (sp_WP_CRM_Get_Title)",sql);
+						SetErrorDetail("btnSearch_Click",22045,"Internal database error (sp_WP_CRM_Get_Title)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(moduleName,30031,"Title descriptions not found. Please try again",sql);
+						SetErrorDetail("btnSearch_Click",22046,"Title descriptions not found. Please try again",sql);
 					else
 						while ( ! miscList.EOF )
 							if ( miscList.GetColumn("TitleCode") == titleCode )
@@ -328,9 +321,9 @@ namespace PCIWebFinAid
 				//	Payment method
 					sql = "exec sp_WP_CRM_Get_PaymentMethod @ProductCode=" + Tools.DBString(productCode);
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(moduleName,30040,"Internal database error (sp_WP_CRM_Get_PaymentMethod)",sql);
+						SetErrorDetail("btnSearch_Click",22050,"Internal database error (sp_WP_CRM_Get_PaymentMethod)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(moduleName,30041,"Payment methods not found. Please try again",sql);
+						SetErrorDetail("btnSearch_Click",22051,"Payment methods not found. Please try again",sql);
 					else
 						while ( ! miscList.EOF )
 							if ( miscList.GetColumn("PaymentMethodCode") == paymentMethodCode )
@@ -344,9 +337,9 @@ namespace PCIWebFinAid
 				//	Pay Date
 					sql = "exec sp_WP_CRM_Get_PayDate";
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(moduleName,30050,"Internal database error (sp_WP_CRM_Get_PayDate)",sql);
+						SetErrorDetail("btnSearch_Click",22055,"Internal database error (sp_WP_CRM_Get_PayDate)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(moduleName,30051,"Pay dates not found. Please try again",sql);
+						SetErrorDetail("btnSearch_Click",22056,"Pay dates not found. Please try again",sql);
 					else
 						while ( ! miscList.EOF )
 							if ( miscList.GetColumn("PayDateCode") == payDateCode )
@@ -360,9 +353,9 @@ namespace PCIWebFinAid
 				//	Employment status
 					sql = "exec sp_WP_CRM_Get_EmploymentStatus";
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(moduleName,30060,"Internal database error (sp_WP_CRM_Get_EmploymentStatus)",sql);
+						SetErrorDetail("btnSearch_Click",22060,"Internal database error (sp_WP_CRM_Get_EmploymentStatus)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(moduleName,30061,"Employment statuses not found. Please try again",sql);
+						SetErrorDetail("btnSearch_Click",22061,"Employment statuses not found. Please try again",sql);
 					else
 						while ( ! miscList.EOF )
 							if ( miscList.GetColumn("EmploymentStatusCode") == employmentStatusCode )
@@ -378,9 +371,9 @@ namespace PCIWebFinAid
 					if ( ccAssociation.Length < 1 )
 						lblp6CCType.Text = "N/A";
 					else if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(moduleName,30070,"Internal database error (WP_Get_CardAssociation)",sql);
+						SetErrorDetail("btnSearch_Click",22065,"Internal database error (WP_Get_CardAssociation)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(moduleName,30071,"Bank card association not found (" + ccAssociation + "). Please try again",sql);
+						SetErrorDetail("btnSearch_Click",22066,"Bank card association not found (" + ccAssociation + "). Please try again",sql);
 					else
 						lblp6CCType.Text = miscList.GetColumn("Brand");
 
@@ -389,25 +382,22 @@ namespace PCIWebFinAid
 					    + " @ProductCode="       + Tools.DBString(productCode)
 					    + ",@ProductOptionCode=" + Tools.DBString(productOptionCode);
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(moduleName,30080,"Internal database error (sp_WP_CRM_Get_WebsiteProductoptionA)",sql);
+						SetErrorDetail("btnSearch_Click",22070,"Internal database error (sp_WP_CRM_Get_WebsiteProductoptionA)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(moduleName,30081,"Product option details not found. Please try again",sql);
+						SetErrorDetail("btnSearch_Click",22071,"Product option details not found. Please try again",sql);
 					else
 					{
 						lbl100325.Text = miscList.GetColumn("FieldValue",1,6);
-//						if ( lbl100325.Text.Length > 0 )
-//							lbl100325.Text = lbl100325.Text.Replace(Environment.NewLine,"<br />");
-//						else
 						if ( lbl100325.Text.Length < 1 )
-							SetErrorDetail(moduleName,30082,"Product option data is empty/blank (sp_WP_CRM_Get_WebsiteProductOptionA, column 'FieldValue')",sql);
+							SetErrorDetail("btnSearch_Click",22072,"Product option data is empty/blank (sp_WP_CRM_Get_WebsiteProductOptionA, column 'FieldValue')",sql);
 					}
 
 				//	EMail details
 					sql = "exec sp_WP_Get_ProductEmail @LanguageCode='ENG', @ProductCode=" + Tools.DBString(productCode);
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(moduleName,30120,"Internal database error (sp_WP_Get_ProductEmail)",sql);
+						SetErrorDetail("btnSearch_Click",22075,"Internal database error (sp_WP_Get_ProductEmail)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(moduleName,30121,"Product email details not found. Please try again",sql);
+						SetErrorDetail("btnSearch_Click",22076,"Product email details not found. Please try again",sql);
 					else
 					{
 						txtFrom.Text       = miscList.GetColumn("SenderEmailAddress");
@@ -418,25 +408,22 @@ namespace PCIWebFinAid
 				//	Product policy
 					sql = "exec sp_WP_CRM_Get_ProductPolicy @ProductCode=" + Tools.DBString(productCode);
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(moduleName,30090,"Internal database error (sp_WP_CRM_Get_ProductPolicy)",sql);
+						SetErrorDetail("btnSearch_Click",22080,"Internal database error (sp_WP_CRM_Get_ProductPolicy)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(moduleName,30091,"Product policy details not found. Please try again",sql);
+						SetErrorDetail("btnSearch_Click",22081,"Product policy details not found. Please try again",sql);
 					else
 					{
 						lblp6RefundPolicy.Text       = miscList.GetColumn("RefundPolicyText",1,6) + "<br />&nbsp;";
 						lblp6MoneyBackPolicy.Text    = miscList.GetColumn("MoneyBackPolicyText",1,6) + "<br />&nbsp;";
 						lblp6CancellationPolicy.Text = miscList.GetColumn("CancellationPolicyText",1,6);
-					//	lblp6RefundPolicy.Text       = refundPolicy.Replace(Environment.NewLine,"<br />") + "<br />&nbsp;";
-					//	lblp6MoneyBackPolicy.Text    = moneyBackPolicy.Replace(Environment.NewLine,"<br />") + "<br />&nbsp;";
-					//	lblp6CancellationPolicy.Text = cancellationPolicy.Replace(Environment.NewLine,"<br />");
 					}
 
 				//	Collection mandate
 					sql = "exec sp_WP_CRM_Get_ProductOptionMandateA @ProductCode=" + Tools.DBString(productCode);
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )
-						SetErrorDetail(moduleName,30100,"Internal database error (sp_WP_CRM_Get_ProductOptionMandateA)",sql);
+						SetErrorDetail("btnSearch_Click",22085,"Internal database error (sp_WP_CRM_Get_ProductOptionMandateA)",sql);
 					else if ( miscList.EOF )
-						SetErrorDetail(moduleName,30101,"Collection mandate details not found. Please try again",sql);
+						SetErrorDetail("btnSearch_Click",22086,"Collection mandate details not found. Please try again",sql);
 					else
 						while ( ! miscList.EOF )
 						{
@@ -459,7 +446,7 @@ namespace PCIWebFinAid
 							miscList.NextRow();
 						}
 						if ( lblp6Mandate.Text.Length < 1 )
-							SetErrorDetail(moduleName,30111,"Unable to retrieve collection mandate",sql+" (looking for ProductOption="+productOptionCode+" and PaymentMethod="+paymentMethodCode+"). SQL failed or returned no data or<br />the CollectionMandateText column was missing/empty/NULL");
+							SetErrorDetail("btnSearch_Click",22090,"Unable to retrieve collection mandate",sql+" (looking for ProductOption="+productOptionCode+" and PaymentMethod="+paymentMethodCode+"). SQL failed or returned no data or<br />the CollectionMandateText column was missing/empty/NULL");
 				}
 
 				lblp6Title.Text = titleDesc;

@@ -5,7 +5,7 @@ using PCIBusiness;
 
 namespace PCIWebFinAid
 {
-	public partial class ISHome : BasePage
+	public partial class Policies : BasePage
 	{
 		byte   errPriority;
 		int    ret;
@@ -20,8 +20,7 @@ namespace PCIWebFinAid
 
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
-			ApplicationCode = "110";
-			errPriority     = 19;
+			errPriority = 19;
 
 			if ( Page.IsPostBack )
 			{
@@ -32,10 +31,11 @@ namespace PCIWebFinAid
 			}
 			else
 			{
+				LoadProduct();
 				LoadStaticDetails();
 				LoadDynamicDetails();
 				LoadGoogleAnalytics();
-				LoadChat();
+//				LoadChat();
 
 				btnErrorDtl.Visible = ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Development );
 				btnWidth.Visible    = ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Development );
@@ -44,81 +44,24 @@ namespace PCIWebFinAid
 
 		private void LoadStaticDetails()
 		{
-		//	Defaults
-			countryCode         = "ZA";
-			productCode         = "10387";
-			languageCode        = "ENG";
-			languageDialectCode = "0002";
-			ret                 = 10003;
+			ret = 10003;
 
-			using (MiscList mList = new MiscList())
-				try
-				{
-					ret             = 10008;
-					string pageName = System.IO.Path.GetFileName(Request.Url.AbsolutePath);
-					string refer    = Request.Url.AbsoluteUri.Trim();
-					int    k        = refer.IndexOf("://");
-					refer           = refer.Substring(k+3);
+//			using (MiscList mList = new MiscList())
+//				try
+//				{
+//				}
+//				catch (Exception ex)
+//				{
+//					PCIBusiness.Tools.LogException("LoadStaticDetails/99","ret="+ret.ToString(),ex,this);
+//				}
 
-					k = refer.IndexOf(".");
-					if ( k > 0 )
-						countryCode = refer.Substring(0,k).ToUpper();
-
-					if ( ! pageName.StartsWith("/") )
-						pageName = "/" + pageName;
-
-					k = refer.ToUpper().IndexOf(pageName.ToUpper());
-					if ( k > 0 )
-						refer = refer.Substring(0,k);
-
-					ret = 10010;
-					spr = "sp_WP_Get_WebsiteInfoByURL";
-					sql = "exec " + spr + " " + Tools.DBString(refer);
-					if ( mList.ExecQuery(sql,0) != 0 )
-						SetErrorDetail("LoadStaticDetails", 10020, "Internal database error (" + spr + " failed)", sql, 2, 2, null, false, errPriority);
-					else if ( mList.EOF )
-						SetErrorDetail("LoadStaticDetails", 10030, "Internal database error (" + spr + " no data returned)", sql, 2, 2, null, false, errPriority);
-					else
-					{
-						ret                 = 10040;
-						productCode         = mList.GetColumn("ProductCode");
-						languageCode        = mList.GetColumn("LanguageCode");
-						languageDialectCode = mList.GetColumn("LanguageDialectCode");
-						ret                 = 10050;
-						if ( productCode.Length         < 1 ) productCode         = "10387";
-						if ( languageCode.Length        < 1 ) languageCode        = "ENG";
-						if ( languageDialectCode.Length < 1 ) languageDialectCode = "0002";
-					}
-					Tools.LogInfo("LoadStaticDetails/10060",sql+" ... PC/LC/LDC="+productCode+"/"+languageCode+"/"+languageDialectCode,10,this);
-				}
-				catch (Exception ex)
-				{
-					PCIBusiness.Tools.LogException("LoadStaticDetails/10999","ret="+ret.ToString(),ex,this);
-				}
-
-//	Override if passed via URL (not CountryCode)
-			ret      = 10070;
-			string h = WebTools.RequestValueString(Request,"PC");
-			if ( h.Length > 0 ) productCode = h;
-			h        = WebTools.RequestValueString(Request,"LC");
-			if ( h.Length > 0 ) languageCode = h;
-			h        = WebTools.RequestValueString(Request,"LDC");
-			if ( h.Length > 0 ) languageDialectCode = h;
-
-			hdnCountryCode.Value     = countryCode;
-			hdnProductCode.Value     = productCode;
-			hdnLangCode.Value        = languageCode;
-			hdnLangDialectCode.Value = languageDialectCode;
-			hdnVer.Value             = "Version " + SystemDetails.AppVersion + " (" + SystemDetails.AppDate + ")";
-
-			Tools.LogInfo("LoadStaticDetails/10080","PC/LC/LDC="+productCode+"/"+languageCode+"/"+languageDialectCode,231,this);
+			hdnVer.Value = "Version " + SystemDetails.AppVersion + " (" + SystemDetails.AppDate + ")";
 		}
 
 		private void LoadDynamicDetails()
 		{
 			byte   err;
 			string fieldCode;
-			string fieldHead;
 			string fieldValue;
 			string fieldURL;
 			string blocked;
@@ -184,38 +127,14 @@ namespace PCIWebFinAid
 
 					ret = 10205;
 					spr = "";
-					if ( P12010.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12010',false);";
-					if ( P12011.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12011',false);";
-					if ( P12012.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12012',false);";
-					if ( P12023.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12023',false);";
-					if ( P12024.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12024',false);";
-					if ( P12028.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12028',false);";
-					ascxFooter.JSText = WebTools.JavaScriptSource(spr);
 
-					ret       = 10210;
-					xHIW.Text = "";
-					spr       = "sp_WP_Get_ProductHIWInfo";
-					sql       = "exec " + spr + stdParms;
-					if ( mList.ExecQuery(sql,0) != 0 )
-						SetErrorDetail("LoadDynamicDetails", 10220, "Internal database error (" + spr + " failed)", sql, 2, 2, null, false, errPriority);
-					else if ( mList.EOF )
-						SetErrorDetail("LoadDynamicDetails", 10230, "Internal database error (" + spr + " no data returned)", sql, 2, 2, null, false, errPriority);
-					else
-						while ( ! mList.EOF )
-						{
-							ret        = 10240;
-							fieldCode  = mList.GetColumn("Serial");
-							fieldHead  = mList.GetColumn("HIWHeader",0,6);
-							fieldValue = mList.GetColumn("HIWDetail",0,6);
-							Tools.LogInfo("LoadDynamicDetails/10240","HIW="+fieldCode+"/"+fieldHead,errPriority,this);
-							if ( "0123456789".Contains(fieldHead.Substring(0,1)) )
-								xHIW.Text = xHIW.Text + "<p class='HIWHead1'>"   + fieldHead  + "</p>"
-								                      + "<p class='HIWDetail1'>" + fieldValue + "</p>";
-							else
-								xHIW.Text = xHIW.Text + "<p class='HIWHead2'>"   + fieldHead  + "</p>"
-								                      + "<p class='HIWDetail2'>" + fieldValue + "</p>";
-							mList.NextRow();
-						}
+//					if ( P12010.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12010',false);";
+//					if ( P12011.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12011',false);";
+//					if ( P12012.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12012',false);";
+//					if ( P12023.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12023',false);";
+//					if ( P12024.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12024',false);";
+//					if ( P12028.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12028',false);";
+//					ascxFooter.JSText = WebTools.JavaScriptSource(spr);
 
 					ret = 10410;
 					spr = "sp_WP_Get_ProductLegalDocumentInfo";
@@ -227,15 +146,14 @@ namespace PCIWebFinAid
 					else
 						while ( ! mList.EOF )
 						{
-							ret       = 10440;
-							fieldCode = mList.GetColumn("DocumentTypeCode");
-							try
+							ret = 10440;
+							if ( mList.GetColumn("DocumentTypeCode") == "003" )
 							{
-								((Literal)FindControl("LH"+fieldCode)).Text = mList.GetColumn("DocumentHeader",1,6);
-								((Literal)FindControl("LD"+fieldCode)).Text = mList.GetColumn("DocumentText",1,6);
+								ret          = 10444;
+								polHead.Text = mList.GetColumn("DocumentHeader",1,6);
+								polDtl.Text  = mList.GetColumn("DocumentText",1,6);
+								break;
 							}
-							catch
-							{ }
 							mList.NextRow();
 						}
 
@@ -248,30 +166,40 @@ namespace PCIWebFinAid
 					pnlContact07.Visible = ( X100102.Text.Length > 0 || P12033.ImageUrl.Length > 0 );
 					pnlContact08.Visible = ( X104418.Text.Length > 0 );
 					pnlContact09.Visible = ( X100105.Text.Length > 0 || P12034.ImageUrl.Length > 0 );
-					pnlBr1.Visible       = ( P12015.ImageUrl.Length > 0 ||
-					                         P12016.ImageUrl.Length > 0 ||
-					                         P12017.ImageUrl.Length > 0 ||
-					                         P12018.ImageUrl.Length > 0 ||
-					                         P12019.ImageUrl.Length > 0 );
 
 //	Testing
 //					WebTools.ReplaceImage(this.Page,"12002","isos1.png","isos1");
 //					WebTools.ReplaceImage(this.Page,"12036","isos2.png","isos2");
-//					X105045.NavigateUrl = "ISCRM.aspx";
 //	Testing
 				}
 				catch (Exception ex)
 				{
 					PCIBusiness.Tools.LogException("LoadDynamicDetails/99","ret="+ret.ToString(),ex,this);
 				}
-
-			pnlTicks.Visible = ( X100287.Text.Length+X100288.Text.Length+X100289.Text.Length > 0 );
 		}
 
-		private void LoadChat()
+		private void LoadProduct()
 		{
-			lblChat.Text = Tools.LoadChat(productCode);
+			byte ret  = WebTools.LoadProductFromURL(Request,ref countryCode,ref productCode,ref languageCode,ref languageDialectCode);
+			if ( ret != 0 || productCode.Length < 1 || languageCode.Length < 1 || languageDialectCode.Length < 1 )
+			{
+				SetErrorDetail("LoadProduct", 10666, "Unable to load product/language details", "ret="+ret.ToString(), 2, 2, null, false, errPriority);
+				productCode           = "10472";
+				languageCode          = "ENG";
+				languageDialectCode   = "0002";
+			}
+			hdnCountryCode.Value     = countryCode;
+			hdnProductCode.Value     = productCode;
+			hdnLangCode.Value        = languageCode;
+			hdnLangDialectCode.Value = languageDialectCode;
+
+			Tools.LogInfo("LoadProduct","PC/LC/LDC="+productCode+"/"+languageCode+"/"+languageDialectCode,10,this);
 		}	
+
+//		private void LoadChat()
+//		{
+//			lblChat.Text = Tools.LoadChat(productCode);
+//		}	
 
 		private void LoadGoogleAnalytics()
 		{

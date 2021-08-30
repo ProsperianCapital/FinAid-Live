@@ -463,7 +463,7 @@ namespace PCIWebFinAid
 			{ }
 			return 0;
 		}
-		public static byte ReplaceControlText(Page webPage,string ctlID,string fieldValue,string fieldURL,Control subCtl1=null,Control subCtl2=null)
+		public static byte ReplaceControlText(Page webPage,string ctlID,string blocked,string fieldValue,string fieldURL,Control subCtl1=null,Control subCtl2=null)
 		{
 			Control ctl;
 
@@ -478,8 +478,11 @@ namespace PCIWebFinAid
 					ctl = subCtl1.FindControl(ctlID);
 				else if ( k == 3 && subCtl2 != null )
 					ctl = subCtl2.FindControl(ctlID);
+
 				if ( ctl == null )
-					continue;
+				{ }
+				else if ( blocked == "1" )
+					ctl.Visible = false;
 				else if (ctl.GetType()  == typeof(Literal))
 					((Literal)ctl).Text   = fieldValue;
 				else if (ctl.GetType()  == typeof(Label))
@@ -500,15 +503,21 @@ namespace PCIWebFinAid
 					HyperLink lnk         = (HyperLink)ctl;
 					lnk.Text              = fieldValue;
 					if ( fieldURL.Length  > 0 )
-						lnk.NavigateUrl = fieldURL;
+						lnk.NavigateUrl    = fieldURL;
 				}
 				else if (ctl.GetType()  == typeof(TextBox))
 					((TextBox)ctl).Attributes.Add("placeholder",fieldValue);
+
+				if ( k == 1 && subCtl1 == null ) // Main page check, first sub control is NULL
+					break;
+				if ( k == 2 && subCtl2 == null ) // First sub control check, second sub control is NULL
+					break;
 			}
 			return 0;
 		}
 
 		public static byte LoadProductFromURL(HttpRequest req,
+		                                  ref string      countryCode,
 		                                  ref string      productCode,
 		                                  ref string      languageCode,
 		                                  ref string      languageDialectCode,
@@ -516,6 +525,7 @@ namespace PCIWebFinAid
 		{
 			byte   ret          = 10;
 			string sql          = "";
+			countryCode         = "";
 			productCode         = "";
 			languageCode        = "";
 			languageDialectCode = "";
@@ -529,15 +539,25 @@ namespace PCIWebFinAid
 					int    k        = refer.IndexOf("://");
 					refer           = refer.Substring(k+3);
 
+					ret = 30;
+					k   = refer.IndexOf(".");
+					if ( k > 0 )
+						countryCode = refer.Substring(0,k).ToUpper();
+					ret            = 40;
+					if ( countryCode.Length < 2 || countryCode.StartsWith("WWW") || countryCode.StartsWith("LOCALHOST") )
+						countryCode = "ZA";
+					else if ( countryCode.Length > 2 )
+						countryCode = countryCode.Substring(0,2);
+
 					if ( ! pageName.StartsWith("/") )
 						pageName = "/" + pageName;
 
-					ret = 30;
+					ret = 50;
 					k   = refer.ToUpper().IndexOf(pageName.ToUpper());
 					if ( k > 0 )
 						refer = refer.Substring(0,k);
 
-					ret = 40;
+					ret = 60;
 					sql = "exec sp_WP_Get_WebsiteInfoByURL " + PCIBusiness.Tools.DBString(refer);
 					if ( mList.ExecQuery(sql,0) != 0 )
 						PCIBusiness.Tools.LogInfo("WebTools.LoadProductFromURL/3","SQL failed: " + sql,229);
@@ -560,11 +580,11 @@ namespace PCIWebFinAid
 
 			if ( checkURLParms )
 			{
-				string h = RequestValueString(req,"ProductCode");
+				string h = RequestValueString(req,"PC");
 				if ( h.Length > 0 ) productCode = h;
-				h        = RequestValueString(req,"LanguageCode");
+				h        = RequestValueString(req,"LC");
 				if ( h.Length > 0 ) languageCode = h;
-				h        = RequestValueString(req,"LanguageDialectCode");
+				h        = RequestValueString(req,"LDC");
 				if ( h.Length > 0 ) languageDialectCode = h;
 			}
 

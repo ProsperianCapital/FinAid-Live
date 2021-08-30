@@ -104,11 +104,11 @@ namespace PCIWebFinAid
 
 //	Override if passed via URL
 			ret      = 10044;
-			string h = WebTools.RequestValueString(Request,"ProductCode");
+			string h = WebTools.RequestValueString(Request,"PC");
 			if ( h.Length > 0 ) productCode = h;
-			h        = WebTools.RequestValueString(Request,"LanguageCode");
+			h        = WebTools.RequestValueString(Request,"LC");
 			if ( h.Length > 0 ) languageCode = h;
-			h        = WebTools.RequestValueString(Request,"LanguageDialectCode");
+			h        = WebTools.RequestValueString(Request,"LDC");
 			if ( h.Length > 0 ) languageDialectCode = h;
 
 			hdnProductCode.Value     = productCode;
@@ -124,6 +124,7 @@ namespace PCIWebFinAid
 			string fieldHead;
 			string fieldValue;
 			string fieldURL;
+			string blocked;
 			string stdParms = " @ProductCode="         + Tools.DBString(productCode)
 					          + ",@LanguageCode="        + Tools.DBString(languageCode)
 					          + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
@@ -144,14 +145,14 @@ namespace PCIWebFinAid
 							ret         = 10140;
 							fieldCode   = mList.GetColumn("WebsiteFieldCode");
 						//	fieldName   = mList.GetColumn("WebsiteFieldName");
-						//	blocked     = mList.GetColumn("Blocked");
+							blocked     = mList.GetColumn("Blocked");
 							fieldValue  = mList.GetColumn("WebsiteFieldValue");
 							fieldURL    = mList.GetColumn("FieldHyperlinkTarget");
 							if ( fieldURL.Length > 0 && fieldURL.Contains("[") )
 								fieldURL = fieldURL.Replace("[PC]",Tools.URLString(productCode)).Replace("[LC]",Tools.URLString(languageCode)).Replace("[LDC]",Tools.URLString(languageDialectCode));
 
 							Tools.LogInfo("LoadDynamicDetails/10140","FieldCode="+fieldCode,errPriority,this);
-							err         = WebTools.ReplaceControlText(this.Page,"X"+fieldCode,fieldValue,fieldURL,ascxHeader,ascxFooter);
+							err         = WebTools.ReplaceControlText(this.Page,"X"+fieldCode,blocked,fieldValue,fieldURL,ascxHeader,ascxFooter);
 							if ( err   != 0 )
 								SetErrorDetail("LoadDynamicDetails", 10150, "Unrecognized HTML control (X"+fieldCode + "/" + fieldValue.ToString() + ")", "WebTools.ReplaceControlText('X"+fieldCode+"') => "+err.ToString(), 2, 0, null, false, errPriority);
 							mList.NextRow();
