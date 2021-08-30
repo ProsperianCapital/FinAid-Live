@@ -115,9 +115,7 @@ namespace PCIWebFinAid
 
 				hdnVer.Value       = "[RegisterEx3.aspx] DLL Version " + PCIBusiness.SystemDetails.AppVersion + " (" + PCIBusiness.SystemDetails.AppDate + "), "
 				                   +                    "Web Version " + SystemDetails.AppVersion             + " (" + SystemDetails.AppDate             + ")";
-				lblVer.Text        = "[RegisterEx3] Versions " + PCIBusiness.SystemDetails.AppVersion + "/" + SystemDetails.AppVersion;
-//				hdnVer.Value       = "Version " + SystemDetails.AppVersion + " (" + SystemDetails.AppDate + ")";
-//				lblVer.Text        = "Version " + SystemDetails.AppVersion;
+				lblVer.Text        = "[RegisterEx3] Versions " + PCIBusiness.SystemDetails.AppVersion + " (DLL), " + SystemDetails.AppVersion + " (Web)";
 				lblVer.Visible     = ! Tools.SystemIsLive();
 				btnBack1.Visible   = ! Tools.SystemIsLive();
 				lblReg.Visible     = true;
@@ -1264,7 +1262,7 @@ namespace PCIWebFinAid
 							string moneyBackPolicy    = "";
 							string cancellationPolicy = "";
 							lblp6CCType.Text          = "";
-							errNo                     = 30082;
+//							errNo                     = 30082;
 
 							sql = "exec sp_WP_Get_ProductPolicy"
 							    +     " @ProductCode ="         + Tools.DBString(productCode)
@@ -1272,16 +1270,16 @@ namespace PCIWebFinAid
 							    +     ",@LanguageDialectCode =" + Tools.DBString(languageDialectCode);
 							if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
 							{
-								errNo              = 30083;
+//								errNo              = 30083;
 								refundPolicy       = miscList.GetColumn("RefundPolicyText",1,6);
 								moneyBackPolicy    = miscList.GetColumn("MoneyBackPolicyText",1,6);
 								cancellationPolicy = miscList.GetColumn("CancellationPolicyText",1,6);
 							}
-							Tools.LogInfo("btnNext_Click/30084",sql+" (errNo="+errNo.ToString()+")",223,this);
+//							Tools.LogInfo("btnNext_Click/30084",sql+" (errNo="+errNo.ToString()+")",223,this);
 							if ( refundPolicy.Length < 1 || moneyBackPolicy.Length < 1 || cancellationPolicy.Length < 1 )
-//								SetErrorDetail("btnNext_Click/30085",30080,"Unable to retrieve product policy text",sql);
+								SetErrorDetail("btnNext_Click/30085",30085,"Unable to retrieve product policy text (sp_WP_Get_ProductPolicy)",sql);
 //	Testing
-								SetErrorDetail("btnNext_Click/30085",30080,"Unable to retrieve product policy text",sql,2,2,null,false,223);
+//								SetErrorDetail("btnNext_Click/30086",30086,"Unable to retrieve product policy text",sql,2,2,null,false,223);
 //	Testing
 							else
 							{
