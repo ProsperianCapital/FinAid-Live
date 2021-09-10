@@ -1,12 +1,6 @@
-//	JavaScript session timeout functionality
-
-//	(c)Paul Kilfoil
-//		Software Development & IT Consulting
-//		+27 84 438 5400 (phone)
-//		PaulKilfoil..[at]..gmail.com
-//		www.PaulKilfoil.co.za
-
-//	Do not copy without the permission of the author
+//	(c) Paul Kilfoil
+//	Software Development & IT Consulting
+//	www.PaulKilfoil.co.za
 
 try
 {
@@ -18,8 +12,6 @@ catch (x)
 
 function CheckSessionTime()
 {
-//	GetElt("lblTime").innerText = sessionTime;
-
 	var dt1;
 	var dt2;
 
@@ -30,8 +22,12 @@ function CheckSessionTime()
 		if (sessionTime <= 0)
 		{
 			alert("We're sorry, but you took too long. Your session has EXPIRED.");
-			location.href = "Identify.aspx?ErrNo=9187362";
-		//	location.href = "Login.aspx?ErrNo=9187362";
+			if ( startPage == null )
+				location.href = "pgLogonCRM.aspx?ErrNo=199801";
+			else if ( startPage.toString().length < 5 )
+				location.href = "pgLogonCRM.aspx?ErrNo=199802";
+			else
+				location.href = startPage + "?ErrNo=199803";
 			return;
 		}
 		dt1 = new Date();
