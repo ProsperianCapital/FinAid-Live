@@ -8,6 +8,7 @@
 <head runat="server">
 	<!--#include file="IncludeMainSimple.htm" -->
 	<title>Login</title>
+	<link rel="preload" href="CSS/FinAid.css" as="style" />
 	<link rel="stylesheet" href="CSS/FinAid.css" type="text/css" />
 	<link rel="shortcut icon" href="Images/favicon.ico" />
 </head>

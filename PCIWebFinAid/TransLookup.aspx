@@ -4,12 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-	<!--#include file="IncludeMain.htm" -->
+	<!--#include file="IncludeMainSimple.htm" -->
 	<title>Transaction Lookup</title>
-	<link rel="stylesheet" href="CSS/FinAid.css?v=6" type="text/css" />
+	<link rel="preload" href="CSS/FinAid.css" as="style" />
+	<link rel="stylesheet" href="CSS/FinAid.css" type="text/css" />
 	<link rel="stylesheet" href="CSS/Calendar.css" type="text/css" />
 	<link rel="shortcut icon" href="Images/favicon.ico" />
-	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
 </head>
 <body>
 <form id="frmLookup" runat="server">
@@ -19,12 +19,6 @@
 <div class="Header3">
 	Transaction Lookup
 </div>
-
-<!--
-<p class="Header4">
-<asp:Literal runat="server" ID="lblSubHead1Label">Transaction Lookup</asp:Literal>
-</p>
--->
 <p>
 Card Number (first 6 and last 4 digits only)<br />
 <asp:TextBox runat="server" ID="txtCard1" Width="54px" MaxLength="6"></asp:TextBox>
@@ -39,14 +33,13 @@ To Date<br />
 <asp:TextBox runat="server" ID="txtDate2" Width="80px" MaxLength="10" placeholder="dd/mm/yyyy"></asp:TextBox>
 <a href="JavaScript:showCalendar(frmLookup.txtDate2)"><img src="Images/Calendar.gif" title="Pop-up calendar" style="vertical-align:middle" /></a>
 </p><p>
-<asp:Button runat="server" ID="btnSearch" text="Search" OnClick="btnSearch_Click" />
-<asp:Button runat="server" ID="btnError" Text="Error ...?" OnClientClick="JavaScript:ShowElt('lblErrorDtl',true);return false" />
+<input type="button" value="Home"   onclick="JavaScript:location.href='LAdmin.aspx'" />&nbsp;
+<asp:Button runat="server" ID="btnSearch"   Text="Search" OnClick="btnSearch_Click" />&nbsp;
+<asp:Button runat="server" ID="btnErrorDtl" Text="Error ...?" OnClientClick="JavaScript:ShowElt('lblErrorDtl',true);return false" />
 </p>
 <asp:Literal runat="server" ID="lblTransactions"></asp:Literal>
 <asp:Label runat="server" ID="lblError" CssClass="Error"></asp:Label>
 <asp:Label runat="server" ID="lblErrorDtl" style="border:1px solid #000000;position:fixed;bottom:20px;right:5px;visibility:hidden;display:none;padding:5px;font-family:Verdana;background-color:pink"></asp:Label>
-
-<asp:Literal runat="server" ID="lblJS"></asp:Literal>
 
 </form>
 </body>

@@ -30,23 +30,26 @@ namespace PCIWebFinAid
 				if ( lc.Length  > 0 ) sessionGeneral.LanguageCode        = lc;
 				if ( ldc.Length > 0 ) sessionGeneral.LanguageDialectCode = ldc;
 
+//	Testing [Start]
 				if ( ! Tools.SystemIsLive() )
 				{
-//	Testing 1 (English)
+//	English
 					if ( sessionGeneral.ProductCode.Length           < 1 ) sessionGeneral.ProductCode         = "10387";
 					if ( sessionGeneral.LanguageCode.Length          < 1 ) sessionGeneral.LanguageCode        = "ENG";
-					if ( sessionGeneral.LanguageDialectCode.Length   < 1 ) sessionGeneral.LanguageDialectCode = "0001";
-//	Testing 2 (Thai)
+					if ( sessionGeneral.LanguageDialectCode.Length   < 1 ) sessionGeneral.LanguageDialectCode = "0002";
+//	Thai
 //					if ( sessionGeneral.ProductCode.Length           < 1 ) sessionGeneral.ProductCode         = "10024";
 //					if ( sessionGeneral.LanguageCode.Length          < 1 ) sessionGeneral.LanguageCode        = "THA";
 //					if ( sessionGeneral.LanguageDialectCode.Length   < 1 ) sessionGeneral.LanguageDialectCode = "0001";
 				}
+//	Testing [End]
+
 				if ( sessionGeneral.ProductCode.Length         < 1 ||
 				     sessionGeneral.LanguageCode.Length        < 1 ||
 				     sessionGeneral.LanguageDialectCode.Length < 1 )
 				{
 					SetErrorDetail("PageLoad",10200,"Invalid startup values ... system cannot continue","");
-					X103016.Text    = "Disabled"; // Button
+					X103016.Text    = "Disabled"; // Login button
 					X103016.Enabled = false;
 					X103014.Enabled = false; // User name
 					X103015.Enabled = false; // Password

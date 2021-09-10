@@ -277,6 +277,28 @@ namespace PCIWebFinAid
 				}
 		}
 
+//		private int ExecSQL(string sprName,string sprParms,int errCode,string errMsg)
+//		{
+//			using (MiscList miscList = new MiscList())
+//				try
+//				{
+//					sql = "exec " + sprName + " " + sprParms;
+//					if ( miscList.ExecQuery(sql,0) != 0 )
+//						SetErrorDetail("ExecSQL/1",errCode,errMsg + " (" + sprName + ") : SQL Error",sql);
+//					else if ( miscList.EOF )
+//						SetErrorDetail("ExecSQL/2",errCode,errMsg + " (" + sprName + ") : No data",sql);
+//					else
+//						return 0;
+//					return 10;
+//				}
+//				catch (Exception ex)
+//				{
+//					SetErrorDetail("ExecSQL/3",errCode,errMsg + " (" + sprName + ") : Internal error",sql,2,2,ex);
+//				}
+//
+//			return 20;
+//		}
+
 		private void LoadChat()
 		{
 			lblChat.Text = "";
@@ -350,9 +372,10 @@ namespace PCIWebFinAid
 //	Static labels, help text, etc
 					errNo = 10;
 					logNo = 10;
-					sql   = "exec sp_WP_Get_ProductWebsiteRegContent @ProductCode="         + Tools.DBString(productCode)
-					                                             + ",@LanguageCode="        + Tools.DBString(languageCode)
-					                                             + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
+					spr   = "sp_WP_Get_ProductWebsiteRegContent";
+					sql   = "exec " + spr + " @ProductCode="         + Tools.DBString(productCode)
+					                      + ",@LanguageCode="        + Tools.DBString(languageCode)
+					                      + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
 					if ( miscList.ExecQuery(sql,0) == 0 )
 						while ( ! miscList.EOF )
 						{
@@ -501,7 +524,7 @@ namespace PCIWebFinAid
 					else
 						lblJS.Text = WebTools.JavaScriptSource("NoDataError()",lblJS.Text,1);
 
-					SetErrorDetail("LoadLabels",errNo,"Unable to load registration page labels and data",sql);
+					SetErrorDetail("LoadLabels",errNo,"Unable to load registration page labels and data ("+spr+")",sql);
 
 					logNo = 37;
 
@@ -517,28 +540,28 @@ namespace PCIWebFinAid
 					if ( btnAgree.Text.Length < 1 ) btnAgree.Text = "I AGREE";
 
 //	Title
-					sql   = "exec sp_WP_Get_Title"
-					      +     " @LanguageCode="        + Tools.DBString(languageCode)
-					      +     ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
+					spr   = "sp_WP_Get_Title";
+					sql   = "exec " + spr + " @LanguageCode="        + Tools.DBString(languageCode)
+					                      + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
 					logNo = 40;
 					errNo =  WebTools.ListBind(lstTitle,sql,null,"TitleCode","TitleDescription","","");
-					SetErrorDetail("LoadLabels/40",errNo,"Unable to load titles",sql);
+					SetErrorDetail("LoadLabels/40",errNo,"Unable to load titles ("+spr+")",sql);
 
 //	Employment Status
-					sql   = "exec sp_WP_Get_EmploymentStatus"
-					      +     " @LanguageCode="        + Tools.DBString(languageCode)
-					      +     ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
+					spr   = "sp_WP_Get_EmploymentStatus";
+					sql   = "exec " + spr + " @LanguageCode="        + Tools.DBString(languageCode)
+					                      + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
 					logNo = 50;
 					errNo = WebTools.ListBind(lstStatus,sql,null,"EmploymentStatusCode","EmploymentStatusDescription");
-					SetErrorDetail("LoadLabels/50",errNo,"Unable to load employment statuses",sql);
+					SetErrorDetail("LoadLabels/50",errNo,"Unable to load employment statuses ("+spr+")",sql);
 
 //	Pay Date
-					sql   = "exec sp_WP_Get_PayDate"
-					      +     " @LanguageCode="        + Tools.DBString(languageCode)
-					      +     ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
+					spr   = "sp_WP_Get_PayDate";
+					sql   = "exec "+ spr + " @LanguageCode="        + Tools.DBString(languageCode)
+					                     + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
 					logNo = 60;
 					errNo = WebTools.ListBind(lstPayDay,sql,null,"PayDateCode","PayDateDescription");
-					SetErrorDetail("LoadLabels/60",errNo,"Unable to load pay dates",sql);
+					SetErrorDetail("LoadLabels/60",errNo,"Unable to load pay dates ("+spr+")",sql);
 
 //	Product Option
 //	Deferred to the load of page 4
@@ -552,16 +575,16 @@ namespace PCIWebFinAid
 //					errNo = errNo + WebTools.ListBind(lstOptions,sql,null,"ProductOptionCode","ProductOptionDescription");
 
 //	But we need the details
-					sql = "exec sp_WP_Get_WebsiteProductOptionA"
-					    +     " @ProductOptionCode='0'" // Return ALL product options
-					    +     ",@ProductCode="         + Tools.DBString(productCode)
-					    +     ",@LanguageCode="        + Tools.DBString(languageCode)
-					    +     ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
+					spr = "sp_WP_Get_WebsiteProductOptionA";
+					sql = "exec " + spr + " @ProductOptionCode='0'" // Return ALL product options
+					                    + ",@ProductCode="         + Tools.DBString(productCode)
+					                    + ",@LanguageCode="        + Tools.DBString(languageCode)
+					                    + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
 					int    opt;
 					string F = "";
 					logNo    = 70;
 					errNo    = miscList.ExecQuery(sql,0);
-					SetErrorDetail("LoadLabels/70",errNo,"Unable to retrieve product option descriptions",sql);
+					SetErrorDetail("LoadLabels/70",errNo,"Unable to retrieve product option descriptions ("+spr+")",sql);
 					while ( ! miscList.EOF )
 					{
 						opt = Tools.StringToInt(miscList.GetColumn("ProductOptionCode"));
@@ -572,13 +595,13 @@ namespace PCIWebFinAid
 					lblOptionDescriptions.Text = F;
 
 //	Payment Method
-					sql   = "exec sp_WP_Get_PaymentMethod"
-					      +     " @ProductCode="         + Tools.DBString(productCode)
-					      +     ",@LanguageCode="        + Tools.DBString(languageCode)
-					      +     ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
+					spr   = "sp_WP_Get_PaymentMethod";
+					sql   = "exec " + spr + " @ProductCode="         + Tools.DBString(productCode)
+					                      + ",@LanguageCode="        + Tools.DBString(languageCode)
+					                      + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);
 					logNo = 80;
 					errNo = WebTools.ListBind(lstPayment,sql,null,"PaymentMethodCode","PaymentMethodDescription");
-					SetErrorDetail("LoadLabels/80",errNo,"Unable to load payment methods",sql);
+					SetErrorDetail("LoadLabels/80",errNo,"Unable to load payment methods ("+spr+")",sql);
 				}
 				catch (Exception ex)
 				{
@@ -611,28 +634,28 @@ namespace PCIWebFinAid
 			using (MiscList miscList = new MiscList())
 				try
 				{
-					sql = "exec WP_ContractApplicationC"
-					    +     " @RegistrationPage = 'Z'"
-					    +     ",@WebsiteCode ="               + Tools.DBString(WebTools.RequestValueString(Request,"WC"))
-					    +     ",@ProductCode ="               + Tools.DBString(productCode)
-					    +     ",@LanguageCode ="              + Tools.DBString(languageCode)
-					    +     ",@GoogleUtmSource ="           + Tools.DBString(WebTools.RequestValueString(Request,"GUS"))
-					    +     ",@GoogleUtmMedium ="           + Tools.DBString(WebTools.RequestValueString(Request,"GUM"))
-					    +     ",@GoogleUtmCampaign ="         + Tools.DBString(WebTools.RequestValueString(Request,"GUC"))
-					    +     ",@GoogleUtmTerm ="             + Tools.DBString(WebTools.RequestValueString(Request,"GUT"))
-					    +     ",@GoogleUtmContent ="          + Tools.DBString(WebTools.RequestValueString(Request,"GUN"))
-					    +     ",@AdvertCode ="                + Tools.DBString(WebTools.RequestValueString(Request,"AC"))
-					    +     ",@ClientIPAddress ="           + Tools.DBString(WebTools.ClientIPAddress(Request,1))
-					    +     ",@ClientDevice ="              + Tools.DBString(WebTools.ClientBrowser(Request,hdnBrowser.Value))
-//					    +     ",@ReferringURL ="              + Tools.DBString(hdnReferURL.Value)
-					    +     ",@WebsiteVisitorCode ="        + Tools.DBString(WebTools.RequestValueString(Request,"WVC"))
-					    +     ",@WebsiteVisitorSessionCode =" + Tools.DBString(WebTools.RequestValueString(Request,"WVSC"));
+					spr = "WP_ContractApplicationC";
+					sql = "exec " + spr + " @RegistrationPage = 'Z'"
+					                    + ",@WebsiteCode ="               + Tools.DBString(WebTools.RequestValueString(Request,"WC"))
+					                    + ",@ProductCode ="               + Tools.DBString(productCode)
+					                    + ",@LanguageCode ="              + Tools.DBString(languageCode)
+					                    + ",@GoogleUtmSource ="           + Tools.DBString(WebTools.RequestValueString(Request,"GUS"))
+					                    + ",@GoogleUtmMedium ="           + Tools.DBString(WebTools.RequestValueString(Request,"GUM"))
+					                    + ",@GoogleUtmCampaign ="         + Tools.DBString(WebTools.RequestValueString(Request,"GUC"))
+					                    + ",@GoogleUtmTerm ="             + Tools.DBString(WebTools.RequestValueString(Request,"GUT"))
+					                    + ",@GoogleUtmContent ="          + Tools.DBString(WebTools.RequestValueString(Request,"GUN"))
+					                    + ",@AdvertCode ="                + Tools.DBString(WebTools.RequestValueString(Request,"AC"))
+					                    + ",@ClientIPAddress ="           + Tools.DBString(WebTools.ClientIPAddress(Request,1))
+					                    + ",@ClientDevice ="              + Tools.DBString(WebTools.ClientBrowser(Request,hdnBrowser.Value))
+//					                    + ",@ReferringURL ="              + Tools.DBString(hdnReferURL.Value)
+					                    + ",@WebsiteVisitorCode ="        + Tools.DBString(WebTools.RequestValueString(Request,"WVC"))
+					                    + ",@WebsiteVisitorSessionCode =" + Tools.DBString(WebTools.RequestValueString(Request,"WVSC"));
 
 					if ( miscList.ExecQuery(sql,0) != 0 )
-						SetErrorDetail("LoadContractCode",10013,"Error retrieving new contract details ; please try again later",sql);
+						SetErrorDetail("LoadContractCode",10013,"Error retrieving new contract details ("+spr+")",sql);
 
 					else if ( miscList.EOF )
-						SetErrorDetail("LoadContractCode",10023,"Error retrieving new contract details ; please try again later",sql);
+						SetErrorDetail("LoadContractCode",10023,"Error retrieving new contract details ("+spr+")",sql);
 
 					else
 					{
@@ -647,9 +670,9 @@ namespace PCIWebFinAid
 							spr                       = "sp_WP_Get_ProductInfo";
 							sql                       = "exec " + spr + " @ProductCode=" + Tools.DBString(productCode);
 							if ( miscList.ExecQuery(sql,0) != 0 )
-								SetErrorDetail("LoadContractCode",10033,"Error retrieving product info ; please try again later",sql);
+								SetErrorDetail("LoadContractCode",10033,"Error retrieving product info ("+spr+")",sql);
 							else if ( miscList.EOF )
-								SetErrorDetail("LoadContractCode",10043,"Error retrieving product info ; please try again later",sql);
+								SetErrorDetail("LoadContractCode",10043,"Product info: No data found ("+spr+")",sql);
 							else
 							{
 								bureauCodeToken   = miscList.GetColumn("TokenBureauCode");
@@ -750,7 +773,7 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-					SetErrorDetail("LoadContractCode",10093,"Error retrieving contract or product details ; please try again later",ex.Message + " (" + sql + ")",2,2,ex);
+					SetErrorDetail("LoadContractCode",10093,"Error retrieving contract or product details ("+spr+")",ex.Message + " (" + sql + ")",2,2,ex);
 					return false;
 				}
 				return ( lblError.Text.Length == 0 );
@@ -1071,11 +1094,11 @@ namespace PCIWebFinAid
 			using (MiscList miscList = new MiscList())
 				try
 				{
-					sql = "exec WP_ContractApplicationC"
-					    +     " @RegistrationPage =" + Tools.DBString((pageNo-1).ToString())
-					    +     ",@ContractCode ="     + Tools.DBString(contractCode)
-					    +     ",@ClientIPAddress ="  + Tools.DBString(WebTools.ClientIPAddress(Request,1))
-					    +     ",@ClientDevice ="     + Tools.DBString(WebTools.ClientBrowser(Request,hdnBrowser.Value));
+					spr = "WP_ContractApplicationC";
+					sql = "exec " + spr + " @RegistrationPage =" + Tools.DBString((pageNo-1).ToString())
+					                    + ",@ContractCode ="     + Tools.DBString(contractCode)
+					                    + ",@ClientIPAddress ="  + Tools.DBString(WebTools.ClientIPAddress(Request,1))
+					                    + ",@ClientDevice ="     + Tools.DBString(WebTools.ClientBrowser(Request,hdnBrowser.Value));
 
 //					if ( Tools.LiveTestOrDev() == Constants.SystemMode.Development )
 					if ( Tools.SystemViaBackDoor() )
@@ -1105,7 +1128,7 @@ namespace PCIWebFinAid
 					             + ",@CardExpiryYear ="  + Tools.DBString(WebTools.ListValue(lstCCYear).ToString());
 
 					errNo = miscList.ExecQuery(sql,0);
-					SetErrorDetail("btnNext_Click/30020",errNo,"Unable to update information (pageNo="+pageNo.ToString()+")",sql);
+					SetErrorDetail("btnNext_Click/30020",errNo,"Unable to update information (pageNo="+pageNo.ToString()+", "+spr+")",sql);
 
 					if ( errNo == 0 || pageNo > 180 )
 					{
@@ -1114,13 +1137,13 @@ namespace PCIWebFinAid
 						if ( pageNo == 4 )
 						{
 							int h = Tools.StringToInt(txtIncome.Text,true);
-							sql   = "exec sp_WP_Get_ProductOptionA"
-							      +     " @ProductCode ="         + Tools.DBString(productCode)
-							      +     ",@LanguageCode ="        + Tools.DBString(languageCode)
-							      +     ",@LanguageDialectCode =" + Tools.DBString(languageDialectCode)
-							      +     ",@Income ="              + h.ToString();
+							spr   = "sp_WP_Get_ProductOptionA";
+							sql   = "exec " + spr + " @ProductCode ="         + Tools.DBString(productCode)
+							                      + ",@LanguageCode ="        + Tools.DBString(languageCode)
+							                      + ",@LanguageDialectCode =" + Tools.DBString(languageDialectCode)
+							                      + ",@Income ="              + h.ToString();
 							errNo = WebTools.ListBind(lstOptions,sql,null,"ProductOptionCode","ProductOptionDescription");
-							SetErrorDetail("btnNext_Click/30030",errNo,"Unable to obtain product options",sql);
+							SetErrorDetail("btnNext_Click/30030",errNo,"Unable to obtain product options ("+spr+")",sql);
 						}
 						else if ( pageNo == 5 )
 						{
@@ -1177,10 +1200,10 @@ namespace PCIWebFinAid
 							lblCCMandate.Text     = "";
 							lblCCMandateHead.Text = "";
 //							lblCCMandateHead.Text = "Collection Mandate: " + Tools.DateToString(System.DateTime.Now,2);
-							sql                   = "exec sp_WP_Get_ProductOptionMandateA"
-							                      +     " @ProductCode ="         + Tools.DBString(productCode)
-							                      +     ",@LanguageCode ="        + Tools.DBString(languageCode)
-							                      +     ",@LanguageDialectCode =" + Tools.DBString(languageDialectCode);
+							spr                   = "sp_WP_Get_ProductOptionMandateA";
+							sql                   = "exec " + spr + " @ProductCode ="         + Tools.DBString(productCode)
+							                                      + ",@LanguageCode ="        + Tools.DBString(languageCode)
+							                                      + ",@LanguageDialectCode =" + Tools.DBString(languageDialectCode);
 
 							string w = " (looking for ProductOption="+productOption+" and PaymentMethod="+payMethod+")";
 							Tools.LogInfo("btnNext_Click/30040",sql+w,logDebug,this);
@@ -1211,33 +1234,33 @@ namespace PCIWebFinAid
 								}
 
 							if ( lblCCMandate.Text.Length < 1 )
-								SetErrorDetail("btnNext_Click/30060",30045,"Unable to retrieve collection mandate",sql+" (looking for ProductOption="+productOption+" and PaymentMethod="+payMethod+"). SQL failed or returned no data or<br />the CollectionMandateText column was missing/empty/NULL");
+								SetErrorDetail("btnNext_Click/30060",30045,"Unable to retrieve collection mandate ("+spr+")",sql+" (looking for ProductOption="+productOption+" and PaymentMethod="+payMethod+"). SQL failed or returned no data or<br />the CollectionMandateText column was missing/empty/NULL");
 						}
 						else if ( pageNo == 6 || pageNo > 180 )
 						{
-							sql   = "exec WP_ContractApplicationC"
-							      +     " @RegistrationPage = '5'"
-							      +     ",@ContractCode =" + Tools.DBString(contractCode);
+							spr   = "WP_ContractApplicationC";
+							sql   = "exec " + spr + " @RegistrationPage = '5'"
+							                      + ",@ContractCode =" + Tools.DBString(contractCode);
 //							Tools.LogInfo("btnNext_Click/30061","Page="+pageNo.ToString()+", "+sql,203,this);
 							errNo = miscList.ExecQuery(sql,0,"",false,true);
-							SetErrorDetail("btnNext_Click/30065",(errNo==0?0:30065),"Unable to update information (WP_ContractApplicationC)",sql);
+							SetErrorDetail("btnNext_Click/30065",(errNo==0?0:30065),"Unable to update information (" + spr + ")",sql);
 
 							if ( bureauCodeToken == Tools.BureauCode(Constants.PaymentProvider.TokenEx) )
 							{
-								sql   = "exec sp_TokenEx_Ins_CardToken"
-								      +     " @ContractCode ="       + Tools.DBString(contractCode)
-								      +     ",@MaskedCardNumber ="   + Tools.DBString(Tools.MaskedValue(txToken.Value))
-								      +     ",@PaymentBureauCode ="  + Tools.DBString(Tools.BureauCode(Constants.PaymentProvider.TokenEx))
-								      +     ",@PaymentBureauToken =" + Tools.DBString(txToken.Value)
-								      +     ",@CardExpieryMonth ="   + Tools.DBString(WebTools.ListValue(lstCCMonth).ToString())
-								      +     ",@CardExpieryYear ="    + Tools.DBString(WebTools.ListValue(lstCCYear).ToString())
-								      +     ",@CardCVV ="            + Tools.DBString(txtCCCVV.Text)
-								      +     ",@ReferenceNumber ="    + Tools.DBString(txReference.Value,47)
-								      +     ",@TransactionStatusCode = ''"
-								      +     ",@CardTokenisationStatusCode = '007'";
+								spr = "sp_TokenEx_Ins_CardToken";
+								sql = "exec " + spr + " @ContractCode ="       + Tools.DBString(contractCode)
+								                    + ",@MaskedCardNumber ="   + Tools.DBString(Tools.MaskedValue(txToken.Value))
+								                    + ",@PaymentBureauCode ="  + Tools.DBString(Tools.BureauCode(Constants.PaymentProvider.TokenEx))
+								                    + ",@PaymentBureauToken =" + Tools.DBString(txToken.Value)
+								                    + ",@CardExpieryMonth ="   + Tools.DBString(WebTools.ListValue(lstCCMonth).ToString())
+								                    + ",@CardExpieryYear ="    + Tools.DBString(WebTools.ListValue(lstCCYear).ToString())
+								                    + ",@CardCVV ="            + Tools.DBString(txtCCCVV.Text)
+								                    + ",@ReferenceNumber ="    + Tools.DBString(txReference.Value,47)
+								                    + ",@TransactionStatusCode = ''"
+								                    + ",@CardTokenisationStatusCode = '007'";
 //								Tools.LogInfo("btnNext_Click/30069","Page="+pageNo.ToString()+", "+sql,203,this);
 								errNo = miscList.ExecQuery(sql,0,"",false,true);
-								SetErrorDetail("btnNext_Click/30070",(errNo==0?0:30070),"Unable to update card token (sp_TokenEx_Ins_CardToken)",sql);
+								SetErrorDetail("btnNext_Click/30070",(errNo==0?0:30070),"Unable to update card token (" + spr + ")",sql);
 							}
 							lbl100325.Text = "";
 							sql = "exec sp_WP_Get_WebsiteProductOptionA"

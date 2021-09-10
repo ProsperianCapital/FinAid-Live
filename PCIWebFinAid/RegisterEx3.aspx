@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="false" CodeBehind="Register.aspx.cs" Inherits="PCIWebFinAid.Register" ValidateRequest="false" %>
+﻿<%@ Page Language="C#" AutoEventWireup="false" CodeBehind="RegisterEx3.aspx.cs" Inherits="PCIWebFinAid.RegisterEx3" ValidateRequest="false" %>
 
 <!DOCTYPE html>
 
@@ -11,7 +11,6 @@
 	<!--#include file="IncludeMainSimple.htm" -->
 </head>
 <body>
-<form id="frmRegister" runat="server">
 
 <script type="text/javascript">
 var firstPage = 1;
@@ -170,15 +169,18 @@ function ValidatePage(ctl,seq,misc)
 		}
 
 	//	Page 5
+
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100187 )
-		{
-			if ( GetEltValue('hdn100187') == 'Y' ) // Validate card number using Luhn check digit
-				p = Validate('txtCCNumber','lblInfo5',9,GetEltValue('hdnCCNumberError'));
-			else
-				p = Validate('txtCCNumber','lblInfo5',6,GetEltValue('hdnCCNumberError'),8,14);
-			err  = err + p;
-			ShowTick(p,'CCNumber',seq);
-		}
+			if ( GetElt('txtCCNumber') != null )
+			{
+				if ( GetEltValue('hdn100187') == 'Y' ) // Validate card number using Luhn check digit
+					p = Validate('txtCCNumber','lblInfo5',9,GetEltValue('hdnCCNumberError'));
+				else
+					p = Validate('txtCCNumber','lblInfo5',6,GetEltValue('hdnCCNumberError'),8,14);
+				err  = err + p;
+				ShowTick(p,'CCNumber',seq);
+			}
+
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100186 )
 		{
 			p   = Validate('txtCCName','lblInfo5',1,GetEltValue('hdnCCNameError'),2,2);
@@ -246,16 +248,17 @@ function OptSelect(p)
 		else if ( p == 4 )
 			h = 'PRODUCT NAME: GOLD<br /><br />Up To $300 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $29.95';
 	SetEltValue('lblOption',h);
-//	SetEltValue('hdnOption',h);
 }
 </script>
 
+<form id="frmRegister" runat="server">
+
 <asp:HiddenField runat="server" id="hdnPageNo" value="1" />
+<asp:HiddenField runat="server" id="hdn3dTries" />
 <asp:HiddenField runat="server" id="hdnBrowser" />
 <asp:HiddenField runat="server" id="hdn100002" />
 <asp:HiddenField runat="server" id="hdn100137" />
 <asp:HiddenField runat="server" id="hdn100187" />
-<!-- HiddenField run@t="server" id="hdnReferURL" -->
 
 <div class="Header3">
 	<asp:Literal runat="server" ID="lblReg"></asp:Literal><asp:Literal runat="server" ID="lblRegConf"></asp:Literal>
@@ -448,10 +451,15 @@ function OptSelect(p)
 	<tr id="trCCNumber">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
-			<asp:Literal runat="server" ID="lblCCNumberLabel"></asp:Literal></div>
-			<asp:TextBox runat="server" CssClass="DataInput" ID="txtCCNumber" MaxLength="20" onfocus="JavaScript:ValidatePage(100187,1)" onblur="JavaScript:ValidatePage(100187,2)"></asp:TextBox>
-			<a href="#" onmouseover="JavaScript:Help(1,this,'CCNumber')" onmouseout="JavaScript:Help(0)">?</a>
+			<asp:Literal runat="server" ID="lblCCNumberLabel"></asp:Literal>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'CCNumber')" onmouseout="JavaScript:Help(0)" style="float:right">?</a></div>
+			<asp:PlaceHolder runat="server" ID="pnlTokenNot" Visible="false">
+				<asp:TextBox runat="server" CssClass="DataInput" ID="txtCCNumber" MaxLength="20" onfocus="JavaScript:ValidatePage(100187,1)" onblur="JavaScript:ValidatePage(100187,2)"></asp:TextBox>
+			</asp:PlaceHolder>
 			<img id="imgCCNumber" />
+			<asp:PlaceHolder runat="server" ID="pnlTokenEx" Visible="false">
+				<span id="txIFrameCC"></span>
+			</asp:PlaceHolder>
 			<asp:HiddenField runat="server" ID="hdnCCNumberHelp" />
 			<asp:HiddenField runat="server" ID="hdnCCNumberError" />
 			<asp:HiddenField runat="server" ID="hdnCCNumberGuide" /></td>
@@ -459,9 +467,9 @@ function OptSelect(p)
 	<tr id="trCCName">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
-			<asp:Literal runat="server" ID="lblCCNameLabel"></asp:Literal></div>
+			<asp:Literal runat="server" ID="lblCCNameLabel"></asp:Literal>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'CCName')" onmouseout="JavaScript:Help(0)" style="float:right">?</a></div>
 			<asp:TextBox runat="server" CssClass="DataInput" ID="txtCCName" onfocus="JavaScript:ValidatePage(100186,1)" onblur="JavaScript:ValidatePage(100186,2)"></asp:TextBox>
-			<a href="#" onmouseover="JavaScript:Help(1,this,'CCName')" onmouseout="JavaScript:Help(0)">?</a>
 			<img id="imgCCName" />
 			<asp:HiddenField runat="server" ID="hdnCCNameHelp" />
 			<asp:HiddenField runat="server" ID="hdnCCNameError" />
@@ -469,7 +477,8 @@ function OptSelect(p)
 	<tr id="trCCExpiry">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
-			<asp:Literal runat="server" ID="lblCCExpiryLabel"></asp:Literal></div>
+			<asp:Literal runat="server" ID="lblCCExpiryLabel"></asp:Literal>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'CCExpiry')" onmouseout="JavaScript:Help(0)" style="float:right">?</a></div>
 			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstCCMonth" onfocus="JavaScript:ValidatePage(100188,1)" onblur="JavaScript:ValidatePage(100188,2)">
 				<asp:ListItem Value="01" Text="01"></asp:ListItem>
 				<asp:ListItem Value="02" Text="02"></asp:ListItem>
@@ -485,7 +494,6 @@ function OptSelect(p)
 				<asp:ListItem Value="12" Text="12"></asp:ListItem>
 			</asp:DropDownList>
 			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstCCYear" onfocus="JavaScript:ValidatePage(100188,1)" onblur="JavaScript:ValidatePage(100188,2)"></asp:DropDownList>
-			<a href="#" onmouseover="JavaScript:Help(1,this,'CCExpiry')" onmouseout="JavaScript:Help(0)">?</a>
 			<img id="imgCCExpiry" />
 			<asp:HiddenField runat="server" ID="hdnCCExpiryHelp" />
 			<asp:HiddenField runat="server" ID="hdnCCExpiryError" />
@@ -523,6 +531,33 @@ function OptSelect(p)
 </p><p>
 <asp:Literal runat="server" ID="lbl100209"></asp:Literal>
 </p>
+
+<!-- 3d Secure -->
+<asp:Panel runat="server" id="pnl3d" style="border:1px solid red;background-color:aqua;color:black;padding:10px">
+<script type='text/javascript'>
+var tOut = setTimeout(function(){GetElt('btn3d').click()},6000);
+//	Disable "Back"
+history.pushState(null, document.title, location.href);
+window.addEventListener('popstate', function (event)
+{
+	history.pushState(null, document.title, location.href);
+});
+</script>
+<asp:Literal runat="server" ID="lbl100500">
+PLEASE NOTE: You will shortly be re-directed to your bank's secure payment page to pay your
+once-off Card Verification Fee of $0.10 (10 US Cents).
+</asp:Literal>
+<br /><br />
+<asp:Literal runat="server" ID="lbl100501">
+If you are not re-directed within 5 seconds, please click the button below to pay the
+Card Verification Fee manually.
+</asp:Literal>
+<br /><br />
+<asp:Button runat="server" ID="btn3d" Text="Pay Now" UseSubmitBehavior="false" OnClick="btn3d_Click" OnClientClick="JavaScript:clearTimeout(tOut);DisableElt(this,true);" />
+</asp:Panel>
+<br />
+<!-- 3d Secure -->
+
 <table class="Confirmation" style="width:99%">
 	<tr>
 		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100372"></asp:Literal></td></tr>
@@ -644,9 +679,9 @@ function OptSelect(p)
 Disabled
 </asp:Panel>
 
-<asp:Button runat="server" ID="btnBack1" UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage(-1,this)) return false" Text="BACK" />
-<asp:Button runat="server" ID="btnNext"  UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage( 1,this)) return false" OnClick="btnNext_Click" />
-<asp:Button runat="server" ID="btnAgree" UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage( 1,this)) return false" OnClick="btnNext_Click" />
+<asp:Button runat="server" ID="btnBack1" UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage(-1,this)) return false;" Text="BACK" />
+<asp:Button runat="server" ID="btnNext"  UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage( 1,this)) return false;" OnClick="btnNext_Click" />
+<asp:Button runat="server" ID="btnAgree" UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage( 1,this)) return false;if (!TokenFinish()) return false;" OnClick="btnNext_Click" />
 &nbsp;&nbsp;&nbsp;&nbsp;
 <asp:Button runat="server" ID="btnBack2" UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage(-1,this)) return false" Width="200px" />
 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -677,6 +712,108 @@ Disabled
 pageNo = GetEltValueInt('hdnPageNo');
 SetEltValue('hdnBrowser',navigator.userAgent.toString());
 </script>
+
+<!-- TokenEx start -->
+
+<asp:Literal runat="server" ID="txScript"></asp:Literal>
+
+<!-- Above is a place holder for the TokenEx iFrame JavaScript source. Test version would look like
+[lt]script src="https://test-htp.tokenex.com/iframe/iframe-v3.min.js"
+-->
+
+<asp:HiddenField runat="server" ID="txHMAC" />
+<asp:HiddenField runat="server" ID="txToken" />
+<asp:HiddenField runat="server" ID="txReference" />
+<asp:HiddenField runat="server" ID="txTimestamp" />
+<asp:HiddenField runat="server" ID="txOrigin" />
+<asp:HiddenField runat="server" ID="txID" />
+<asp:HiddenField runat="server" ID="txTokenScheme" Value="sixTOKENfour" />
+
+<script type="text/javascript">
+var txFrame;
+var txCC;
+
+frmRegister.action = 'RegisterEx3.aspx';
+
+function TokenFinish()
+{
+	if ( GetElt('txIFrameCC') == null )
+		return true;
+
+//	ALL returns other then the one above must be FALSE
+//	Only return TRUE if TokenEx is turned OFF (ie. the iFrame object is NULL)
+
+	var err = 'Invalid card number and/or CVV';
+
+	try
+	{
+		var v = GetEltValue('txtCCCVV');
+		if ( txCC.isValid && v.length >= 3 && ToInteger(v) > 0 )
+		{
+			txFrame.tokenize();
+			return false; // This MUST be false!
+		}
+	}
+	catch (x)
+	{
+		err = err + ' (exception: ' + x.message + ')';
+	}
+
+	DisableElt('btnAgree',false);
+	alert(err);
+	return false;
+}
+function TokenSetup()
+{
+	var txConfig = {
+		styles: {
+			base: "background-color:#898787;width:209px;border:0;padding:2px",
+			focus: "",
+			error: "border-color:#ce0a0a"
+		},
+		pci: true,
+		inputType: "text",
+		enablePrettyFormat: true,
+		debug: false,
+		placeholder: "Card Number",
+//	Required
+		origin: document.getElementById("txOrigin").value,
+		timestamp: document.getElementById("txTimestamp").value,
+		tokenExID: document.getElementById("txID").value,
+		tokenScheme: document.getElementById("txTokenScheme").value,
+		authenticationKey: document.getElementById("txHMAC").value,
+		enableValidateOnBlur: true
+	};
+
+	try
+	{
+//		alert('TX/1');
+		txFrame = new TokenEx.Iframe("txIFrameCC", txConfig);
+//		alert(txFrame);
+//		txFrame.on("load", function() { alert('TX/2'); });
+//		txFrame.on("focus", function() { util.log("Iframe focus") });
+//		txFrame.on("blur", function() { util.log("Iframe blur") });
+//		txFrame.on("change", function() { txCC = null; });
+		txFrame.on("validate", function (data) { txCC = data; });
+//		txFrame.on("cardTypeChange", function (data) { util.log("Iframe cardTypeChange:" + JSON.stringify(data)); });
+		txFrame.on("tokenize", function (data) { if (data.token) { SetEltValue('lblError','');
+																					  SetEltValue('txToken',data.token);
+																					  SetEltValue('txReference',data.referenceNumber);
+																					  frmRegister.action = 'RegisterEx3.aspx?PageNo=6'
+																					  frmRegister.submit(); } });
+		txFrame.on("error", function (data) { SetEltValue('txToken','');SetEltValue('txReference','');SetEltValue('lblError',data.error) }); //major error occured
+//		alert('TX/4');
+		txFrame.load();
+//		alert('TX/5');
+	}
+	catch (x)
+	{
+		alert(x.message);
+	}
+}
+</script>
+<asp:Literal runat="server" ID="lblTx"></asp:Literal>
+<!-- TokenEx end -->
 
 <asp:Literal runat="server" ID="lblJS"></asp:Literal>
 

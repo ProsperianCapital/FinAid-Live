@@ -134,11 +134,13 @@ namespace PCIWebFinAid
 
 			if ( sessionMode == 99 && sessionGeneral == null )
 			{
-				sessionGeneral            = new SessionGeneral();
-				sessionGeneral.UserCode   = "013";
-				sessionGeneral.UserName   = "Samual Briggs";
-				sessionGeneral.AccessType = "A";
-				ApplicationCode           = Tools.SystemCode(Constants.ApplicationCode.BackOffice);
+				sessionGeneral                     = new SessionGeneral();
+				sessionGeneral.UserCode            = "013";
+				sessionGeneral.UserName            = "Samual Briggs";
+				sessionGeneral.AccessType          = "A";
+				sessionGeneral.LanguageCode        = "ENG";
+				sessionGeneral.LanguageDialectCode = "0002";
+				ApplicationCode                    = Tools.SystemCode(Constants.ApplicationCode.BackOffice);
 			}
 
 //			else if ( ( sessionMode == 4 || sessionMode == 19 ) && ( sessionGeneral == null || sessionGeneral.UserCode.Length < 1 ) )

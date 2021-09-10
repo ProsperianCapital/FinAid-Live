@@ -4,12 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-	<!--#include file="IncludeMain.htm" -->
+	<!--#include file="IncludeMainSimple.htm" -->
 	<title>Contract Lookup</title>
-	<link rel="stylesheet" href="CSS/FinAid.css?v=6" type="text/css" />
+	<link rel="preload" href="CSS/FinAid.css" as="style" />
+	<link rel="stylesheet" href="CSS/FinAid.css" type="text/css" />
 	<link rel="stylesheet" href="CSS/Calendar.css" type="text/css" />
 	<link rel="shortcut icon" href="Images/favicon.ico" />
-	<meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
 	<style>
 	.DLabel
 	{
@@ -37,10 +37,11 @@ Contract Code<br />
 <asp:RadioButton runat="server" ID="rdoView1" GroupName="rdoView" />Original view (as per the customer Confirmation page)<br />
 <asp:RadioButton runat="server" ID="rdoView2" GroupName="rdoView" />Summary view
 </p><p>
-<asp:Button runat="server" ID="btnSearch" Text="Search" OnClick="btnSearch_Click" />&nbsp;
-<asp:Button runat="server" ID="btnPrint"  Text="Print"  OnClientClick="JavaScript:window.print();return false" />&nbsp;
-<asp:Button runat="server" ID="btnMail"   Text="EMail"  OnClientClick="JavaScript:ShowElt('pnlMail',true);GetElt('txtTo').focus();return false" />&nbsp;
-<asp:Button runat="server" ID="btnError"  Text="Error ...?" OnClientClick="JavaScript:ShowElt('lblErrorDtl',true);return false" />
+<input type="button"                       value="Home"   onclick="JavaScript:location.href='LAdmin.aspx'" />&nbsp;
+<asp:Button runat="server" ID="btnSearch"   Text="Search" OnClick="btnSearch_Click" />&nbsp;
+<asp:Button runat="server" ID="btnPrint"    Text="Print"  OnClientClick="JavaScript:window.print();return false" />&nbsp;
+<asp:Button runat="server" ID="btnMail"     Text="EMail"  OnClientClick="JavaScript:ShowElt('pnlMail',true);GetElt('txtTo').focus();return false" />&nbsp;
+<asp:Button runat="server" ID="btnErrorDtl" Text="Error ...?" OnClientClick="JavaScript:ShowElt('lblErrorDtl',true);return false" />
 </p>
 <asp:Label runat="server" ID="lblError" CssClass="Error"></asp:Label>
 
@@ -59,7 +60,7 @@ Contract Code<br />
 	<hr />
 	<asp:Button runat="server" ID="btnSend" Text="Send"  OnClick="btnSend_Click" />&nbsp;
 	<input type="button" value="Cancel" onclick="JavaScript:ShowElt('pnlMail',false)" />
-	<asp:Label runat="server" ID="lblError2" CssClass="Error"></asp:Label>
+	<asp:Label runat="server" ID="lblErr2" CssClass="Error"></asp:Label>
 </div>
 
 <asp:PlaceHolder runat="server" ID="pnlView1">
