@@ -192,14 +192,6 @@ namespace PCIWebFinAid
 //					WebTools.ReplaceImage(this.Page,"12014","favicon.ico","","",0,0);
 //	Test
 
-//					if ( P12010.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12010',false);";
-//					if ( P12011.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12011',false);";
-//					if ( P12012.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12012',false);";
-//					if ( P12023.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12023',false);";
-//					if ( P12024.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12024',false);";
-//					if ( P12028.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12028',false);";
-//					ascxFooter.JSText = WebTools.JavaScriptSource(spr);
-
 					ret       = 10210;
 					xHIW.Text = "";
 					spr       = "sp_WP_Get_ProductHIWInfo";

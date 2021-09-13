@@ -186,15 +186,25 @@ namespace PCIWebFinAid
 							mList.NextRow();
 						}
 
-					ret = 10205;
-					spr = "";
-					if ( P12010.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12010',false);";
-					if ( P12011.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12011',false);";
-					if ( P12012.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12012',false);";
-					if ( P12023.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12023',false);";
-					if ( P12024.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12024',false);";
-					if ( P12028.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12028',false);";
-					ascxFooter.JSText = WebTools.JavaScriptSource(spr);
+//	Show/Hide with JavaScript
+//					ret = 10205;
+//					spr = "";
+//					if ( P12010.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12010',false);";
+//					if ( P12011.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12011',false);";
+//					if ( P12012.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12012',false);";
+//					if ( P12023.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12023',false);";
+//					if ( P12024.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12024',false);";
+//					if ( P12028.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12028',false);";
+//					ascxFooter.JSText = WebTools.JavaScriptSource(spr);
+
+//	Show/hide with server-side code
+					ret            = 10207;
+					D12010.Visible = ( P12010.ImageUrl.Length > 4 );
+					D12011.Visible = ( P12011.ImageUrl.Length > 4 );
+					D12012.Visible = ( P12012.ImageUrl.Length > 4 );
+					D12023.Visible = ( P12023.ImageUrl.Length > 4 );
+					D12024.Visible = ( P12024.ImageUrl.Length > 4 );
+					D12028.Visible = ( P12028.ImageUrl.Length > 4 );
 
 					ret       = 10210;
 					xHIW.Text = "";
