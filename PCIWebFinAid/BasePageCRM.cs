@@ -12,9 +12,9 @@ namespace PCIWebFinAid
 	{
 		protected string sqlProc;
 
-		protected override void StartOver(int errNo,string pageName="")
+		protected override void StartOver(int errNo,int errType=0,string pageName="")
 		{
-			base.StartOver ( errNo, ( pageName.Length > 0 ? pageName : "pgLogonCRM.aspx" ) );
+			base.StartOver ( errNo, errType, ( pageName.Length > 0 ? pageName : "pgLogonCRM.aspx" ) );
 		}
 
 		protected abstract void LoadPageData();
@@ -74,7 +74,7 @@ namespace PCIWebFinAid
 					sql = "exec " + sqlProc + " @ProductCode=" + Tools.DBString(sessionGeneral.ProductCode)
 					                        + ",@LanguageCode=" + Tools.DBString(sessionGeneral.LanguageCode)
 					                        + ",@LanguageDialectCode=" + Tools.DBString(sessionGeneral.LanguageDialectCode);
-					Tools.LogInfo("LoadLabelText/107",sql,233,this);
+//					Tools.LogInfo("LoadLabelText/107",sql,233,this);
 					if ( mList.ExecQuery(sql, 0) != 0 )
 						SetErrorDetail("LoadLabelText", 10010, "Internal database error (" + sqlProc + " failed)", sql, 1, 1);
 					else if ( mList.EOF )

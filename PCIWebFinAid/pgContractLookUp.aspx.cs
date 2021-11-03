@@ -21,7 +21,7 @@ namespace PCIWebFinAid
 				return;
 
 			if ( ascxXMenu.LoadMenu(ApplicationCode,sessionGeneral) != 0 )
-				StartOver(11888);
+				StartOver(11888,(int)Constants.ErrorType.InvalidMenu);
 			else
 			{
 				SetErrorDetail("",-888);

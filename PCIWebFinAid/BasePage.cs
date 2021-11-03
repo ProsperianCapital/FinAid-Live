@@ -19,11 +19,15 @@ namespace PCIWebFinAid
 			this.Load += new System.EventHandler(this.PageLoad);
 		}
 
-		protected virtual void StartOver(int errNo,string pageName="")
+		protected virtual void StartOver(int errNo,int errType=0,string pageName="")
 		{
 			if ( pageName.Length < 6 )
 				pageName = "pgLogon.aspx"; // The LOGON ADMIN version
-			Response.Redirect ( pageName + ( errNo > 0 ? "?ErrNo=" + errNo.ToString() : "" ) , true );
+			if ( errNo > 0 )
+				pageName = pageName + "&ErrNo=" + errNo.ToString();
+			if ( errType > 0 )
+				pageName = pageName + "&ErrType=" + errType.ToString();
+			Response.Redirect ( pageName.Replace("aspx&","aspx?") , true );
 		}
 
 		public override void Close()

@@ -23,10 +23,10 @@ namespace PCIWebFinAid
 
 			int  x  = ascxXMenu.LoadMenu(ApplicationCode,sessionGeneral);
 			if ( x != 0 && ! sessionGeneral.AdminUser )
-				StartOver(10999);
+				StartOver(10993);
 
 //			if ( ascxXMenu.LoadMenu(ApplicationCode,sessionGeneral) != 0 )
-//				StartOver(10999);
+//				StartOver(10994);
 		}
 
 		private string ReplacePassword(string connStr)

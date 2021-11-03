@@ -93,7 +93,7 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-					PCIBusiness.Tools.LogException("LoadStaticDetails/10999","ret="+ret.ToString(),ex,this);
+					PCIBusiness.Tools.LogException("LoadStaticDetails/10909","ret="+ret.ToString(),ex,this);
 				}
 
 //	Override if passed via URL (not CountryCode)

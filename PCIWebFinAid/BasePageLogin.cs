@@ -60,8 +60,8 @@ namespace PCIWebFinAid
 //		{
 //			if ( mode == 19 && ! sessionGeneral.AdminUser )
 //			{
-//				StartOver(19);
-//				return 19;
+//				StartOver(90010);
+//				return 10;
 //			}
 //			return 0;
 //		}
@@ -125,8 +125,8 @@ namespace PCIWebFinAid
 					backDoor = Session["BackDoor"].ToString();
 				if ( backDoor != ((int)Constants.SystemPassword.BackDoor).ToString() )
 				{
-					StartOver(10);
-					return 10;
+					StartOver(90020);
+					return 20;
 				}
 				Session["BackDoor"] = backDoor.ToString();
 				sessionMode         = 99;
@@ -150,27 +150,27 @@ namespace PCIWebFinAid
 //					backDoor = Session["BackDoor"].ToString();
 //				if ( backDoor != ((int)PCIBusiness.Constants.SystemPassword.BackDoor).ToString() )
 //				{
-//					StartOver(10);
-//					return 10;
+//					StartOver(90030);
+//					return 30;
 //				}
 //			}
 
 			else if ( sessionMode == 19 && sessionGeneral != null && ! sessionGeneral.AdminUser )
 			{
-				StartOver(20);
-				return 20;
+				StartOver(90040);
+				return 40;
 			}
 
 			else if ( sessionMode != 5 && sessionGeneral == null )
 			{
-				StartOver(30);
-				return 30;
+				StartOver(90050);
+				return 50;
 			}
 
 			else if ( sessionMode != 5 && sessionGeneral != null && sessionGeneral.AccessType == "X" )
 			{
-				StartOver(40);
-				return 40;
+				StartOver(90060);
+				return 60;
 			}
 
 			ShowUserDetails();

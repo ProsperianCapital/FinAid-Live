@@ -91,7 +91,7 @@ namespace PCIWebFinAid
 					resultCode  = trans.ResultCode;
 					resultMsg   = trans.ResultMessage;
 				}
-				if ( providerCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
+				else if ( providerCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
 				{
 					if ( resultCode == "0" || resultCode == "00" || resultCode == "000" )
 						provRet = 0;
@@ -100,6 +100,15 @@ namespace PCIWebFinAid
 						SetMessage("Error ...","Your payment was rejected.");
 						provRet = 440;
 					}
+				}
+				else if ( providerCode == Tools.BureauCode(Constants.PaymentProvider.PayU) )
+				{
+					ret         = 50;
+					trans       = new TransactionPayU();
+					providerRef = WebTools.RequestValueString(Request,"PayUReference");
+					provRet     = trans.ThreeDSecureCheck(providerRef,transRef);
+					resultCode  = trans.ResultCode;
+					resultMsg   = trans.ResultMessage;
 				}
 				else
 				{

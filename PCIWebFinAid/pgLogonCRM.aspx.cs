@@ -63,6 +63,10 @@ namespace PCIWebFinAid
 //					SessionSave(null,null,null,null,productCode,languageCode,languageDialectCode);
 				}
 				ascxXHeader.ShowUser(null,ApplicationCode);
+
+				string h = Tools.ErrorTypeName(WebTools.RequestValueInt(Request,"ErrType"));
+				if ( h.Length > 0 )
+					SetErrorDetail("PageLoad",10201,h,"");
 			}
 		}
 

@@ -65,7 +65,6 @@ namespace PCIWebFinAid
 				contractPIN         = WebTools.ViewStateString(ViewState,"ContractPIN");
 				bureauCodeToken     = WebTools.ViewStateString(ViewState,"BureauCodeToken");
 				bureauCodePayment   = WebTools.ViewStateString(ViewState,"BureauCodePayment");
-//				bureauCodePayment   = Tools.BureauCode(Constants.PaymentProvider.CyberSource);// TEST
 				paymentURL          = WebTools.ViewStateString(ViewState,"PaymentURL");
 				tokenAccount        = WebTools.ViewStateString(ViewState,"TokenAccount");
 				tokenKey            = WebTools.ViewStateString(ViewState,"TokenKey");
@@ -691,9 +690,13 @@ namespace PCIWebFinAid
 //								paymentAccount    = "sk_test_51It78gGmZVKtO2iKBZF7DA5JisJzRqvibQdXSfBj9eQh4f5UDvgCShZIjznOWCxu8MtcJG5acVkDcd8K184gIegx001uXlHI5g"; // Secret key
 //	Testing : PayU
 //								bureauCodePayment = Tools.BureauCode(Constants.PaymentProvider.PayU);
-//								paymentId         = "800060";
-//								paymentAccount    = "qDRLeKI9";
-//								paymentKey        = "{FBEF85FC-F395-4DE2-B17F-F53098D8F978}";
+//							//	paymentId         = "800060";
+//							//	paymentAccount    = "qDRLeKI9";
+//							//	paymentKey        = "{FBEF85FC-F395-4DE2-B17F-F53098D8F978}";
+//								paymentId         = "200208";
+//								paymentAccount    = "g1Kzk8GY";
+//								paymentKey        = "{A580B3C7-3EF3-47F1-9B90-4047CE0EC54C}";
+//								paymentURL        = "https://staging.payu.co.za";
 //	Testing : FNB
 //								bureauCodePayment = Tools.BureauCode(Constants.PaymentProvider.FNB);
 //								paymentAccount    = "";
@@ -909,7 +912,9 @@ namespace PCIWebFinAid
 				trans                    = new TransactionPayU();
 				payment.ProviderUserID   = paymentId;
 				payment.ProviderPassword = paymentAccount;
-			//	payment.ProviderKey      = paymentKey; // Secret Key
+			//	payment.ProviderKey      = paymentKey;
+				payment.PaymentAmount    = 050;    // 50 US Cents
+				payment.CurrencyCode     = "USD";
 			}
 			else
 				return;
@@ -954,8 +959,12 @@ namespace PCIWebFinAid
 				//	This always throws a "thread aborted" exception ... ignore it
 					
 					if ( trans.ThreeDSecureHTML.Trim().ToUpper().StartsWith("HTTP") )
-					//	WebTools.Redirect(Response,trans.ThreeDSecureHTML);
-						Response.Redirect(trans.ThreeDSecureHTML);
+						if ( ! Tools.SystemIsLive() && payment.BureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU) )
+						//	Testing
+							Response.Redirect(trans.ThreeDSecureHTML.Replace(":8085",""));
+						//	Testing
+						else
+							Response.Redirect(trans.ThreeDSecureHTML);
 					else
 					{
 						System.Web.HttpContext.Current.Response.Clear();
@@ -1301,9 +1310,6 @@ namespace PCIWebFinAid
 //							Tools.LogInfo("btnNext_Click/30084",sql+" (errNo="+errNo.ToString()+")",223,this);
 							if ( refundPolicy.Length < 1 || moneyBackPolicy.Length < 1 || cancellationPolicy.Length < 1 )
 								SetErrorDetail("btnNext_Click/30085",30085,"Unable to retrieve product policy text (sp_WP_Get_ProductPolicy)",sql);
-//	Testing
-//								SetErrorDetail("btnNext_Click/30086",30086,"Unable to retrieve product policy text",sql,2,2,null,false,223);
-//	Testing
 							else
 							{
 								lblp6RefundPolicy.Text       = refundPolicy + "<br />&nbsp;";
@@ -1479,7 +1485,7 @@ namespace PCIWebFinAid
 												mailMsg.Bcc.Add(smtpBCC);
 
 											errNo                = 30245;
-											if ( Tools.CheckEMail(smtpUser) )
+											if ( Tools.CheckEMail(smtpUser,1) )
 												mailMsg.Sender    = new MailAddress(smtpUser);
 											mailMsg.From         = new MailAddress(emailFrom);
 											mailMsg.Subject      = "Contract " + contractCode;

@@ -1105,7 +1105,8 @@ namespace PCIWebFinAid
 												mailMsg.Bcc.Add(smtpBCC);
 
 											errNo                = 30245;
-											mailMsg.Sender       = new MailAddress(smtpUser);
+											if ( Tools.CheckEMail(smtpUser,1) )
+												mailMsg.Sender    = new MailAddress(smtpUser);
 											mailMsg.From         = new MailAddress(emailFrom);
 											mailMsg.Subject      = "Contract " + contractCode;
 											mailMsg.BodyEncoding = Encoding.UTF8;
