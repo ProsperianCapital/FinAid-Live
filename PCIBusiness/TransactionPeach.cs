@@ -417,7 +417,7 @@ namespace PCIBusiness
 			return ret;
 		}
 
-		public override int ThreeDSecureCheck(string transID)
+		public override int ThreeDSecureCheck(string providerRef,string merchantRef="")
 		{
 //	Return
 //	   0     : Payment succeeded
@@ -445,8 +445,8 @@ namespace PCIBusiness
 
 			try
 			{
-				string         url               = BureauURL + "/threeDSecure/" + transID + "?entityId=" + entityId;
-			//	string         url               = BureauURL + "/payments/"     + transID + "?entityId=" + entityId;
+				string         url               = BureauURL + "/threeDSecure/" + providerRef + "?entityId=" + entityId;
+			//	string         url               = BureauURL + "/payments/"     + providerRef + "?entityId=" + entityId;
 				HttpWebRequest request           = (HttpWebRequest)HttpWebRequest.Create(url);
 				request.Method                   = "GET";
 				request.Headers["Authorization"] = "Bearer " + key;

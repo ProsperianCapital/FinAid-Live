@@ -90,9 +90,8 @@ namespace PCIBusiness
 
 		private int CallWebService(Payment payment,byte transactionType)
       {
-			int    ret      = 10;
-			string url      = payment.ProviderURL;
-			string tranDesc = "";
+			int    ret = 10;
+			string url = payment.ProviderURL;
 
 			if ( Tools.NullToString(url).Length == 0 )
 				url = BureauURL;
@@ -103,15 +102,9 @@ namespace PCIBusiness
 
 			ret = 30;
 			if ( transactionType == (byte)Constants.TransactionType.GetToken )
-			{
-				url      = url + "/pg/api/v2/card/register";
-				tranDesc = "Get Token";
-			}
+				url = url + "/pg/api/v2/card/register";
 			else if ( transactionType == (byte)Constants.TransactionType.TokenPayment )
-			{
-				url      = url + "/pg/api/v2/payment/create";
-				tranDesc = "Process Payment";
-			}
+				url = url + "/pg/api/v2/payment/create";
 			else
 			{ }
 
@@ -149,7 +142,7 @@ namespace PCIBusiness
 				ret                               = 100;
 
 				Tools.LogInfo("CallWebService/20",
-				              "Transaction Type=" + tranDesc +
+				              "Transaction Type=" + Tools.TransactionTypeName(transactionType) +
 				            ", URL=" + url +
 				            ", Token=" + payment.ProviderKey +
 				            ", Key=" + payment.ProviderPassword +

@@ -8,36 +8,6 @@ namespace PCIBusiness
 {
 	public class TransactionPayU : Transaction
 	{
-//		static string url      = "https://staging.payu.co.za";
-//		static string userID   = "800060";
-//		static string password = "qDRLeKI9";
-//		static string safeKey  = "{FBEF85FC-F395-4DE2-B17F-F53098D8F978}";
-
-//	Ver 2
-//		static string soapEnvelope =
-//			@"<soapenv:Envelope
-//					xmlns:soapenv='http://schemas.xmlsoap.org/soap/envelope/'
-//					xmlns:soap='http://soap.api.controller.web.payjar.com/'
-//					xmlns:SOAP-ENV='SOAP-ENV'>
-//				<soapenv:Header>
-//				<wsse:Security
-//					SOAP-ENV:mustUnderstand='1'
-//					xmlns:wsse='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd'>
-//					<wsse:UsernameToken
-//						wsu:Id='UsernameToken-9'
-//						xmlns:wsu='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd'>
-//						<wsse:Username></wsse:Username>
-//						<wsse:Password Type='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText'></wsse:Password>
-//					</wsse:UsernameToken>
-//				</wsse:Security>
-//				</soapenv:Header>
-//				<soapenv:Body>
-//					<soap:doTransaction>
-//					</soap:doTransaction>
-//				</soapenv:Body>
-//				</soapenv:Envelope>";
-
-//	Ver 3
 		static string soapEnvelope =
 			@"<soapenv:Envelope
 					xmlns:soapenv='http://schemas.xmlsoap.org/soap/envelope/'
@@ -78,12 +48,16 @@ namespace PCIBusiness
 			{
 				if ( payUType.Length < 1 )
 					payUType = "doTransaction";
-				if ( url.Length < 1 )
-					url = BureauURL;
+				if ( userID.Length   < 1 )
+					userID   = Tools.ProviderCredentials("PayU","Id");
+				if ( password.Length < 1 )
+					password = Tools.ProviderCredentials("PayU","Password");
+				if ( url.Length      < 1 )
+					url      = BureauURL;
 				if ( ! url.ToUpper().EndsWith("WSDL") )
 					url = url + "/service/PayUAPI?wsdl";
 
-				Tools.LogInfo("SendXML/10","URL=" + url + ", XML Sent=" + xmlSent,231,this);
+				Tools.LogInfo("SendXML/10","URL=" + url + ", XML Sent=" + xmlSent,10,this);
 
 			// Construct soap object
 				ret                       = 20;
@@ -125,7 +99,7 @@ namespace PCIBusiness
 					}
 				}
 
-				Tools.LogInfo("SendXML/50","XML Rec=" + strResult,231,this);
+				Tools.LogInfo("SendXML/50","XML Rec=" + strResult,10,this);
 
 			// Create an empty soap result object
 				ret       = 75;
@@ -141,7 +115,7 @@ namespace PCIBusiness
 				if ( Successful )
 					return 0;
 
-				Tools.LogInfo("SendXML/80","URL=" + url + ", XML Sent=" + xmlSent+", XML Rec="+strResult,10,this);
+				Tools.LogInfo("SendXML/80","URL=" + url + ", XML Sent=" + xmlSent+", XML Rec="+strResult,231,this);
 			}
 			catch (WebException ex1)
 			{
@@ -278,7 +252,6 @@ namespace PCIBusiness
 			           +	"<amountInCents>" + payment.PaymentAmount.ToString() + "</amountInCents>"
 				        + "</Creditcard>";
 				ret = SendXML(payment.ProviderURL,payment.ProviderUserID,payment.ProviderPassword);
-				Tools.LogInfo("GetToken/40","ResultCode="+ResultCode,10,this);
 			}
 			catch (Exception ex)
 			{
@@ -288,6 +261,26 @@ namespace PCIBusiness
 			return ret;
 		}
 
+		public override int ThreeDSecureCheck(string providerRef,string merchantRef="")
+		{
+			int ret = 800;
+			xmlSent = "";
+
+			try
+			{
+				xmlSent = "<Safekey>" + Tools.ProviderCredentials("PayU","Key") + "</Safekey>"
+				        + "<AdditionalInformation>"
+				        +	"<payUReference>" + providerRef + "</payUReference>"
+				        + "</AdditionalInformation>";
+				ret     = SendXML("","","","getTransaction");
+			}
+			catch (Exception ex)
+			{
+				Tools.LogInfo     ("ThreeDSecureCheck/98","Ret="+ret.ToString()+", XML Sent="+xmlSent,255,this);
+				Tools.LogException("ThreeDSecureCheck/99","Ret="+ret.ToString()+", XML Sent="+xmlSent,ex ,this);
+			}
+			return ret;
+		}
 
 		public override int TokenPayment(Payment payment)
 		{
@@ -349,8 +342,6 @@ namespace PCIBusiness
 
 				ret    = SendXML(payment.ProviderURL,payment.ProviderUserID,payment.ProviderPassword);
 				payRef = Tools.XMLNode(xmlResult,"payUReference");
-
-				Tools.LogInfo("TokenPayment/30","ResultCode="+ResultCode,30,this);
 			}
 			catch (Exception ex)
 			{
@@ -374,6 +365,9 @@ namespace PCIBusiness
 					url = postBackURL.GetLeftPart(UriPartial.Authority);
 				if ( ! url.EndsWith("/") )
 					url = url + "/";
+				url = url + "RegisterThreeD.aspx?ProviderCode="+bureauCode
+				          +                    "&amp;TransRef="+Tools.XMLSafe(payment.MerchantReference);
+//				          +                    "&amp;PayUReference="+Tools.XMLSafe(payment.TransactionID);
 
 				if ( payment.TokenizerCode == Tools.BureauCode(Constants.PaymentProvider.TokenEx) )
 					xmlSent = "{{{" + Tools.URLString(payment.CardToken) + "}}}";
@@ -386,6 +380,7 @@ namespace PCIBusiness
 				        +   "<supportedPaymentMethods>CREDITCARD</supportedPaymentMethods>"
 				        +   "<secure3d>true</secure3d>"
 				        +   "<returnUrl>"         + url                       + "</returnUrl>"
+				        +   "<cancelUrl>"         + url                       + "</cancelUrl>"
 				        +   "<notificationUrl>"   + url                       + "</notificationUrl>"
 				        +   "<merchantReference>" + payment.MerchantReference + "</merchantReference>"
 				        + "</AdditionalInformation>"
@@ -413,9 +408,9 @@ namespace PCIBusiness
 
 				ret     = SendXML(payment.ProviderURL,payment.ProviderUserID,payment.ProviderPassword);
 				payRef  = Tools.XMLNode(xmlResult,"payUReference");
-				d3Form  = Tools.XMLNode(xmlResult,"secure3DUrl");
+				d3Form  = Tools.XMLNode(xmlResult,"url","","","redirect");
 
-				if ( ret == 0 && d3Form.Length > 0 )
+				if ( ret == 0 && payRef.Length > 0 && d3Form.Length > 0 )
 				{
 					string sql = "exec sp_WP_PaymentRegister3DSecA @ContractCode="    + Tools.DBString(payment.MerchantReference)
 				              +                                 ",@ReferenceNumber=" + Tools.DBString(payRef)
@@ -429,7 +424,7 @@ namespace PCIBusiness
 					Tools.LogInfo("ThreeDSecurePayment/50","PayRef=" + payRef + "; SQL=" + sql + "; " + d3Form,10,this);
 					return 0;
 				}
-				Tools.LogInfo("ThreeDSecurePayment/60","ResultCode="+ResultCode + ", payRef=" + payRef,221,this);
+//				Tools.LogInfo("ThreeDSecurePayment/60","ResultCode="+ResultCode + ", payRef=" + payRef,221,this);
 			}
 			catch (Exception ex)
 			{

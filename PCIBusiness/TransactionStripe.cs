@@ -345,7 +345,7 @@ namespace PCIBusiness
 			}
 			return 99040;
 		}
-		public override int ThreeDSecureCheck(string transID)
+		public override int ThreeDSecureCheck(string providerRef,string merchantRef="")
 		{
 //	Return
 //	   0     : Payment succeeded
@@ -365,7 +365,7 @@ namespace PCIBusiness
 				var paymentIntentService   = new PaymentIntentService();
 				ret                        = 10040;
 			//	var paymentIntent          = paymentIntentService.Get(clientSecretId);
-				var paymentIntent          = paymentIntentService.Get(transID);
+				var paymentIntent          = paymentIntentService.Get(providerRef);
 				ret                        = 10050;
 				resultCode                 = paymentIntent.Status;
 				ret                        = 10060;

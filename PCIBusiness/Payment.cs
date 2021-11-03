@@ -213,6 +213,8 @@ namespace PCIBusiness
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_USA) ) // Public key
 					return "pk_test_51It78gGmZVKtO2iKXD0LEFRDvEs1Wkld93qRjifDLyWRoOgxXwGDJZzs9i902shBJqEk8v3XYg1WLLdButIK0QfU00xtFyxDQf";
 //					return "pk_test_51It78gGmZVKtO2iKc4eB6JveDn9HZAWR7F9cbiISEcYHGquyNoqb1YNnSQuzlJlR8maNlTUmaH0pBHHw4tZAOUBc00KZH2PeKW";
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentCloud) )
+					return "859v6V4N8H67pvAk";
 				return "";
 			}
 		}
@@ -278,6 +280,8 @@ namespace PCIBusiness
 					return "31c799cd-18da-47c3-be95-f93bd90748e0";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentsOS) )
 					return "800060";
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentCloud) )
+					return "7a5bb4SW9GY";
 
 				return "";
 			}
@@ -342,6 +346,8 @@ namespace PCIBusiness
 						return "https://secure.payu.co.za";
 					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
 						return "https://pay.ms.fnb.co.za";
+					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentCloud) )
+						return "https://api.authorize.net/xml/v1/request.api";
 				}
 //	TESTING
 				else
@@ -350,6 +356,8 @@ namespace PCIBusiness
 						return "https://staging.payu.co.za";
 					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
 						return "https://sandbox.ms.fnb.co.za";
+					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentCloud) )
+						return "https://apitest.authorize.net/xml/v1/request.api";
 				}
 				return "";
 			}

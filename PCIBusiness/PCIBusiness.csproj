@@ -131,6 +131,7 @@
     <Compile Include="TransactionMyGate.cs" />
     <Compile Include="TransactionPayGate.cs" />
     <Compile Include="TransactionPayGenius.cs" />
+    <Compile Include="TransactionPaymentCloud.cs" />
     <Compile Include="TransactionPaymentsOS.cs" />
     <Compile Include="TransactionPayU.cs" />
     <Compile Include="TransactionPeach.cs" />

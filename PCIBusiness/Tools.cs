@@ -551,17 +551,29 @@ namespace PCIBusiness
 			return "<" + tagName + ">" + p + "</" + tagName + ">";
 		}
 
-		public static string XMLNode(XmlDocument xmlDoc,string xmlTag,string nsPrefix="",string nsURL="")
+		public static string XMLNode(XmlDocument xmlDoc,string xmlTag,string nsPrefix="",string nsURL="",string parentNode="")
 		{
 			try
 			{
 				string ret = "";
+
+				if ( parentNode.Length > 0 )
+					try
+					{	
+						XmlNodeList xList = xmlDoc.GetElementsByTagName(parentNode);
+						if ( xList != null )
+							foreach (XmlNode p in xList.Item(0).ChildNodes)
+								if ( p.Name == xmlTag )
+									return p.InnerText.Trim();
+					}
+					catch { }
+
 				if ( nsPrefix.Length == 0 || nsURL.Length == 0 )
 				{
 					try
 					{	
 						ret = xmlDoc.SelectSingleNode("//"+xmlTag).InnerText.Trim();
-						XmlElement p = xmlDoc.GetElementById(xmlTag);
+					//	XmlElement p = xmlDoc.GetElementById(xmlTag);
 					}
 					catch { }
 					if ( ret == null || ret.Length == 0 )
@@ -1022,7 +1034,7 @@ namespace PCIBusiness
 
 		public static bool CheckEMail(string email,byte mode=2)
 		{
-		//	Mode = 1. Exactly 1 address allowed (ie. no commas, semi-colons or spaces).
+		//	Mode = 1. Exactly 1 address allowed (ie. no commas, semi-colons or spaces), but not blank.
 		//	Mode = 2. 1 or more (multiple) addresses allowed, but not blank.
 		//	Mode = 3. 0 or more (multiple) addresses allowed, OR blank (no addresses).
 
@@ -1674,6 +1686,7 @@ namespace PCIBusiness
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.T24)              ) return new TransactionT24();
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.MyGate)           ) return new TransactionMyGate();
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate)          ) return new TransactionPayGate();
+			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentCloud)     ) return new TransactionPaymentCloud(); // Renamed from Authorize.Net
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB)              ) return new TransactionFNB();
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGenius)        ) return new TransactionPayGenius();
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Ecentric)         ) return new TransactionEcentric();
@@ -1708,6 +1721,12 @@ namespace PCIBusiness
 			return "Unknown (transactionType=" + transactionType.ToString() + ")";
 		}
 
+		public static string ErrorTypeName(int errType)
+		{
+			if ( errType < 1 )                                     return "";
+			if ( errType == (int)Constants.ErrorType.InvalidMenu ) return "Invalid/missing menu for this application/language";
+			return "";
+		}
 
 		public static string LoadGoogleAnalytics(string productCode)
 		{

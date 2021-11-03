@@ -62,20 +62,21 @@ namespace PCIBusiness
 			{
 				bureauStatus = 1; // Development
 				if ( bureauType == "PAYMENT" )
-					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU)        ||
-					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB)         ||
-					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.T24)         ||
-					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.MyGate)      ||
-					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGenius)   ||
-					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate)     ||
-					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.eNETS)       ||
-					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.Peach)       ||
-					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.Ecentric)    ||
-					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.TokenEx)     ||
-					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_USA)  ||
-					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_EU)   ||
-					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_Asia) ||
-					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.CyberSource) ||
+					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU)            ||
+					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB)             ||
+					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.T24)             ||
+					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.MyGate)          ||
+					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentCloud)    ||
+					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGenius)       ||
+					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate)         ||
+					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.eNETS)           ||
+					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.Peach)           ||
+					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.Ecentric)        ||
+					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.TokenEx)         ||
+					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_USA)      ||
+					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_EU)       ||
+					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_Asia)     ||
+					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.CyberSource)     ||
 					     bureauCode == Tools.BureauCode(Constants.PaymentProvider.CyberSource_Moto) )
 						bureauStatus = 3; // Live
 //					else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.eNETS) )

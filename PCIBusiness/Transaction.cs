@@ -213,7 +213,7 @@ namespace PCIBusiness
 		{
 			return 14510;
 		}
-		public virtual int ThreeDSecureCheck(string transID)
+		public virtual int ThreeDSecureCheck(string providerRef,string merchantRef="")
 		{
 			return 14610;
 		}
@@ -258,6 +258,9 @@ namespace PCIBusiness
 					bureauURL = "https://pay.ms.fnb.co.za";
 				else if ( bureau == Constants.PaymentProvider.PaymentsOS )
 					bureauURL = "https://api.paymentsos.com";
+			//	else if ( bureau == Constants.PaymentProvider.Authorize_Net )
+				else if ( bureau == Constants.PaymentProvider.PaymentCloud )
+					bureauURL = "https://api.authorize.net/xml/v1/request.api";
 			}
 			else // Testing
 			{
@@ -282,6 +285,8 @@ namespace PCIBusiness
 					bureauURL = "https://apitest.cybersource.com";
 				else if ( bureau == Constants.PaymentProvider.CyberSource_Moto )
 					bureauURL = "https://apitest.cybersource.com";
+				else if ( bureau == Constants.PaymentProvider.PaymentCloud )
+					bureauURL = "https://apitest.authorize.net/xml/v1/request.api";
 			}
 		}
 
