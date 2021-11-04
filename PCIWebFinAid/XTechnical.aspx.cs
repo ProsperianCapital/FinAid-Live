@@ -174,7 +174,7 @@ namespace PCIWebFinAid
 				   + "Script timeout<br />"
 				   + "Environment.UserName<br />"
 				   + "Environment.UserDomainName<br />"
-				   + "Database version";
+				   + "Database version<br />";
 				if ( sessionGeneral == null )
 					x3 = "<br /><br />";
 				else
