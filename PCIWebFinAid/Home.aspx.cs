@@ -66,10 +66,6 @@ namespace PCIWebFinAid
 				if ( err > 0 )
 					Tools.LogInfo("Home.PageLoad/1","err="       + err.ToString()
 					                            + ", url="       + url
-//					                            + ", urlT1="     + urlT1
-//					                            + ", urlT2="     + urlT2
-//					                            + ", urlT3="     + urlT3
-//					                            + ", urlT4="     + urlT4
 					                            + ", domain="    + dName
 					                            + ", goTo="      + goTo
 					                            + ", parms="     + parms
@@ -91,10 +87,6 @@ namespace PCIWebFinAid
 			if ( err > 0 )
 				Tools.LogInfo("Home.PageLoad/3","err="     + err.ToString()
 				                            + ", url="     + url
-//				                            + ", urlT1="   + urlT1
-//				                            + ", urlT2="   + urlT2
-//				                            + ", urlT3="   + urlT3
-//				                            + ", urlT4="   + urlT4
 				                            + ", appCode=" + ApplicationCode, 222);
 		}
 	}

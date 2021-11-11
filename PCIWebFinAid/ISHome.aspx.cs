@@ -93,11 +93,11 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-					PCIBusiness.Tools.LogException("LoadStaticDetails/10909","ret="+ret.ToString(),ex,this);
+					PCIBusiness.Tools.LogException("LoadStaticDetails/10080","ret="+ret.ToString(),ex,this);
 				}
 
 //	Override if passed via URL (not CountryCode)
-			ret      = 10070;
+			ret      = 10090;
 			string h = WebTools.RequestValueString(Request,"PC");
 			if ( h.Length > 0 ) productCode = h;
 			h        = WebTools.RequestValueString(Request,"LC");
@@ -111,7 +111,7 @@ namespace PCIWebFinAid
 			hdnLangDialectCode.Value = languageDialectCode;
 			hdnVer.Value             = "Version " + SystemDetails.AppVersion + " (" + SystemDetails.AppDate + ")";
 
-			Tools.LogInfo("LoadStaticDetails/10080","PC/LC/LDC="+productCode+"/"+languageCode+"/"+languageDialectCode,231,this);
+//			Tools.LogInfo("LoadStaticDetails/10080","PC/LC/LDC="+productCode+"/"+languageCode+"/"+languageDialectCode,231,this);
 		}
 
 		private void LoadDynamicDetails()

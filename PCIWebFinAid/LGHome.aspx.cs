@@ -84,11 +84,11 @@ namespace PCIWebFinAid
 						SetErrorDetail("LoadStaticDetails", 10030, "Internal database error (" + spr + " no data returned)", sql, 2, 2, null, false, errPriority);
 					else
 					{
-						ret                 = 10040;
+						ret                 = 10020;
 						productCode         = mList.GetColumn("ProductCode");
 						languageCode        = mList.GetColumn("LanguageCode");
 						languageDialectCode = mList.GetColumn("LanguageDialectCode");
-						ret                 = 10042;
+						ret                 = 10030;
 						if ( productCode.Length         < 1 ) productCode         = "10387";
 						if ( languageCode.Length        < 1 ) languageCode        = "ENG";
 						if ( languageDialectCode.Length < 1 ) languageDialectCode = "0002";
@@ -98,9 +98,8 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-					PCIBusiness.Tools.LogException("LoadStaticDetails/99","ret="+ret.ToString(),ex,this);
+					PCIBusiness.Tools.LogException("LoadStaticDetails/10050","ret="+ret.ToString(),ex,this);
 				}
-
 
 //	Override if passed via URL
 			ret      = 10044;

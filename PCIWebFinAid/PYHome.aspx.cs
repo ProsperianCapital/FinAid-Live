@@ -67,7 +67,7 @@ namespace PCIWebFinAid
 				using (MiscList mList = new MiscList())
 					try
 					{
-						ret = 10010;
+						ret = 10020;
 						spr = "sp_WP_Get_ProductLanguageInfo";
 						sql = "exec " + spr + " @ProductCode=" + Tools.DBString(productCode);
 						if ( mList.ExecQuery(sql,0) != 0 )
@@ -82,7 +82,7 @@ namespace PCIWebFinAid
 
 							while ( ! mList.EOF )
 							{
-								ret          = 10080;
+								ret          = 10030;
 								lCode        = mList.GetColumn("LanguageCode");
 								lDialectCode = mList.GetColumn("LanguageDialectCode");
 							//	blocked      = mList.GetColumn("Blocked");
@@ -91,7 +91,7 @@ namespace PCIWebFinAid
 								if ( mList.GetColumn("DefaultIndicator").ToUpper() == "Y" ||
 								   ( lCode == languageCode && lDialectCode == languageDialectCode ) )
 								{
-									ret                   = 10090;
+									ret                   = 10040;
 									languageCode          = lCode;
 									languageDialectCode   = lDialectCode;
 									lstLang.SelectedIndex = lstLang.Items.Count - 1;
@@ -100,7 +100,7 @@ namespace PCIWebFinAid
 							}
 							if ( languageCode.Length == 0 )
 							{
-								ret                   = 10100;
+								ret                   = 10050;
 								languageCode          = lstLang.Items[0].Text;
 								languageDialectCode   = lstLang.Items[0].Value;
 								lstLang.SelectedIndex = 0;
@@ -109,7 +109,7 @@ namespace PCIWebFinAid
 					}
 					catch (Exception ex)
 					{
-						PCIBusiness.Tools.LogException("LoadStaticDetails/99","ret="+ret.ToString(),ex,this);
+						PCIBusiness.Tools.LogException("LoadStaticDetails/10099","ret="+ret.ToString(),ex,this);
 					}
 
 			hdnVer.Value = "Version " + SystemDetails.AppVersion + " (" + SystemDetails.AppDate + ")";
@@ -275,7 +275,7 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-					PCIBusiness.Tools.LogException("LoadDynamicDetails/99","ret="+ret.ToString(),ex,this);
+					PCIBusiness.Tools.LogException("LoadDynamicDetails/10499","ret="+ret.ToString(),ex,this);
 				}
 		}
 
