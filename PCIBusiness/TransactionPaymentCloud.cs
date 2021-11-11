@@ -122,9 +122,9 @@ namespace PCIBusiness
 				         +   "</paymentProfiles>"
 				         + "</profile>"
 				         + "<validationMode>testMode</validationMode>"
+				         + "</createCustomerProfileRequest>";
 //	Always use "testMode"
 //				         + "<validationMode>" + ( Tools.SystemIsLive() ? "liveMode" : "testMode" ) + "</validationMode>"
-				         + "</createCustomerProfileRequest>";
 				ret      = 20;
 				ret      = CallWebService(payment,(byte)Constants.TransactionType.GetToken);
 				if ( ret == 0 )

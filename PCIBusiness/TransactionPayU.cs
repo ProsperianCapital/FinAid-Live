@@ -81,6 +81,7 @@ namespace PCIBusiness
 				webRequest.Method         = "POST";
 				xmlSent                   = soapXml.OuterXml;
 
+//	Testing (reset priority)
 				Tools.LogInfo("SendXML/10","URL=" + url + ", XML Sent=" + xmlSent,222,this);
 
 			// Insert soap envelope into web request
@@ -100,7 +101,8 @@ namespace PCIBusiness
 					}
 				}
 
-				Tools.LogInfo("SendXML/50","XML Rec=" + strResult,10,this);
+//	Testing (reset priority)
+				Tools.LogInfo("SendXML/50","XML Rec=" + strResult,222,this);
 
 			// Create an empty soap result object
 				ret       = 75;
@@ -116,7 +118,8 @@ namespace PCIBusiness
 				if ( Successful )
 					return 0;
 
-				Tools.LogInfo("SendXML/80","URL=" + url + ", XML Sent=" + xmlSent+", XML Rec="+strResult,231,this);
+//	Testing (put back in with high priority)
+//				Tools.LogInfo("SendXML/80","URL=" + url + ", XML Sent=" + xmlSent+", XML Rec="+strResult,231,this);
 			}
 			catch (WebException ex1)
 			{
@@ -264,16 +267,18 @@ namespace PCIBusiness
 
 		public override int ThreeDSecureCheck(string providerRef,string merchantRef="")
 		{
-			int ret = 800;
-			xmlSent = "";
+			int ret  = 800;
+			xmlSent  = "";
+			payToken = "";
 
 			try
 			{
-				xmlSent = "<Safekey>" + Tools.ProviderCredentials("PayU","Key") + "</Safekey>"
-				        + "<AdditionalInformation>"
-				        +	"<payUReference>" + providerRef + "</payUReference>"
-				        + "</AdditionalInformation>";
-				ret     = SendXML("","","","getTransaction");
+				xmlSent  = "<Safekey>" + Tools.ProviderCredentials("PayU","Key") + "</Safekey>"
+				         + "<AdditionalInformation>"
+				         +	"<payUReference>" + providerRef + "</payUReference>"
+				         + "</AdditionalInformation>";
+				ret      = SendXML("","","","getTransaction");
+				payToken = Tools.XMLNode(xmlResult,"pmId");
 			}
 			catch (Exception ex)
 			{
@@ -301,17 +306,6 @@ namespace PCIBusiness
 //	//		payment.CardToken        = "E13648542276F54C44C754843840821D";
 //			payment.CardToken        = "74BF0BC8AE9987B423AA94A4BC894A2A"; // This token WORKS!
 //	Testing
-
-//	Not needed
-//		   +   "<secure3d>false</secure3d>"
-//       +   "<storePaymentMethod>true</storePaymentMethod>"
-
-//       +   "<email>" + payment.EMail + "</email>"
-//       +   "<firstName>" + payment.FirstName + "</firstName>"
-//       +   "<lastName>" + payment.LastName + "</lastName>"
-//       +   "<mobile>" + payment.PhoneCell + "</mobile>"
-
-//		   +   "<cvv></cvv>"
 
 			try
 			{
@@ -375,10 +369,26 @@ namespace PCIBusiness
 				else
 					xmlSent = Tools.URLString(payment.CardNumber);
 
+//	2021/11/11 Added
+//				        + "<Customfield>"
+//				        +   "<key>processingType</key>"
+//				        +   "<value>REAL_TIME_RECURRING</value>"
+//				        + "</Customfield>"
+//				        + "<AdditionalInformation>"
+//				        +   "<storePaymentMethod>true</storePaymentMethod>"
+//				        +   "<supportedPaymentMethods>CREDITCARD_TOKEN</supportedPaymentMethods>"
+//	2021/11/11 Removed
+//				        +   "<supportedPaymentMethods>CREDITCARD</supportedPaymentMethods>"
+
 				xmlSent = "<Safekey>" + payment.ProviderKey + "</Safekey>"
 				        + "<TransactionType>RESERVE</TransactionType>"
+				        + "<Customfield>"
+				        +   "<key>processingType</key>"
+				        +   "<value>REAL_TIME_RECURRING</value>"
+				        + "</Customfield>"
 				        + "<AdditionalInformation>"
-				        +   "<supportedPaymentMethods>CREDITCARD</supportedPaymentMethods>"
+				        +   "<storePaymentMethod>true</storePaymentMethod>"
+				        +   "<supportedPaymentMethods>CREDITCARD_TOKEN</supportedPaymentMethods>"
 				        +   "<secure3d>true</secure3d>"
 				        +   "<returnUrl>"         + url                       + "</returnUrl>"
 				        +   "<cancelUrl>"         + url                       + "</cancelUrl>"
