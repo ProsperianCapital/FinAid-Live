@@ -107,6 +107,7 @@ namespace PCIWebFinAid
 					trans       = new TransactionPayU();
 					providerRef = WebTools.RequestValueString(Request,"PayUReference");
 					provRet     = trans.ThreeDSecureCheck(providerRef,transRef);
+					token       = trans.PaymentToken;
 					resultCode  = trans.ResultCode;
 					resultMsg   = trans.ResultMessage;
 				}

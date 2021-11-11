@@ -703,7 +703,7 @@ namespace PCIWebFinAid
 //								paymentKey        = "";
 //								paymentURL        = "";
 //	Testing
-//								if ( paymentURL.Length < 1 || paymentAccount.Length < 1 || paymentKey.Length < 1 )
+								if ( paymentURL.Length < 1 || paymentAccount.Length < 1 || paymentKey.Length < 1 )
 									Tools.LogInfo("LoadContractCode",sql+" -> bureauCodeToken="  +bureauCodeToken
 									                                     + ", bureauCodePayment="+bureauCodePayment
 									                                     + ", tokenAccount="     +tokenAccount
