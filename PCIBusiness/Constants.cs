@@ -13,11 +13,11 @@ namespace PCIBusiness
 		}
 		public static short MaxRowsSQL
 		{
-			get {  return 1000; }
+			get { return 1000; }
 		}
 		public static short MaxRowsPayment
 		{
-			get {  return 50; }
+			get { return 50; }
 		}
 		public static string HTMLBreak
 		{

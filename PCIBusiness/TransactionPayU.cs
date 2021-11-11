@@ -57,8 +57,6 @@ namespace PCIBusiness
 				if ( ! url.ToUpper().EndsWith("WSDL") )
 					url = url + "/service/PayUAPI?wsdl";
 
-				Tools.LogInfo("SendXML/10","URL=" + url + ", XML Sent=" + xmlSent,10,this);
-
 			// Construct soap object
 				ret                       = 20;
 				XmlDocument soapXml       = CreateSoapEnvelope(xmlSent,payUType);
@@ -81,6 +79,9 @@ namespace PCIBusiness
 				webRequest.ContentType    = "text/xml;charset=\"utf-8\"";
 				webRequest.Accept         = "text/xml";
 				webRequest.Method         = "POST";
+				xmlSent                   = soapXml.OuterXml;
+
+				Tools.LogInfo("SendXML/10","URL=" + url + ", XML Sent=" + xmlSent,222,this);
 
 			// Insert soap envelope into web request
 				ret = 50;
