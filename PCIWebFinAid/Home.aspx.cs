@@ -60,19 +60,21 @@ namespace PCIWebFinAid
 							err  = 20;
 					}
 					else
-						err = 30;
+						err =  0;
+					//	err = 30;
 
-				Tools.LogInfo("Home.PageLoad/1","err="       + err.ToString()
-				                            + ", url="       + url
-//				                            + ", urlT1="     + urlT1
-//				                            + ", urlT2="     + urlT2
-//				                            + ", urlT3="     + urlT3
-//				                            + ", urlT4="     + urlT4
-				                            + ", domain="    + dName
-				                            + ", goTo="      + goTo
-				                            + ", parms="     + parms
-				                            + ", appCode="   + ApplicationCode
-				                            + ", appStatus=" + appStatus, ( err == 0 ? (byte)10 : (byte)222 ));
+				if ( err > 0 )
+					Tools.LogInfo("Home.PageLoad/1","err="       + err.ToString()
+					                            + ", url="       + url
+//					                            + ", urlT1="     + urlT1
+//					                            + ", urlT2="     + urlT2
+//					                            + ", urlT3="     + urlT3
+//					                            + ", urlT4="     + urlT4
+					                            + ", domain="    + dName
+					                            + ", goTo="      + goTo
+					                            + ", parms="     + parms
+					                            + ", appCode="   + ApplicationCode
+					                            + ", appStatus=" + appStatus, 222);
 
 				Response.Redirect(goTo+parms);
 			}	
