@@ -1026,12 +1026,14 @@ namespace PCIWebFinAid
 				payment.CardExpiryYYYY    = WebTools.ListValue(lstCCYear).ToString();
 				payment.CardCVV           = txtCCCVV.Text;
 				payment.MerchantReference = contractCode;
+				payment.ContractCode      = contractCode;
 				payment.CurrencyCode      = paymentCurrency;
 				payment.PaymentAmount     = Tools.StringToInt(paymentAmount);
 				payment.FirstName         = txtFirstName.Text;
 				payment.LastName          = txtSurname.Text;
 				payment.EMail             = txtEMail.Text;
 				payment.PhoneCell         = txtCellNo.Text;
+				payment.RegionalId        = txtID.Text;
 
 				Send3dForm(payment);
 			}

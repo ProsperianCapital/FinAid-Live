@@ -104,12 +104,18 @@ namespace PCIWebFinAid
 				else if ( providerCode == Tools.BureauCode(Constants.PaymentProvider.PayU) )
 				{
 					ret         = 50;
-					trans       = new TransactionPayU();
+					provRet     = 450;
 					providerRef = WebTools.RequestValueString(Request,"PayUReference");
-					provRet     = trans.ThreeDSecureCheck(providerRef,transRef);
-					token       = trans.PaymentToken;
-					resultCode  = trans.ResultCode;
-					resultMsg   = trans.ResultMessage;
+					if ( providerRef.Length > 0 )
+					{
+						trans       = new TransactionPayU();
+						provRet     = trans.ThreeDSecureCheck(providerRef,transRef);
+						token       = trans.PaymentToken;
+						resultCode  = trans.ResultCode;
+						resultMsg   = trans.ResultMessage;
+					}
+					else
+						SetMessage("Error ...","Your payment failed.");
 				}
 				else
 				{
