@@ -123,7 +123,13 @@ namespace PCIBusiness
 		}
 		public string    ContractCode
 		{
-			get { return  Tools.NullToString(contractCode); }
+			get
+			{
+				if ( string.IsNullOrWhiteSpace(contractCode) )
+					contractCode = merchantReference;
+				return Tools.NullToString(contractCode);
+			}
+			set { contractCode = value.Trim(); }
 		}
 
 //		Stripe stuff

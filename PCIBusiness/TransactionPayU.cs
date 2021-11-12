@@ -279,6 +279,8 @@ namespace PCIBusiness
 				         + "</AdditionalInformation>";
 				ret      = SendXML("","","","getTransaction");
 				payToken = Tools.XMLNode(xmlResult,"pmId");
+				if ( payToken.Length > 14 && payToken.ToUpper().Contains("\"SESSIONID\"") )
+					payToken = Tools.JSONValue(payToken,"sessionId");
 			}
 			catch (Exception ex)
 			{
@@ -369,11 +371,12 @@ namespace PCIBusiness
 				else
 					xmlSent = Tools.URLString(payment.CardNumber);
 
-//	2021/11/11 Added
+//	2021/11/11 NOT Added
 //				        + "<Customfield>"
 //				        +   "<key>processingType</key>"
 //				        +   "<value>REAL_TIME_RECURRING</value>"
 //				        + "</Customfield>"
+//	2021/11/11 Added
 //				        + "<AdditionalInformation>"
 //				        +   "<storePaymentMethod>true</storePaymentMethod>"
 //				        +   "<supportedPaymentMethods>CREDITCARD_TOKEN</supportedPaymentMethods>"
@@ -382,10 +385,6 @@ namespace PCIBusiness
 
 				xmlSent = "<Safekey>" + payment.ProviderKey + "</Safekey>"
 				        + "<TransactionType>RESERVE</TransactionType>"
-				        + "<Customfield>"
-				        +   "<key>processingType</key>"
-				        +   "<value>REAL_TIME_RECURRING</value>"
-				        + "</Customfield>"
 				        + "<AdditionalInformation>"
 				        +   "<storePaymentMethod>true</storePaymentMethod>"
 				        +   "<supportedPaymentMethods>CREDITCARD_TOKEN</supportedPaymentMethods>"
@@ -435,6 +434,11 @@ namespace PCIBusiness
 					Tools.LogInfo("ThreeDSecurePayment/50","PayRef=" + payRef + "; SQL=" + sql + "; " + d3Form,10,this);
 					return 0;
 				}
+				else if ( ret == 0 && payRef.Length == 0 )
+					ret = 73;
+				else if ( ret == 0 && d3Form.Length == 0 )
+					ret = 74;
+
 //				Tools.LogInfo("ThreeDSecurePayment/60","ResultCode="+ResultCode + ", payRef=" + payRef,221,this);
 			}
 			catch (Exception ex)
