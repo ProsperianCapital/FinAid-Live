@@ -8,7 +8,7 @@ function ValidPhone(phoneNo,country)
 	{
 		phoneNo = Trim(phoneNo);
 
-		if ( phoneNo.length < 8 )
+		if ( phoneNo.length < 5 )
 			return false;
 
 		if ( country == 1 ) // SA
@@ -307,22 +307,24 @@ function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 			if ( numVal < 0 && eltValue.length > 0 )
 				err = eltDesc;
 //	Value checks
-			else if ( eltMode == 1 && ( numVal < 0 || numVal > eltParm ) ) // 0 <= x <= eltParm
+			else if ( eltMode ==  1 && ( numVal < 0 || numVal > eltParm ) ) // 0 <= x <= eltParm
 				err = eltDesc;
-			else if ( eltMode == 2 && ( numVal < 1 || numVal > eltParm ) ) // 1 <= x <= eltParm
+			else if ( eltMode ==  2 && ( numVal < 1 || numVal > eltParm ) ) // 1 <= x <= eltParm
 				err = eltDesc;
-			else if ( eltMode == 3 && numVal < eltParm ) // x >= eltParm
+			else if ( eltMode ==  3 && numVal < eltParm ) // x >= eltParm
 				err = eltDesc;
-			else if ( eltMode == 4 && ( numVal < 0 || numVal > eltParm ) && numLen > 0 ) // 0 <= x <= eltParm, but BLANK is allowed
+			else if ( eltMode ==  4 && ( numVal < 0 || numVal > eltParm ) && numLen > 0 ) // 0 <= x <= eltParm, but BLANK is allowed
 				err = eltDesc;
-			else if ( eltMode == 5 && ( numVal < 1 || numVal > eltParm ) && numLen > 0 ) // 1 <= x <= eltParm, but BLANK is allowed
+			else if ( eltMode ==  5 && ( numVal < 1 || numVal > eltParm ) && numLen > 0 ) // 1 <= x <= eltParm, but BLANK is allowed
 				err = eltDesc;
 //	Length checks
-			else if ( eltMode == 6 && numLen != eltParm ) // Must be exactly this length
+			else if ( eltMode ==  6 && numLen != eltParm ) // Must be exactly this length
 				err = eltDesc;
-			else if ( eltMode == 7 && ( numLen < 1 || numLen > eltParm ) ) // 1 <= x <= eltParm
+			else if ( eltMode ==  7 && ( numLen < 1 || numLen > eltParm ) ) // 1 <= x <= eltParm
 				err = eltDesc;
-			else if ( eltMode == 8 && numLen < eltParm ) // x <= eltParm
+			else if ( eltMode ==  8 && numLen < eltParm ) // x <= eltParm
+				err = eltDesc;
+			else if ( eltMode == 44 && ( numLen < 3 || numLen > 6 ) ) // Card CVV
 				err = eltDesc;
 //	Credit card checks
 			else if ( eltMode >= 71 && eltMode <= 74 )
