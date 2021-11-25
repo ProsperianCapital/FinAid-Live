@@ -267,26 +267,61 @@ namespace PCIBusiness
 
 		public override int ThreeDSecureCheck(string providerRef,string merchantRef="")
 		{
-			int ret  = 800;
-			xmlSent  = "";
-			payToken = "";
+			int    ret   = 800;
+			string rCode = "X";
+			string rMsg  = "Internal Prosperian error [TransactionPayU.ThreeDSecureCheck]";
+			xmlSent      = "";
+			payToken     = "";
 
 			try
 			{
-				xmlSent  = "<Safekey>" + Tools.ProviderCredentials("PayU","Key") + "</Safekey>"
-				         + "<AdditionalInformation>"
-				         +	"<payUReference>" + providerRef + "</payUReference>"
-				         + "</AdditionalInformation>";
-				ret      = SendXML("","","","getTransaction");
-				payToken = Tools.XMLNode(xmlResult,"pmId");
+				xmlSent     = "<Safekey>" + Tools.ProviderCredentials("PayU","Key") + "</Safekey>"
+				            + "<AdditionalInformation>"
+				            +	"<payUReference>" + providerRef + "</payUReference>"
+				            + "</AdditionalInformation>";
+				ret         = SendXML("","","","getTransaction");
+				payToken    = Tools.XMLNode(xmlResult,"pmId");
+				string amt  = Tools.XMLNode(xmlResult,"amountInCents");
+				string curr = Tools.XMLNode(xmlResult,"currencyCode");
 				if ( payToken.Length > 14 && payToken.ToUpper().Contains("\"SESSIONID\"") )
 					payToken = Tools.JSONValue(payToken,"sessionId");
+				if ( merchantRef.Length < 1 )
+					merchantRef = Tools.XMLNode(xmlResult,"merchantReference");
+
+//	Keep the codes from the above call
+				rCode = resultCode;
+				rMsg  = resultMsg;
+
+//	Now finalize (or cancel) the initial RESERVE transaction
+
+				if ( Successful && payToken.Length > 0 )
+					xmlSent = "FINALIZE";
+				else
+					xmlSent = "RESERVE_CANCEL";
+
+				ret     = 820;
+				xmlSent = "<Safekey>" + Tools.ProviderCredentials("PayU","Key") + "</Safekey>"
+		              + "<TransactionType>" + xmlSent + "</TransactionType>"
+		              + "<AdditionalInformation>"
+		              +   "<merchantReference>" + merchantRef + "</merchantReference>"
+		              +   "<payUReference>"     + providerRef + "</payUReference>"
+		              + "</AdditionalInformation>"
+		              + "<Basket>"
+		              +	"<amountInCents>" + amt + "</amountInCents>"
+		              +	"<currencyCode>" + curr + "</currencyCode>"
+		              + "</Basket>";
+				ret     = SendXML("","","");
 			}
 			catch (Exception ex)
 			{
 				Tools.LogInfo     ("ThreeDSecureCheck/98","Ret="+ret.ToString()+", XML Sent="+xmlSent,255,this);
 				Tools.LogException("ThreeDSecureCheck/99","Ret="+ret.ToString()+", XML Sent="+xmlSent,ex ,this);
 			}
+
+//	Reset the codes from the 3d secure check
+			resultCode = rCode;
+			resultMsg  = rMsg;
+
 			return ret;
 		}
 
