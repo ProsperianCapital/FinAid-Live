@@ -655,8 +655,8 @@ namespace PCIWebFinAid
 				if ( txtSurname.Visible && txtSurname.Text.Length < 2 )
 					err = err + "Invalid surname (at least 2 characters required)<br />";
 				txtCellNo.Text = txtCellNo.Text.Trim();
-				if ( txtCellNo.Visible && txtCellNo.Text.Length < 8 )
-					err = err + "Invalid cell number (at least 8 digits required)<br />";
+				if ( txtCellNo.Visible && txtCellNo.Text.Length < 5 )
+					err = err + "Invalid cell number (at least 5 digits required)<br />";
 			}
 			else if ( pageNo == 2 )
 			{
@@ -689,7 +689,7 @@ namespace PCIWebFinAid
 				if ( txtCCName.Visible && txtCCName.Text.Length < 3 )
 					err = err + "Invalid credit/debit card name<br />";
 				txtCCCVV.Text = txtCCCVV.Text.Trim();
-				if ( txtCCCVV.Visible && txtCCCVV.Text.Length < 3 )
+				if ( txtCCCVV.Visible && ( txtCCCVV.Text.Length < 3 || txtCCCVV.Text.Length > 6 ) )
 					err = err + "Invalid credit/debit card CVV code<br />";
 			}
 

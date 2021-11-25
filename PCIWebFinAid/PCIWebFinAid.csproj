@@ -147,7 +147,6 @@
     <Content Include="JS\AJAXUtils.js" />
     <Content Include="JS\UtilsBasic.js" />
     <Content Include="JS\UtilsComplex.js" />
-    <Content Include="JS\Utils.js" />
     <Content Include="JS\Calendar.js" />
     <Content Include="JS\Timeout.js" />
     <Content Include="CSS\CAFinAid.css" />

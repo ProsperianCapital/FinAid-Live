@@ -124,7 +124,7 @@ namespace PCIWebFinAid
 				//	resultCode  = "XXX-XXX-XXX";
 				//	providerURL = WebTools.RequestValueString(Request,"resourcePath");
 					providerRef = WebTools.RequestValueString(Request,"id");
-					provRet     = trans.ThreeDSecureCheck(providerRef);
+					provRet     = trans.ThreeDSecureCheck(providerRef,transRef);
 					resultCode  = trans.ResultCode;
 				}
 
@@ -137,11 +137,6 @@ namespace PCIWebFinAid
 
 				using (MiscList mList = new MiscList())
 				{
-				//	ret    = 120;
-//	Single language
-//					sqlRet = mList.ExecQuery(sql,0,"",false,true);
-
-//	Multi language
 					sqlRet = mList.ExecQuery(sql,0);
 					Tools.LogInfo("PageLoad/45",sql+" (sqlRet="+sqlRet.ToString()+")",222,this);
 

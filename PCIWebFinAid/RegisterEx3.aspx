@@ -208,7 +208,7 @@ function ValidatePage(ctl,seq,misc)
 		}
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100189 )
 		{
-			p   = Validate('txtCCCVV','lblInfo5',6,GetEltValue('hdnCCCVVError'),7,4);
+			p   = Validate('txtCCCVV','lblInfo5',6,GetEltValue('hdnCCCVVError'),44,0);
 			err = err + p;
 			ShowTick(p,'CCCVV',seq);
 		}
