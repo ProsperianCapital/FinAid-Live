@@ -30,13 +30,13 @@ namespace PCIWebFinAid
 				languageCode        = hdnLangCode.Value;
 				languageDialectCode = hdnLangDialectCode.Value;
 				ListItem lang       = ascxHeader.lstLanguage.SelectedItem;
+
 				if ( lang != null && ( lang.Text != languageCode || lang.Value != languageDialectCode ) )
 				{
-					languageCode             = lang.Text;
-					languageDialectCode      = lang.Value;
-					hdnLangCode.Value        = languageCode;
-					hdnLangDialectCode.Value = languageDialectCode;
+					languageCode        = lang.Text;
+					languageDialectCode = lang.Value;
 					LoadDynamicDetails();
+					SaveHiddenVars();
 				}
 			}
 			else
@@ -46,10 +46,19 @@ namespace PCIWebFinAid
 				LoadDynamicDetails();
 				LoadGoogleAnalytics();
 				LoadChat();
+				SaveHiddenVars();
 
 				btnErrorDtl.Visible = ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Development );
 				btnWidth.Visible    = ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Development );
 			}
+		}
+
+		private void SaveHiddenVars()
+		{
+			hdnCountryCode.Value     = countryCode;
+			hdnProductCode.Value     = productCode;
+			hdnLangCode.Value        = languageCode;
+			hdnLangDialectCode.Value = languageDialectCode;
 		}
 
 		private void LoadStaticDetails()
@@ -285,14 +294,16 @@ namespace PCIWebFinAid
 			if ( ret != 0 || productCode.Length < 1 || languageCode.Length < 1 || languageDialectCode.Length < 1 )
 			{
 				SetErrorDetail("LoadProduct", 10888, "Unable to load product/language details", "ret="+ret.ToString(), 2, 2, null, false, errPriority);
-				productCode           = "10472";
-				languageCode          = "ENG";
-				languageDialectCode   = "0002";
+				productCode         = "10472";
+				languageCode        = "ENG";
+				languageDialectCode = "0002";
 			}
-			hdnCountryCode.Value     = countryCode;
-			hdnProductCode.Value     = productCode;
-			hdnLangCode.Value        = languageCode;
-			hdnLangDialectCode.Value = languageDialectCode;
+
+//	See SaveHiddenVars()
+//			hdnCountryCode.Value     = countryCode;
+//			hdnProductCode.Value     = productCode;
+//			hdnLangCode.Value        = languageCode;
+//			hdnLangDialectCode.Value = languageDialectCode;
 
 			Tools.LogInfo("LoadProduct","PC/LC/LDC="+productCode+"/"+languageCode+"/"+languageDialectCode,10,this);
 		}	

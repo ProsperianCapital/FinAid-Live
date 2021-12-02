@@ -66,7 +66,7 @@ namespace PCIWebFinAid
 					int              ch    = strIn.ReadByte();
 					inputDataJSON          = "";
 
-					while ( ch >= 0 )		
+					while ( ch >= 0 )
 					{
 						inputDataJSON = inputDataJSON + (Convert.ToChar(ch)).ToString();
 						ch            = strIn.ReadByte();
