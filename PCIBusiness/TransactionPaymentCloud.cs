@@ -12,11 +12,13 @@ namespace PCIBusiness
 //		It is actually the code for provider Authorize.Net, but Prosperian requested the name change
 //		So the URLS are all "Authorize.net"
 
-		byte logPriority;
+		byte   logPriority;
+		string errorCode;
+		string errorText;
 
 		public  bool Successful
 		{
-			get { return resultStatus.ToUpper() == "OK"; }
+			get { return (resultStatus.ToUpper() == "OK" && errorCode.Length == 0); }
 		}
 
 		public override int CardTest(Payment payment)
@@ -219,8 +221,10 @@ namespace PCIBusiness
 			xmlSent      = xmlSent.Replace("[AUTHENTICATION]",authXML);
 			strResult    = "";
 			resultStatus = "Error";
-			resultCode   = "98";
-			resultMsg    = "(98) Internal error connecting to " + url;
+			resultCode   = "X98";
+			resultMsg    = "(X98) Internal error connecting to " + url;
+			errorCode    = resultCode;
+			errorText    = resultMsg;
 			ret          = 70;
 
 			try
@@ -267,24 +271,51 @@ namespace PCIBusiness
 						xmlResult = new XmlDocument();
 						xmlResult.LoadXml(strResult.ToString());
 
-						ret            = 160;
-						resultStatus   = Tools.XMLNode(xmlResult,"resultCode","","","messages");
-						resultCode     = Tools.XMLNode(xmlResult,"code"      ,"","","message"); // NOT "messages"
-						resultMsg      = Tools.XMLNode(xmlResult,"text"      ,"","","message"); // NOT "messages"
-						ret            = 180;
+						ret          = 160;
+						resultStatus = Tools.XMLNode(xmlResult,"resultCode","","","messages");
+						resultCode   = Tools.XMLNode(xmlResult,"code"      ,"","","message"); // NOT "messages"
+						resultMsg    = Tools.XMLNode(xmlResult,"text"      ,"","","message"); // NOT "messages"
+						errorCode    = Tools.XMLNode(xmlResult,"errorCode" ,"","","error");
+						errorText    = Tools.XMLNode(xmlResult,"errorText" ,"","","error");
+						ret          = 165;
+						if ( strResult.ToUpper().Contains("<ERRORCODE>") && errorCode.Length < 1 )
+						{
+							ret   = 170;
+							int k = strResult.ToUpper().IndexOf("<ERRORCODE>");
+							int j = strResult.ToUpper().IndexOf("</ERRORCODE>");
+							int h = ("<ERRORCODE>").Length;
+							ret   = 175;
+							if ( j > k + h )
+								errorCode = strResult.Substring(k+h,j-(k+h));
+						}
 
-						if (Successful)
-							ret         = 0;
-						else
-							logPriority = 222; // Force logging
+//						ret = 180;
+//						if ( errorCode.Length < 1 )
+//							errorCode = Tools.XMLNode(xmlResult,"code" ,"","","message");
+//						ret = 185;
+//						if ( errorText.Length < 1 )
+//							errorText = Tools.XMLNode(xmlResult,"description" ,"","","message");
+							
+						ret = 0;
 
-						Tools.LogInfo("CallWebService/60","ret="          + ret.ToString() +
+						Tools.LogInfo("CallWebService/60","Successful="   + Successful.ToString() +
 				                                      ", resultStatus=" + resultStatus +
 				                                      ", resultCode="   + resultCode +
 				                                      ", resultMsg="    + resultMsg +
-				                                      ", XML Rec="      + strResult, logPriority, this);
+				                                      ", errorCode="    + errorCode +
+				                                      ", errorText="    + errorText +
+				                                      ", XML Rec="      + strResult,
+						                                 ( Successful ? logPriority : (byte)244 ), this);
+						if (Successful)
+							resultCode = "1";
 
-						resultCode = resultStatus + ( resultCode.Length == 0 ? "" : "/" + resultCode );
+						else
+						{
+							ret        = 190;
+							resultCode = resultStatus
+							           + ( resultCode.Length == 0 ? "" : "/" + resultCode )
+							           + ( errorCode.Length  == 0 ? "" : "/" + errorCode  );
+						}
 					}
 				}
 			}
@@ -305,8 +336,8 @@ namespace PCIBusiness
 			base.LoadBureauDetails(Constants.PaymentProvider.PaymentCloud);
 			ServicePointManager.Expect100Continue = true;
 			ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
-		//	logPriority                           = 233; // Testing, always log
-			logPriority                           =  10; // Live, only log errors
+			logPriority                           = 233; // Testing, always log
+		//	logPriority                           =  10; // Live, only log errors
 		}
 	}
 }
