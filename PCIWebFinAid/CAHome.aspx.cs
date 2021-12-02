@@ -33,10 +33,14 @@ namespace PCIWebFinAid
 				promoCode           = hdnPromoCode.Value;
 				ListItem lang       = ascxHeader.lstLanguage.SelectedItem;
 
-				if ( lang != null && ( lang.Text != languageCode || lang.Value != languageDialectCode ) )
+//				if ( lang != null && ( lang.Text != languageCode || lang.Value != languageDialectCode ) )
+
+				if ( lang != null && lang.Value != languageCode + "|" + languageDialectCode )
 				{
 					languageCode        = lang.Text;
 					languageDialectCode = lang.Value;
+					int k               = languageDialectCode.IndexOf("|");
+					languageDialectCode = languageDialectCode.Substring(k+1);
 					SaveHiddenVars();
 					LoadDynamicDetails();
 				}
@@ -70,9 +74,11 @@ namespace PCIWebFinAid
 
 			if ( Tools.NullToString(Request["BackDoor"]) == ((int)Constants.SystemPassword.BackDoor).ToString() )
 			{
-				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("ENG","0002"));
-				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("THA","0001"));
-				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("GER","0298"));
+				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("ENG","ENG|0002"));
+				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("GRK","GRK|0001"));
+				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("TUR","TUR|0001"));
+//				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("THA","THA|0001"));
+//				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("GER","GER|0298"));
 				Tools.LogInfo("LoadStaticDetails/10003","BackDoor, PC/LC/LDC/Promo="+productCode+"/"+languageCode+"/"+languageDialectCode+"/"+promoCode,222,this);
 			}
 			else
@@ -99,7 +105,7 @@ namespace PCIWebFinAid
 								lDialectCode = mList.GetColumn("LanguageDialectCode");
 							//	blocked      = mList.GetColumn("Blocked");
 								Tools.LogInfo("LoadStaticDetails/10080","Language="+lCode+"/"+lDialectCode,errPriority,this);
-								lstLang.Items.Add(new System.Web.UI.WebControls.ListItem(lCode,lDialectCode));
+								lstLang.Items.Add(new System.Web.UI.WebControls.ListItem(lCode,lCode+"|"+lDialectCode));
 								if ( mList.GetColumn("DefaultIndicator").ToUpper() == "Y" ||
 								   ( lCode == languageCode && lDialectCode == languageDialectCode ) )
 								{
@@ -115,6 +121,8 @@ namespace PCIWebFinAid
 								ret                   = 10100;
 								languageCode          = lstLang.Items[0].Text;
 								languageDialectCode   = lstLang.Items[0].Value;
+								int k                 = languageDialectCode.IndexOf("|");
+								languageDialectCode   = languageDialectCode.Substring(k+1);
 								lstLang.SelectedIndex = 0;
 							}
 						}
@@ -126,7 +134,7 @@ namespace PCIWebFinAid
 
 			hdnVer.Value = "Version " + SystemDetails.AppVersion + " (" + SystemDetails.AppDate + ")";
 		}
-
+	
 		private void LoadDynamicDetails()
 		{
 			byte   err;
