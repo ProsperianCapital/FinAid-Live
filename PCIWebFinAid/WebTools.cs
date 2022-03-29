@@ -362,13 +362,16 @@ namespace PCIWebFinAid
 				return "";
 
 			if ( ipList.StartsWith("::") ) // Typically "::1" on a local machine
-				return "localhost";
+				return ( mode == 2 ? "127.0.0.1" : "localhost" );
 
 			if ( ipList.Contains(",") )
 				ipList = ipList.Split(',')[0];
 
 			if ( mode == 1 && ipList.IndexOf(":") > 0 )
 				return ipList.Substring(0,ipList.IndexOf(":"));
+
+			if ( ipList.ToUpper() == "LOCALHOST" && mode == 2 )
+				return "127.0.0.1";
 
 			return ipList;
 		}
@@ -668,6 +671,17 @@ namespace PCIWebFinAid
 				PCIBusiness.Tools.LogException("WebTools.ReplaceImage","",ex);
 			}
 			return 90;
+		}
+
+		public static string VersionDetails(byte format=0)
+		{
+			string std = "App Version : " + PCIWebFinAid.SystemDetails.AppVersion + " (" + PCIWebFinAid.SystemDetails.AppDate + ")<br />"
+			           + "DLL Version : " + PCIBusiness.SystemDetails.AppVersion  + " (" + PCIBusiness.SystemDetails.AppDate  + ")";
+
+			if ( format == 2 )
+				return std;
+
+			return "<span style='color:red'><b>Prosperian BackOffice</b></span><hr />" + std;
 		}
 
 //		Moved to PCIBusiness.Tools

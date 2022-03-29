@@ -680,65 +680,149 @@ namespace PCIWebFinAid
 				return 0;
 			}
 
-			int k = 0;
-			json.Append("\"Menu"+(++k).ToString()+"\":[");
+			string level1Start;
+			string level1End;
+			string level2Start;
+			string level2End;
+			string level3Start;
+			string level3End;
+			string startMenu  = ParmValue("MenuCode").ToUpper();
+			byte   levelFound = 0;
+			int    k          = 0;
+
+//			json.Append("\"Menu"+(++k).ToString()+"\":[");
+			level1Start = "\"Menu"+(++k).ToString()+"\":[";
+			level1End   = "";
+
 			foreach (MenuItem m1 in menuList)
 			{
-				json.Append ( Tools.JSONPair("MenuLevel","1",11,"{")
-				            + Tools.JSONPair("MenuDescription",m1.Description)
-				            + Tools.JSONPair("Blocked",m1.Blocked)
-				            + Tools.JSONPair("MenuImage",m1.ImageName)
-				            + Tools.JSONPair("SubItems",m1.SubItems.Count.ToString(),11)
-				            + Tools.JSONPair("RouterLink",m1.RouterLink) );
+//	TESTING
+//	if ( startMenu.Length > 0 && levelFound > 0 && levelFound < 100 )
+//		startMenu = "XYZP@#";
+//	TESTING
+				if ( startMenu.Length > 0 )
+				//	if ( startMenu == m1.Description.ToUpper() )
+					if ( startMenu == m1.Code.ToUpper() )
+						levelFound = 1;
+					else
+						levelFound = 255;
+
+				if ( levelFound <= 1 )
+				{
+					json.Append ( level1Start
+					            + Tools.JSONPair("MenuLevel","1",11,"{")
+					            + Tools.JSONPair("MenuCode"       ,m1.Code)
+					            + Tools.JSONPair("MenuDescription",m1.Description)
+					            + Tools.JSONPair("Blocked",        m1.Blocked)
+					            + Tools.JSONPair("MenuImage",      m1.ImageName)
+					            + Tools.JSONPair("SubItems",       m1.SubItems.Count.ToString(),11)
+					            + Tools.JSONPair("RouterLink",     m1.RouterLink) );
+					level1Start = "";
+					level1End   = "],";
+				}
+
 				if ( m1.SubItems.Count > 0 )
 				{
-					json.Append("\"Menu"+(++k).ToString()+"\":[");
+				//	json.Append("\"Menu"+(++k).ToString()+"\":[");
+					level2Start = "\"Menu"+(++k).ToString()+"\":[";
+					level2End   = "";
+
 					foreach (MenuItem m2 in m1.SubItems)
 					{
-						json.Append ( Tools.JSONPair("MenuLevel","2",11,"{")
-						            + Tools.JSONPair("MenuDescription",m2.Description)
-				                  + Tools.JSONPair("Blocked",m2.Blocked)
-				                  + Tools.JSONPair("SubItems",m2.SubItems.Count.ToString(),11)
-				                  + Tools.JSONPair("RouterLink",m2.RouterLink) );
+//	TESTING
+//	if ( startMenu.Length > 0 && levelFound > 0 && levelFound < 100 )
+//		startMenu = "XYZP@#";
+//	TESTING
+						if ( startMenu.Length > 0 && levelFound >= 2 )
+						//	if ( startMenu == m2.Description.ToUpper() )
+							if ( startMenu == m2.Code.ToUpper() )
+								levelFound = 2;
+							else
+								levelFound = 255;
+
+						if ( levelFound <= 2 )
+						{
+							json.Append ( level2Start
+							            + Tools.JSONPair("MenuLevel","2",11,"{")
+					                  + Tools.JSONPair("MenuCode"       ,m2.Code)
+							            + Tools.JSONPair("MenuDescription",m2.Description)
+							            + Tools.JSONPair("Blocked",        m2.Blocked)
+							            + Tools.JSONPair("SubItems",       m2.SubItems.Count.ToString(),11)
+							            + Tools.JSONPair("RouterLink",     m2.RouterLink) );
+							level2Start = "";
+							level2End   = "],";
+						}
+
 						if ( m2.SubItems.Count > 0 )
 						{
-							json.Append("\"Menu"+(++k).ToString()+"\":[");
+						//	json.Append("\"Menu"+(++k).ToString()+"\":[");
+							level3Start = "\"Menu"+(++k).ToString()+"\":[";
+							level3End   = "";
+
 							foreach (MenuItem m3 in m2.SubItems)
 							{
-								json.Append ( Tools.JSONPair("MenuLevel","3",11,"{")
-								            + Tools.JSONPair("MenuDescription",m3.Description)
-				                        + Tools.JSONPair("Blocked",m3.Blocked)
-				                        + Tools.JSONPair("SubItems",m3.SubItems.Count.ToString(),11)
-				                        + Tools.JSONPair("RouterLink",m3.RouterLink) );
-								if ( m3.SubItems.Count > 0 )
+//	TESTING
+//	if ( startMenu.Length > 0 && levelFound > 0 && levelFound < 100 )
+//		startMenu = "XYZP@#";
+//	TESTING
+								if ( startMenu.Length > 0 && levelFound >= 3 )
+//									if ( startMenu == m3.Description.ToUpper() )
+									if ( startMenu == m3.Code.ToUpper() )
+										levelFound = 3;
+									else
+										levelFound = 255;
+
+								if ( levelFound <= 3 )
 								{
-									json.Append("\"Menu"+(++k).ToString()+"\":[");
-									foreach (MenuItem m4 in m3.SubItems)
-										json.Append ( Tools.JSONPair("MenuLevel","4",11,"{")
-										            + Tools.JSONPair("MenuDescription",m4.Description)
-				                              + Tools.JSONPair("Blocked",m4.Blocked)
-				                              + Tools.JSONPair("SubItems","0",11)
-				                              + Tools.JSONPair("RouterLink",m4.RouterLink)
-										            + Tools.JSONPair("Url",m4.URL,1,"","},") );
-									JSONAppend("],");
+									json.Append ( level3Start
+									            + Tools.JSONPair("MenuLevel","3",11,"{")
+					                        + Tools.JSONPair("MenuCode"       ,m3.Code)
+									            + Tools.JSONPair("MenuDescription",m3.Description)
+									            + Tools.JSONPair("Blocked",        m3.Blocked)
+									            + Tools.JSONPair("SubItems",       m3.SubItems.Count.ToString(),11)
+									            + Tools.JSONPair("RouterLink",     m3.RouterLink) );
+									level3Start = "";
+									level3End   = "],";
+
+									if ( m3.SubItems.Count > 0 )
+									{
+										json.Append("\"Menu"+(++k).ToString()+"\":[");
+										foreach (MenuItem m4 in m3.SubItems)
+											json.Append ( Tools.JSONPair("MenuLevel","4",11,"{")
+					                              + Tools.JSONPair("MenuCode"       ,m4.Code)
+											            + Tools.JSONPair("MenuDescription",m4.Description)
+											            + Tools.JSONPair("Blocked",        m4.Blocked)
+											            + Tools.JSONPair("SubItems","0",11)
+											            + Tools.JSONPair("RouterLink",     m4.RouterLink)
+											            + Tools.JSONPair("Url",            m4.URL,1,"","},") );
+										JSONAppend("],");
+									}
+									else
+										json.Append ( Tools.JSONPair("Url",m3.URL) );
+
+									JSONAppend("},");
 								}
-								else
-									json.Append ( Tools.JSONPair("Url",m3.URL) );
-								JSONAppend("},");
 							}
-							JSONAppend("],");
+//							JSONAppend("],");
+							JSONAppend(level3End);
 						}
-						else
+						else if ( levelFound <= 2 )
 							json.Append ( Tools.JSONPair("Url",m2.URL) );
-						JSONAppend("},");
+
+						if ( levelFound <= 2 )
+							JSONAppend("},");
 					}
-					JSONAppend("],");
+//					JSONAppend("],");
+					JSONAppend(level2End);
 				}
-				else
+				else if ( levelFound <= 1 )
 					json.Append ( Tools.JSONPair("Url",m1.URL) );
-				JSONAppend("},");
+
+				if ( levelFound <= 1 )
+					JSONAppend("},");
 			}
-			JSONAppend("],");
+//			JSONAppend("],");
+			JSONAppend(level1End);
 
 			return 0;
 		}

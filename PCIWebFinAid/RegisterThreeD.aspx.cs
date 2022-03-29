@@ -117,6 +117,31 @@ namespace PCIWebFinAid
 					else
 						SetMessage("Error ...","Your payment failed.");
 				}
+				else if ( providerCode == Tools.BureauCode(Constants.PaymentProvider.WorldPay) )
+				{
+//	Need:
+//	Machine cookie
+//	Order code
+//	Session id
+//	PaRes (from WorldPay)
+					ret              = 50;
+					provRet          = 500;
+					providerRef      = WebTools.RequestValueString(Request,"PaRes");
+					string orderCode = WebTools.RequestValueString(Request,"OrderCode");
+					string cookie    = WebTools.RequestValueString(Request,"MD");
+					string sessionId = WebTools.RequestValueString(Request,"SessionID");
+
+					if ( providerRef.Length > 0 )
+					{
+						trans       = new TransactionWorldPay();
+						provRet     = trans.ThreeDSecureCheck(providerRef,orderCode,sessionId,cookie);
+						resultCode  = trans.ResultCode;
+						resultMsg   = trans.ResultMessage;
+						providerRef = orderCode; // Don't show the PaRes
+					}
+					else
+						SetMessage("Error ...","Your payment failed.");
+				}
 				else
 				{
 					ret         = 80;

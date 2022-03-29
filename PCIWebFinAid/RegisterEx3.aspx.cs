@@ -24,6 +24,10 @@ namespace PCIWebFinAid
 
 //	3d Secure stuff
 //	See SPR "sp_WP_Get_ProductInfo"
+		private string   regTranType;
+//		N : No 3d secure
+//		3 : Do 3d secure for a small value
+//		0 : Do a zero-value validation on the card
 //	Token provider
 		private string   bureauCodeToken;
 		private string   tokenAccount;
@@ -31,6 +35,7 @@ namespace PCIWebFinAid
 //	Payment provider
 		private string   bureauCodePayment;
 		private string   paymentURL;
+//		private string   paymentMode;
 		private string   paymentAccount;
 		private string   paymentId;
 		private string   paymentKey;
@@ -63,6 +68,7 @@ namespace PCIWebFinAid
 				languageDialectCode = WebTools.ViewStateString(ViewState,"LanguageDialectCode");
 				contractCode        = WebTools.ViewStateString(ViewState,"ContractCode");
 				contractPIN         = WebTools.ViewStateString(ViewState,"ContractPIN");
+				regTranType         = WebTools.ViewStateString(ViewState,"RegTranType");
 				bureauCodeToken     = WebTools.ViewStateString(ViewState,"BureauCodeToken");
 				bureauCodePayment   = WebTools.ViewStateString(ViewState,"BureauCodePayment");
 				paymentURL          = WebTools.ViewStateString(ViewState,"PaymentURL");
@@ -615,13 +621,17 @@ namespace PCIWebFinAid
 
 		private bool LoadContractCode()
 		{
+			hdnJwtToken.Value              = "";
+			lblJwtIframe.Text              = "";
 			contractCode                   = "";
 			contractPIN                    = "";
 			ViewState["ContractCode"]      = null;
 			ViewState["ContractPIN"]       = null;
+			ViewState["RegTranType"]       = null;
 			ViewState["BureauCodeToken"]   = null;
 			ViewState["BureauCodePayment"] = null;
 			ViewState["PaymentURL"]        = null;
+//			ViewState["PaymentMode"]       = null;
 			ViewState["PaymentAccount"]    = null;
 			ViewState["PaymentId"]         = null;
 			ViewState["PaymentKey"]        = null;
@@ -678,17 +688,22 @@ namespace PCIWebFinAid
 //								tokenURL          = miscList.GetColumn("TokenBureauURL");
 								tokenAccount      = miscList.GetColumn("TokenBureauUserName");
 								tokenKey          = miscList.GetColumn("TokenBureauUserSaveKey");
+								regTranType       = miscList.GetColumn("RegTransactionType");
 								bureauCodePayment = miscList.GetColumn("3DsecBureauCode");
 								paymentURL        = miscList.GetColumn("3DsecURL");
+//								paymentMode       = miscList.GetColumn("PaymentMode",0);
 								paymentAccount    = miscList.GetColumn("PaymentBureauUserPassword");
 								paymentId         = miscList.GetColumn("PaymentBureauUserSaveId");
 								paymentKey        = miscList.GetColumn("PaymentBureauUserSaveKey");
 								paymentCurrency   = miscList.GetColumn("TransactionalCurrencyCode");
 								paymentAmount     = "0"; // miscList.GetColumn("TransactionalAmount");
-//	Testing : Stripe
+
+//	Testing [Start]
+//	Stripe
 //								bureauCodePayment = Tools.BureauCode(Constants.PaymentProvider.Stripe);
 //								paymentAccount    = "sk_test_51It78gGmZVKtO2iKBZF7DA5JisJzRqvibQdXSfBj9eQh4f5UDvgCShZIjznOWCxu8MtcJG5acVkDcd8K184gIegx001uXlHI5g"; // Secret key
-//	Testing : PayU
+
+//	PayU
 //								bureauCodePayment = Tools.BureauCode(Constants.PaymentProvider.PayU);
 //							//	paymentId         = "800060";
 //							//	paymentAccount    = "qDRLeKI9";
@@ -697,17 +712,65 @@ namespace PCIWebFinAid
 //								paymentAccount    = "g1Kzk8GY";
 //								paymentKey        = "{A580B3C7-3EF3-47F1-9B90-4047CE0EC54C}";
 //								paymentURL        = "https://staging.payu.co.za";
-//	Testing : FNB
+
+//	FNB
 //								bureauCodePayment = Tools.BureauCode(Constants.PaymentProvider.FNB);
 //								paymentAccount    = "";
 //								paymentKey        = "";
 //								paymentURL        = "";
-//	Testing
+
+//	WorldPay
+					//			bureauCodePayment = Tools.BureauCode(Constants.PaymentProvider.WorldPay);
+					//			paymentAccount    = "PROSPERIANSGPECOM";
+					//			paymentId         = "AI5QP9YBY291AGF5AD7I";
+					//			paymentKey        = "st0nE#481";
+					//			paymentURL        = "";
+//					//			regTranType       = "3";
+//	WorldPay, zero-value validation
+					//			regTranType       = "0";
+
+//								Create and save JSON Web Token (JWT) in the page here (only for WorldPay)
+
+//	No 3d Secure
+//								regTranType       = "N";
+//								bureauCodeToken   = "";
+//								bureauCodePayment = "";
+//								paymentAccount    = "";
+//								paymentKey        = "";
+//								paymentURL        = "";
+//	Testing [End]
+
+								if ( "03".Contains(regTranType) )
+									if ( bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.WorldPay) )
+									{
+									//	Cardinal Commerce LIVE URL : https://centinelapistag.cardinalcommerce.com/V1/Cruise/Collect
+									//	Cardinal Commerce TEST URL : https://secure-test.worldpay.com/shopper/3ds/ddc.html
+										string url3D1     = "https://secure-test.worldpay.com";
+										string url3D2     = "/shopper/3ds/ddc.html";
+										Object jwtToken   = PCIBusiness.JWT.CreateToken(bureauCodePayment);
+										hdnJwtToken.Value = jwtToken.ToString();
+										lblJwtIframe.Text = "<iframe height='1' width='1' style='display:none'>"
+										                  + "<form id='frm3D' method='POST' action='" + url3D1 + url3D2 + "'>"
+										                  + "<input type='hidden' name='Bin' value='XX-CARDNUMBER-XX' />"
+										                  + "<input type='hidden' name='JWT' value='" + jwtToken.ToString() + "' />"
+										                  + "<script>"
+										                  + "window.onload = function()"
+										                  + "{ document.getElementById('frm3D').submit(); }"
+  										                  + "</script>"
+										                  + "</iframe>"
+										                  + "<script>"
+										                  + "window.addEventListener('message', function(event) {"
+										                  + "if (event.origin.startsWith('" + url3D1 + "'))"
+										                  + "<script>"
+										                  + "</script>";
+									}
+
 								if ( paymentURL.Length < 1 || paymentAccount.Length < 1 || paymentKey.Length < 1 )
 									Tools.LogInfo("LoadContractCode",sql+" -> bureauCodeToken="  +bureauCodeToken
 									                                     + ", bureauCodePayment="+bureauCodePayment
 									                                     + ", tokenAccount="     +tokenAccount
 									                                     + ", tokenKey="         +tokenKey
+									                                     + ", regTranType="      +regTranType
 									                                     + ", paymentURL="       +paymentURL
 									                                     + ", paymentAccount="   +paymentAccount
 									                                     + ", paymentId="        +paymentId
@@ -757,14 +820,22 @@ namespace PCIWebFinAid
 										if ( paymentId.Length      < 1 ) paymentId      = Tools.ProviderCredentials("PayU","Id");
 										if ( paymentKey.Length     < 1 ) paymentKey     = Tools.ProviderCredentials("PayU","Key");
 									}
+									else if ( bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.WorldPay) )
+									{
+										if ( paymentAccount.Length < 1 ) paymentAccount = Tools.ProviderCredentials("WorldPay","Account");
+										if ( paymentId.Length      < 1 ) paymentId      = Tools.ProviderCredentials("WorldPay","Id");
+										if ( paymentKey.Length     < 1 ) paymentKey     = Tools.ProviderCredentials("WorldPay","Password");
+									}
 									if ( paymentCurrency.Length < 1 )
 										paymentCurrency = "ZAR";
 								}
 //	TESTING
+
 								ViewState["BureauCodeToken"]   = bureauCodeToken;
 								ViewState["BureauCodePayment"] = bureauCodePayment;
 								ViewState["TokenAccount"]      = tokenAccount;
 								ViewState["TokenKey"]          = tokenKey;
+								ViewState["RegTranType"]       = regTranType;
 								ViewState["PaymentURL"]        = paymentURL;
 								ViewState["PaymentAccount"]    = paymentAccount;
 								ViewState["PaymentId"]         = paymentId;
@@ -849,19 +920,56 @@ namespace PCIWebFinAid
 			return err.Length;
 		}
 
-		private void Send3dForm(Payment payment)
+		private int Do3dOrZeroValueCheck(byte tokenizer=0) // Payment payment)
 		{
-			if ( payment == null )
-				return;
-			else if ( payment.BureauCode.Length < 1 )
-				return;
+//			if ( payment == null )
+//				return 10;
+//			else if ( payment.BureauCode.Length < 1 )
+//				return 20;
+
+			if ( regTranType != "0" && regTranType != "3" )
+				return 30;
 
 			Transaction trans;
+			Payment     payment = new Payment();
 
-			payment.PaymentDescription = "CareAssist Verification";
+			if ( tokenizer > 0 )
+			{
+			//	TokenEx ... might not be needed
+				payment.TokenizerCode   = bureauCodeToken;
+				payment.TokenizerID     = tokenAccount;
+				payment.TokenizerKey    = tokenKey;
+				payment.CardToken       = txToken.Value;
+			}
+			else
+			{
+				payment.TokenizerCode   = "";
+				payment.TokenizerID     = "";
+				payment.TokenizerKey    = "";
+				payment.CardToken       = "";
+			}
+
+		//	Bureau
+			payment.BureauCode         = bureauCodePayment;
 			payment.ProviderKey        = paymentKey;
 			payment.ProviderURL        = paymentURL;
 			payment.ProviderAccount    = "";
+		//	Customer
+			payment.CardNumber         = txtCCNumber.Text;
+			payment.CardName           = txtCCName.Text;
+			payment.CardExpiryMM       = WebTools.ListValue(lstCCMonth).ToString();
+			payment.CardExpiryYYYY     = WebTools.ListValue(lstCCYear).ToString();
+			payment.CardCVV            = txtCCCVV.Text;
+			payment.MerchantReference  = contractCode;
+			payment.ContractCode       = contractCode;
+			payment.CurrencyCode       = paymentCurrency;
+			payment.PaymentAmount      = Tools.StringToInt(paymentAmount);
+			payment.FirstName          = txtFirstName.Text;
+			payment.LastName           = txtSurname.Text;
+			payment.EMail              = txtEMail.Text;
+			payment.PhoneCell          = txtCellNo.Text;
+			payment.RegionalId         = txtID.Text;
+			payment.PaymentDescription = "CareAssist Verification";
 
 			if ( payment.CurrencyCode.Length < 1 )
 				payment.CurrencyCode    = "ZAR";
@@ -917,39 +1025,30 @@ namespace PCIWebFinAid
 				payment.CurrencyCode     = "USD";
 			//	See also method "ThreeDSecureCheck" in class TransactionPayU
 			}
+			else if ( payment.BureauCode == Tools.BureauCode(Constants.PaymentProvider.WorldPay) )
+			{
+				trans                    = new TransactionWorldPay();
+				payment.ProviderAccount  = paymentAccount;
+				payment.ProviderUserID   = paymentId;
+				payment.ProviderPassword = paymentKey;
+				payment.PaymentAmount    = 010;    // 10 US Cents
+				payment.CurrencyCode     = "USD";
+			}
 			else
-				return;
+				return 200;
 
-//			payment.PaymentDescription = "CareAssist Verification";
-//			payment.ProviderKey        = paymentKey;
-//			payment.ProviderURL        = paymentURL;
-//			payment.ProviderAccount    = "";
-//			if ( string.IsNullOrWhiteSpace(paymentId) )
-//				payment.ProviderUserID  = paymentAccount; // Peach
-//			else
-//			{
-//				payment.ProviderAccount = paymentAccount;
-//				payment.ProviderUserID  = paymentId;      // CyberSource
-//			}
-//
-//			if ( payment.CurrencyCode.Length < 1 )
-//				payment.CurrencyCode    = "ZAR";
-//			if ( payment.PaymentAmount < 1 )
-//				if ( payment.CurrencyCode == "USD" ||
-//				     payment.CurrencyCode == "GBP" ||
-//				     payment.CurrencyCode == "AUD" ||
-//				     payment.CurrencyCode == "NZD" ||
-//				     payment.CurrencyCode == "EUR" )
-//					payment.PaymentAmount   = 010; //  10 cents
-//				else
-//					payment.PaymentAmount   = 100; // 100 cents
+			if ( regTranType == "0" ) // Do zero-value check
+				return trans.CardValidation(payment);
 
-			int try3d        = Tools.StringToInt(hdn3dTries.Value) + 1;
-			hdn3dTries.Value = try3d.ToString();
-			Tools.LogInfo("Send3dForm","Contract " + payment.MerchantReference + " (try " + try3d.ToString() + ")",222,this);
+			payment.MandateIPAddress = WebTools.ClientIPAddress(Request,2);
+			payment.MandateBrowser   = WebTools.ClientBrowser(Request);
+			int try3d                = Tools.StringToInt(hdn3dTries.Value) + 1;
+			hdn3dTries.Value         = try3d.ToString();
+
+//			Tools.LogInfo("Do3dOrZeroValueCheck/10","Contract " + payment.MerchantReference + " (try " + try3d.ToString() + ")",222,this);
 
 //			if ( try3d > 1 )
-//				Tools.LogInfo("Send3dForm","Contract " + payment.MerchantReference + " (try " + try3d.ToString() + ")",222,this);
+//				Tools.LogInfo("Do3dOrZeroValueCheck/20","Contract " + payment.MerchantReference + " (try " + try3d.ToString() + ")",222,this);
 
 			if ( trans.ThreeDSecurePayment(payment,Request.UrlReferrer,languageCode,languageDialectCode) == 0 )
 				try
@@ -985,7 +1084,9 @@ namespace PCIWebFinAid
 				           +                    "&id="            + Tools.URLString(trans.PaymentReference);
 				Response.Redirect(url);
 			}
-			trans = null;
+			payment = null;
+			trans   = null;
+			return 0;
 		}
 
 		protected void btn3d_Click(Object sender, EventArgs e)
@@ -1011,33 +1112,38 @@ namespace PCIWebFinAid
 					return;
 				}
 
-			using (Payment payment = new Payment())
-			{
-			//	TokenEx ... might not be needed
-				payment.TokenizerCode     = bureauCodeToken;
-				payment.TokenizerID       = tokenAccount;
-				payment.TokenizerKey      = tokenKey;
-			//	Bureau
-				payment.BureauCode        = bureauCodePayment;
-			//	Customer
-				payment.CardNumber        = txtCCNumber.Text;
-				payment.CardToken         = txToken.Value;
-				payment.CardName          = txtCCName.Text;
-				payment.CardExpiryMM      = WebTools.ListValue(lstCCMonth).ToString();
-				payment.CardExpiryYYYY    = WebTools.ListValue(lstCCYear).ToString();
-				payment.CardCVV           = txtCCCVV.Text;
-				payment.MerchantReference = contractCode;
-				payment.ContractCode      = contractCode;
-				payment.CurrencyCode      = paymentCurrency;
-				payment.PaymentAmount     = Tools.StringToInt(paymentAmount);
-				payment.FirstName         = txtFirstName.Text;
-				payment.LastName          = txtSurname.Text;
-				payment.EMail             = txtEMail.Text;
-				payment.PhoneCell         = txtCellNo.Text;
-				payment.RegionalId        = txtID.Text;
+//	Version 1
+//			using (Payment payment = new Payment())
+//			{
+//			//	TokenEx ... might not be needed
+//				payment.TokenizerCode     = bureauCodeToken;
+//				payment.TokenizerID       = tokenAccount;
+//				payment.TokenizerKey      = tokenKey;
+//			//	Bureau
+//				payment.BureauCode        = bureauCodePayment;
+//			//	Customer
+//				payment.CardNumber        = txtCCNumber.Text;
+//				payment.CardToken         = txToken.Value;
+//				payment.CardName          = txtCCName.Text;
+//				payment.CardExpiryMM      = WebTools.ListValue(lstCCMonth).ToString();
+//				payment.CardExpiryYYYY    = WebTools.ListValue(lstCCYear).ToString();
+//				payment.CardCVV           = txtCCCVV.Text;
+//				payment.MerchantReference = contractCode;
+//				payment.ContractCode      = contractCode;
+//				payment.CurrencyCode      = paymentCurrency;
+//				payment.PaymentAmount     = Tools.StringToInt(paymentAmount);
+//				payment.FirstName         = txtFirstName.Text;
+//				payment.LastName          = txtSurname.Text;
+//				payment.EMail             = txtEMail.Text;
+//				payment.PhoneCell         = txtCellNo.Text;
+//				payment.RegionalId        = txtID.Text;
+//
+//				Do3dOrZeroValueCheck(payment);
+//			}
 
-				Send3dForm(payment);
-			}
+//	Version 2
+			regTranType = "3";
+			Do3dOrZeroValueCheck(6);
 		}
 
 		protected void btn3d_ClickDirect(Object sender, EventArgs e)
@@ -1046,34 +1152,39 @@ namespace PCIWebFinAid
 			if ( paymentAccount.Length < 1 || paymentKey.Length < 1 )
 			{
 				string x = "paymentAccount="+paymentAccount + ", paymentId="+paymentId + ", paymentKey="+paymentKey + ", paymentURL=" + paymentURL;
-				SetErrorDetail("btn3d_Click",24010,"Invalid payment provider MID/URL/Key",x,2,2,null,false,239);
+				SetErrorDetail("btn3d_ClickDirect",24010,"Invalid payment provider MID/URL/Key",x,2,2,null,false,239);
 				return;
 			}
 
-			using (Payment payment = new Payment())
-			{
-			//	Tokenizer (isn't one)
-				payment.TokenizerCode     = "";
-				payment.TokenizerID       = "";
-				payment.TokenizerKey      = "";
-			//	Bureau
-				payment.BureauCode        = bureauCodePayment;
-			//	Customer
-				payment.CardNumber        = txtCCNumber.Text;
-				payment.CardName          = txtCCName.Text;
-				payment.CardExpiryMM      = WebTools.ListValue(lstCCMonth).ToString();
-				payment.CardExpiryYYYY    = WebTools.ListValue(lstCCYear).ToString();
-				payment.CardCVV           = txtCCCVV.Text;
-				payment.MerchantReference = contractCode;
-				payment.CurrencyCode      = paymentCurrency;
-				payment.PaymentAmount     = Tools.StringToInt(paymentAmount);
-				payment.FirstName         = txtFirstName.Text;
-				payment.LastName          = txtSurname.Text;
-				payment.EMail             = txtEMail.Text;
-				payment.PhoneCell         = txtCellNo.Text;
+//	Version 1
+//			using (Payment payment = new Payment())
+//			{
+//			//	Tokenizer (isn't one)
+//				payment.TokenizerCode     = "";
+//				payment.TokenizerID       = "";
+//				payment.TokenizerKey      = "";
+//			//	Bureau
+//				payment.BureauCode        = bureauCodePayment;
+//			//	Customer
+//				payment.CardNumber        = txtCCNumber.Text;
+//				payment.CardName          = txtCCName.Text;
+//				payment.CardExpiryMM      = WebTools.ListValue(lstCCMonth).ToString();
+//				payment.CardExpiryYYYY    = WebTools.ListValue(lstCCYear).ToString();
+//				payment.CardCVV           = txtCCCVV.Text;
+//				payment.MerchantReference = contractCode;
+//				payment.CurrencyCode      = paymentCurrency;
+//				payment.PaymentAmount     = Tools.StringToInt(paymentAmount);
+//				payment.FirstName         = txtFirstName.Text;
+//				payment.LastName          = txtSurname.Text;
+//				payment.EMail             = txtEMail.Text;
+//				payment.PhoneCell         = txtCellNo.Text;
+//
+//				Do3dOrZeroValueCheck(payment);
+//			}
 
-				Send3dForm(payment);
-			}
+//	Version 2
+			regTranType = "3";
+			Do3dOrZeroValueCheck(0);
 		}
 
 		protected void btnNext_Click(Object sender, EventArgs e)
@@ -1192,6 +1303,16 @@ namespace PCIWebFinAid
 //	[TESTING]
 							}
 //	TokenEx End
+
+//	[JWT To Do]
+	//						if ( bureau == WorldPay )
+	//						{
+	//							Create iFrame
+	//							return
+	//						}
+//	[JWT To Do]
+
+
 							string productOption  = WebTools.ListValue(lstOptions,"X");
 							string payMethod      = WebTools.ListValue(lstPayment,"X");
 							txtCCName.Text        = "";
@@ -1532,7 +1653,14 @@ namespace PCIWebFinAid
 									}
 
 							SetErrorDetail("btnNext_Click/30215",errNo,"Unable to send confirmation email (SQL error)",sql);
-							pnl3d.Visible = true;
+
+							if ( regTranType == "3" ) // Do 3d transaction
+								pnl3d.Visible = true;
+							else if ( regTranType == "0" ) // Zero-value validation
+								if ( Do3dOrZeroValueCheck() > 0 ) // It failed, do 3d
+									pnl3d.Visible = true;
+
+//							pnl3d.Visible = true;
 
 //	This does not postback but does a redirect. ViewState is lost!
 //							lblRefresh.Text = "<meta http-equiv=\"refresh\" content=\"5;URL='RegisterEx3.aspx?PageNo=43'\" />";

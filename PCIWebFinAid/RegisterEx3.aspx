@@ -526,6 +526,8 @@ function OptSelect(p)
 </div>
 
 <div id="divP06">
+<asp:HiddenField runat="server" ID="hdnJwtToken" />
+<asp:Literal runat="server" ID="lblJwtIframe"></asp:Literal>
 <p class="Header4">
 <asp:Literal runat="server" ID="lbl100400"></asp:Literal>
 </p><p>
