@@ -77,9 +77,8 @@ namespace PCIBusiness
 			Stripe_USA       = 28,
 			Stripe_EU        = 29,
 			Stripe_Asia      = 30,
-//			Authorize_Net    = 31,
-			PaymentCloud     = 31,
-			FlutterWave      = 32
+			PaymentCloud     = 31, // Authorize.Net
+			WorldPay         = 32  // FlutterWave
 		}
 
 		public enum MessageProvider : int
@@ -158,9 +157,11 @@ namespace PCIBusiness
 			DeleteToken           =   4,
 			GetCardFromToken      =   5,
 			ThreeDSecurePayment   =   7,
+			ThreeDSecureCheck     =  12,
 			Transfer              =   9,
 			Reversal              =  10,
 			Refund                =  11,
+			ZeroValueCheck        =  13,
 			ManualPayment         =  73,
 			TransactionLookup     =  81,
 			Test                  = 197

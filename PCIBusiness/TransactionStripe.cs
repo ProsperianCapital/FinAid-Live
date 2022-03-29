@@ -345,7 +345,7 @@ namespace PCIBusiness
 			}
 			return 99040;
 		}
-		public override int ThreeDSecureCheck(string providerRef,string merchantRef="")
+		public override int ThreeDSecureCheck(string providerRef,string merchantRef="",string data1="",string data2="",string data3="")
 		{
 //	Return
 //	   0     : Payment succeeded

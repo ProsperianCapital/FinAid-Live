@@ -166,31 +166,32 @@ namespace PCIBusiness
 						ret        = 140;
 						strResult  = rd.ReadToEnd();
 					}
-					if ( strResult.Length == 0 )
+				}
+
+				if ( strResult.Length == 0 )
+				{
+					ret        = 150;
+					resultMsg  = "No data returned from " + url;
+					Tools.LogInfo("CallWebService/30","Failed, JSON Rec=(empty)",199,this);
+				}
+				else
+				{
+					ret        = 160;
+					resultCode = Tools.JSONValue(strResult,"code");
+					resultMsg  = Tools.JSONValue(strResult,"message");
+
+					if (Successful)
 					{
-						ret        = 150;
-						resultMsg  = "No data returned from " + url;
-						Tools.LogInfo("CallWebService/30","Failed, JSON Rec=(empty)",199,this);
+						ret        = 170;
+						resultCode = "00";
+						Tools.LogInfo("CallWebService/40","Successful, JSON Rec=" + strResult,255,this);
 					}
 					else
 					{
-						ret        = 160;
-						resultCode = Tools.JSONValue(strResult,"code");
-						resultMsg  = Tools.JSONValue(strResult,"message");
-
-						if (Successful)
-						{
-							ret        = 170;
-							resultCode = "00";
-							Tools.LogInfo("CallWebService/40","Successful, JSON Rec=" + strResult,255,this);
-						}
-						else
-						{
-							ret = 180;
-							Tools.LogInfo("CallWebService/50","Failed, JSON Rec=" + strResult,199,this);
-							if ( Tools.StringToInt(resultCode) == 0 )
-								resultCode = "99";
-						}
+						ret = 180;
+						Tools.LogInfo("CallWebService/50","Failed, JSON Rec=" + strResult,199,this);
+						if ( Tools.StringToInt(resultCode) == 0 )
+							resultCode = "99";
 					}
 				}
 				ret = 0;

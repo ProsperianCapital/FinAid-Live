@@ -138,54 +138,55 @@ namespace PCIBusiness
 					ret = 130;
 					using (StreamReader rd = new StreamReader(webResponse.GetResponseStream()))
 					{
-						ret        = 140;
-						strResult  = rd.ReadToEnd();
+						ret       = 140;
+						strResult = rd.ReadToEnd();
 					}
-					if ( strResult.Trim().Length == 0 )
-					{
-						ret        = 150;
-						resultMsg  = "No data returned from " + url;
-						Tools.LogInfo("TransactionENets.CallWebService/20",Tools.TransactionTypeName(payment.TransactionType)+", JSON Rec=(blank)",199);
-					}
-					else
-					{
-						Tools.LogInfo("TransactionENets.CallWebService/30",Tools.TransactionTypeName(payment.TransactionType)+", JSON Rec=" + strResult,255);
+				}
 
-						ret        = 160;
-						txnStatus  = Tools.JSONValue(strResult,"netsTxnStatus");
-						resultMsg  = Tools.JSONValue(strResult,"netsTxnMsg");
-						resultCode = Tools.JSONValue(strResult,"stageRespCode");
+				if ( strResult.Trim().Length == 0 )
+				{
+					ret        = 150;
+					resultMsg  = "No data returned from " + url;
+					Tools.LogInfo("TransactionENets.CallWebService/20",Tools.TransactionTypeName(payment.TransactionType)+", JSON Rec=(blank)",199);
+				}
+				else
+				{
+					Tools.LogInfo("TransactionENets.CallWebService/30",Tools.TransactionTypeName(payment.TransactionType)+", JSON Rec=" + strResult,255);
 
-						if ( resultCode.Length > 0 )
-							try
-							{
-								ret        = 170;
-								string rex = resultCode.Trim().ToUpper();
-								int    k   = rex.IndexOf("-");
-								if ( k >= 0 && k < rex.Length-1 )
-									rex  = rex.Substring(k+1);
-								else if ( k >= 0 )
-									rex  = rex.Substring(0,k);
-								ret        = 180;
-								resultCode = rex;
-							}
-							catch
-							{ }
+					ret        = 160;
+					txnStatus  = Tools.JSONValue(strResult,"netsTxnStatus");
+					resultMsg  = Tools.JSONValue(strResult,"netsTxnMsg");
+					resultCode = Tools.JSONValue(strResult,"stageRespCode");
 
-						ret = 190;
-						if ( ! Successful || resultMsg.Length > 0 )
-							resultMsg = resultMsg + " (netsTxnStatus=" + txnStatus + ")";
+					if ( resultCode.Length > 0 )
+						try
+						{
+							ret        = 170;
+							string rex = resultCode.Trim().ToUpper();
+							int    k   = rex.IndexOf("-");
+							if ( k >= 0 && k < rex.Length-1 )
+								rex  = rex.Substring(k+1);
+							else if ( k >= 0 )
+								rex  = rex.Substring(0,k);
+							ret        = 180;
+							resultCode = rex;
+						}
+						catch
+						{ }
 
-						if ( payment.TransactionType == (byte)Constants.TransactionType.ManualPayment )
-							if ( txnStatus == "5" ) // 3d Secure
-							{
-								eci     = Tools.JSONValue(strResult,"eci");
-								paReq   = Tools.JSONValue(strResult,"pareq");
-								termUrl = Tools.JSONValue(strResult,"termUrl");
-								md      = Tools.JSONValue(strResult,"md");
-								acsUrl  = Tools.JSONValue(strResult,"acsUrl");
-							}
-					}
+					ret = 190;
+					if ( ! Successful || resultMsg.Length > 0 )
+						resultMsg = resultMsg + " (netsTxnStatus=" + txnStatus + ")";
+
+					if ( payment.TransactionType == (byte)Constants.TransactionType.ManualPayment )
+						if ( txnStatus == "5" ) // 3d Secure
+						{
+							eci     = Tools.JSONValue(strResult,"eci");
+							paReq   = Tools.JSONValue(strResult,"pareq");
+							termUrl = Tools.JSONValue(strResult,"termUrl");
+							md      = Tools.JSONValue(strResult,"md");
+							acsUrl  = Tools.JSONValue(strResult,"acsUrl");
+						}
 				}
 				ret = 0;
 			}

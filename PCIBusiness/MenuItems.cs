@@ -12,8 +12,7 @@ namespace PCIBusiness
 		}
 		public List<MenuItem> LoadMenu(string userCode,string applicationCode,string languageCode,string languageDialectCode)
 		{
-		//	sql = "exec sp_Get_BackOfficeMenuB @UserCode="            + Tools.DBString(userCode)
-			sql = "exec sp_Get_BackOfficeMenuC @UserCode="            + Tools.DBString(userCode)
+			sql = "exec sp_Get_BackOfficeMenuD @UserCode="            + Tools.DBString(userCode)
 	                                     + ",@ApplicationCode="     + Tools.DBString(applicationCode)
 	                                     + ",@LanguageCode="        + Tools.DBString(languageCode)
 	                                     + ",@LanguageDialectCode=" + Tools.DBString(languageDialectCode);

@@ -174,27 +174,28 @@ namespace PCIBusiness
 					ret = 130;
 					using (StreamReader rd = new StreamReader(webResponse.GetResponseStream()))
 					{
-						ret        = 140;
-						strResult  = rd.ReadToEnd();
+						ret       = 140;
+						strResult = rd.ReadToEnd();
 					}
-					if ( strResult.Length == 0 )
-					{
-						ret        = 150;
-						resultCode = "992";
-						resultMsg  = "No data returned from " + url;
-						Tools.LogInfo("CallWebService/30","Failed, JSON Rec=(empty)",199,this);
-					}
-					else
-					{
-						Tools.LogInfo("CallWebService/40","Successful, JSON Rec=" + strResult,255,this);
-						ret        = 160;
-						resultCode = "994";
-						resultMsg  = Tools.JSONValue(strResult,"state");
-						if ( resultMsg.Length < 1 )
-							resultMsg = Tools.JSONValue(strResult,"status");
-						if ( resultMsg.Length > 0 )
-							resultCode = "000"; // Success
-					}
+				}
+
+				if ( strResult.Length == 0 )
+				{
+					ret        = 150;
+					resultCode = "992";
+					resultMsg  = "No data returned from " + url;
+					Tools.LogInfo("CallWebService/30","Failed, JSON Rec=(empty)",199,this);
+				}
+				else
+				{
+					Tools.LogInfo("CallWebService/40","Successful, JSON Rec=" + strResult,255,this);
+					ret        = 160;
+					resultCode = "994";
+					resultMsg  = Tools.JSONValue(strResult,"state");
+					if ( resultMsg.Length < 1 )
+						resultMsg = Tools.JSONValue(strResult,"status");
+					if ( resultMsg.Length > 0 )
+						resultCode = "000"; // Success
 				}
 				ret = 0;
 			}

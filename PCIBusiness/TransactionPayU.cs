@@ -82,7 +82,7 @@ namespace PCIBusiness
 				xmlSent                   = soapXml.OuterXml;
 
 //	Testing (reset priority)
-				Tools.LogInfo("SendXML/10","URL=" + url + ", XML Sent=" + xmlSent,222,this);
+//				Tools.LogInfo("SendXML/10","URL=" + url + ", XML Sent=" + xmlSent,222,this);
 
 			// Insert soap envelope into web request
 				ret = 50;
@@ -102,7 +102,7 @@ namespace PCIBusiness
 				}
 
 //	Testing (reset priority)
-				Tools.LogInfo("SendXML/50","XML Rec=" + strResult,222,this);
+//				Tools.LogInfo("SendXML/50","XML Rec=" + strResult,222,this);
 
 			// Create an empty soap result object
 				ret       = 75;
@@ -265,7 +265,7 @@ namespace PCIBusiness
 			return ret;
 		}
 
-		public override int ThreeDSecureCheck(string providerRef,string merchantRef="")
+		public override int ThreeDSecureCheck(string providerRef,string merchantRef="",string data1="",string data2="",string data3="")
 		{
 			int    ret   = 800;
 			string rCode = "X";
@@ -277,16 +277,16 @@ namespace PCIBusiness
 			{
 				xmlSent     = "<Safekey>" + Tools.ProviderCredentials("PayU","Key") + "</Safekey>"
 				            + "<AdditionalInformation>"
-				            +	"<payUReference>" + providerRef + "</payUReference>"
+				            +   "<payUReference>" + providerRef + "</payUReference>"
 				            + "</AdditionalInformation>";
 				ret         = SendXML("","","","getTransaction");
 				payToken    = Tools.XMLNode(xmlResult,"pmId");
 				string amt  = Tools.XMLNode(xmlResult,"amountInCents");
 				string curr = Tools.XMLNode(xmlResult,"currencyCode");
 				if ( payToken.Length > 14 && payToken.ToUpper().Contains("\"SESSIONID\"") )
-					payToken = Tools.JSONValue(payToken,"sessionId");
+				   payToken = Tools.JSONValue(payToken,"sessionId");
 				if ( merchantRef.Length < 1 )
-					merchantRef = Tools.XMLNode(xmlResult,"merchantReference");
+				   merchantRef = Tools.XMLNode(xmlResult,"merchantReference");
 
 //	Keep the codes from the above call
 				rCode = resultCode;
@@ -307,8 +307,8 @@ namespace PCIBusiness
 		              +   "<payUReference>"     + providerRef + "</payUReference>"
 		              + "</AdditionalInformation>"
 		              + "<Basket>"
-		              +	"<amountInCents>" + amt + "</amountInCents>"
-		              +	"<currencyCode>" + curr + "</currencyCode>"
+		              +   "<amountInCents>" + amt + "</amountInCents>"
+		              +   "<currencyCode>" + curr + "</currencyCode>"
 		              + "</Basket>";
 				ret     = SendXML("","","");
 			}

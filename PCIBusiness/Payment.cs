@@ -65,7 +65,11 @@ namespace PCIBusiness
 		private byte     transactionType;
 		private string   webForm;
 
-//	Stripe-specific fields
+//	WorldPay fields
+		private string   sessionId;
+		private string   machineCookie;
+
+//	Stripe fields
 		private string   customerID;
 		private string   paymentMethodID;
 
@@ -116,10 +120,12 @@ namespace PCIBusiness
 		public string    MandateIPAddress
 		{
 			get { return  Tools.NullToString(mandateIPAddress); }
+			set { mandateIPAddress = value.Trim(); }
 		}
 		public string    MandateBrowser
 		{
 			get { return  Tools.NullToString(mandateBrowser); }
+			set { mandateBrowser = value.Trim(); }
 		}
 		public string    ContractCode
 		{
@@ -182,6 +188,9 @@ namespace PCIBusiness
 					return "mu.prosperian.rtr";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
 					return "100000001099570";
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.WorldPay) )
+				//	return "PROSPERIANTEST";
+					return "PROSPERIANSGPECOM";
 				return "";
 			}
 			set { providerAccount = value.Trim(); }
@@ -288,6 +297,9 @@ namespace PCIBusiness
 					return "800060";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentCloud) )
 					return "7a5bb4SW9GY";
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.WorldPay) )
+				//	return "2LHRK1HBEPDYVP9OKG8S";
+					return "AI5QP9YBY291AGF5AD7I";
 
 				return "";
 			}
@@ -311,7 +323,8 @@ namespace PCIBusiness
 					return "sk_test_51It78gGmZVKtO2iKBZF7DA5JisJzRqvibQdXSfBj9eQh4f5UDvgCShZIjznOWCxu8MtcJG5acVkDcd8K184gIegx001uXlHI5g";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
 					return "sbyq0CUAvUSPMifwRH0f68fByQ5ZgSjyEpbeKg77o1Cuh9BD30ucakuXtpCCUMJN"; // Instance key
-				//	return "sxuAbskjc5AVdQ5qbyja7ClSAZQ9NmMYmzoTGQ1ucRB6Jxg3LAq9tOZLWFYorWpl";
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.WorldPay) )
+					return "st0nE#481";
 
 				return "";
 			}
@@ -321,51 +334,9 @@ namespace PCIBusiness
 			set { providerURL = value.Trim(); }
 			get
 			{
-				if ( Tools.NullToString(providerURL).Length > 0 )
-					return providerURL;
-
-//	Providers where live and test are the same URL
-
-				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_USA) ||
-				          bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_EU)  ||
-				          bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_Asia) )
-					return "https://api.stripe.com";
-
-				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate) )
-					return "https://secure.paygate.co.za/payhost/process.trans";
-
-//	Providers where live and test are different
-//	LIVE
-				else if ( Tools.SystemIsLive() )
-				{
-					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.eNETS) )
-						return "https://api.nets.com.sg/GW2/TxnReqListener";
-					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.MyGate) )
-						return "https://www.mygate.co.za/Collections/1x0x0/pinManagement.cfc?wsdl";
-					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.CyberSource) )
-						return "https://secureacceptance.cybersource.com/silent";
-					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.CyberSource_Moto) )
-						return "https://secureacceptance.cybersource.com/silent";
-					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentsOS) )
-						return "https://api.paymentsos.com";
-					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU) )
-						return "https://secure.payu.co.za";
-					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
-						return "https://pay.ms.fnb.co.za";
-					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentCloud) )
-						return "https://api.authorize.net/xml/v1/request.api";
-				}
-//	TESTING
-				else
-				{
-					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU) )
-						return "https://staging.payu.co.za";
-					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
-						return "https://sandbox.ms.fnb.co.za";
-					if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentCloud) )
-						return "https://apitest.authorize.net/xml/v1/request.api";
-				}
-				return "";
+				if ( Tools.NullToString(providerURL).Length < 1 )
+					providerURL = Tools.BureauURL(bureauCode);
+				return providerURL;
 			}
 		}
 
@@ -549,6 +520,22 @@ namespace PCIBusiness
 		{
 			get { return  Tools.NullToString(merchantReferenceOriginal); }
 		}
+		public string    SessionID
+		{
+//			Used by WorldPay
+			get
+			{
+				if ( Tools.NullToString(sessionId).Length < 1 )
+					sessionId = (Guid.NewGuid()).ToString();
+				return Tools.NullToString(sessionId);
+			}
+		}
+		public string    Cookie
+		{
+//			Used by WorldPay
+			get { return Tools.NullToString(machineCookie); }
+			set { machineCookie = value.Trim(); }
+		}
 		public string    TransactionID
 		{
 			get
@@ -562,10 +549,6 @@ namespace PCIBusiness
 //		public string    AuthorizationCode
 //		{
 //			get { return  Tools.NullToString(authorizationCode); }
-//		}
-//		public string    IPAddress
-//		{
-//			get { return  Tools.NullToString(ipAddress); }
 //		}
 		public string    CurrencyCode
 		{

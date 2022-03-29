@@ -380,7 +380,7 @@ namespace PCIBusiness
 			return ret;
 		}
 
-		public override int ThreeDSecureCheck(string providerRef,string merchantRef="")
+		public override int ThreeDSecureCheck(string providerRef,string merchantRef="",string data1="",string data2="",string data3="")
 		{
 			return 0; // All ok
 		}
@@ -563,20 +563,20 @@ namespace PCIBusiness
 						ret        = 340;
 						strResult  = rd.ReadToEnd();
 					}
-					if ( strResult.Length == 0 )
-					{
-						ret        = 350;
-						strResult  = Tools.JSONPair("status","ERROR",1,"{")
-									  + Tools.JSONPair("state" ,"ERROR/Empty response")
-									  + Tools.JSONPair("reason","Empty response",1,"","}");
-						resultMsg  = "No data returned from " + pURL + ( tURL.Length > 0 ? " (or " + tURL + ")" : "");
-//						Tools.LogInfo("CallWebService/30","Failed, JSON Rec=(empty)",199,this);
-					}
-					else
-						ret = 0;
-
-					Tools.LogInfo("CallWebService/353", "(Out) Tran=" + tranDesc + Environment.NewLine + strResult, 220, this);
 				}
+				if ( strResult.Length == 0 )
+				{
+					ret        = 350;
+					strResult  = Tools.JSONPair("status","ERROR",1,"{")
+								  + Tools.JSONPair("state" ,"ERROR/Empty response")
+								  + Tools.JSONPair("reason","Empty response",1,"","}");
+					resultMsg  = "No data returned from " + pURL + ( tURL.Length > 0 ? " (or " + tURL + ")" : "");
+//					Tools.LogInfo("CallWebService/30","Failed, JSON Rec=(empty)",199,this);
+				}
+				else
+					ret = 0;
+
+				Tools.LogInfo("CallWebService/353", "(Out) Tran=" + tranDesc + Environment.NewLine + strResult, 220, this);
 			}
 			catch (WebException ex1)
 			{
