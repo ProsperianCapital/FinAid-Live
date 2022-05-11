@@ -112,6 +112,10 @@
     <Content Include="Register.aspx" />
     <Content Include="RegisterEx3.aspx" />
     <Content Include="RegisterThreeD.aspx" />
+    <Content Include="RVHome.aspx" />
+    <Content Include="SSHome.aspx" />
+    <Content Include="TCFHome.aspx" />
+    <Content Include="Test01.aspx" />
     <Content Include="TransLookup.aspx" />
     <Content Include="ContractLookup.aspx" />
     <Content Include="LAdmin.aspx" />
@@ -408,6 +412,27 @@
     <Compile Include="CAHome.aspx.designer.cs">
       <DependentUpon>CAHome.aspx</DependentUpon>
     </Compile>
+    <Compile Include="SSHome.aspx.cs">
+      <DependentUpon>SSHome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SSHome.aspx.designer.cs">
+      <DependentUpon>SSHome.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RVHome.aspx.cs">
+      <DependentUpon>RVHome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RVHome.aspx.designer.cs">
+      <DependentUpon>RVHome.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="TCFHome.aspx.cs">
+      <DependentUpon>TCFHome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="TCFHome.aspx.designer.cs">
+      <DependentUpon>TCFHome.aspx</DependentUpon>
+    </Compile>
     <Compile Include="CALogin.aspx.cs">
       <DependentUpon>CALogin.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -578,6 +603,13 @@
     </Compile>
     <Compile Include="pgViewProfile.aspx.designer.cs">
       <DependentUpon>pgViewProfile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Test01.aspx.cs">
+      <DependentUpon>Test01.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Test01.aspx.designer.cs">
+      <DependentUpon>Test01.aspx</DependentUpon>
     </Compile>
     <Compile Include="UIApplicationTest.aspx.cs">
       <DependentUpon>UIApplicationTest.aspx</DependentUpon>

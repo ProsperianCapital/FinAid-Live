@@ -34,9 +34,11 @@ namespace PCIWebFinAid
 			{
 				LoadStaticDetails();
 				LoadDynamicDetails();
-				LoadGoogleAnalytics();
-				LoadChat();
-
+				if ( Tools.SystemLiveTestOrDev() != Constants.SystemMode.Development )
+				{
+					LoadGoogleAnalytics();
+					LoadChat();
+				}
 				btnErrorDtl.Visible = ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Development );
 				btnWidth.Visible    = ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Development );
 			}

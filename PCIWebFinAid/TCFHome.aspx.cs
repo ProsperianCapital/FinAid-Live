@@ -5,7 +5,7 @@ using PCIBusiness;
 
 namespace PCIWebFinAid
 {
-	public partial class PYHome : BasePage
+	public partial class TCFHome : BasePage
 	{
 		byte   errPriority;
 		int    ret;
@@ -15,12 +15,13 @@ namespace PCIWebFinAid
 		string productCode;
 		string languageCode;
 		string languageDialectCode;
+		string promoCode;
 
 		protected Literal F12014; // Favicon
 
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
-			ApplicationCode = "170";
+			ApplicationCode = "100";
 			errPriority     = 19;
 
 			if ( Page.IsPostBack )
@@ -29,7 +30,10 @@ namespace PCIWebFinAid
 				productCode         = hdnProductCode.Value;
 				languageCode        = hdnLangCode.Value;
 				languageDialectCode = hdnLangDialectCode.Value;
+				promoCode           = hdnPromoCode.Value;
 				ListItem lang       = ascxHeader.lstLanguage.SelectedItem;
+
+//				if ( lang != null && ( lang.Text != languageCode || lang.Value != languageDialectCode ) )
 
 				if ( lang != null && lang.Value != languageCode + "|" + languageDialectCode )
 				{
@@ -37,12 +41,13 @@ namespace PCIWebFinAid
 					languageDialectCode = lang.Value;
 					int k               = languageDialectCode.IndexOf("|");
 					languageDialectCode = languageDialectCode.Substring(k+1);
-					LoadDynamicDetails();
 					SaveHiddenVars();
+					LoadDynamicDetails();
 				}
 			}
 			else
 			{
+				LoadPromo();
 				LoadProduct();
 				LoadStaticDetails();
 				LoadDynamicDetails();
@@ -73,16 +78,17 @@ namespace PCIWebFinAid
 			if ( Tools.NullToString(Request["BackDoor"]) == ((int)Constants.SystemPassword.BackDoor).ToString() )
 			{
 				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("ENG","ENG|0002"));
-				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("THA","THA|0001"));
-				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("GER","GER|0298"));
-				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("XHO","XHO|0001"));
-				Tools.LogInfo("LoadStaticDetails/10003","BackDoor, PC/LC/LDC="+productCode+"/"+languageCode+"/"+languageDialectCode,222,this);
+				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("GRK","GRK|0001"));
+				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("TUR","TUR|0001"));
+//				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("THA","THA|0001"));
+//				ascxHeader.lstLanguage.Items.Add(new System.Web.UI.WebControls.ListItem("GER","GER|0298"));
+				Tools.LogInfo("LoadStaticDetails/10003","BackDoor, PC/LC/LDC/Promo="+productCode+"/"+languageCode+"/"+languageDialectCode+"/"+promoCode,222,this);
 			}
 			else
 				using (MiscList mList = new MiscList())
 					try
 					{
-						ret = 10020;
+						ret = 10010;
 						spr = "sp_WP_Get_ProductLanguageInfo";
 						sql = "exec " + spr + " @ProductCode=" + Tools.DBString(productCode);
 						if ( mList.ExecQuery(sql,0) != 0 )
@@ -97,7 +103,7 @@ namespace PCIWebFinAid
 
 							while ( ! mList.EOF )
 							{
-								ret          = 10030;
+								ret          = 10080;
 								lCode        = mList.GetColumn("LanguageCode");
 								lDialectCode = mList.GetColumn("LanguageDialectCode");
 							//	blocked      = mList.GetColumn("Blocked");
@@ -106,7 +112,7 @@ namespace PCIWebFinAid
 								if ( mList.GetColumn("DefaultIndicator").ToUpper() == "Y" ||
 								   ( lCode == languageCode && lDialectCode == languageDialectCode ) )
 								{
-									ret                   = 10040;
+									ret                   = 10090;
 									languageCode          = lCode;
 									languageDialectCode   = lDialectCode;
 									lstLang.SelectedIndex = lstLang.Items.Count - 1;
@@ -115,7 +121,7 @@ namespace PCIWebFinAid
 							}
 							if ( languageCode.Length == 0 )
 							{
-								ret                   = 10050;
+								ret                   = 10100;
 								languageCode          = lstLang.Items[0].Text;
 								languageDialectCode   = lstLang.Items[0].Value;
 								int k                 = languageDialectCode.IndexOf("|");
@@ -126,12 +132,12 @@ namespace PCIWebFinAid
 					}
 					catch (Exception ex)
 					{
-						PCIBusiness.Tools.LogException("LoadStaticDetails/10099","ret="+ret.ToString(),ex,this);
+						PCIBusiness.Tools.LogException("LoadStaticDetails/99","ret="+ret.ToString(),ex,this);
 					}
 
 			hdnVer.Value = "Version " + SystemDetails.AppVersion + " (" + SystemDetails.AppDate + ")";
 		}
-
+	
 		private void LoadDynamicDetails()
 		{
 			byte   err;
@@ -149,7 +155,7 @@ namespace PCIWebFinAid
 				{
 					ret = 10110;
 					spr = "sp_WP_Get_ProductContent";
-					sql = "exec " + spr + stdParms;
+					sql = "exec " + spr + stdParms + ",@PromoCode=" + Tools.DBString(promoCode);
 					if ( mList.ExecQuery(sql,0) != 0 )
 						SetErrorDetail("LoadDynamicDetails", 10120, "Internal database error (" + spr + " failed)", sql, 2, 2, null, false, errPriority);
 					else if ( mList.EOF )
@@ -195,25 +201,35 @@ namespace PCIWebFinAid
 							                                   ascxHeader,
 							                                   ascxFooter);
 							if ( err != 0 )
-								SetErrorDetail("LoadDynamicDetails", 10195, "Unrecognized Image code ("+fieldCode + "/" + fieldValue.ToString() + ")", "WebTools.ReplaceImage('"+fieldCode+"') => "+err.ToString(), 2, 0, null, false, errPriority);
-							Tools.LogInfo("LoadDynamicDetails/10202","ImageCode="+fieldCode+"/"+fieldValue,errPriority,this);
+								SetErrorDetail("LoadDynamicDetails", 10197, "Unrecognized Image code ("+fieldCode + "/" + fieldValue.ToString() + ")", "WebTools.ReplaceImage('"+fieldCode+"') => "+err.ToString(), 2, 0, null, false, errPriority);
+							Tools.LogInfo("LoadDynamicDetails/10201","ImageCode="+fieldCode+"/"+fieldValue,errPriority,this);
 							mList.NextRow();
 						}
 
-					ret = 10205;
-					spr = "";
-					if ( P12010.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12010',false);";
-					if ( P12011.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12011',false);";
-					if ( P12012.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12012',false);";
-					if ( P12023.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12023',false);";
-					if ( P12024.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12024',false);";
-					if ( P12028.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12028',false);";
-					ascxFooter.JSText = WebTools.JavaScriptSource(spr);
+//	Show/Hide with JavaScript
+//					ret = 10205;
+//					spr = "";
+//					if ( P12010.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12010',false);";
+//					if ( P12011.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12011',false);";
+//					if ( P12012.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12012',false);";
+//					if ( P12023.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12023',false);";
+//					if ( P12024.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12024',false);";
+//					if ( P12028.ImageUrl.Length < 5 ) spr = spr + "ShowElt('D12028',false);";
+//					ascxFooter.JSText = WebTools.JavaScriptSource(spr);
+
+//	Show/hide with server-side code
+					ret            = 10207;
+					D12010.Visible = ( P12010.ImageUrl.Length > 4 );
+					D12011.Visible = ( P12011.ImageUrl.Length > 4 );
+					D12012.Visible = ( P12012.ImageUrl.Length > 4 );
+					D12023.Visible = ( P12023.ImageUrl.Length > 4 );
+					D12024.Visible = ( P12024.ImageUrl.Length > 4 );
+					D12028.Visible = ( P12028.ImageUrl.Length > 4 );
 
 					ret       = 10210;
 					xHIW.Text = "";
 					spr       = "sp_WP_Get_ProductHIWInfo";
-					sql       = "exec " + spr + stdParms;
+					sql       = "exec " + spr + stdParms + ",@PromoCode=" + Tools.DBString(promoCode);
 					if ( mList.ExecQuery(sql,0) != 0 )
 						SetErrorDetail("LoadDynamicDetails", 10220, "Internal database error (" + spr + " failed)", sql, 2, 2, null, false, errPriority);
 					else if ( mList.EOF )
@@ -292,9 +308,23 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-					PCIBusiness.Tools.LogException("LoadDynamicDetails/10499","ret="+ret.ToString(),ex,this);
+					Tools.LogException("LoadDynamicDetails/99","ret="+ret.ToString(),ex,this);
 				}
+
+//	Testing
+//				WebTools.ReplaceControlText(this.Page,"X090909","1","X","",ascxHeader,ascxFooter);
+//				WebTools.ReplaceControlText(this.Page,"X105141","1","X","",ascxHeader,ascxFooter);
+//				WebTools.ReplaceControlText(this.Page,"X105146","1","X","",ascxHeader,ascxFooter);
+//	Testing
 		}
+
+		private void LoadPromo()
+		{
+			promoCode          = WebTools.RequestValueString(Request,"PromoCode");
+			if ( promoCode.Length < 1 )
+				promoCode       = "10001"; // Default
+			hdnPromoCode.Value = promoCode;
+		}	
 
 		private void LoadProduct()
 		{
@@ -307,7 +337,7 @@ namespace PCIWebFinAid
 				languageDialectCode = "0002";
 			}
 
-//	See SaveHiddenVars()
+//		See SaveHiddenVars()
 //			hdnCountryCode.Value     = countryCode;
 //			hdnProductCode.Value     = productCode;
 //			hdnLangCode.Value        = languageCode;

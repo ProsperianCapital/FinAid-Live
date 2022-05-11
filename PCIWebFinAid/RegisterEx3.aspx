@@ -249,6 +249,74 @@ function OptSelect(p)
 			h = 'PRODUCT NAME: GOLD<br /><br />Up To $300 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $29.95';
 	SetEltValue('lblOption',h);
 }
+function CheckWorldPay()
+{
+	try
+	{
+	//	var cc = GetEltValue('txtCCNumber');
+	//	var fr = GetElt('ifr3D'); // .contentWindow.document; alert(fr);
+//	//	fr = fr.body; alert(fr);
+
+	//	var ifrDoc = fr.contentDocument || fr.contentWindow.document; alert('C01: '+ifrDoc.toString());
+	//	var fx = ifrDoc.getElementById('frm3D'); alert('C02: '+fx);
+
+//	//	var frDoc = (fr.contentWindow || fr.contentDocument); alert(frDoc);
+//	//	if (frDoc.document) frDoc = frDoc.document; alert(frDoc);
+	//	alert(fr.toString());
+	//	var fm = fr.getElementsByTagName("form"); alert('C03: '+fm.length);
+	//	fm = fm[0]; alert('C04: '+fm);
+//	//	fm = fr.getElementById("frm3D"); alert(fm);
+	//	var b5 = fm.getElementsByName("Bin")[0]; alert(b5);
+	//	var b6 = fm.getElementById("Bin"); alert(b6);
+
+//	//	var bi = frDoc.getElementById('Bin'); alert(bi);
+//	//	var fm = frDoc.getElementById('frm3D'); alert(fm);
+	//	alert('Card number: '+cc);
+	//	alert('Bin1: '+bi.value);
+	//	bi.value = cc;
+	//	alert('Bin2: '+bi.value);
+	//	fm.submit();
+	//	alert('frm3D submitted');
+	}
+	catch (x)
+	{ }
+}
+function WorldPay3DS(url,binValue,jwtValue)
+{
+	try
+	{
+		alert ('url: '+url+', bin: '+binValue+', jwt: '+jwtValue);
+		var frm = document.createElement('form');
+		frm.id = 'frmX';
+		frm.name = 'frmX';
+		frm.method = 'POST';
+		frm.target = '_blank';
+		frm.action = url;
+		alert(frm);
+
+		var bin = document.createElement('input');
+		bin.type = 'text';
+		bin.id = 'Bin';
+		bin.name = 'Bin';
+		bin.value = binValue;
+		alert(bin);
+
+		var jwt = document.createElement('input');
+		jwt.type = 'text';
+		jwt.id = 'JWT';
+		jwt.name = 'JWT';
+		jwt.value = jwtValue;
+		alert(jwt);
+
+		frm.appendChild(bin);
+		frm.appendChild(jwt);
+		frm.submit();
+	}
+	catch (x)
+	{
+		alert(x.message);
+	}
+}
 </script>
 
 <form id="frmRegister" runat="server">
@@ -259,6 +327,8 @@ function OptSelect(p)
 <asp:HiddenField runat="server" id="hdn100002" />
 <asp:HiddenField runat="server" id="hdn100137" />
 <asp:HiddenField runat="server" id="hdn100187" />
+<asp:HiddenField runat="server" ID="hdnJwtToken" />
+<asp:HiddenField runat="server" ID="hdnSessionId" />
 
 <div class="Header3">
 	<asp:Literal runat="server" ID="lblReg"></asp:Literal><asp:Literal runat="server" ID="lblRegConf"></asp:Literal>
@@ -526,8 +596,6 @@ function OptSelect(p)
 </div>
 
 <div id="divP06">
-<asp:HiddenField runat="server" ID="hdnJwtToken" />
-<asp:Literal runat="server" ID="lblJwtIframe"></asp:Literal>
 <p class="Header4">
 <asp:Literal runat="server" ID="lbl100400"></asp:Literal>
 </p><p>
@@ -536,8 +604,11 @@ function OptSelect(p)
 
 <!-- 3d Secure -->
 <asp:Panel runat="server" id="pnl3d" style="border:1px solid red;background-color:aqua;color:black;padding:10px">
+
+<asp:PlaceHolder runat="server" ID="pnl3d1">
+<!-- Providers other than WorldPay -->
 <script type='text/javascript'>
-var tOut = setTimeout(function(){GetElt('btn3d').click()},6000);
+var tOut = setTimeout(function(){GetElt('btn3d').click()},10000);
 //	Disable "Back"
 history.pushState(null, document.title, location.href);
 window.addEventListener('popstate', function (event)
@@ -551,10 +622,40 @@ once-off Card Verification Fee of $0.10 (10 US Cents).
 </asp:Literal>
 <br /><br />
 <asp:Literal runat="server" ID="lbl100501">
-If you are not re-directed within 5 seconds, please click the button below to pay the
+If you are not re-directed within 10 seconds, please click the button below to pay the
 Card Verification Fee manually.
 </asp:Literal>
+</asp:PlaceHolder>
+
+<asp:PlaceHolder runat="server" ID="pnl3d2">
+<!-- WorldPay only -->
+<script type='text/javascript'>
+var tOut = null;
+function ThreeD2(stepNo,sId)
+{
+//	alert('ThreeD2('+stepNo.toString()+',"'+sId+'")');
+	ShowElt('pnl3d2Step1',(stepNo==1));
+	ShowElt('pnl3d2Step2',(stepNo==2));
+	ShowElt('btn3dWait',  (stepNo==1));
+	ShowElt('btn3d',      (stepNo==2));
+	SetEltValue('hdnSessionId',sId);
+}
+ThreeD2(1,'');
+</script>
+<div id="pnl3d2Step1">
+Please wait while we connect to our payment provider to verify your card ...
 <br /><br />
+<img src="<%=PCIBusiness.Tools.ImageFolder() %>Busy.gif" />
+</div>
+<div id="pnl3d2Step2">
+<b>Card successfully verified.</b>
+<br /><br />
+Please click the button below to pay the Card Verification Fee.
+</div>
+</asp:PlaceHolder>
+
+<br />
+<input type="button" id="btn3dWait" value="Wait ..." disabled="disabled" style="visibility:hidden;display:none" />
 <asp:Button runat="server" ID="btn3d" Text="Pay Now" UseSubmitBehavior="false" OnClick="btn3d_Click" OnClientClick="JavaScript:clearTimeout(tOut);DisableElt(this,true);" />
 </asp:Panel>
 <br />
@@ -820,5 +921,18 @@ function TokenSetup()
 <asp:Literal runat="server" ID="lblJS"></asp:Literal>
 
 </form>
+
+<asp:Literal runat="server" ID="lblJwtIframe"></asp:Literal>
+
+<!-- Testing -->
+<!--
+<div id="t01" style="border:1px solid #000000;margin:5px"></div>
+<br />
+<div id="t02" style="border:1px solid #000000;margin:5px"></div>
+<br />
+<div id="t03" style="border:1px solid #000000;margin:5px"></div>
+-->
+<!-- Testing -->
+
 </body>
 </html>

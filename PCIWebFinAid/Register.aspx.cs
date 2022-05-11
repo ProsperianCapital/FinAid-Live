@@ -85,8 +85,11 @@ namespace PCIWebFinAid
 				lblReg.Visible     = true;
 				lblRegConf.Visible = false;
 
-				LoadGoogleAnalytics();
-				LoadChat();
+				if ( Tools.SystemLiveTestOrDev() != Constants.SystemMode.Development )
+				{
+					LoadGoogleAnalytics();
+					LoadChat();
+				}
 				LoadLabels();
 
 				if ( CheckIP() != "B" ) // Blocked

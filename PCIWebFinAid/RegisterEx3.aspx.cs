@@ -58,6 +58,8 @@ namespace PCIWebFinAid
 			SetWarning("");
 
 			pnl3d.Visible   = false;
+			pnl3d1.Visible  = true;
+			pnl3d2.Visible  = false;
 //			lblRefresh.Text = "";
 //			lbl3d.Text      = "";
 
@@ -126,8 +128,11 @@ namespace PCIWebFinAid
 				lblReg.Visible     = true;
 				lblRegConf.Visible = false;
 
-				LoadGoogleAnalytics();
-				LoadChat();
+				if ( Tools.SystemLiveTestOrDev() != Constants.SystemMode.Development )
+				{
+					LoadGoogleAnalytics();
+					LoadChat();
+				}
 				LoadLabels();
 
 				if ( CheckIP() != "B" ) // Blocked
@@ -621,6 +626,7 @@ namespace PCIWebFinAid
 
 		private bool LoadContractCode()
 		{
+			hdnSessionId.Value             = "";
 			hdnJwtToken.Value              = "";
 			lblJwtIframe.Text              = "";
 			contractCode                   = "";
@@ -720,14 +726,16 @@ namespace PCIWebFinAid
 //								paymentURL        = "";
 
 //	WorldPay
-					//			bureauCodePayment = Tools.BureauCode(Constants.PaymentProvider.WorldPay);
-					//			paymentAccount    = "PROSPERIANSGPECOM";
-					//			paymentId         = "AI5QP9YBY291AGF5AD7I";
-					//			paymentKey        = "st0nE#481";
-					//			paymentURL        = "";
-//					//			regTranType       = "3";
+//								bureauCodePayment = Tools.BureauCode(Constants.PaymentProvider.WorldPay);
+//								paymentAccount    = "PROSPERIANSGPECOM";
+//								paymentId         = "AI5QP9YBY291AGF5AD7I";
+//								paymentKey        = "st0nE#481";
+//							//	paymentURL        = "https://centinelapistag.cardinalcommerce.com/V2/Cruise/Collect";
+//							//	paymentURL        = "https://secure-test.worldpay.com/shopper/3ds/ddc.html";
+//								paymentURL        = "https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp";
+//								regTranType       = "3";
 //	WorldPay, zero-value validation
-					//			regTranType       = "0";
+//								regTranType       = "0";
 
 //								Create and save JSON Web Token (JWT) in the page here (only for WorldPay)
 
@@ -743,26 +751,8 @@ namespace PCIWebFinAid
 								if ( "03".Contains(regTranType) )
 									if ( bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.WorldPay) )
 									{
-									//	Cardinal Commerce LIVE URL : https://centinelapistag.cardinalcommerce.com/V1/Cruise/Collect
-									//	Cardinal Commerce TEST URL : https://secure-test.worldpay.com/shopper/3ds/ddc.html
-										string url3D1     = "https://secure-test.worldpay.com";
-										string url3D2     = "/shopper/3ds/ddc.html";
 										Object jwtToken   = PCIBusiness.JWT.CreateToken(bureauCodePayment);
 										hdnJwtToken.Value = jwtToken.ToString();
-										lblJwtIframe.Text = "<iframe height='1' width='1' style='display:none'>"
-										                  + "<form id='frm3D' method='POST' action='" + url3D1 + url3D2 + "'>"
-										                  + "<input type='hidden' name='Bin' value='XX-CARDNUMBER-XX' />"
-										                  + "<input type='hidden' name='JWT' value='" + jwtToken.ToString() + "' />"
-										                  + "<script>"
-										                  + "window.onload = function()"
-										                  + "{ document.getElementById('frm3D').submit(); }"
-  										                  + "</script>"
-										                  + "</iframe>"
-										                  + "<script>"
-										                  + "window.addEventListener('message', function(event) {"
-										                  + "if (event.origin.startsWith('" + url3D1 + "'))"
-										                  + "<script>"
-										                  + "</script>";
 									}
 
 								if ( paymentURL.Length < 1 || paymentAccount.Length < 1 || paymentKey.Length < 1 )
@@ -1027,12 +1017,14 @@ namespace PCIWebFinAid
 			}
 			else if ( payment.BureauCode == Tools.BureauCode(Constants.PaymentProvider.WorldPay) )
 			{
-				trans                    = new TransactionWorldPay();
-				payment.ProviderAccount  = paymentAccount;
-				payment.ProviderUserID   = paymentId;
-				payment.ProviderPassword = paymentKey;
-				payment.PaymentAmount    = 010;    // 10 US Cents
-				payment.CurrencyCode     = "USD";
+				trans                     = new TransactionWorldPay();
+				payment.ProviderAccount   = paymentAccount;
+				payment.ProviderUserID    = paymentId;
+				payment.ProviderPassword  = paymentKey;
+				payment.PaymentAmount     = 010;    // 10 US Cents
+				payment.CurrencyCode      = "USD";
+				payment.SessionIDProvider = hdnSessionId.Value;
+				Tools.LogInfo("Do3dOrZeroValueCheck/10","WorldPay: " + paymentAccount + " | " + paymentId + " | " + paymentKey + " | " + hdnSessionId.Value,222,this);
 			}
 			else
 				return 200;
@@ -1045,10 +1037,10 @@ namespace PCIWebFinAid
 			int try3d                = Tools.StringToInt(hdn3dTries.Value) + 1;
 			hdn3dTries.Value         = try3d.ToString();
 
-//			Tools.LogInfo("Do3dOrZeroValueCheck/10","Contract " + payment.MerchantReference + " (try " + try3d.ToString() + ")",222,this);
+//			Tools.LogInfo("Do3dOrZeroValueCheck/20","Contract " + payment.MerchantReference + " (try " + try3d.ToString() + ")",222,this);
 
 //			if ( try3d > 1 )
-//				Tools.LogInfo("Do3dOrZeroValueCheck/20","Contract " + payment.MerchantReference + " (try " + try3d.ToString() + ")",222,this);
+//				Tools.LogInfo("Do3dOrZeroValueCheck/30","Contract " + payment.MerchantReference + " (try " + try3d.ToString() + ")",222,this);
 
 			if ( trans.ThreeDSecurePayment(payment,Request.UrlReferrer,languageCode,languageDialectCode) == 0 )
 				try
@@ -1304,15 +1296,6 @@ namespace PCIWebFinAid
 							}
 //	TokenEx End
 
-//	[JWT To Do]
-	//						if ( bureau == WorldPay )
-	//						{
-	//							Create iFrame
-	//							return
-	//						}
-//	[JWT To Do]
-
-
 							string productOption  = WebTools.ListValue(lstOptions,"X");
 							string payMethod      = WebTools.ListValue(lstPayment,"X");
 							txtCCName.Text        = "";
@@ -1368,6 +1351,13 @@ namespace PCIWebFinAid
 
 							if ( lblCCMandate.Text.Length < 1 )
 								SetErrorDetail("btnNext_Click/30060",30045,"Unable to retrieve collection mandate ("+spr+")",sql+" (looking for ProductOption="+productOption+" and PaymentMethod="+payMethod+"). SQL failed or returned no data or<br />the CollectionMandateText column was missing/empty/NULL");
+
+					//		else if ( bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.WorldPay) )
+					//		{
+					//		//	WorldPay iFrame
+					//			lblJwtIframe.Visible = true;
+					//			lblJwtIframe.Text    = lblJwtIframe.Text.Replace("XX-CARDNUMBER-XX",txtCCNumber.Text);
+					//		}
 						}
 						else if ( pageNo == 6 || pageNo > 180 )
 						{
@@ -1660,7 +1650,47 @@ namespace PCIWebFinAid
 								if ( Do3dOrZeroValueCheck() > 0 ) // It failed, do 3d
 									pnl3d.Visible = true;
 
-//							pnl3d.Visible = true;
+							if ( pnl3d.Visible && bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.WorldPay) )
+							{
+							//	Set up 3DS Flex if it is WorldPay
+							//	Cardinal Commerce LIVE URL : https://centinelapi.cardinalcommerce.com/V1/Cruise/Collect
+							//	Cardinal Commerce TEST URL : https://secure-test.worldpay.com/shopper/3ds/ddc.html
+							//	Cardinal Commerce TEST URL : https://centinelapistag.cardinalcommerce.com/V1/Cruise/Collect
+							//	Cardinal Commerce TEST URL : https://centinelapistag.cardinalcommerce.com/V2/Cruise/Collect
+
+								pnl3d.Visible     = true;
+								pnl3d1.Visible    = false;
+								pnl3d2.Visible    = true;
+								string bR         = Environment.NewLine;
+								string url3D1     = "https://centinelapistag.cardinalcommerce.com";
+								string url3D2     = "/V2/Cruise/Collect";
+								lblJwtIframe.Text = "<script>"                                                                        + bR
+								                  + "window.addEventListener('message', function(event) {"                            + bR
+								                  +   "if (event.origin.startsWith('" + url3D1 + "'))"                                + bR
+								                  +   "{"                                                                             + bR
+								                  +     "// alert('M05');"                                                            + bR
+								                  +     "var jObj = JSON.parse(event.data);"                                          + bR
+								                  +     "// alert('M10: '+jObj.toString());"                                          + bR
+								                  +     "var sId  = jObj.Payload.SessionId;"                                          + bR
+								                  +     "// alert('M15: '+sId.toString());"                                           + bR
+								                  +     "// SetEltValue('hdnSessionId',sId.toString());"                              + bR
+								                  +     "// alert('M20');"                                                            + bR
+								                  +     "ThreeD2(2,sId.toString());"                                                  + bR
+								                  +   "}"                                                                             + bR
+								                  + "}, false);"                                                                      + bR
+								                  + "</script>"                                                                       + bR
+								                  + "<iframe name='ifr3D' height='1' width='1' style='display:none'></iframe>"        + bR
+								                  + "<form id='frm3D' target='ifr3D' method='POST' action='" + url3D1 + url3D2 + "'>" + bR
+								                  +   "<input type='hidden' name='Bin' value='" + txtCCNumber.Text + "' />"           + bR
+								                  +   "<input type='hidden' name='JWT' value='" + hdnJwtToken.Value + "' />"          + bR
+								                  + "</form>"                                                                         + bR
+								                  + "<script>"                                                                        + bR
+								                  + "ThreeD2(1,'');"                                                                  + bR
+								                  + "window.onload = function () { document.getElementById('frm3D').submit(); }"      + bR
+								                  + "</script>";
+
+								Tools.LogInfo("btnNext_Click/30330",lblJwtIframe.Text,222,this);
+							}
 
 //	This does not postback but does a redirect. ViewState is lost!
 //							lblRefresh.Text = "<meta http-equiv=\"refresh\" content=\"5;URL='RegisterEx3.aspx?PageNo=43'\" />";
@@ -1675,8 +1705,11 @@ namespace PCIWebFinAid
 						SetErrorDetail("btnNext_Click/30320",errNo,"Internal database error ; please try again later",ex5.Message,2,2,ex5);
 				}
 
+//			if ( lblError.Text.Length > 0 )
+//				SetErrorDetail("btnNext_Click/30331",30331,"Internal error",lblError.Text,2,2,null,true,222);
+
 			if ( lblError.Text.Length == 0 && errNo + pdfErr > 0 )
-				SetErrorDetail("btnNext_Click/30330",30330,"Internal error ; please try again later","errNo=" + errNo.ToString() + "<br />pdfErr=" + pdfErr.ToString());
+				SetErrorDetail("btnNext_Click/30332",30332,"Internal error ; please try again later","errNo=" + errNo.ToString() + "<br />pdfErr=" + pdfErr.ToString());
 
 			if ( lblError.Text.Length == 0 ) // No errors, can continue
 			{

@@ -110,12 +110,22 @@
 		}
 		public  string  LanguageCode
 		{
-			get { return languageCode; }
+			get
+			{
+				if ( string.IsNullOrWhiteSpace(languageCode) )
+					return "ENG";
+				return languageCode;
+			}
 			set { languageCode = value.Trim(); }
 		}
 		public  string  LanguageDialectCode
 		{
-			get { return languageDialectCode; }
+			get
+			{
+				if ( string.IsNullOrWhiteSpace(languageDialectCode) )
+					return "0001";
+				return languageDialectCode;
+			}
 			set { languageDialectCode = value.Trim(); }
 		}
 

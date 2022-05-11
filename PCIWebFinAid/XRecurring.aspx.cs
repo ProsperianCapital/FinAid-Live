@@ -91,7 +91,7 @@ namespace PCIWebFinAid
 			if ( bureauCode.Length > 0 )
 				using (Payments payments = new Payments())
 				{
-					provider             = payments.Summary(bureauCode);
+					payments.Summary(provider);
 					lblBureauURL.Text    = provider.BureauURL;
 					lblMerchantKey.Text  = provider.MerchantKey;
 					lblMerchantUser.Text = provider.MerchantUserID;

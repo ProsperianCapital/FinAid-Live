@@ -51,8 +51,11 @@ namespace PCIWebFinAid
 				LoadProduct();
 				LoadStaticDetails();
 				LoadDynamicDetails();
-				LoadGoogleAnalytics();
-				LoadChat();
+				if ( Tools.SystemLiveTestOrDev() != Constants.SystemMode.Development )
+				{
+					LoadGoogleAnalytics();
+					LoadChat();
+				}
 				SaveHiddenVars();
 
 				btnErrorDtl.Visible = ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Development );

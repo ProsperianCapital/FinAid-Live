@@ -87,6 +87,24 @@ namespace PCIWebFinAid
 		protected global::System.Web.UI.WebControls.HiddenField hdn100187;
 
 		/// <summary>
+		/// hdnJwtToken control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.HiddenField hdnJwtToken;
+
+		/// <summary>
+		/// hdnSessionId control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.HiddenField hdnSessionId;
+
+		/// <summary>
 		/// lblReg control.
 		/// </summary>
 		/// <remarks>
@@ -996,24 +1014,6 @@ namespace PCIWebFinAid
 		protected global::System.Web.UI.WebControls.Literal lblCCMandate;
 
 		/// <summary>
-		/// hdnJwtToken control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.HiddenField hdnJwtToken;
-
-		/// <summary>
-		/// lblJwtIframe control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.Literal lblJwtIframe;
-
-		/// <summary>
 		/// lbl100400 control.
 		/// </summary>
 		/// <remarks>
@@ -1041,6 +1041,15 @@ namespace PCIWebFinAid
 		protected global::System.Web.UI.WebControls.Panel pnl3d;
 
 		/// <summary>
+		/// pnl3d1 control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.PlaceHolder pnl3d1;
+
+		/// <summary>
 		/// lbl100500 control.
 		/// </summary>
 		/// <remarks>
@@ -1057,6 +1066,15 @@ namespace PCIWebFinAid
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
 		protected global::System.Web.UI.WebControls.Literal lbl100501;
+
+		/// <summary>
+		/// pnl3d2 control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.PlaceHolder pnl3d2;
 
 		/// <summary>
 		/// btn3d control.
@@ -1750,5 +1768,14 @@ namespace PCIWebFinAid
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
 		protected global::System.Web.UI.WebControls.Literal lblJS;
+
+		/// <summary>
+		/// lblJwtIframe control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.Literal lblJwtIframe;
 	}
 }

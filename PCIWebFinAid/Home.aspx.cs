@@ -42,20 +42,40 @@ namespace PCIWebFinAid
 
 						if ( appStatus != "A" )
 							err  = 10;
-						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.Registration) ) // 000
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.Registration)     ) // 000
 							goTo = "Register3.aspx";
-						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.CRM)          ) // 002
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.CRM)              ) // 002
 							goTo = "pgLogonCRM.aspx";
-//						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.Mobile)       ) // 006
+//						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.Mobile)           ) // 006
 //							goTo = "pgLogonCRM.aspx";
-						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.CareAssist)   ) // 100
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.CareAssist)       ) // 100
 							goTo = "CAHome.aspx";
-						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.iSOS)         ) // 110
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.iSOS)             ) // 110
 							goTo = "ISHome.aspx";
-						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.LifeGuru)     ) // 120
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.LifeGuru)         ) // 120
 							goTo = "LGHome.aspx";
-						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.PayPayYa)     ) // 170
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.PayPayYa)         ) // 130
 							goTo = "PYHome.aspx";
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.AdvantageCard)    ) // 140
+							goTo = "ADVHome.aspx";
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.AdvantageCardCRM) )
+							goTo = "ADVCRM.aspx";
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.SmartStox)        ) // 160
+							goTo = "SSHome.aspx";
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.SmartStoxCRM)     )
+							goTo = "SSCRM.aspx";
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.RewardsVault)     ) // 170
+							goTo = "RVHome.aspx";
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.RewardsVaultCRM)  )
+							goTo = "RVCRM.aspx";
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.TankwaCyber)      ) // 180
+							goTo = "TCFHome.aspx";
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.TankwaCyberCRM)   )
+							goTo = "TCFCRM.aspx";
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.ProsperianSTO)    ) // 190
+							goTo = "PCISTOHome.aspx";
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.ProsperianSTOCRM) )
+							goTo = "PCISTOCRM.aspx";
 						else
 							err  = 20;
 					}
