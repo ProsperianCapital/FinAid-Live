@@ -551,10 +551,14 @@ namespace PCIBusiness
 			return "<" + tagName + ">" + p + "</" + tagName + ">";
 		}
 
-		public static string XMLNode(XmlDocument xmlDoc,string xmlTag,string nsPrefix="",string nsURL="",string parentNode="",string attribute="")
+		public static string XMLNode(XmlDocument xmlDoc,string xmlTag,string nsPrefix="",string nsURL="",string parentNode="",string attribute="",byte trimMode=0)
 		{
 			try
 			{
+			//	Quick check, if not there just exit
+				if ( xmlTag.Length > 0 && ! xmlDoc.OuterXml.ToString().ToUpper().Contains(xmlTag.ToUpper()))
+					return "";
+
 				string ret = "";
 
 				if ( parentNode.Length > 0 )
@@ -564,7 +568,7 @@ namespace PCIBusiness
 						if ( xList != null )
 							foreach (XmlNode p in xList.Item(0).ChildNodes)
 								if ( p.Name == xmlTag )
-									return p.InnerText.Trim();
+									return ( trimMode == 93 ? p.InnerText : p.InnerText.Trim() );
 					}
 					catch { }
 
@@ -580,12 +584,12 @@ namespace PCIBusiness
 				{
 					try
 					{	
-						ret = xmlDoc.SelectSingleNode("//"+xmlTag).InnerText.Trim();
+						ret = xmlDoc.SelectSingleNode("//"+xmlTag).InnerText;
 					//	XmlElement p = xmlDoc.GetElementById(xmlTag);
 					}
 					catch { }
 					if ( ret == null || ret.Length == 0 )
-						ret = xmlDoc.GetElementsByTagName(xmlTag).Item(0).InnerText.Trim();
+						ret = xmlDoc.GetElementsByTagName(xmlTag).Item(0).InnerText;
 				}
 				else
 				{
@@ -593,6 +597,8 @@ namespace PCIBusiness
 					nsMgr.AddNamespace(nsPrefix,nsURL);
 					ret = xmlDoc.SelectSingleNode("//"+nsPrefix+":"+xmlTag,nsMgr).InnerText;
 				}
+				if ( trimMode == 93 ) // Don't trim
+					return ret;
 				return ret.Trim();
 			}
 			catch
@@ -1825,6 +1831,7 @@ namespace PCIBusiness
 			if ( transactionType == (byte)Constants.TransactionType.Refund                ) return "Refund";
 			if ( transactionType == (byte)Constants.TransactionType.Transfer              ) return "Transfer";
 			if ( transactionType == (byte)Constants.TransactionType.TransactionLookup     ) return "Transaction Lookup";
+			if ( transactionType == (byte)Constants.TransactionType.ZeroValueCheck        ) return "Zero-Value Validation";
 			if ( transactionType == (byte)Constants.TransactionType.Test                  ) return "Test";
 			return "Unknown (transactionType=" + transactionType.ToString() + ")";
 		}
@@ -1870,9 +1877,6 @@ namespace PCIBusiness
 				}
 			return "";
 		}
-
-//		public static string LoadChat(string productCode)
-//		{
 
 		public static string LoadChat(string productCode)
 		{

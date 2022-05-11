@@ -112,14 +112,24 @@ namespace PCIBusiness
 
 		public enum ApplicationCode : short
 		{
-			Registration =   0,
-			BackOffice   =   1,
-			CRM          =   2,
-			Mobile       =   6,
-			CareAssist   = 100,
-			iSOS         = 110,
-			LifeGuru     = 120,
-			PayPayYa     = 170
+			Registration     =   0,
+			BackOffice       =   1,
+			CRM              =   2,
+			Mobile           =   6,
+			CareAssist       = 100,
+			iSOS             = 110,
+			LifeGuru         = 120,
+			PayPayYa         = 130,
+			AdvantageCard    = 140,
+			AdvantageCardCRM = 145,
+			SmartStox        = 160,
+			SmartStoxCRM     = 165,
+			RewardsVault     = 170,
+			RewardsVaultCRM  = 175,
+			TankwaCyber      = 180,
+			TankwaCyberCRM   = 185,
+			ProsperianSTO    = 190,
+			ProsperianSTOCRM = 195
 		}
 
 		public enum BureauStatus : byte

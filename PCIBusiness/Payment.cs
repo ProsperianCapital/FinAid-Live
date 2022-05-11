@@ -66,7 +66,8 @@ namespace PCIBusiness
 		private string   webForm;
 
 //	WorldPay fields
-		private string   sessionId;
+		private string   sessionIdClient;
+		private string   sessionIdProvider;
 		private string   machineCookie;
 
 //	Stripe fields
@@ -145,7 +146,14 @@ namespace PCIBusiness
 		}
 		public string    PaymentMethodID
 		{
-			get { return  Tools.NullToString(paymentMethodID); }
+		//	Don't TRIM() here!
+			set { paymentMethodID = value; }
+			get
+			{
+				if ( string.IsNullOrWhiteSpace(paymentMethodID) )
+					return "";
+				return paymentMethodID;
+			}
 		}
 
 //		Payment Provider stuff
@@ -520,15 +528,22 @@ namespace PCIBusiness
 		{
 			get { return  Tools.NullToString(merchantReferenceOriginal); }
 		}
-		public string    SessionID
+		public string    SessionIDClient
 		{
 //			Used by WorldPay
 			get
 			{
-				if ( Tools.NullToString(sessionId).Length < 1 )
-					sessionId = (Guid.NewGuid()).ToString();
-				return Tools.NullToString(sessionId);
+				if ( Tools.NullToString(sessionIdClient).Length < 1 )
+					sessionIdClient = (Guid.NewGuid()).ToString();
+				return Tools.NullToString(sessionIdClient);
 			}
+			set { sessionIdClient = value.Trim(); }
+		}
+		public string    SessionIDProvider
+		{
+//			Used by WorldPay
+			get { return Tools.NullToString(sessionIdProvider); }
+			set { sessionIdProvider = value.Trim(); }
 		}
 		public string    Cookie
 		{
@@ -855,7 +870,7 @@ namespace PCIBusiness
 		public int Reversal()
 		{
 			int retProc = 64020;
-			int retSQL  = 64020;
+//			int retSQL  = 64020;
 			sql         = "";
 
 			if ( transaction == null || transaction.BureauCode != bureauCode )
@@ -904,7 +919,7 @@ namespace PCIBusiness
 		public int Refund()
 		{
 			int retProc = 64020;
-			int retSQL  = 64020;
+//			int retSQL  = 64020;
 			sql         = "";
 
 			if ( transaction == null || transaction.BureauCode != bureauCode )
@@ -953,16 +968,38 @@ namespace PCIBusiness
 				sql = "exec sp_Upd_CardTokenVault @MerchantReference = "           + Tools.DBString(merchantReference) // nvarchar(20),
 				                              + ",@PaymentBureauCode = "           + Tools.DBString(bureauCode)        // char(3),
 			                                 + ",@PaymentBureauToken = "          + Tools.DBString(transaction.PaymentToken)
-			                                 + ",@PaymentMethodId = "             + Tools.DBString(transaction.PaymentMethodId)
 			                                 + ",@CustomerId = "                  + Tools.DBString(transaction.CustomerId)
 			                                 + ",@BureauSubmissionSoap = "        + Tools.DBString(transaction.XMLSent,3)
 			                                 + ",@BureauResultSoap = "            + Tools.DBString(transaction.XMLResult,3)
 			                                 + ",@TransactionStatusCode = "       + Tools.DBString(transaction.ResultCode)
+//			                                 + ",@PaymentMethodId = "             + Tools.DBString(transaction.PaymentReference)
+			                                 + ",@PaymentMethodId = "             + Tools.DBString(transaction.PaymentMethodId)
 		                                    + ",@CardTokenisationStatusCode = '" + ( retProc == 0 ? "007'" : "001'" );
 				Tools.LogInfo("GetToken/20","SQL=" + sql,20,this);
 				retSQL = ExecuteSQLUpdate();
 			}
 			Tools.LogInfo("GetToken/90","retProc=" + retProc.ToString()+", retSQL=" + retSQL.ToString(),40,this);
+			return retProc;
+		}
+
+		public int ZeroValueCheck()
+		{
+			returnMessage = "Invalid payment provider";
+			Tools.LogInfo("ZeroValueCheck/10","Merchant Ref=" + merchantReference,10,this);
+
+			if ( transaction == null || transaction.BureauCode != bureauCode )
+				transaction = Tools.CreateTransaction(bureauCode);
+			if ( transaction == null )
+				return 38020;
+
+			int retProc = transaction.CardValidation(this);
+			sql         = "exec sp_Upd_PaymentZeroValue @TransactionId = "               + Tools.DBString(transactionID)
+		                                           + ",@TransactionStatusCode = "       + Tools.DBString(transaction.ResultCode)
+		                                           + ",@TransactionStatusMessage = "    + Tools.DBString(transaction.ResultMessage)
+		                                           + ",@SchemeTransactionIdentifier = " + Tools.DBString(transaction.PaymentReference);
+
+			Tools.LogInfo("ZeroValueCheck/20","SQL=" + sql,20,this);
+			int retSQL = ExecuteSQLUpdate();
 			return retProc;
 		}
 
@@ -985,9 +1022,10 @@ namespace PCIBusiness
 			          processMode == (int)Constants.ProcessMode.UpdatePaymentStep1 ||
 			          processMode == (int)Constants.ProcessMode.UpdatePaymentStep1AndStep2 )
 			{
-				sql = "exec sp_Upd_CardPayment @MerchantReference     = " + Tools.DBString(merchantReference)
-			                              + ",@TransactionID         = " + Tools.DBString(transaction.PaymentReference)
-			                              + ",@TransactionStatusCode = '77'";
+				sql = "exec sp_Upd_CardPayment @MerchantReference = " + Tools.DBString(merchantReference)
+			                              + ",@TransactionID = "     + Tools.DBString(transaction.PaymentReference)
+			                              + ",@TransactionStatusCode = '77'"
+			                              + ",@TransactionStatusMessage = ''";
 				Tools.LogInfo("ProcessPayment/30","SQL 1=" + sql,20,this);
 				retSQL = ExecuteSQLUpdate();
 				Tools.LogInfo("ProcessPayment/40","SQL 1 complete",20,this);
@@ -1032,9 +1070,10 @@ namespace PCIBusiness
 			          processMode == (int)Constants.ProcessMode.UpdatePaymentStep2 ||
 			          processMode == (int)Constants.ProcessMode.UpdatePaymentStep1AndStep2 )
 			{
-				sql = "exec sp_Upd_CardPayment @MerchantReference = "     + Tools.DBString(merchantReference)
-			                              + ",@TransactionStatusCode = " + Tools.DBString(transaction.ResultCode)
-			                              + ",@TransactionID = "         + Tools.DBString(transaction.PaymentReference);
+				sql = "exec sp_Upd_CardPayment @MerchantReference = "        + Tools.DBString(merchantReference)
+			                              + ",@TransactionID = "            + Tools.DBString(transaction.PaymentReference)
+			                              + ",@TransactionStatusCode = "    + Tools.DBString(transaction.ResultCode)
+			                              + ",@TransactionStatusMessage = " + Tools.DBString(transaction.ResultMessage);
 				Tools.LogInfo("ProcessPayment/70","SQL 2=" + sql,20,this);
 				retSQL = ExecuteSQLUpdate();
 				Tools.LogInfo("ProcessPayment/80","SQL 2 complete",20,this);
@@ -1059,7 +1098,7 @@ namespace PCIBusiness
 			}
 
 		//	Payment Provider
-			providerKey       = dbConn.ColString("SafeKey");
+			providerKey       = dbConn.ColString("SafeKey"             ,0,0);
 			providerURL       = dbConn.ColString("url"                 ,0,0);
 			providerAccount   = dbConn.ColString("MerchantAccount"     ,0,0);
 			providerProfileID = dbConn.ColString("MerchantProfileId"   ,0,0);
@@ -1072,7 +1111,8 @@ namespace PCIBusiness
 			     dbConn.ColStatus("CardNumber")    != Constants.DBColumnStatus.ColumnOK &&
 			     dbConn.ColStatus("Token")         != Constants.DBColumnStatus.ColumnOK )
 			{
-				transactionID = dbConn.ColString("TransactionId");
+			//	transactionID = dbConn.ColString("TransactionId");
+				transactionID = dbConn.ColGuid  ("TransactionId");
 				return;
 			}
 
@@ -1097,9 +1137,9 @@ namespace PCIBusiness
 		//	Payment
 			merchantReference         = dbConn.ColString("merchantReference"        ,0,0);
 			merchantReferenceOriginal = dbConn.ColString("merchantReferenceOriginal",0,0); // Only really for Ikajo, don't log error
-			paymentAmount             = dbConn.ColLong  ("amountInCents"            ,0,0);
 			currencyCode              = dbConn.ColString("currencyCode"             ,0,0);
 			paymentDescription        = dbConn.ColString("description"              ,0,0);
+			paymentAmount             = dbConn.ColLong  ("amountInCents"            ,0,0);
 
 		//	Card/token/transaction details, not always present, don't log errors
 			ccName           = dbConn.ColUniCode("NameOnCard"     ,0,0);
@@ -1110,8 +1150,9 @@ namespace PCIBusiness
 			ccCVV            = dbConn.ColString ("CVV"            ,0,0);
 			ccToken          = dbConn.ColString ("Token"          ,0,0);
 			ccPIN            = dbConn.ColString ("PIN"            ,0,0);
-			transactionID    = dbConn.ColString ("TransactionId"  ,0,0);
-		//	Used by Stripe (bureauCode 028)
+			transactionID    = dbConn.ColGuid   ("TransactionId"  ,0,0);
+		//	transactionID    = dbConn.ColString ("TransactionId"  ,0,0,177);
+		//	Used by Stripe (bureauCode 028) and WorldPay (bureauCode 032)
 			customerID       = dbConn.ColString ("CustomerId"     ,0,0);
 			paymentMethodID  = dbConn.ColString ("PaymentMethodId",0,0);
 

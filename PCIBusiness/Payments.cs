@@ -23,17 +23,22 @@ namespace PCIBusiness
 		{
 			get { return fail; }
 		}
-		public Provider Summary(string bureau)
+
+		public void     Summary(Provider provider,string bureau="")
 		{
-			int      tok        = 0;
-			int      pay        = 0;
-			Provider provider   = new Provider();
-			provider.BureauCode = bureau;
+			if ( provider == null )
+			{
+				provider            = new Provider();
+				provider.BureauCode = bureau;
+			}
+
+			int tok = 0;
+			int pay = 0;
 
 			if ( provider.PaymentType == (byte)Constants.TransactionType.TokenPayment )
 				try
 				{
-		  			sql = "exec sp_Get_CardToToken " + Tools.DBString(bureau) + "," + Constants.MaxRowsPayment.ToString();
+		  			sql = "exec sp_Get_CardToToken " + Tools.DBString(provider.BureauCode) + "," + Constants.MaxRowsPayment.ToString();
 					err = ExecuteSQL(null,false,false);
 					if ( err == 0 )
 						while ( ! dbConn.EOF && tok < Constants.MaxRowsPayment )
@@ -48,7 +53,7 @@ namespace PCIBusiness
 
 					provider.CardsToBeTokenized = tok;
 
-					sql = "exec sp_Get_TokenPayment " + Tools.DBString(bureau) + "," + Constants.MaxRowsPayment.ToString();
+					sql = "exec sp_Get_TokenPayment " + Tools.DBString(provider.BureauCode) + "," + Constants.MaxRowsPayment.ToString();
 					err = ExecuteSQL(null,false,false);
 					if ( err == 0 )
 						while ( ! dbConn.EOF && pay < Constants.MaxRowsPayment )
@@ -77,7 +82,7 @@ namespace PCIBusiness
 				{
 					provider.CardsToBeTokenized = 0;
 
-					sql = "exec sp_Get_CardPayment " + Tools.DBString(bureau) + "," + Constants.MaxRowsPayment.ToString();
+					sql = "exec sp_Get_CardPayment " + Tools.DBString(provider.BureauCode) + "," + Constants.MaxRowsPayment.ToString();
 					err = ExecuteSQL(null,false,false);
 					if ( err > 0 )
 						Tools.LogException("Summary/40",sql + " failed, return code " + err.ToString(),null,this);
@@ -99,23 +104,21 @@ namespace PCIBusiness
 				{
 					Tools.CloseDB(ref dbConn);
 				}
-
-			return provider;
 		}
 
-		public int ProcessCards(string bureau,byte transactionType=0,int rowsToProcess=0,string bureaCodeTokenize="")
+		public int ProcessCards(string bureau,byte transactionType=0,int rowsToProcess=0,string bureaCodeTokenize="",byte logPriority=222)
 		{
 			int    maxRows    = Tools.StringToInt(Tools.ConfigValue("MaximumRows"));
 			int    iter       = 0;
 			int    rowsDone   = 0;
 			string spr        = "";
-			string desc       = Tools.TransactionTypeName(transactionType);
 			bureauCode        = Tools.NullToString(bureau);
 			bureaCodeTokenize = Tools.NullToString(bureau);
 			success           = 0;
 			fail              = 0;
 			maxRows           = ( maxRows < 1 ? Constants.MaxRowsPayment : maxRows );
 			sql               = "";
+			string desc       = Tools.TransactionTypeName(transactionType) + " (BureauCode " + bureauCode + ")";
 
 			if ( bureauCode.Length < 1 )
 				return 0;
@@ -137,6 +140,9 @@ namespace PCIBusiness
 				spr  = "sp_TokenEx_Detoken";
 			else if ( transactionType == (byte)Constants.TransactionType.TransactionLookup )
 				spr  = "sp_Get_CardPayment_Ref";
+			else if ( transactionType == (byte)Constants.TransactionType.ZeroValueCheck )
+				spr  = "sp_Get_PaymentZeroValue";
+
 			//	Testing
 			//	sql  = "select 1 as Seq,'EoD35wlB34RtDeIVG74RqEexmT8aYkNOw9T2kEH3nyu21zWwQ10Ls9Y8zXfs4pVc' as TransactionId"
 			//      + " union select 2,'M4lbEu9BvQoM6PwmYsym2RrEfM58nh2VpO7vrEZleJ5JbypaP8PYn3wbIEMa1ndZ'"
@@ -179,12 +185,12 @@ namespace PCIBusiness
 					sql = sql + Constants.MaxRowsPayment.ToString();
 			}
 
-			Tools.LogInfo("ProcessCards/15",desc + ", MaxRows=" + maxRows.ToString()+", RowsToProcess=" + rowsToProcess.ToString()+", BureauCode="+bureauCode+", SQL="+sql,199,this);
+			Tools.LogInfo("ProcessCards/15",desc + ", MaxRows=" + maxRows.ToString()+", RowsToProcess=" + rowsToProcess.ToString()+", SQL="+sql,logPriority,this);
 
 			while ( rowsToProcess < 1 || rowsToProcess > success + fail )
 				try
 				{
-					if ( LoadDataFromSQL(maxRows,"Payments.ProcessCards ("+desc+", "+bureauCode+")") < 1 )
+					if ( LoadDataFromSQL(maxRows,"Payments.ProcessCards ("+desc+")") < 1 )
 						break;
 					Tools.CloseDB(ref dbConn);
 					rowsDone = 0;
@@ -195,6 +201,8 @@ namespace PCIBusiness
 						payment.TransactionType = transactionType;
 						if ( transactionType == (byte)Constants.TransactionType.GetToken )
 							err = payment.GetToken();
+						else if ( transactionType == (byte)Constants.TransactionType.ZeroValueCheck )
+							err = payment.ZeroValueCheck();
 						else if ( transactionType == (byte)Constants.TransactionType.TokenPayment )
 							err = payment.ProcessPayment();
 						else if ( transactionType == (byte)Constants.TransactionType.CardPayment )
@@ -231,7 +239,7 @@ namespace PCIBusiness
 						if ( rowsToProcess > 0 && rowsToProcess <= success + fail )
 							break;
 					}
-					Tools.LogInfo("ProcessCards/40","Iteration " + iter.ToString() + " (" + rowsDone.ToString() + " " + desc + "s)",199,this);
+					Tools.LogInfo("ProcessCards/40",desc + ", iteration " + iter.ToString() + ", " + rowsDone.ToString() + " rows done",logPriority,this);
 //	In case of a runaway loop where failures are not rectified ...
 					if ( fail > 99 && success == 0 )
 						break;
@@ -242,12 +250,12 @@ namespace PCIBusiness
 				{
 					fail++;
 					rowsDone++;
-					Tools.LogException("ProcessCards/50","Iteration " + iter.ToString() + ", " + desc + " " + (success+fail).ToString(),ex,this);
+					Tools.LogException("ProcessCards/50",desc + ", iteration " + iter.ToString() + ", " + (success+fail).ToString() + " rows done",ex,this);
 				}
 				finally
 				{
 					Tools.CloseDB(ref dbConn);
-					Tools.LogInfo("ProcessCards/90","Finished (" + success.ToString() + " " + desc + "s succeeded, " + fail.ToString() + " " + desc + "s failed)",199,this);
+					Tools.LogInfo("ProcessCards/90",desc + " finished, success " + success.ToString() + ", fail " + fail.ToString(),199,this);
 				}
 
 			return success+fail;
