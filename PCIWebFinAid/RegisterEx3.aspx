@@ -123,7 +123,8 @@ function ValidatePage(ctl,seq,misc)
 		}
 		if ( ( pageNo == 2 && ctl == 0 ) || ctl == 100118 )
 		{
-			p   = Validate('txtID','lblInfo2',6,GetEltValue('hdnIDError'),7,20);
+		//	p   = Validate('txtID','lblInfo2',6,GetEltValue('hdnIDError'),7,20);
+			p   = Validate('txtID','lblInfo2',1,GetEltValue('hdnIDError'),2,3);
 			err = err + p;
 			ShowTick(p,'ID',seq);
 		}
