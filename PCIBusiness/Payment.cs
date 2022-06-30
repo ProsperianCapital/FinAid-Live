@@ -69,6 +69,7 @@ namespace PCIBusiness
 		private string   sessionIdClient;
 		private string   sessionIdProvider;
 		private string   machineCookie;
+		private string   schemeTranID;
 
 //	Stripe fields
 		private string   customerID;
@@ -146,13 +147,20 @@ namespace PCIBusiness
 		}
 		public string    PaymentMethodID
 		{
+			set { paymentMethodID = value.Trim(); }
+			get { return  Tools.NullToString(paymentMethodID); }
+		}
+
+//		WorldPay stuff
+		public string    SchemeTransactionID
+		{
 		//	Don't TRIM() here!
-			set { paymentMethodID = value; }
+			set { schemeTranID = value; }
 			get
 			{
-				if ( string.IsNullOrWhiteSpace(paymentMethodID) )
+				if ( string.IsNullOrWhiteSpace(schemeTranID) )
 					return "";
-				return paymentMethodID;
+				return schemeTranID;
 			}
 		}
 
@@ -1152,9 +1160,11 @@ namespace PCIBusiness
 			ccPIN            = dbConn.ColString ("PIN"            ,0,0);
 			transactionID    = dbConn.ColGuid   ("TransactionId"  ,0,0);
 		//	transactionID    = dbConn.ColString ("TransactionId"  ,0,0,177);
-		//	Used by Stripe (bureauCode 028) and WorldPay (bureauCode 032)
+		//	Used by Stripe (bureauCode 028)
 			customerID       = dbConn.ColString ("CustomerId"     ,0,0);
 			paymentMethodID  = dbConn.ColString ("PaymentMethodId",0,0);
+		//	Used by WorldPay (bureauCode 032)
+			schemeTranID     = dbConn.ColString ("SchemeTransactionIdentifier",0,0);
 
 		//	Contract/customer mandate
 			mandateDateTime  = dbConn.ColDate   ("ContractDate"   ,0,0);
