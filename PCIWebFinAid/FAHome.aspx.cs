@@ -5,7 +5,7 @@ using PCIBusiness;
 
 namespace PCIWebFinAid
 {
-	public partial class CAHome : BasePage
+	public partial class FAHome : BasePage
 	{
 		byte   errPriority;
 		int    ret;
@@ -32,6 +32,8 @@ namespace PCIWebFinAid
 				languageDialectCode = hdnLangDialectCode.Value;
 				promoCode           = hdnPromoCode.Value;
 				ListItem lang       = ascxHeader.lstLanguage.SelectedItem;
+
+//				if ( lang != null && ( lang.Text != languageCode || lang.Value != languageDialectCode ) )
 
 				if ( lang != null && lang.Value != languageCode + "|" + languageDialectCode )
 				{

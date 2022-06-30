@@ -71,6 +71,7 @@
     <Content Include="CAFooter.ascx" />
     <Content Include="CAHeader.ascx" />
     <Content Include="CAHome.aspx" />
+    <Content Include="FAHome.aspx" />
     <Content Include="CALegal.aspx" />
     <Content Include="CALogin.aspx" />
     <Content Include="Detokenize.aspx" />
@@ -411,6 +412,13 @@
     </Compile>
     <Compile Include="CAHome.aspx.designer.cs">
       <DependentUpon>CAHome.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="FAHome.aspx.cs">
+      <DependentUpon>FAHome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FAHome.aspx.designer.cs">
+      <DependentUpon>FAHome.aspx</DependentUpon>
     </Compile>
     <Compile Include="SSHome.aspx.cs">
       <DependentUpon>SSHome.aspx</DependentUpon>
