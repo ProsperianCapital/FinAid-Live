@@ -10,16 +10,16 @@
 namespace PCIWebFinAid {
     
     
-    public partial class Login {
+    public partial class LAdmin {
         
         /// <summary>
-        /// frmLogin control.
+        /// frmMain control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm frmLogin;
+        protected global::System.Web.UI.HtmlControls.HtmlForm frmMain;
         
         /// <summary>
         /// ascxHeader control.
@@ -31,67 +31,49 @@ namespace PCIWebFinAid {
         protected global::PCIWebFinAid.Header ascxHeader;
         
         /// <summary>
-        /// X103013 control.
+        /// ascxMenu control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal X103013;
+        protected global::PCIWebFinAid.Menu ascxMenu;
         
         /// <summary>
-        /// txtID control.
+        /// X104002 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtID;
+        protected global::System.Web.UI.WebControls.Label X104002;
         
         /// <summary>
-        /// txtPW control.
+        /// X104004 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtPW;
+        protected global::System.Web.UI.WebControls.Label X104004;
         
         /// <summary>
-        /// X103016 control.
+        /// lblDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button X103016;
+        protected global::System.Web.UI.WebControls.Literal lblDate;
         
         /// <summary>
-        /// X103018 control.
+        /// X104018 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal X103018;
-        
-        /// <summary>
-        /// lblVer control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblVer;
-        
-        /// <summary>
-        /// hdnVer control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnVer;
+        protected global::System.Web.UI.WebControls.Label X104018;
         
         /// <summary>
         /// ascxFooter control.
