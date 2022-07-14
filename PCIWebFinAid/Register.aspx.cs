@@ -378,6 +378,7 @@ namespace PCIWebFinAid
 							else if ( fieldCode == "100138" ) controlID = "Options";
 							else if ( fieldCode == "100147" ) controlID = "Payment";
 							else if ( fieldCode == "100144" ) controlID = "Terms";
+							else if ( fieldCode == "104429" ) controlID = "Rewards";
 
 						//	Page 5
 							else if ( fieldCode == "100186" ) controlID = "CCName";
@@ -757,13 +758,14 @@ namespace PCIWebFinAid
 					else if ( pageNo == 4 )
 						sql = sql + ",@ProductOptionCode =" + Tools.DBString(WebTools.ListValue(lstOptions,""))
 					             + ",@TsCsRead = '1'"
-					             + ",@PaymentMethodCode =" + Tools.DBString(WebTools.ListValue(lstPayment,""));
+					             + ",@PaymentMethodCode =" + Tools.DBString(WebTools.ListValue(lstPayment,""))
+					             + ",@RewardsBoost = "     + ( chkRewards.Checked ? "'1'" : "'0'" );
 					else if ( pageNo == 5 )
-						sql = sql + ",@CardNumber ="      + Tools.DBString(txtCCNumber.Text,47)
-					             + ",@AccountHolder ="   + Tools.DBString(txtCCName.Text,47)
-					             + ",@CardExpiryMonth =" + Tools.DBString(WebTools.ListValue(lstCCMonth).ToString())
-					             + ",@CardExpiryYear ="  + Tools.DBString(WebTools.ListValue(lstCCYear).ToString())
-					             + ",@CardCVVCode ="     + Tools.DBString(txtCCCVV.Text,47);
+						sql = sql + ",@CardNumber ="        + Tools.DBString(txtCCNumber.Text,47)
+					             + ",@AccountHolder ="     + Tools.DBString(txtCCName.Text,47)
+					             + ",@CardExpiryMonth ="   + Tools.DBString(WebTools.ListValue(lstCCMonth).ToString())
+					             + ",@CardExpiryYear ="    + Tools.DBString(WebTools.ListValue(lstCCYear).ToString())
+					             + ",@CardCVVCode ="       + Tools.DBString(txtCCCVV.Text,47);
 
 					errNo = miscList.ExecQuery(sql,0);
 

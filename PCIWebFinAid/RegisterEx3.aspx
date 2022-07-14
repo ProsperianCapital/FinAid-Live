@@ -162,6 +162,12 @@ function ValidatePage(ctl,seq,misc)
 			err = err + p;
 			ShowTick(p,'Terms',seq);
 		}
+		if ( ( pageNo == 4 && ctl == 0 ) || ctl == 104429 )
+		{
+			p   = Validate('chkRewards','lblInfo4',8,GetEltValue('hdnRewardsError'),2);
+			err = err + p;
+			ShowTick(p,'Rewards',seq);
+		}
 		if ( ( pageNo == 4 && ctl == 0 ) || ctl == 100147 )
 		{
 			p   = Validate('lstPayment','lblInfo4',3,GetEltValue('hdnPaymentError'),73,0);
@@ -496,6 +502,15 @@ function WorldPay3DS(url,binValue,jwtValue)
 			<asp:HiddenField runat="server" ID="hdnTermsHelp" />
 			<asp:HiddenField runat="server" ID="hdnTermsError" />
 			<asp:HiddenField runat="server" ID="hdnTermsGuide" /></td></tr>
+	<tr id="trRewards">
+		<td style="white-space:nowrap" colspan="2">
+			<asp:CheckBox runat="server" ID="chkRewards" onclick="JavaScript:ValidatePage(104429,2)" />
+			<asp:Literal runat="server" ID="lblRewardsLabel"></asp:Literal>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'Rewards')" onmouseout="JavaScript:Help(0)">?</a>
+			<img id="imgRewards" />
+			<asp:HiddenField runat="server" ID="hdnRewardsHelp" />
+			<asp:HiddenField runat="server" ID="hdnRewardsError" />
+			<asp:HiddenField runat="server" ID="hdnRewardsGuide" /></td></tr>
 	<tr id="trPayment">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">

@@ -708,6 +708,51 @@ namespace PCIWebFinAid
 		protected global::System.Web.UI.WebControls.HiddenField hdnTermsGuide;
 
 		/// <summary>
+		/// chkRewards control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.CheckBox chkRewards;
+
+		/// <summary>
+		/// lblRewardsLabel control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.Literal lblRewardsLabel;
+
+		/// <summary>
+		/// hdnRewardsHelp control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.HiddenField hdnRewardsHelp;
+
+		/// <summary>
+		/// hdnRewardsError control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.HiddenField hdnRewardsError;
+
+		/// <summary>
+		/// hdnRewardsGuide control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.HiddenField hdnRewardsGuide;
+
+		/// <summary>
 		/// lblPaymentLabel control.
 		/// </summary>
 		/// <remarks>
