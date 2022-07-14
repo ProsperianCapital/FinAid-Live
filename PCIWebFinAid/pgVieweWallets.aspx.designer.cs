@@ -10,78 +10,96 @@
 namespace PCIWebFinAid {
     
     
-    public partial class TransLookup {
+    public partial class pgVieweWallets {
         
         /// <summary>
-        /// frmLookup control.
+        /// ascxXHeader control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm frmLookup;
+        protected global::PCIWebFinAid.XHeader ascxXHeader;
         
         /// <summary>
-        /// txtCard1 control.
+        /// frmMain control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCard1;
+        protected global::System.Web.UI.HtmlControls.HtmlForm frmMain;
         
         /// <summary>
-        /// txtCard2 control.
+        /// ascxXMenu control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCard2;
+        protected global::PCIWebFinAid.XMenu ascxXMenu;
         
         /// <summary>
-        /// txtCard3 control.
+        /// hdnEditInsert control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCard3;
+        protected global::System.Web.UI.WebControls.HiddenField hdnEditInsert;
         
         /// <summary>
-        /// txtDate1 control.
+        /// txtAccNo control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDate1;
+        protected global::System.Web.UI.WebControls.TextBox txtAccNo;
         
         /// <summary>
-        /// txtDate2 control.
+        /// lstCurrency control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDate2;
+        protected global::System.Web.UI.WebControls.DropDownList lstCurrency;
         
         /// <summary>
-        /// btnSearch control.
+        /// txtDescr control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSearch;
+        protected global::System.Web.UI.WebControls.TextBox txtDescr;
         
         /// <summary>
-        /// lblTransactions control.
+        /// btnSave control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lblTransactions;
+        protected global::System.Web.UI.WebControls.Button btnSave;
+        
+        /// <summary>
+        /// lblErr2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblErr2;
+        
+        /// <summary>
+        /// ascxXFooter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::PCIWebFinAid.XFooter ascxXFooter;
     }
 }

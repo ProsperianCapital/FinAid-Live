@@ -9,8 +9,16 @@
 
 namespace PCIWebFinAid {
     
-    
-    public partial class TransLookup {
+    public partial class pgTransactionLookUp {
+        
+        /// <summary>
+        /// ascxXHeader control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::PCIWebFinAid.XHeader ascxXHeader;
         
         /// <summary>
         /// frmLookup control.
@@ -20,6 +28,15 @@ namespace PCIWebFinAid {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlForm frmLookup;
+        
+        /// <summary>
+        /// ascxXMenu control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::PCIWebFinAid.XMenu ascxXMenu;
         
         /// <summary>
         /// txtCard1 control.
@@ -83,5 +100,14 @@ namespace PCIWebFinAid {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal lblTransactions;
+        
+        /// <summary>
+        /// ascxXFooter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::PCIWebFinAid.XFooter ascxXFooter;
     }
 }

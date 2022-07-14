@@ -10,78 +10,96 @@
 namespace PCIWebFinAid {
     
     
-    public partial class TransLookup {
+    public partial class XTechnical {
         
         /// <summary>
-        /// frmLookup control.
+        /// ascxXHeader control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm frmLookup;
+        protected global::PCIWebFinAid.XHeader ascxXHeader;
         
         /// <summary>
-        /// txtCard1 control.
+        /// frmHome control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCard1;
+        protected global::System.Web.UI.HtmlControls.HtmlForm frmHome;
         
         /// <summary>
-        /// txtCard2 control.
+        /// ascxXMenu control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCard2;
+        protected global::PCIWebFinAid.XMenu ascxXMenu;
         
         /// <summary>
-        /// txtCard3 control.
+        /// hdnBrowser control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCard3;
+        protected global::System.Web.UI.WebControls.HiddenField hdnBrowser;
         
         /// <summary>
-        /// txtDate1 control.
+        /// lstAction control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDate1;
+        protected global::System.Web.UI.WebControls.DropDownList lstAction;
         
         /// <summary>
-        /// txtDate2 control.
+        /// txtData control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDate2;
+        protected global::System.Web.UI.WebControls.TextBox txtData;
         
         /// <summary>
-        /// btnSearch control.
+        /// txtPwd control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSearch;
+        protected global::System.Web.UI.WebControls.TextBox txtPwd;
         
         /// <summary>
-        /// lblTransactions control.
+        /// btnOK control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lblTransactions;
+        protected global::System.Web.UI.WebControls.Button btnOK;
+        
+        /// <summary>
+        /// lblResult control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal lblResult;
+        
+        /// <summary>
+        /// ascxXFooter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::PCIWebFinAid.XFooter ascxXFooter;
     }
 }

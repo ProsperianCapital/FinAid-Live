@@ -10,78 +10,114 @@
 namespace PCIWebFinAid {
     
     
-    public partial class TransLookup {
+    public partial class pgPayOutstandingFees {
         
         /// <summary>
-        /// frmLookup control.
+        /// ascxXHeader control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm frmLookup;
+        protected global::PCIWebFinAid.XHeader ascxXHeader;
         
         /// <summary>
-        /// txtCard1 control.
+        /// frmMain control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCard1;
+        protected global::System.Web.UI.HtmlControls.HtmlForm frmMain;
         
         /// <summary>
-        /// txtCard2 control.
+        /// ascxXMenu control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCard2;
+        protected global::PCIWebFinAid.XMenu ascxXMenu;
         
         /// <summary>
-        /// txtCard3 control.
+        /// X104390 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCard3;
+        protected global::System.Web.UI.WebControls.Literal X104390;
         
         /// <summary>
-        /// txtDate1 control.
+        /// X104152 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDate1;
+        protected global::System.Web.UI.WebControls.Literal X104152;
         
         /// <summary>
-        /// txtDate2 control.
+        /// lblCurr control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDate2;
+        protected global::System.Web.UI.WebControls.Label lblCurr;
         
         /// <summary>
-        /// btnSearch control.
+        /// lblBalance control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSearch;
+        protected global::System.Web.UI.WebControls.Label lblBalance;
         
         /// <summary>
-        /// lblTransactions control.
+        /// X104999 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lblTransactions;
+        protected global::System.Web.UI.WebControls.Literal X104999;
+        
+        /// <summary>
+        /// txtAmt control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtAmt;
+        
+        /// <summary>
+        /// X104888 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button X104888;
+        
+        /// <summary>
+        /// X104777 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label X104777;
+        
+        /// <summary>
+        /// ascxXFooter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::PCIWebFinAid.XFooter ascxXFooter;
     }
 }
