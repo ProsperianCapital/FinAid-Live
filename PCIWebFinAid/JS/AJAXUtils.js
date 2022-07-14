@@ -1,8 +1,7 @@
 //	AJAX Toolkit
 
-//	(c)Paul Kilfoil
+//	(c)	Paul Kilfoil
 //		Software Development & IT Consulting
-//		+27 84 438 5400 (phone)
 //		PaulKilfoil..[at]..gmail.com
 //		www.PaulKilfoil.co.za
 
@@ -49,14 +48,7 @@ function AJAXCallBack()
 
 			try
 			{
-				if ( reqType == 7 )
-					AJAXPayments();
-				else if ( reqType == 17 )
-					AJAXTeam();
-//				else if ( reqType == 19 )
-//					AJAXTeamDel();
-				else
-					AJAXFinalize(reqType);
+				AJAXFinalize(reqType);
 			}
 			catch (y)
 			{ }

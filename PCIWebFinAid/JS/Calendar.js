@@ -7,17 +7,17 @@ function getPointer(obj)
 
 function positionInfo(obj)
 {
-	var p_elm = obj;
+	var pElt = obj;
 
 	this.getEltLeft = getEltLeft;
 	function getEltLeft()
 	{
-		var x   = 0;
-		var elm = getPointer(p_elm);
-		while (elm != null)
+		var x = 0;
+		var p = getPointer(pElt);
+		while (p != null)
 		{
-			x+= elm.offsetLeft;
-			elm = elm.offsetParent;
+			x+= p.offsetLeft;
+			p = p.offsetParent;
 		}
 		return parseInt(x);
 	}
@@ -25,25 +25,25 @@ function positionInfo(obj)
 	this.getEltWidth = getEltWidth;
 	function getEltWidth()
 	{
-		var elm = getPointer(p_elm);
-		return parseInt(elm.offsetWidth);
+		var p = getPointer(pElt);
+		return parseInt(p.offsetWidth);
 	}
 
 	this.getEltRight = getEltRight;
 	function getEltRight()
 	{
-		return getEltLeft(p_elm) + getEltWidth(p_elm);
+		return getEltLeft(pElt) + getEltWidth(pElt);
 	}
 
 	this.getEltTop = getEltTop;
 	function getEltTop()
 	{
-		var y   = 0;
-		var elm = getPointer(p_elm);
-		while (elm != null)
+		var y = 0;
+		var p = getPointer(pElt);
+		while (p != null)
 		{
-			y+= elm.offsetTop;
-			elm = elm.offsetParent;
+			y+= p.offsetTop;
+			p = p.offsetParent;
 		}
 		return parseInt(y);
 	}
@@ -51,14 +51,14 @@ function positionInfo(obj)
 	this.getEltHeight = getEltHeight;
 	function getEltHeight()
 	{
-		var elm = getPointer(p_elm);
-		return parseInt(elm.offsetHeight);
+		var p = getPointer(pElt);
+		return parseInt(p.offsetHeight);
 	}
 
 	this.getEltBottom = getEltBottom;
 	function getEltBottom()
 	{
-		return getEltTop(p_elm) + getEltHeight(p_elm);
+		return getEltTop(pElt) + getEltHeight(pElt);
 	}
 }
 
@@ -79,8 +79,8 @@ function CalendarControl()
 	{
 		try
 		{
-			var elm = getPointer(calendarId);
-			return elm[p_property];
+			var p = getPointer(calendarId);
+			return p[p_property];
 		}
 		catch (e) {}
 
@@ -89,12 +89,12 @@ function CalendarControl()
 
 	function setEltProperty(p_property, p_value, p_elmId)
 	{
-		var elm = getPointer(p_elmId);
+		var p = getPointer(p_elmId);
 
-		if ((elm != null) && (elm.style != null))
+		if ((p != null) && (p.style != null))
 		{
-			elm = elm.style;
-			elm[p_property] = p_value;
+			p = p.style;
+			p[p_property] = p_value;
 		}
 	}
 
@@ -119,12 +119,17 @@ function CalendarControl()
 	{
 		if (dateField)
 		{
+			if (year < 60)
+				year = "20" + year;
+			else if (year < 100)
+				year = "19" + year;
 			if (month < 10)
 				month = "0" + month;
 			if (day < 10)
 				day = "0" + day;
-			var dateString = day+"/"+month+"/"+year;
-			dateField.value = dateString;
+//			var dateString = day+"/"+month+"/"+year;
+//			dateField.value = dateString;
+			dateField.value = year + "-" + month + "-" + day;
 			hide();
 		}
 	}
@@ -292,10 +297,9 @@ function CalendarControl()
 
 var ctlCalendar = new CalendarControl();
 
-function showCalendar(textField)
+function showCalendar(txtDate)
 {
-//	window.onbeforeunload = null;
-	ctlCalendar.show(textField);
+	ctlCalendar.show(txtDate);
 }
 
 function hideCalendar()
