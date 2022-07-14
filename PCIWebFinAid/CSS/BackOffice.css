@@ -1,17 +1,21 @@
 @font-face{font-family:'ralewaysemibold';src:url(/CSS/raleway-semibold-webfont.eot);src:url(/CSS/raleway-semibold-webfont.eot?#iefix) format("embedded-opentype"),url(/CSS/raleway-semibold-webfont.woff) format("woff"),url(/CSS/raleway-semibold-webfont.ttf) format("truetype"),url(/CSS/raleway-semibold-webfont.svg#ralewaysemibold) format("svg");font-weight:400;font-style:normal}
 @font-face{font-family:'ralewaymedium';src:url(/CSS/raleway-medium-webfont.eot);src:url(/CSS/raleway-medium-webfont.eot?#iefix) format("embedded-opentype"),url(/CSS/raleway-medium-webfont.woff) format("woff"),url(/CSS/raleway-medium-webfont.ttf) format("truetype"),url(/CSS/raleway-medium-webfont.svg#ralewaymedium) format("svg");font-weight:400;font-style:normal}
 @font-face{font-family:'ralewaybold';src:url(/CSS/raleway-bold-webfont.eot);src:url(/CSS/raleway-bold-webfont.eot?#iefix) format("embedded-opentype"),url(/CSS/raleway-bold-webfont.woff) format("woff"),url(/CSS/raleway-bold-webfont.ttf) format("truetype"),url(/CSS/raleway-bold-webfont.svg#ralewaybold) format("svg");font-weight:400;font-style:normal}
+@font-face{font-family:'atlanta';src:url(/CSS/atlanta.woff) format("woff");font-weight:400;font-style:normal}
 
 body
 {
 	font-family: ralewaymedium, Calibri, Arial, Tahoma;
 	font-size: 14px;
+	background-color: #F3F3F3;
 }
 input[type=button], input[type=submit]
 {
 	font-weight: 300;
+	font-size: 16px;
 	color: white;
 	background-color: #E68A00;
+	height: 32px;
 	width: 100px;
 	padding: 3px;
 }
@@ -19,10 +23,22 @@ input[type=button]:hover, input[type=submit]:hover
 {
 	background-color: #FF1A1A !important;
 }
-table td
+
+input[type=text], input[type=password], textarea
 {
-	height: 22px;
-	width: 209px;
+	height: 21px;
+}
+
+select
+{
+	height: 27px;
+	width: 240px;
+}
+
+input[type=text]:focus, input[type=password]:focus, select:focus, textarea:focus
+{
+	box-shadow: 0 0 2px rgba(11, 203, 238, 1);
+	border: 1px solid rgba(11, 203, 238, 1);
 }
 
 .Confirmation td
@@ -37,9 +53,8 @@ table td
 	font-style: italic;
 	font-weight: 100;
 	color: white;
-	padding: 10px;
-	background-color: #898787;
-	height: 32px;
+	padding: 5px;
+	background-color: #262827;
 }
 .Header1a
 {
@@ -69,8 +84,18 @@ table td
 	font-size: 32px;
 	font-weight: 100;
 	color: black;
-	padding: 20px;
-	background-color: #898787;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	width: 100%;
+	text-align: left;
+}
+
+@media screen and (max-width: 600px)
+{
+	.Header3
+	{
+		width: 340px;
+	}
 }
 
 .Header4
@@ -94,16 +119,21 @@ table td
 	border-bottom: 1px solid blue;
 }
 
+.Header6
+{
+	background-color: orange;
+	color: black;
+	padding: 5px;
+	font-size: 16px;
+	font-weight: bold;
+}
+
 .MenuRow
 {
 	background-color: #898787;
 	text-align: center;
 	padding: 2px;
 }
-
-/*
-.Header6 input[type=button] input[type=submit]
-*/
 
 .MenuButton
 {
@@ -129,13 +159,14 @@ table td
 
 .Footer1
 {
-	display: block;
-	width: 100%;
+	display: normal;
+	position: fixed;
+	width: 98%;
 	text-align: center;
-	background-color: #898787;
-	color: #FFFFFF;
-	padding-top: 15px;
-	padding-bottom: 15px;
+	background-color: white;
+	color: black;
+	padding: 10px;
+	bottom: 1px;
 }
 
 .DataLabel
@@ -152,10 +183,28 @@ table td
 	padding: 2px;
 }
 
+.DataStatic
+{
+	color: blue;
+	font-weight: bold;
+}
+
 .Error
 {
 	color: red;
 	width: 500px;
+}
+
+.Info
+{
+	color: green;
+	font-weight: bold;
+}
+
+.Note
+{
+	color: magenta;
+	font-weight: bold;
 }
 
 .PopupBox
@@ -173,9 +222,24 @@ table td
 	box-shadow: 1px 1px 3px 1px #999;
 }
 
+.PopupConfirm
+{
+	top: 5%;
+	left: 5%;
+	position: fixed; /* absolute; */
+	z-index: 100;
+	border: 1px solid #999999;
+	padding: 5px;
+	background-color: yellow;
+	color: #000000;
+	-moz-box-shadow: 1px 1px 3px 1px #999;
+	-webkit-box-shadow: 1px 1px 3px 1px #999;
+	box-shadow: 1px 1px 3px 1px #999;
+}
+
 .Popup2
 {
-	top: 20%;
+	top: 10%;
 	left: 20%;
 	position: fixed; /* absolute; */
 	z-index: 100;
@@ -197,6 +261,78 @@ table td
 	font-weight: bold;
 }
 
+.HelpHead
+{
+	background-color: limegreen;
+	color: black;
+	padding: 5px;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.tRowHead
+{
+	font-family: ralewaymedium;
+	font-size: 14px;
+	font-weight: bold;
+	color: black;
+	background-color: aqua;
+	border-bottom: 1px solid #000000;
+}
+
+tr td
+{
+	vertical-align: middle;
+}
+tr.tRow
+{
+	background-color: #E1E1E1;
+}
+tr.tRow:hover
+{
+	background-color: lightpink;
+}
+tr.tRowAlt
+{
+	background-color: #B9B9B9;
+}
+tr.tRowAlt:hover
+{
+	background-color: lightpink; /* aquamarine */
+}
+/*
+tr.tRow td
+{
+	vertical-align: middle;
+}
+tr.tRowAlt td
+{
+	vertical-align: middle;
+}
+*/
+
+table
+{
+	text-align: left;
+	border-spacing: 0px;
+	word-spacing: 0px;
+	white-space: nowrap;
+	border-collapse: collapse;
+	padding: 0px;
+}
+
+tr
+{
+	padding: 0;
+}
+
+td
+{
+	vertical-align: top;
+	padding: 5px;
+	border: none;
+}
+
 /* Testing stuff below, not used */
 
 .Detail
@@ -206,6 +342,7 @@ table td
 .Red
 {
 	color: red;
+	font-weight: bold;
 }
 
 .ButtonRow
