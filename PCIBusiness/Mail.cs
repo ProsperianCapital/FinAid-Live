@@ -56,8 +56,8 @@ namespace PCIBusiness
 			{
 				string x = "";
 				if ( msg.To != null )
-					foreach ( MailAddress add in msg.To )
-						x = x + add.Address + ", ";
+					foreach ( MailAddress addr in msg.To )
+						x = x + addr.Address + ", ";
 				if ( x.EndsWith(", ") )
 					x = x.Substring(0,x.Length-2).Trim();
 				return x;
@@ -282,13 +282,6 @@ namespace PCIBusiness
 		public Mail()
 		{
 			msg = new MailMessage();
-
-//			if ( Tools.ConfigValue("SMTP-From").Length > 5 )
-//				msg.From   = new MailAddress  (Tools.ConfigValue("SMTP-From"));
-//			if ( Tools.ConfigValue("SMTP-User").Length > 5 )
-//				msg.Sender = new MailAddress  (Tools.ConfigValue("SMTP-User"));
-//			if ( Tools.ConfigValue("SMTP-BCC").Length  > 5 )
-//				BCC = Tools.ConfigValue("SMTP-BCC");
 		}
 	}
 }
