@@ -58,6 +58,9 @@ namespace PCIBusiness
 
 			try
 			{
+				if ( url.Length < 1 )
+					url = BureauURL;
+
 				Tools.LogInfo("TransactionT24.PostHTML/10","URL=" + url + ", XML Sent=" + xmlSent,10);
 
 			// Construct web request object
@@ -72,8 +75,7 @@ namespace PCIBusiness
 				webRequest.KeepAlive      = false;
 
 				ret = 30;
-//				byte[] page = Encoding.ASCII.GetBytes(xmlSent);
-				byte[] page = Encoding.UTF8.GetBytes(xmlSent); // To handle unicode
+				byte[] page = Encoding.UTF8.GetBytes(xmlSent); // UTF8 needed for unicode
 
 			// Insert encoded HTML into web request
 				ret = 40;
@@ -112,10 +114,14 @@ namespace PCIBusiness
 
 				Tools.LogInfo("TransactionT24.PostHTML/80","XML Sent=" + xmlSent+", XML Rec=" + xmlReceived,220);
 			}
-			catch (Exception ex)
+			catch (WebException ex1)
 			{
-				Tools.LogInfo("TransactionT24.PostHTML/85","Ret="+ret.ToString()+", URL=" + url + ", XML Sent="+xmlSent,255);
-				Tools.LogException("TransactionT24.PostHTML/90","Ret="+ret.ToString()+", URL=" + url + ", XML Sent="+xmlSent,ex);
+				Tools.DecodeWebException(ex1,"TransactionT24.PostHTML/97",xmlSent);
+			}
+			catch (Exception ex2)
+			{
+				Tools.LogInfo     ("TransactionT24.PostHTML/98","Ret="+ret.ToString()+", URL=" + url + ", XML Sent="+xmlSent,255);
+				Tools.LogException("TransactionT24.PostHTML/99","Ret="+ret.ToString()+", URL=" + url + ", XML Sent="+xmlSent,ex2);
 			}
 			return ret;
 		}
@@ -126,16 +132,16 @@ namespace PCIBusiness
 
 			try
 			{
-				xmlSent = "version="                + Tools.URLString(providerVersion)
+				xmlSent =  "version="               + Tools.URLString(providerVersion)
 				        + "&ipaddress="
 				        + "&merchant_account="      + Tools.URLString(payment.ProviderUserID)
 				        + "&first_name="            + Tools.URLString(payment.FirstName)
 				        + "&last_name="             + Tools.URLString(payment.LastName)
-				        + "&address1="              + Tools.URLString(payment.Address1)
-				        + "&city="                  + Tools.URLString(payment.Address2)
+				        + "&address1="              + Tools.URLString(payment.Address1())
+				        + "&city="                  + Tools.URLString(payment.Address2())
 				        + "&state="                 + Tools.URLString(payment.State) // USA only, do not include in hash
-				        + "&zip_code="              + Tools.URLString(payment.PostalCode)
-				        + "&country="               + Tools.URLString(payment.CountryCode)
+				        + "&zip_code="              + Tools.URLString(payment.PostalCode())
+				        + "&country="               + Tools.URLString(payment.CountryCode())
 				        + "&phone="                 + Tools.URLString(payment.PhoneCell)
 				        + "&email="                 + Tools.URLString(payment.EMail)
 				        + "&merchant_order="        + Tools.URLString(payment.MerchantReference)
@@ -153,10 +159,10 @@ namespace PCIBusiness
 				string chk = Tools.URLString(payment.ProviderUserID)
 							  + Tools.URLString(payment.FirstName)
 							  + Tools.URLString(payment.LastName)
-							  + Tools.URLString(payment.Address1)
-							  + Tools.URLString(payment.Address2)
-							  + Tools.URLString(payment.PostalCode)
-							  + Tools.URLString(payment.CountryCode)
+							  + Tools.URLString(payment.Address1())
+							  + Tools.URLString(payment.Address2())
+							  + Tools.URLString(payment.PostalCode())
+							  + Tools.URLString(payment.CountryCode())
 							  + Tools.URLString(payment.PhoneCell)
 							  + Tools.URLString(payment.EMail)
 							  + Tools.URLString(payment.MerchantReference)
@@ -214,7 +220,7 @@ namespace PCIBusiness
 //					ret     = 70;
 //					xmlSent = xmlSent + "&control=" + HashSHA1(chk);
 //					Tools.LogInfo("TransactionT24.GetToken/40","(Refund) POST="+xmlSent+", Key="+payment.ProviderKey,177);
-//					ret     = PostHTML("https://payment.ccp.transact24.com/Refund");
+//					ret     = PostHTML(BureauURL + "/Refund");
 //				}
 
 			}
@@ -247,7 +253,7 @@ namespace PCIBusiness
 			return ret;
 		}
 
-		public override int ProcessPayment(Payment payment)
+		public override int TokenPayment(Payment payment)
 		{
 			if ( ! EnabledFor3d(payment.TransactionType) )
 				return 590;
@@ -256,16 +262,16 @@ namespace PCIBusiness
 
 			try
 			{
-				xmlSent = "version="                + Tools.URLString(providerVersion)
+				xmlSent =  "version="               + Tools.URLString(providerVersion)
 				        + "&ipaddress="
 				        + "&merchant_account="      + Tools.URLString(payment.ProviderUserID)
 				        + "&first_name="            + Tools.URLString(payment.FirstName)
 				        + "&last_name="             + Tools.URLString(payment.LastName)
-				        + "&address1="              + Tools.URLString(payment.Address1)
-				        + "&city="                  + Tools.URLString(payment.Address2)
+				        + "&address1="              + Tools.URLString(payment.Address1())
+				        + "&city="                  + Tools.URLString(payment.Address2())
 				        + "&state="                 + Tools.URLString(payment.State) // USA only, do NOT include in hash
-				        + "&zip_code="              + Tools.URLString(payment.PostalCode)
-				        + "&country="               + Tools.URLString(payment.CountryCode)
+				        + "&zip_code="              + Tools.URLString(payment.PostalCode())
+				        + "&country="               + Tools.URLString(payment.CountryCode())
 				        + "&phone="                 + Tools.URLString(payment.PhoneCell)
 				        + "&email="                 + Tools.URLString(payment.EMail)
 				        + "&merchant_order="        + Tools.URLString(payment.MerchantReference)
@@ -279,10 +285,10 @@ namespace PCIBusiness
 				string chk = Tools.URLString(payment.ProviderUserID)
 							  + Tools.URLString(payment.FirstName)
 							  + Tools.URLString(payment.LastName)
-							  + Tools.URLString(payment.Address1)
-							  + Tools.URLString(payment.Address2)
-							  + Tools.URLString(payment.PostalCode)
-							  + Tools.URLString(payment.CountryCode)
+							  + Tools.URLString(payment.Address1())
+							  + Tools.URLString(payment.Address2())
+							  + Tools.URLString(payment.PostalCode())
+							  + Tools.URLString(payment.CountryCode())
 							  + Tools.URLString(payment.PhoneCell)
 							  + Tools.URLString(payment.EMail)
 							  + Tools.URLString(payment.MerchantReference)
@@ -295,13 +301,13 @@ namespace PCIBusiness
 				ret        = 40;
 				xmlSent    = xmlSent + "&control=" + HashSHA1(chk);
 
-				Tools.LogInfo("TransactionT24.ProcessPayment/20","Post="+xmlSent+", Key="+payment.ProviderKey,30);
+				Tools.LogInfo("TransactionT24.TokenPayment/20","Post="+xmlSent+", Key="+payment.ProviderKey,30);
 
 				ret        = PostHTML(payment.ProviderURL);
 			}
 			catch (Exception ex)
 			{
-				Tools.LogException("TransactionT24.ProcessPayment/90","Ret="+ret.ToString()+", XML Sent=" + xmlSent,ex);
+				Tools.LogException("TransactionT24.TokenPayment/90","Ret="+ret.ToString()+", XML Sent=" + xmlSent,ex);
 			}
 			return ret;
 		}
@@ -324,7 +330,8 @@ namespace PCIBusiness
 
 		public TransactionT24() : base()
 		{
-			bureauCode = Tools.BureauCode(Constants.PaymentProvider.T24);
+			base.LoadBureauDetails(Constants.PaymentProvider.T24);
+		//	bureauCode = Tools.BureauCode(Constants.PaymentProvider.T24);
 		}
 	}
 }

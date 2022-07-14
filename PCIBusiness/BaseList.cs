@@ -103,7 +103,7 @@ namespace PCIBusiness
 		protected int LoadDataFromSQL(int maxRows=0,string sourceInfo="")
 		{
 			if ( maxRows < 1 )
-				maxRows = Constants.C_MAXSQLROWS();
+				maxRows = Constants.MaxRowsSQL;
 			return LoadDataFromSQL(null,maxRows,null,0,sourceInfo);
 		}
 		protected int LoadDataFromSQL(object[][] parms,int maxRows,System.Type classType=null,byte pagingMode=0,string sourceInfo="")
@@ -118,7 +118,7 @@ namespace PCIBusiness
 				if ( maxRows > short.MaxValue )
 					maxRows   = short.MaxValue;
 				else if ( maxRows < 1 )
-					maxRows   = Constants.C_MAXSQLROWS();
+					maxRows   = Constants.MaxRowsSQL;
 
 				if ( dbConn.Execute(sql,true,parms) )
 				{
@@ -146,13 +146,13 @@ namespace PCIBusiness
 			Tools.CloseDB(ref dbConn);
 			return objList.Count;
 		}
-		protected int ExecuteSQL(object[][] parms,bool alwaysClose=false,bool noRowsIsError=true)
+		protected int ExecuteSQL(object[][] parms,bool alwaysClose=false,bool noRowsIsError=true,string connectionName="")
 		{
 			int ret = 0;
 
 //			Tools.LogInfo("BaseList.ExecuteSQL",sql,199);
 
-			if ( ! Tools.OpenDB(ref dbConn) )
+			if ( ! Tools.OpenDB(ref dbConn,connectionName) )
 				ret = 1;
 			else if ( ! dbConn.Execute(sql,true,parms) )
 				ret = 2;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 
 namespace PCIBusiness
 {
@@ -21,15 +20,23 @@ namespace PCIBusiness
 			{ }
 			return "";
 		}
+		public string NextColumnSubstring(int maxLength=0,string suffix="")
+		{
+			string h = NextColumn;
+			if ( maxLength > 0 && h.Length > maxLength )
+				return h.Substring(0,maxLength) + suffix;
+			return h;
+		}
+
 
 		public string NextColumnStr
 		{
 //			Return an empty string if the value is zero
 			get
 			{
-				string x = NextColumn;
-				if ( x == "0" ) return "";
-				return x;
+				string h = NextColumn;
+				if ( h == "0" ) return "";
+				return h;
 			}
 		}
 
@@ -75,6 +82,9 @@ namespace PCIBusiness
 		{
 			dbConn.SourceInfo = "MiscData.LoadData";
 			colNo             = -88;
+			string   dataType;
+			decimal  curr;
+			DateTime dt;
 
 			try
 			{
@@ -82,7 +92,19 @@ namespace PCIBusiness
 				{
 					if ( k > theData.Length )
 						break;
-					theData[k] = dbConn.ColValue(k);
+					dataType = dbConn.ColDataType("",k).ToUpper();
+					if ( dataType.Contains("DATE") )
+					{
+						dt         = dbConn.ColDate("",k);
+						theData[k] = Tools.DateToString(dt,7,0); // yyyy-mm-dd
+					}
+					else if ( dataType.Contains("DECIMAL") || dataType.Contains("FLOAT") )
+					{
+						curr       = dbConn.ColDecimal("",k);
+						theData[k] = Tools.DecimalToString(curr,2);
+					}
+					else
+						theData[k] = dbConn.ColValue(k);
 					if ( theData[k].ToUpper().StartsWith("[FORECOLOR]") )
 						foreColor = System.Drawing.Color.FromName(theData[k].Substring(11).Trim());
 					else if ( theData[k].ToUpper().StartsWith("[BACKCOLOR]") )
@@ -91,7 +113,7 @@ namespace PCIBusiness
 			}
 			catch (Exception ex)
 			{
-				Tools.LogException("MiscData.LoadData","",ex);
+				Tools.LogException("LoadData","",ex,this);
 			}
 		}
 
