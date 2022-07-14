@@ -64,7 +64,9 @@ namespace PCIBusiness
 					{
 						ret         = 70;
 						xmlReceived = rd.ReadToEnd();
+						rd.Close();
 					}
+					webResponse.Close();
 				}
 
 				Tools.LogInfo("TransactionPayFast.PostHTML/70","XML Received=" + xmlReceived.ToString(),10);

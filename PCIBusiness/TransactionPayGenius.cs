@@ -165,7 +165,9 @@ namespace PCIBusiness
 					{
 						ret        = 140;
 						strResult  = rd.ReadToEnd();
+						rd.Close();
 					}
+					webResponse.Close();
 				}
 
 				if ( strResult.Length == 0 )
