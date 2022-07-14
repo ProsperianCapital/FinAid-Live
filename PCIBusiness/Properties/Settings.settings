@@ -14,5 +14,8 @@
     <Setting Name="PCIBusiness_za_co_paygate_secure_PayVault" Type="(Web Service URL)" Scope="Application">
       <Value Profile="(Default)">https://secure.paygate.co.za/PayVault/process.trans</Value>
     </Setting>
+    <Setting Name="PCIBusiness_CyberSource_TransactionProcessor" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://ics2wstesta.ic3.com:443/commerce/1.x/transactionProcessor</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

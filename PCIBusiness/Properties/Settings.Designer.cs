@@ -63,5 +63,15 @@ namespace PCIBusiness.Properties {
                 return ((string)(this["PCIBusiness_za_co_paygate_secure_PayVault"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://ics2wstesta.ic3.com:443/commerce/1.x/transactionProcessor")]
+        public string PCIBusiness_CyberSource_TransactionProcessor {
+            get {
+                return ((string)(this["PCIBusiness_CyberSource_TransactionProcessor"]));
+            }
+        }
     }
 }
