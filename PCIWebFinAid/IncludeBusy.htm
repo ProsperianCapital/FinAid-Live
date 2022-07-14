@@ -1,0 +1,30 @@
+﻿<script type="text/javascript">
+function ShowBusy(msg,hideCtl,backGround)
+{
+	var p = GetElt('busyPanel');
+	if ( backGround == null )
+		backGround = 1;
+	ShowElt(p,true,backGround);
+	if ( msg == null )
+		msg = 'Processing ... please be patient';
+	SetEltValue('busyMsg',msg);
+//	var w = (60 + ( msg.length * 10 )).toString() + "px";
+//	p.style.width = w;
+	if ( hideCtl != null )
+		ShowElt(hideCtl,false);
+}
+function HideBusy()
+{
+	ShowElt("busyPanel",false);
+}
+</script>
+
+<div id="busyPanel" style="display:none;visibility:hidden;width:300px" class="Popup2">
+	<div class="PopupHead">Please wait ...</div>
+	&nbsp;
+	<table>
+	<tr>
+		<td style="padding-right:10px;width:1%"><img src="<%=PCIBusiness.Tools.ImageFolder() %>Busy.gif" title="Busy..." /></td>
+		<td style="font-style:italic" id="busyMsg"></td></tr>
+	</table>
+</div>

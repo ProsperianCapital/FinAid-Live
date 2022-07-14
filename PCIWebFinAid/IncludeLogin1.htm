@@ -1,0 +1,32 @@
+<script type="text/javascript">
+function SetTab(tabNo)
+{
+	try
+	{
+		var t;
+		var s = document.getElementsByTagName("input");
+		for ( var k = 0 ; k < s.length ; k++ )
+		{
+			t = s[k].title;
+			if ( t.substring(0,3) == 'btn' )
+			{
+				t = t.substring(3,5);
+				if ( ToInteger(t) == tabNo )
+				{
+					ShowElt('div'+t,true);
+					s[k].style.backgroundColor = 'orange';
+					document.title = GetEltValue(s[k]);
+				}
+				else
+				{
+					ShowElt('div'+t,false);
+					s[k].style.backgroundColor = 'black';
+				}
+			}
+		}
+	}
+	catch (x)
+	{ }
+}
+</script>
+<asp:HiddenField runat="server" ID="hdnTabNo" />
