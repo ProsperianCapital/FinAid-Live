@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace PCIWebFinAid
 {
@@ -12,6 +7,14 @@ namespace PCIWebFinAid
 		protected void Page_Load(object sender, EventArgs e)
 		{
 
+		}
+		public void ShowUser(SessionGeneral sessionGeneral)
+		{
+		//	if ( sessionGeneral == null )
+		//		lblUName.Text = "";
+		//	else
+		//		lblUName.Text = sessionGeneral.UserName;
+		//		lblURole.Text = sessionGeneral.AccessName;
 		}
 	}
 }
