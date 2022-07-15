@@ -504,7 +504,7 @@ function WorldPay3DS(url,binValue,jwtValue)
 			<asp:HiddenField runat="server" ID="hdnTermsGuide" /></td></tr>
 	<tr id="trRewards">
 		<td style="white-space:nowrap" colspan="2">
-			<asp:CheckBox runat="server" ID="chkRewards" onclick="JavaScript:ValidatePage(104429,2)" />
+			<asp:CheckBox runat="server" ID="chkRewards" onclick="JavaScript:ValidatePage(104429,2)" Checked="true" />
 			<asp:Literal runat="server" ID="lblRewardsLabel"></asp:Literal>
 			<a href="#" onmouseover="JavaScript:Help(1,this,'Rewards')" onmouseout="JavaScript:Help(0)">?</a>
 			<img id="imgRewards" />
