@@ -173,6 +173,9 @@ function CheckRadio(groupName,eltName)
 
 function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 {
+	if ( eltDesc == null )
+		return "";
+
 	var err = "";
 	var elt;
 	var eltValue;
@@ -181,8 +184,10 @@ function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 	{
 		if ( eltBool == null || eltBool )
 		{
-			eltBool = true;
-			elt     = GetElt(ctlID);
+			eltBool  = true;
+			elt      = GetElt(ctlID);
+			if ( elt == null )
+				return "";
 			if ( elt.style.display == 'none' ) // Hidden
 				eltBool = false;
 		}
