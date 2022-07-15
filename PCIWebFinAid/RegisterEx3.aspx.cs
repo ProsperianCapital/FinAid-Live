@@ -44,7 +44,8 @@ namespace PCIWebFinAid
 
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
-//	TokenEx card number validation version. 3 configuration variables are needed in Web.Config.
+//	TokenEx card number validation version
+//	3 configuration variables are needed in Web.Config:
 
 //	<appSettings>
 //		<add key="TokenEx/Id" value="x" />

@@ -23,7 +23,6 @@ namespace PCIWebFinAid
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
 //	Browser info in JavaScript:
-
 //	var h = "navigator.appCodeName : " + navigator.appCodeName + "<br />"
 //		   + "navigator.appName : " + navigator.appName + "<br />"
 //		   + "navigator.appVersion : " + navigator.appVersion + "<br />"
