@@ -378,7 +378,7 @@ function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 	}
 	catch (z)
 	{
-		alert(z);
+		alert("Validate('"+ctlID.toString()+"') : " + z);
 	}
 	return err + ( err.length == 0 ? '' : '<br />' );
 }
