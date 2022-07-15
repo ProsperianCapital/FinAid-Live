@@ -184,10 +184,8 @@ function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 	{
 		if ( eltBool == null || eltBool )
 		{
-			eltBool  = true;
-			elt      = GetElt(ctlID);
-			if ( elt == null )
-				return "";
+			eltBool = true;
+			elt     = GetElt(ctlID);
 			if ( elt.style.display == 'none' ) // Hidden
 				eltBool = false;
 		}
@@ -230,12 +228,17 @@ function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 		}
 
 		else if ( eltType == 8 ) // CheckBox
-		{
-			if ( eltMode == 1 && elt.checked )
-				err = eltDesc;
-			else if ( eltMode == 2 && ! elt.checked )
-				err = eltDesc;
-		}
+			try
+			{
+				if ( eltMode == 1 && elt.checked )
+					err = eltDesc;
+				else if ( eltMode == 2 && ! elt.checked )
+					err = eltDesc;
+			}
+			catch (t)
+			{
+				err = "";
+			}
 
 		else if ( eltType == 3 ) // List
 		{
@@ -378,7 +381,7 @@ function Validate(ctlID,lblID,eltType,eltDesc,eltMode,eltParm,eltBool)
 	}
 	catch (z)
 	{
-		alert("Validate('"+ctlID.toString()+"') : " + z);
+		alert("Validate('"+ctlID.toString()+"') : " + z.message);
 	}
 	return err + ( err.length == 0 ? '' : '<br />' );
 }
