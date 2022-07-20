@@ -56,6 +56,7 @@ namespace PCIWebFinAid
 				string secretKey   = "";
 				string contentType = Request.ContentType.Trim().ToUpper();
 				inputDataType      = (byte)Constants.WebDataType.FormPost;
+				inputDataJSON      = "";
 				errorCode          = 0;
 				errorMsg           = "";
 //				msg                = msg + contentType;
@@ -64,7 +65,6 @@ namespace PCIWebFinAid
 				{
 					System.IO.Stream strIn = Request.InputStream;
 					int              ch    = strIn.ReadByte();
-					inputDataJSON          = "";
 
 					while ( ch >= 0 )
 					{
@@ -109,6 +109,10 @@ namespace PCIWebFinAid
 					                          +", languageDialectCode="+languageDialectCode
 					                          +", userCode="+userCode
 					                          +", mobileNumber="+mobileNumber,220,this);
+				else if ( inputDataJSON.Length > 0 )
+					Tools.LogInfo("QueryData/11","Input Data="+inputDataJSON,220,this);
+				else if ( inputDataJSON.Length > 0 )
+					Tools.LogInfo("QueryData/12","No input data",220,this);
 	
 				if ( Tools.SystemLiveTestOrDev() != Constants.SystemMode.Development && secretKey != "7e6415a7cb790238fd12430a0ce419b3" )
 					return SendJSON(10005,"Invalid secret key");
@@ -209,6 +213,7 @@ namespace PCIWebFinAid
 			{ }
 			catch (Exception ex)
 			{
+				Tools.LogInfo     ("QueryData/98","Error (see error log)",222,this);
 				Tools.LogException("QueryData/99","",ex,this);
 			}
 
@@ -289,7 +294,10 @@ namespace PCIWebFinAid
 		               + Tools.JSONPair("GetPageInfoEditeWalletAccountDescription","App,Country,Lang,Dialect,User")
 		               + Tools.JSONPair("CreateNeweWalletAccount"                 ,"App,Country,Lang,Dialect,User,CurrencyCode,FundingMethodCode,eWalletDescription")
 		               + Tools.JSONPair("EditeWalletAccountDescription"           ,"App,Country,Lang,Dialect,User,eWalletAccountCode,eWalletDescription")
-		               + Tools.JSONPair("SendSMS","App,Mobile,Message",1,"","}"));
+		               + Tools.JSONPair("SendSMS","App,Mobile,Message",1,"","},")
+		               + Tools.JSONPair("Version","",1,"{")
+		               + Tools.JSONPair("DLL",PCIBusiness.SystemDetails.AppVersion+" ("+PCIBusiness.SystemDetails.AppDate+")")
+		               + Tools.JSONPair("Web",SystemDetails.AppVersion+" ("+SystemDetails.AppDate+")",1,"","}"));
 			return 0;
 		}
 

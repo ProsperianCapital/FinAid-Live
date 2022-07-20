@@ -331,7 +331,7 @@ namespace PCIWebFinAid
 					ret = mList.ExecQuery(sql,0,"",false,true);
 					if ( ret != 0 )
 						SetErrorDetail("btnSave_Click", 13120, "Internal database error (" + spr + " failed)", sql, 2, 2, null, false, errPriority);
-					Tools.LogInfo("btnSave_Click","Save iSOS config (ret="+ret.ToString() + ") : " +sql,229,this);
+					Tools.LogInfo("btnSave_Click","Save iSOS config (ret="+ret.ToString() + ") : " +sql,10,this);
 				}
 				catch (Exception ex)
 				{
