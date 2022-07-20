@@ -294,10 +294,9 @@ namespace PCIWebFinAid
 		               + Tools.JSONPair("GetPageInfoEditeWalletAccountDescription","App,Country,Lang,Dialect,User")
 		               + Tools.JSONPair("CreateNeweWalletAccount"                 ,"App,Country,Lang,Dialect,User,CurrencyCode,FundingMethodCode,eWalletDescription")
 		               + Tools.JSONPair("EditeWalletAccountDescription"           ,"App,Country,Lang,Dialect,User,eWalletAccountCode,eWalletDescription")
-		               + Tools.JSONPair("SendSMS","App,Mobile,Message",1,"","},")
-		               + Tools.JSONPair("Version","",1,"{")
-		               + Tools.JSONPair("DLL",PCIBusiness.SystemDetails.AppVersion+" ("+PCIBusiness.SystemDetails.AppDate+")")
-		               + Tools.JSONPair("Web",SystemDetails.AppVersion+" ("+SystemDetails.AppDate+")",1,"","}"));
+		               + Tools.JSONPair("SendSMS","App,Mobile,Message")
+		               + Tools.JSONPair("DLL Version",PCIBusiness.SystemDetails.AppVersion+" ("+PCIBusiness.SystemDetails.AppDate+")")
+		               + Tools.JSONPair("Web Version",SystemDetails.AppVersion+" ("+SystemDetails.AppDate+")",1,"","}"));
 			return 0;
 		}
 
