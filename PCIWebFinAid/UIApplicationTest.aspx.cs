@@ -2,6 +2,7 @@
 using System.Text;
 using System.Net;
 using System.IO;
+using System.Threading;
 using PCIBusiness;
 
 //	Developed by:
@@ -29,8 +30,11 @@ namespace PCIWebFinAid
 				string[] key    = { "SecretKey"          , "7e6415a7cb790238fd12430a0ce419b3" };
 				string[] app    = { "ApplicationCode"    , "006" };
 
-				txtURL.Text  = TargetURL;
-				lblVer.Text  = WebTools.VersionDetails(1);
+				txtURLTest.Text = GetURL(2);
+				txtURLLive.Text = "https://ProsperianBackOffice.azurewebsites.net/UIApplicationQuery.aspx";
+				rdoTest.Checked = false;
+				rdoLive.Checked = true;
+				lblVer.Text     = WebTools.VersionDetails(1);
 
 				txtJSON.Text = Tools.JSONPair(uName [0],uName [1],1,"{") + Environment.NewLine
 					          + Tools.JSONPair(uCode [0],uCode [1]      ) + Environment.NewLine
@@ -42,7 +46,8 @@ namespace PCIWebFinAid
 					          + Tools.JSONPair(msg   [0],msg   [1]      ) + Environment.NewLine
 					          + Tools.JSONPair(query [0],query [1]      ) + Environment.NewLine
 					          + Tools.JSONPair(key   [0],key   [1]      ) + Environment.NewLine
-					          + Tools.JSONPair(app   [0],app   [1],1,"","}");
+					          + Tools.JSONPair(app   [0],app   [1]      ) + Environment.NewLine
+					          + Tools.JSONPair("Caller",GetURL(1),1,"","}");
 
 				txtXML.Text  = "<Test>"
 				             + Tools.XMLCell(uName [0],uName [1]) + Environment.NewLine
@@ -56,6 +61,7 @@ namespace PCIWebFinAid
 					          + Tools.XMLCell(query [0],query [1]) + Environment.NewLine
 					          + Tools.XMLCell(key   [0],key   [1]) + Environment.NewLine
 					          + Tools.XMLCell(app   [0],app   [1]) + Environment.NewLine
+					          + Tools.XMLCell("Caller",GetURL (1))  + Environment.NewLine
 				             + "</Test>";
 
 				txtWeb.Text  = uName [0] + "=" + uName [1] + "&" + Environment.NewLine
@@ -68,10 +74,11 @@ namespace PCIWebFinAid
 				             + msg   [0] + "=" + msg   [1] + "&" + Environment.NewLine
 				             + query [0] + "=" + query [1] + "&" + Environment.NewLine
 				             + key   [0] + "=" + key   [1] + "&" + Environment.NewLine
-				             + app   [0] + "=" + app   [1];
+				             + app   [0] + "=" + app   [1] + "&" + Environment.NewLine
+				             + "Caller=" + GetURL(1);
 
 				txtForm.Text = "<html><body onload='document.forms[\"frmTest\"].submit()'>" + Environment.NewLine
-				             + "<form name='frmTest' method='POST' action='" + TargetURL + "'>" + Environment.NewLine
+				             + "<form name='frmTest' method='POST' action='[URLTo]'>" + Environment.NewLine
 				             + "<input type='hidden' name='" + uName [0] + "' value='" + uName [1] + "' />" + Environment.NewLine
 				             + "<input type='hidden' name='" + uCode [0] + "' value='" + uCode [1] + "' />" + Environment.NewLine
 				             + "<input type='hidden' name='" + uPwd  [0] + "' value='" + uPwd  [1] + "' />" + Environment.NewLine
@@ -83,19 +90,31 @@ namespace PCIWebFinAid
 				             + "<input type='hidden' name='" + query [0] + "' value='" + query [1] + "' />" + Environment.NewLine
 				             + "<input type='hidden' name='" + key   [0] + "' value='" + key   [1] + "' />" + Environment.NewLine
 				             + "<input type='hidden' name='" + app   [0] + "' value='" + app   [1] + "' />" + Environment.NewLine
+				             + "<input type='hidden' name='Caller' value='" + GetURL(1) + "' />" + Environment.NewLine
 				             + "</form></body></html>";
 			}
+		}
+
+		private string GetURL(byte sourceOrTarget)
+		{
+			string url = Request.Url.GetLeftPart(UriPartial.Authority);
+			url        = url + ( url.EndsWith("/") ? "" : "/" );
+			if ( sourceOrTarget == 1 ) // Source
+				return url + "UIApplicationTest.aspx";
+			return url + "UIApplicationQuery.aspx";
 		}
 
 		private string TargetURL
 		{
 			get
 			{
-//	Testing
-//				return "https://ProsperianBackOffice.azurewebsites.net/UIApplicationQuery.aspx";
-//	Testing
-				string url = Request.Url.GetLeftPart(UriPartial.Authority);
-				return url + ( url.EndsWith("/") ? "" : "/" ) + "UIApplicationQuery.aspx";
+				if ( rdoLive.Checked )
+					return txtURLLive.Text;
+
+				if ( txtURLTest.Text.Length < 1 )
+					txtURLTest.Text = GetURL(2);
+
+				return txtURLTest.Text.Trim();
 			}
 		}
 
@@ -111,7 +130,7 @@ namespace PCIWebFinAid
 				if ( rdoForm.Checked )
 				{
 					System.Web.HttpContext.Current.Response.Clear();
-					System.Web.HttpContext.Current.Response.Write(txtForm.Text.Trim());
+					System.Web.HttpContext.Current.Response.Write(txtForm.Text.Trim().Replace("[URLTo]",TargetURL));
 					System.Web.HttpContext.Current.Response.Flush();
 					System.Web.HttpContext.Current.Response.End();
 					return;
@@ -172,6 +191,8 @@ namespace PCIWebFinAid
 
 				webRequest = null;
 			}
+			catch (ThreadAbortException)
+			{ }
 			catch (WebException ex1)
 			{
 				Tools.DecodeWebException(ex1,"btnOK_Click/70","UIApplicationTest");

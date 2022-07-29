@@ -38,8 +38,9 @@ function SetType()
 	<asp:TextBox runat="server" ID="txtWeb"  TextMode="MultiLine" Height="152" Width="800px" Rows="8" style="visibility:hidden;display:none"></asp:TextBox>
 	<asp:TextBox runat="server" ID="txtForm" TextMode="MultiLine" Height="152" Width="800px" Rows="8" style="visibility:hidden;display:none"></asp:TextBox>
 	<br /><br />
-	Target URL<br />
-	<asp:TextBox runat="server" ID="txtURL" Width="800px" ReadOnly="True"></asp:TextBox>
+	POST to URL<br />
+	<asp:RadioButton runat="server" ID="rdoLive" GroupName="rdoURL" /><asp:TextBox runat="server" ID="txtURLLive" Width="778px" ReadOnly="true"></asp:TextBox><br />
+	<asp:RadioButton runat="server" ID="rdoTest" GroupName="rdoURL" /><asp:TextBox runat="server" ID="txtURLTest" Width="778px" style="margin-top:2px"></asp:TextBox><br />
 
 	<p class="ButtonBox">
 		<asp:Button runat="server" ID="btnOK" Text="OK" OnClick="btnOK_Click" />&nbsp;

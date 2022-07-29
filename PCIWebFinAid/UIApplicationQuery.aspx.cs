@@ -33,6 +33,8 @@ namespace PCIWebFinAid
 		private string        languageDialectCode;
 		private string        mobileNumber;
 		private string        appMode;
+		private string        caller;
+		private string        thisPage;
 
 		private enum ResultCode
 		{
@@ -41,6 +43,8 @@ namespace PCIWebFinAid
 
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
+			thisPage = "UIApplicationQuery";
+
 			if ( Page.IsPostBack )
 				SendJSON(10001,"Internal error");
 			else
@@ -49,7 +53,16 @@ namespace PCIWebFinAid
 
 		private int QueryData()
 		{
-//			string msg = "";
+//	Debugging
+//			string referrer = "Request.Url.AbsoluteUri="    + Request.Url.AbsoluteUri.Trim() + Environment.NewLine
+//		                   + "Request.UrlReferrer="        + Tools.ObjectToString(Request.UrlReferrer) + Environment.NewLine
+//			                + "Request.Headers['Referer']=" + Tools.ObjectToString(Request.Headers["Referer"]) + Environment.NewLine
+//			                + "Request.Url.AbsolutePath="   + Request.Url.AbsolutePath + Environment.NewLine
+//			                + "Request.Url.OriginalString=" + Request.Url.OriginalString;
+			string referrer = "Request.Headers['Referer']=" + Tools.ObjectToString(Request.Headers["Referer"])
+		                 + ", Request.UrlReferrer="        + Tools.ObjectToString(Request.UrlReferrer);
+//			Tools.LogInfo("QueryData/10",urls,222,thisPage);
+//	Debugging
 
 			try
 			{
@@ -99,20 +112,18 @@ namespace PCIWebFinAid
 				secretKey           = ParmValue("SecretKey");
 				mobileNumber        = ParmValue("MobileNumber");
 				appMode             = ParmValue("AppMode").ToUpper();
+				caller              = ParmValue("Caller");
 
-				if ( inputDataType != (byte)Constants.WebDataType.FormPost )
-					Tools.LogInfo("QueryData/10","dataType="+inputDataType.ToString()
-					                          +", queryName="+queryName
-					                          +", applicationCode="+applicationCode
-					                          +", countryCode="+countryCode
-					                          +", languageCode="+languageCode
-					                          +", languageDialectCode="+languageDialectCode
-					                          +", userCode="+userCode
-					                          +", mobileNumber="+mobileNumber,220,this);
-				else if ( inputDataJSON.Length > 0 )
-					Tools.LogInfo("QueryData/11","Input Data="+inputDataJSON,220,this);
-				else if ( inputDataJSON.Length > 0 )
-					Tools.LogInfo("QueryData/12","No input data",220,this);
+				Tools.LogInfo("QueryData/20","dataType="+inputDataType.ToString()+" (" + Tools.WebDataTypeName(inputDataType)+")"
+				                          +", queryName="+queryName
+				                          +", applicationCode="+applicationCode
+				                          +", countryCode="+countryCode
+				                          +", languageCode="+languageCode
+				                          +", languageDialectCode="+languageDialectCode
+				                          +", userCode="+userCode
+				                          +", mobileNumber="+mobileNumber
+				                          +", caller="+caller
+				                          +", "+referrer,220,thisPage);
 	
 				if ( Tools.SystemLiveTestOrDev() != Constants.SystemMode.Development && secretKey != "7e6415a7cb790238fd12430a0ce419b3" )
 					return SendJSON(10005,"Invalid secret key");
@@ -213,8 +224,8 @@ namespace PCIWebFinAid
 			{ }
 			catch (Exception ex)
 			{
-				Tools.LogInfo     ("QueryData/98","Error (see error log)",222,this);
-				Tools.LogException("QueryData/99","",ex,this);
+				Tools.LogInfo     ("QueryData/98","Error (see error log)",222,thisPage);
+				Tools.LogException("QueryData/99","",ex,thisPage);
 			}
 
 			return 0;
@@ -235,10 +246,10 @@ namespace PCIWebFinAid
 			}
 
 			if ( logInfo.Length > 0 )
-				Tools.LogInfo     ("SetError/" + code.ToString(),msg + " (" + logInfo + ")",222,this);
+				Tools.LogInfo     ("SetError/" + code.ToString(),msg + " (" + logInfo + ")",222,thisPage);
 
 			if ( logError.Length > 0 )
-				Tools.LogException("SetError/" + code.ToString(),msg + " (" + logError + ")",null,this);
+				Tools.LogException("SetError/" + code.ToString(),msg + " (" + logError + ")",null,thisPage);
 
 			return errorCode;
 		}
@@ -376,7 +387,7 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-					Tools.LogException("RegisteriSOSEvent",sql,ex,this);
+					Tools.LogException("RegisteriSOSEvent",sql,ex,thisPage);
 				}
 
 			return SetError(13999,"Internal error: SQL " + sqlSP,sql,sql);
@@ -427,7 +438,7 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-					Tools.LogException("GetPageContent",sql,ex,this);
+					Tools.LogException("GetPageContent",sql,ex,thisPage);
 				}
 
 			return SetError(11715,"Internal error: SQL " + sqlSP,sql,sql);
@@ -499,7 +510,7 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-					Tools.LogException("GetGuruCalendar",sql,ex,this);
+					Tools.LogException("GetGuruCalendar",sql,ex,thisPage);
 				}
 
 			return SetError(21750,"Internal error: SQL " + sqlSP,sql,sql);
@@ -564,7 +575,7 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-					Tools.LogException("GetiSOSInfo",sql,ex,this);
+					Tools.LogException("GetiSOSInfo",sql,ex,thisPage);
 				}
 
 			return SetError(12999,"Internal error: SQL " + sqlSP,sql,sql);
@@ -666,7 +677,7 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-					Tools.LogException("GetEWalletList",sql,ex,this);
+					Tools.LogException("GetEWalletList",sql,ex,thisPage);
 				}
 
 			return SetError(11380,"Internal error: SQL " + sqlSP,sql,sql);
@@ -1028,7 +1039,7 @@ namespace PCIWebFinAid
 
 			try
 			{
-				Tools.LogInfo("UIApplicationQuery.SendJSON/1",data,220);
+				Tools.LogInfo("SendJSON/1",data,220,thisPage);
 
 				Response.Clear();
 				Response.ContentType = "application/json; charset=utf-8";
@@ -1041,7 +1052,7 @@ namespace PCIWebFinAid
 			{ }
 			catch (Exception ex)
 			{
-				Tools.LogException("SendJSON/99","",ex,this);
+				Tools.LogException("SendJSON/99","",ex,thisPage);
 			}
 
 			return errCode;
@@ -1060,13 +1071,13 @@ namespace PCIWebFinAid
 				if ( inputDataType == (byte)Constants.WebDataType.FormPost )
 					return WebTools.RequestValueString(Request,parmName,(byte)Constants.HttpMethod.Post);
 
-				if ( inputDataType == (byte)Constants.WebDataType.FormGetOrPost ||
+				if ( inputDataType == (byte)Constants.WebDataType.URLParameters ||
 				     Tools.SystemLiveTestOrDev() == Constants.SystemMode.Development )
 					return WebTools.RequestValueString(Request,parmName);
 			}
 			catch (Exception ex)
 			{
-				Tools.LogException("ParmValue","parmName="+parmName+", inputDataType="+inputDataType.ToString(),ex,this);
+				Tools.LogException("ParmValue","parmName="+parmName+", inputDataType="+inputDataType.ToString(),ex,thisPage);
 			}
 			return "";
 		}
