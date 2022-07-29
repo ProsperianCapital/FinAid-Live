@@ -843,13 +843,17 @@ namespace PCIBusiness
 			{
 				if ( caller != null )
 				{
-					string h = caller.GetType().ToString();
-				//	string h = caller.ToString();
-					int    p = h.IndexOf(",");
-					if ( p > 0 )
-						h = h.Substring(0,p).Trim();
-					if ( h.Length > 0 )
-						component = h + "." + component;
+					if ( caller.GetType() == Type.GetType("System.String") )
+						component = caller + "." + component;
+					else
+					{
+						string h = caller.GetType().ToString();
+						int    p = h.IndexOf(",");
+						if ( p > 0 )
+							h = h.Substring(0,p).Trim();
+						if ( h.Length > 0 )
+							component = h + "." + component;
+					}
 				}
 				fNameX = Tools.LogFileName(settingName,System.DateTime.Now);
 				if ( File.Exists(fNameX) )
@@ -1876,6 +1880,15 @@ namespace PCIBusiness
 					LogException("Tools.LoadGoogleAnalytics/2",sql,ex);
 				}
 			return "";
+		}
+
+		public static string WebDataTypeName(byte dataType)
+		{
+			if ( dataType == (byte)Constants.WebDataType.JSON )          return "JSON";
+			if ( dataType == (byte)Constants.WebDataType.XML )           return "XML";
+			if ( dataType == (byte)Constants.WebDataType.FormPost )	    return "Http form";
+			if ( dataType == (byte)Constants.WebDataType.URLParameters ) return "URL string";
+			return "Unknown (" + dataType.ToString() + ")";
 		}
 
 		public static string LoadChat(string productCode)

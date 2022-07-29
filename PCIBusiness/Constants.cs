@@ -271,7 +271,7 @@ namespace PCIBusiness
 
 		public enum WebDataType : byte
 		{
-			FormGetOrPost = 1,
+			URLParameters = 1,
 			FormPost      = 2,
 			JSON          = 3,
 			XML           = 4
