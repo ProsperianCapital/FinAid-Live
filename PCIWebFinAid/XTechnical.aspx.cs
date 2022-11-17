@@ -42,6 +42,16 @@ namespace PCIWebFinAid
 					connStr = connStr.Substring(0,k+4) + "******";
 				k = connStr.ToUpper().IndexOf("PWD=",k+3);
 			}
+			k = connStr.ToUpper().IndexOf("UID=");
+			while ( k >= 0 )
+			{
+				j = connStr.ToUpper().IndexOf(";",k+1);
+				if ( j > k )
+					connStr = connStr.Substring(0,k+4) + "******" + connStr.Substring(j);
+				else
+					connStr = connStr.Substring(0,k+4) + "******";
+				k = connStr.ToUpper().IndexOf("UID=",k+3);
+			}
 			return connStr;
 		}
 

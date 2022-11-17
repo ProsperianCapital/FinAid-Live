@@ -70,6 +70,7 @@
     <Content Include="AJAXProcess.aspx" />
     <Content Include="CAFooter.ascx" />
     <Content Include="CAHeader.ascx" />
+    <Content Include="PCISSHome.aspx" />
     <Content Include="CAHome.aspx" />
     <Content Include="FAHome.aspx" />
     <Content Include="CALegal.aspx" />
@@ -412,6 +413,13 @@
     </Compile>
     <Compile Include="CAHome.aspx.designer.cs">
       <DependentUpon>CAHome.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PCISSHome.aspx.cs">
+      <DependentUpon>PCISSHome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PCISSHome.aspx.designer.cs">
+      <DependentUpon>PCISSHome.aspx</DependentUpon>
     </Compile>
     <Compile Include="FAHome.aspx.cs">
       <DependentUpon>FAHome.aspx</DependentUpon>
