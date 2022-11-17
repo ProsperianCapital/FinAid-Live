@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="CAHeader.ascx.cs" Inherits="PCIWebFinAid.CAHeader" %>
 
-<div class="Header1 HeaderCA">
+<div class="Header1 HeaderCA" id="HRow">
 	<div class="HCol1">
 		<asp:Image runat="server" ID="P12001" Height="75px" />
 	</div>
@@ -13,3 +13,4 @@
 		<asp:DropDownList runat="server" ID="lstLang" CssClass="TopButton" AutoPostBack="true" style="padding:0px"></asp:DropDownList>
 	</div>
 </div>
+<asp:Literal runat="server" ID="HJs"></asp:Literal>

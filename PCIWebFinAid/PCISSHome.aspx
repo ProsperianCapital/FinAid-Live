@@ -171,13 +171,15 @@ function Legal(code)
 	</div>
 
 	<div style="background-color:#F9CF0E;width:100%;padding:2px 0px 5px 0px;margin:10px 0px 0px 0px;text-align:center">
-		<a href="JavaScript:FAQ()"><div class="TopButton" style="width:120px;color:#FFFFFF;background-color:#54595F;margin:4px 0px 0px 4px" onmouseover="JavaScript:this.style.backgroundColor='#FF7400'" onmouseout="JavaScript:this.style.backgroundColor='#54595F'"><asp:Literal runat="server" ID="X100063">100063</asp:Literal></div></a>
+		<asp:HyperLink runat="server" ID="T100063" NavigateUrl="JavaScript:FAQ()">
+			<div class="TopButton" style="width:120px;color:#FFFFFF;background-color:#54595F;margin:4px 0px 0px 4px" onmouseover="JavaScript:this.style.backgroundColor='#FF7400'" onmouseout="JavaScript:this.style.backgroundColor='#54595F'"><asp:Literal runat="server" ID="X100063">100063</asp:Literal></div>
+		</asp:HyperLink>
 		<div id="divFAQ" style="color:#FFFFFF;font-family:Sans-serif;visibility:hidden;display:none">
 		<asp:Literal runat="server" ID="xFAQ"></asp:Literal>
 		</div>
 	</div>
 
-	<div style="color:#F9CF0E;font-family:Sans-serif;font-size:40px;font-weight:600;line-height:1.4em;letter-spacing:0.8px;margin-left:10px">
+	<div style="color:#F9CF0E;font-family:Sans-serif;font-size:20px;font-weight:600;line-height:1.4em;letter-spacing:0.8px;margin-left:10px">
 	<asp:Literal runat="server" ID="X105009">105009</asp:Literal>
 	</div>
 

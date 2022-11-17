@@ -438,6 +438,15 @@ namespace PCIWebFinAid
 		protected global::System.Web.UI.WebControls.Literal X105008;
 
 		/// <summary>
+		/// T100063 control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.HyperLink T100063;
+
+		/// <summary>
 		/// X100063 control.
 		/// </summary>
 		/// <remarks>
@@ -877,6 +886,15 @@ namespace PCIWebFinAid
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
 		protected global::System.Web.UI.WebControls.Literal LD004;
+
+		/// <summary>
+		/// lblError control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.Label lblError;
 
 		/// <summary>
 		/// hdnVer control.

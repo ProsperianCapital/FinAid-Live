@@ -58,6 +58,7 @@ namespace PCIWebFinAid
 
 				btnErrorDtl.Visible = ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Development );
 				btnWidth.Visible    = ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Development );
+				ascxHeader.Exception(129);
 			}
 		}
 
@@ -171,6 +172,7 @@ namespace PCIWebFinAid
 								fieldURL = fieldURL.Replace("[PC]",Tools.URLString(productCode)).Replace("[LC]",Tools.URLString(languageCode)).Replace("[LDC]",Tools.URLString(languageDialectCode));
 
 							Tools.LogInfo("LoadDynamicDetails/10140","FieldCode="+fieldCode,errPriority,this);
+
 							err         = WebTools.ReplaceControlText(this.Page,"X"+fieldCode,blocked,fieldValue,fieldURL,ascxHeader,ascxFooter);
 							if ( err   != 0 )
 								SetErrorDetail("LoadDynamicDetails", 10150, "Unrecognized HTML control (X"+fieldCode + "/" + fieldValue.ToString() + ")", "WebTools.ReplaceControlText('X"+fieldCode+"') => "+err.ToString(), 2, 0, null, false, errPriority);
@@ -281,10 +283,18 @@ namespace PCIWebFinAid
 							mList.NextRow();
 						}
 
-					X100063.Visible = ( xFAQ.Text.Length > 0 );
+					if ( xFAQ.Text.Length < 1 )
+					{
+						T100063.Visible = false;
+						X100063.Visible = false;
+					}
+
+				//	T100063.Visible = ( xFAQ.Text.Length > 0 );
+				//	X100063.Visible = ( xFAQ.Text.Length > 0 );
 					ret             = 10410;
 					spr             = "sp_WP_Get_ProductLegalDocumentInfo";
 					sql             = "exec " + spr + stdParms;
+
 					if ( mList.ExecQuery(sql,0) != 0 )
 						SetErrorDetail("LoadDynamicDetails", 10420, "Internal database error (" + spr + " failed)", sql, 2, 2, null, false, errPriority);
 					else if ( mList.EOF )

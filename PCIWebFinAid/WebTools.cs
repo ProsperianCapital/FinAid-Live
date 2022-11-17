@@ -484,8 +484,16 @@ namespace PCIWebFinAid
 
 				if ( ctl == null )
 				{ }
-				else if ( blocked == "1" )
+				else if ( blocked == "1" || blocked == "B" )
+				{
 					ctl.Visible = false;
+					if ( k == 1 && webPage != null && ctlID.StartsWith("X") )
+					{
+						ctl = webPage.FindControl("T"+ctlID.Substring(1));
+						if ( ctl != null )
+							ctl.Visible = false;
+					}
+				}
 				else if (ctl.GetType()  == typeof(Literal))
 					((Literal)ctl).Text   = fieldValue;
 				else if (ctl.GetType()  == typeof(Label))
