@@ -2,6 +2,6 @@
 
 <asp:Literal runat="server" ID="lblJS"></asp:Literal>
 
-<div class="Footer3">
+<div class="Footer3" id="FRow">
 <asp:Literal runat="server" ID="X105039">105039</asp:Literal>
 </div>

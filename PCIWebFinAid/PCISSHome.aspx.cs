@@ -58,7 +58,6 @@ namespace PCIWebFinAid
 
 				btnErrorDtl.Visible = ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Development );
 				btnWidth.Visible    = ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Development );
-				ascxHeader.Exception(129);
 			}
 		}
 

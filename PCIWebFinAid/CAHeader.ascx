@@ -13,4 +13,3 @@
 		<asp:DropDownList runat="server" ID="lstLang" CssClass="TopButton" AutoPostBack="true" style="padding:0px"></asp:DropDownList>
 	</div>
 </div>
-<asp:Literal runat="server" ID="HJs"></asp:Literal>

@@ -183,7 +183,7 @@ function Legal(code)
 	<asp:Literal runat="server" ID="X105009">105009</asp:Literal>
 	</div>
 
-	<div style="text-align:center"> <!-- margin:0px;margin-left:10px -->
+	<div style="text-align:center">
 	<asp:HyperLink runat="server" ID="H12013"><asp:Image runat="server" ID="P12013" /></asp:HyperLink>
 	<asp:HyperLink runat="server" ID="H12025"><asp:Image runat="server" ID="P12025" /></asp:HyperLink>
 	</div>
@@ -281,5 +281,10 @@ function Legal(code)
 </form>
 <br />
 <ascx:Footer runat="server" ID="ascxFooter" />
+<script type="text/javascript">
+// Header and footer must be BLACK
+GetElt('HRow').style.backgroundColor='#000000';
+GetElt('FRow').style.backgroundColor='#000000';
+</script>
 </body>
 </html>

@@ -12,10 +12,10 @@ namespace PCIWebFinAid
 		{
 			get { return lstLang; }
 		}
-		public void Exception(byte excCode)
-		{
-			if ( excCode == 129 ) // PCISSHome.aspx
-				HJs.Text = WebTools.JavaScriptSource("GetElt('HRow').style.backgroundColor='#000000'");
-		}
+//		public void Exception(byte excCode)
+//		{
+//			if ( excCode == 129 ) // PCISSHome.aspx
+//				HJs.Text = WebTools.JavaScriptSource("GetElt('HRow').style.backgroundColor='#000000'");
+//		}
 	}
 }
