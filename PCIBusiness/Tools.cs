@@ -153,31 +153,31 @@ namespace PCIBusiness
 
 			if ( dateFormat == 1 && theDate.Length >= 10 ) // dd/mm/yyyy
 			{
-				dd  = theDate.Substring(0,2);	
-				mm  = theDate.Substring(3,2);	
+				dd  = theDate.Substring(0,2);
+				mm  = theDate.Substring(3,2);
 				yy  = theDate.Substring(6,4);
 				pos = 12;
 			}
 			else if ( dateFormat == 5 && theDate.Length >= 8 ) // yyyymmdd
 			{
-				dd  = theDate.Substring(6,2);	
-				mm  = theDate.Substring(4,2);	
-				yy  = theDate.Substring(0,4);	
+				dd  = theDate.Substring(6,2);
+				mm  = theDate.Substring(4,2);
+				yy  = theDate.Substring(0,4);
 				pos = 10;
 			}
 			else if ( ( dateFormat == 2 || dateFormat == 7 ) && theDate.Length >= 10 ) // yyyy/mm/dd
 			{
-				dd  = theDate.Substring(8,2);	
-				mm  = theDate.Substring(5,2);	
-				yy  = theDate.Substring(0,4);	
+				dd  = theDate.Substring(8,2);
+				mm  = theDate.Substring(5,2);
+				yy  = theDate.Substring(0,4);
 				pos = 12;
 			}
 //			else if ( dateFormat == 13 && ( theDate.Length == 16 || theDate.Length == 19 ) )
 //			{
-//				dd = theDate.Substring(0,2);	
-//				mm = theDate.Substring(3,2);	
-//				yy = theDate.Substring(6,4);	
-//				hh = theDate.Substring(11,2);	
+//				dd = theDate.Substring(0,2);
+//				mm = theDate.Substring(3,2);
+//				yy = theDate.Substring(6,4);
+//				hh = theDate.Substring(11,2);
 //				mi = theDate.Substring(14,2);
 //				if ( theDate.Length == 19 )
 //					ss = theDate.Substring(17,2);
@@ -292,16 +292,16 @@ namespace PCIBusiness
 
 		public static void CloseDB(ref DBConn dbConn)
 		{
-         if ( dbConn != null )
-         {
-            try
-            {
-               dbConn.Close();
-               dbConn.Dispose();
-            }
-            catch { }
-         }
-         dbConn = null;
+			if ( dbConn != null )
+			{
+				try
+				{
+					dbConn.Close();
+					dbConn.Dispose();
+				}
+				catch { }
+			}
+			dbConn = null;
 		}
 
 		public static string MixedCase(string str)
@@ -608,11 +608,11 @@ namespace PCIBusiness
 
 		public static string HTMLSafe(string str)
 		{
-      // Converts a string to safe format for HTML:
-    
+		// Converts a string to safe format for HTML:
+
 			if ( string.IsNullOrWhiteSpace(str) )
 				return "";
-         return str.Replace("<","&lt;").Replace(">","&gt;").Replace("'","&#39;").Replace(Environment.NewLine,"<br />");
+			return str.Replace("<","&lt;").Replace(">","&gt;").Replace("'","&#39;").Replace(Environment.NewLine,"<br />");
 		}
 
 		public static string XMLSafe(string str,byte encoding=0)
@@ -626,13 +626,13 @@ namespace PCIBusiness
 				return "";
 
 			str = str.Trim();
-         str = str.Replace("'","`");
-         str = str.Replace("\"","`");
-         str = str.Replace("<","[");
-         str = str.Replace(">","]");
-         str = str.Replace("&"," and ");
-         str = str.Replace("  and "," and ");
-         str = str.Replace(" and  "," and ");
+			str = str.Replace("'","`");
+			str = str.Replace("\"","`");
+			str = str.Replace("<","[");
+			str = str.Replace(">","]");
+			str = str.Replace("&"," and ");
+			str = str.Replace("  and "," and ");
+			str = str.Replace(" and  "," and ");
 
 //	UniCode testing
 /*
@@ -722,7 +722,7 @@ namespace PCIBusiness
 //				return ret9;
 			}
 */
-         return str;
+			return str;
 		}
 
 		public static string URLString(string str,byte exceptionType=0)
@@ -1134,7 +1134,7 @@ namespace PCIBusiness
 			{
 				string year    = System.DateTime.Now.Year.ToString();
 				int    century = System.Convert.ToInt32(year.Substring(0,2));
-	
+
 				if ( idNumber.Substring(0,2).CompareTo(year.Substring(2,2)) > 0 ) 
 					century = century - 1;
 
@@ -1842,35 +1842,32 @@ namespace PCIBusiness
 
 		public static string ErrorTypeName(int errType)
 		{
-			if ( errType < 1 )                                     return "";
 			if ( errType == (int)Constants.ErrorType.InvalidMenu ) return "Invalid/missing menu for this application/language";
 			return "";
 		}
 
 		public static string LoadGoogleAnalytics(string productCode)
 		{
-			string sql = "";
+			string sql = "exec sp_WP_Get_GoogleACA @ProductCode=" + Tools.DBString(productCode);
 
 			using (MiscList miscList = new MiscList())
 				try
 				{
-					sql = "exec sp_WP_Get_GoogleACA @ProductCode=" + Tools.DBString(productCode);
-
 					if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
 					{
 						string gaCode = miscList.GetColumn("GoogleAnalyticCode");
 						string url    = miscList.GetColumn("URL");
 						return Environment.NewLine
-					          + "<script>" + Environment.NewLine
-						       + "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){"
-						       + "(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),"
-						       + "m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)"
-						       + "})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');" + Environment.NewLine
-						       + "ga('create', '" + gaCode + "', 'auto', {'allowLinker': true});" + Environment.NewLine
-						       + "ga('require', 'linker');" + Environment.NewLine
-						       + "ga('linker:autoLink', ['" + url + "'] );" + Environment.NewLine
-						       + "ga('send', 'pageview');" + Environment.NewLine
-						       + "</script>" + Environment.NewLine;
+					        + "<script>" + Environment.NewLine
+						     + "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){"
+						     + "(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),"
+						     + "m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)"
+						     + "})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');" + Environment.NewLine
+						     + "ga('create', '" + gaCode + "', 'auto', {'allowLinker': true});" + Environment.NewLine
+						     + "ga('require', 'linker');" + Environment.NewLine
+						     + "ga('linker:autoLink', ['" + url + "'] );" + Environment.NewLine
+						     + "ga('send', 'pageview');" + Environment.NewLine
+						     + "</script>" + Environment.NewLine;
 					}
 					else
 						LogException("Tools.LoadGoogleAnalytics/1","Failed to load Google UA code ("+sql+")");
@@ -1893,12 +1890,11 @@ namespace PCIBusiness
 
 		public static string LoadChat(string productCode)
 		{
-			string sql = "";
+			string sql = "exec sp_WP_Get_ChatSnip @ProductCode=" + Tools.DBString(productCode);
 
 			using (MiscList miscList = new MiscList())
 				try
 				{
-					sql = "exec sp_WP_Get_ChatSnip @ProductCode=" + Tools.DBString(productCode);
 					if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
 						return miscList.GetColumn("ChatSnippet");
 					LogException("Tools.LoadChat/1","Failed to load Chat widget ("+sql+")");

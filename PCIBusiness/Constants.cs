@@ -279,7 +279,8 @@ namespace PCIBusiness
 
 		public enum ErrorType : int
 		{
-			InvalidMenu = 1
+			InvalidMenu       = 1,
+			SQLNotImplemented = 909707505
 		}
 
 //		public enum PaymentType : byte
