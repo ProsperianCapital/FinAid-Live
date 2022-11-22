@@ -18,6 +18,8 @@ namespace PCIWebFinAid
 		string promoCode;
 
 		protected Literal F12014; // Favicon
+		protected int     firstSlide;
+		protected int     lastSlide;
 
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
@@ -47,6 +49,7 @@ namespace PCIWebFinAid
 			{
 				LoadPromo();
 				LoadProduct();
+				LoadSlides();
 				LoadStaticDetails();
 				LoadDynamicDetails();
 				if ( Tools.SystemLiveTestOrDev() != Constants.SystemMode.Development )
@@ -59,6 +62,32 @@ namespace PCIWebFinAid
 				btnErrorDtl.Visible = ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Development );
 				btnWidth.Visible    = ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Development );
 			}
+		}
+
+
+		private void LoadSlides()
+		{
+			int      num;
+			int      k      = 0;
+			string   folder = Tools.SystemFolder("") + Tools.ImageFolder().Replace("/","\\");
+			string[] files  = System.IO.Directory.GetFiles(folder,"Slide*.jpg");
+			firstSlide      = 999999999;
+			lastSlide       = 0;
+
+			foreach ( string fileName in files )
+			{
+				if ( k == 0 )
+					k = fileName.ToUpper().IndexOf("SLIDE") + 5;
+				num = Tools.StringToInt(fileName.Substring(k,fileName.Length-k-4));
+				if ( num > lastSlide )
+					lastSlide = num;
+				if ( num > 0 && num < firstSlide )
+					firstSlide = num;
+			}
+			if ( files.Length > 0 && lastSlide >= firstSlide )
+				imgSlides.ImageUrl = PCIBusiness.Tools.ImageFolder() + "Slide" + firstSlide.ToString() + ".jpg";
+			else
+				imgSlides.Visible = false;
 		}
 
 		private void SaveHiddenVars()
@@ -130,7 +159,7 @@ namespace PCIWebFinAid
 					}
 					catch (Exception ex)
 					{
-						PCIBusiness.Tools.LogException("LoadStaticDetails/99","ret="+ret.ToString(),ex,this);
+						Tools.LogException("LoadStaticDetails/99","ret="+ret.ToString(),ex,this);
 					}
 
 			hdnVer.Value = "Version " + SystemDetails.AppVersion + " (" + SystemDetails.AppDate + ")";
@@ -293,6 +322,7 @@ namespace PCIWebFinAid
 					ret             = 10410;
 					spr             = "sp_WP_Get_ProductLegalDocumentInfo";
 					sql             = "exec " + spr + stdParms;
+					Literal         ctl;
 
 					if ( mList.ExecQuery(sql,0) != 0 )
 						SetErrorDetail("LoadDynamicDetails", 10420, "Internal database error (" + spr + " failed)", sql, 2, 2, null, false, errPriority);
@@ -305,8 +335,13 @@ namespace PCIWebFinAid
 							fieldCode = mList.GetColumn("DocumentTypeCode");
 							try
 							{
-								((Literal)FindControl("LH"+fieldCode)).Text = mList.GetColumn("DocumentHeader",1,6);
-								((Literal)FindControl("LD"+fieldCode)).Text = mList.GetColumn("DocumentText",1,6);
+								ctl = ((Literal)FindControl("LH"+fieldCode));
+								if ( ctl != null )
+									ctl.Text = mList.GetColumn("DocumentHeader",1,6);
+								ctl = ((Literal)FindControl("LD"+fieldCode));
+								if ( ctl != null )
+									ctl.Text = mList.GetColumn("DocumentText",1,6);
+							//	((Literal)FindControl("LD"+fieldCode)).Text = mList.GetColumn("DocumentText",1,6);
 							}
 							catch
 							{ }
@@ -344,13 +379,7 @@ namespace PCIWebFinAid
 				languageDialectCode = "0002";
 			}
 
-//		See SaveHiddenVars()
-//			hdnCountryCode.Value     = countryCode;
-//			hdnProductCode.Value     = productCode;
-//			hdnLangCode.Value        = languageCode;
-//			hdnLangDialectCode.Value = languageDialectCode;
-
-			Tools.LogInfo("LoadProduct","PC/LC/LDC="+productCode+"/"+languageCode+"/"+languageDialectCode,10,this);
+		//	Tools.LogInfo("LoadProduct","PC/LC/LDC="+productCode+"/"+languageCode+"/"+languageDialectCode,10,this);
 		}	
 
 		private void LoadChat()

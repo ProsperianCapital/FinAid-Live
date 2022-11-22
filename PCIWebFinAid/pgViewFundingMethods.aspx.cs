@@ -113,7 +113,7 @@ namespace PCIWebFinAid
 
 //				if (allOK)
 //				{
-//					sqlProc = "sp_CRM_Blah";
+//					sqlProc = "sp_XXXX";
 //					sql     = "exec " + sqlProc + " @ContractCode=" + Tools.DBString(sessionGeneral.ContractCode)
 //					                            + ",@Access="       + Tools.DBString(sessionGeneral.AccessType)
 //					                            + ",Blah="

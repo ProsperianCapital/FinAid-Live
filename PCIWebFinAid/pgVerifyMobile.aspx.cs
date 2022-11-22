@@ -46,13 +46,16 @@ namespace PCIWebFinAid
 			if ( x == 871 )
 				using (MiscList mList = new MiscList())
 				{
-					sqlProc = "sp_CRM_Blah";
+					sqlProc = "sp_XXXX";
 					sql     = "exec " + sqlProc + " @ContractCode=" + Tools.DBString(sessionGeneral.ContractCode)
 					                            + ",@Access="       + Tools.DBString(sessionGeneral.AccessType);
-					if ( mList.ExecQuery(sql,0) != 0 )
-						SetErrorDetail("btnOK_Click",21200,"Internal database error (" + sqlProc + ")",sql,102,1);
+					int  sqlRet = mList.ExecQuery(sql,0);
+					if ( sqlRet == (int)Constants.ErrorType.SQLNotImplemented )
+						SetErrorDetail("btnOK_Click",21200,"This functionality is not implemented yet");
+					else if ( sqlRet != 0 )
+						SetErrorDetail("btnOK_Click",21210,"Internal database error (" + sqlProc + ")",sql,102,1);
 					else if ( ! mList.EOF )
-						SetErrorDetail("btnOK_Click",21210,mList.GetColumn("ResultMessage"),"",102,0);
+						SetErrorDetail("btnOK_Click",21220,mList.GetColumn("ResultMessage"),"",102,0);
 			}
 		}
 	}

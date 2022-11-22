@@ -12,6 +12,9 @@
 </head>
 <body>
 <script type="text/javascript">
+var imgMin    = <%=firstSlide%>;
+var imgMax    = <%=lastSlide%>;
+var imgNum    = <%=firstSlide%>;
 var showFAQ   = 0;
 var showLegal = [0,0,0,0,0,0,0];
 function TickOver(img,mode)
@@ -36,6 +39,25 @@ function Legal(code)
 		}
 		catch (x)
 		{ }
+}
+function LoadImage(direction)
+{
+	try
+	{
+		var p = imgNum + direction;
+		if ( p >= imgMin && p <= imgMax )
+		{
+			var img = GetElt("imgSlides");
+			var src = img.src;
+			var j   = src.toUpperCase().indexOf("SLIDE");
+			img.src = src.substring(0,j+5) + p.toString() + ".jpg";
+			imgNum  = p;
+			ShowElt('hPrev',(p>imgMin));
+			ShowElt('hNext',(p<imgMax));
+		}
+	}
+	catch (x)
+	{ }
 }
 </script>
 <form id="frmHome" runat="server">
@@ -183,6 +205,17 @@ function Legal(code)
 	<asp:Literal runat="server" ID="X105009">105009</asp:Literal>
 	</div>
 
+	<br />
+
+	<!-- Slide Show -->
+	<div style="font-size:50px;font-weight:bold;display:flex;align-items:center;justify-content:center">
+		<a id="hPrev" href="JavaScript:LoadImage(-1)" title="Previous slide" style="text-decoration:none"> << </a>
+		<asp:Image runat="server" ID="imgSlides" style="margin:0px 10px 0px 10px" />
+		<a id="hNext" href="JavaScript:LoadImage(+1)" title="Next slide" style="text-decoration:none"> >> </a>
+	</div>
+
+	<br />
+
 	<div style="text-align:center">
 	<asp:HyperLink runat="server" ID="H12013"><asp:Image runat="server" ID="P12013" /></asp:HyperLink>
 	<asp:HyperLink runat="server" ID="H12025"><asp:Image runat="server" ID="P12025" /></asp:HyperLink>
@@ -285,6 +318,8 @@ function Legal(code)
 // Header and footer must be BLACK
 GetElt('HRow').style.backgroundColor='#000000';
 GetElt('FRow').style.backgroundColor='#000000';
+ShowElt('hPrev',(imgNum>imgMin));
+ShowElt('hNext',(imgNum<imgMax));
 </script>
 </body>
 </html>

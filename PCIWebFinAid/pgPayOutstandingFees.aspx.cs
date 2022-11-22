@@ -65,7 +65,7 @@ namespace PCIWebFinAid
 
 			if ( amt > 0 )
 			{
-				sqlProc = "sp_CRM_Blah";
+				sqlProc = "sp_XXXX";
 				sql     = "exec " + sqlProc + " @ContractCode="        + Tools.DBString(sessionGeneral.ContractCode)
 				                            + ",@AmountToPay='"        + Tools.DecimalToCurrency(amt) + "'"
 				                            + ",@LanguageCode="        + Tools.DBString(sessionGeneral.LanguageCode)
@@ -76,7 +76,7 @@ namespace PCIWebFinAid
 
 //				using (MiscList mList = new MiscList())
 //				{
-//					sqlProc = "sp_CRM_Blah";
+//					sqlProc = "sp_XXXX";
 //					sql     = "exec " + sqlProc + " @ContractCode="        + Tools.DBString(sessionGeneral.ContractCode)
 //					                            + ",@AmountToPay='"        + Tools.DecimalToCurrency(amt) + "'"
 //					                            + ",@LanguageCode="        + Tools.DBString(sessionGeneral.LanguageCode)
