@@ -85,7 +85,10 @@ namespace PCIWebFinAid
 					firstSlide = num;
 			}
 			if ( files.Length > 0 && lastSlide >= firstSlide )
-				imgSlides.ImageUrl = PCIBusiness.Tools.ImageFolder() + "Slide" + firstSlide.ToString() + ".jpg";
+			{
+				imgSlides.ImageUrl = Tools.ImageFolder() + "Slide" + firstSlide.ToString() + ".jpg";
+				imgSlides.ToolTip  = "Slide 1 of " + (lastSlide-firstSlide+1).ToString();
+			}
 			else
 				imgSlides.Visible = false;
 		}

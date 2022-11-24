@@ -60,6 +60,22 @@ function LoadImage(direction)
 	catch (x)
 	{ }
 }
+function BigImage()
+{
+	try
+	{
+		if ( imgNum >= imgMin && imgNum <= imgMax )
+		{
+			var imgS = GetElt("imgSlides");
+			var imgB = GetElt("imgBig");
+			imgB.src = imgS.src.replace(".jpg","B.jpg");
+			SetEltValue('spnBig',' '+imgS.title);
+			ShowElt('divBig',true);
+		}
+	}
+	catch (x)
+	{ }
+}
 </script>
 <form id="frmHome" runat="server">
 	<ascx:Header runat="server" ID="ascxHeader" />
@@ -222,9 +238,14 @@ function LoadImage(direction)
 	<!-- Slide Show -->
 	<div style="font-size:50px;font-weight:bold;display:flex;align-items:center;justify-content:center">
 		<a id="hPrev" href="JavaScript:LoadImage(-1)" title="Previous slide" style="text-decoration:none"> < </a>
-		<asp:Image runat="server" ID="imgSlides" style="margin:0px 10px 0px 10px" />
+		<a href="JavaScript:BigImage()"><asp:Image runat="server" ID="imgSlides" style="margin:0px 10px 0px 10px" /></a>
 		<a id="hNext" href="JavaScript:LoadImage(+1)" title="Next slide" style="text-decoration:none"> > </a>
 	</div>
+	<div id="divBig" style="display:none;visibility:hidden;border:1px solid #000000;position:fixed;left:5px;top:5px;padding:3px;background-color:aqua;font-size:18px">
+		<span id="spnBig"></span><img src="ImageLibrary/Close1.png" onclick="JavaScript:ShowElt('divBig',false)" title="Close" style="float:right" /><br />
+		<img id="imgBig" style="margin-top:3px" />
+	</div>
+	<!-- Slide Show -->
 
 	<br /><hr />
 
