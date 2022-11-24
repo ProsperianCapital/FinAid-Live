@@ -474,15 +474,6 @@ namespace PCIWebFinAid
 		protected global::System.Web.UI.WebControls.Literal X105009;
 
 		/// <summary>
-		/// imgSlides control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.Image imgSlides;
-
-		/// <summary>
 		/// H12013 control.
 		/// </summary>
 		/// <remarks>
@@ -553,6 +544,15 @@ namespace PCIWebFinAid
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
 		protected global::System.Web.UI.WebControls.Image P12027;
+
+		/// <summary>
+		/// imgSlides control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.Image imgSlides;
 
 		/// <summary>
 		/// X100092 control.

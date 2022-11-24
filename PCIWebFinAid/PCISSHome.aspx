@@ -47,11 +47,12 @@ function LoadImage(direction)
 		var p = imgNum + direction;
 		if ( p >= imgMin && p <= imgMax )
 		{
-			var img = GetElt("imgSlides");
-			var src = img.src;
-			var j   = src.toUpperCase().indexOf("SLIDE");
-			img.src = src.substring(0,j+5) + p.toString() + ".jpg";
-			imgNum  = p;
+			var img   = GetElt("imgSlides");
+			var src   = img.src;
+			var j     = src.toUpperCase().indexOf("SLIDE");
+			img.src   = src.substring(0,j+5) + p.toString() + ".jpg";
+			img.title = 'Slide ' + (p-imgMin+1).toString() + ' of ' + (imgMax-imgMin+1).toString();
+			imgNum    = p;
 			ShowElt('hPrev',(p>imgMin));
 			ShowElt('hNext',(p<imgMax));
 		}
@@ -207,15 +208,6 @@ function LoadImage(direction)
 
 	<br />
 
-	<!-- Slide Show -->
-	<div style="font-size:50px;font-weight:bold;display:flex;align-items:center;justify-content:center">
-		<a id="hPrev" href="JavaScript:LoadImage(-1)" title="Previous slide" style="text-decoration:none"> << </a>
-		<asp:Image runat="server" ID="imgSlides" style="margin:0px 10px 0px 10px" />
-		<a id="hNext" href="JavaScript:LoadImage(+1)" title="Next slide" style="text-decoration:none"> >> </a>
-	</div>
-
-	<br />
-
 	<div style="text-align:center">
 	<asp:HyperLink runat="server" ID="H12013"><asp:Image runat="server" ID="P12013" /></asp:HyperLink>
 	<asp:HyperLink runat="server" ID="H12025"><asp:Image runat="server" ID="P12025" /></asp:HyperLink>
@@ -224,7 +216,17 @@ function LoadImage(direction)
 	<asp:HyperLink runat="server" ID="H12026"><asp:Image runat="server" ID="P12026" /></asp:HyperLink>
 	<asp:HyperLink runat="server" ID="H12027"><asp:Image runat="server" ID="P12027" /></asp:HyperLink>
 	</div>
-	<hr />
+
+	<hr /><br />
+
+	<!-- Slide Show -->
+	<div style="font-size:50px;font-weight:bold;display:flex;align-items:center;justify-content:center">
+		<a id="hPrev" href="JavaScript:LoadImage(-1)" title="Previous slide" style="text-decoration:none"> < </a>
+		<asp:Image runat="server" ID="imgSlides" style="margin:0px 10px 0px 10px" />
+		<a id="hNext" href="JavaScript:LoadImage(+1)" title="Next slide" style="text-decoration:none"> > </a>
+	</div>
+
+	<br /><hr />
 
 	<div>
 		<p style="color:#FF7400;font-family:Sans-serif;font-size:18px;font-weight:600;letter-spacing:0.8px">
