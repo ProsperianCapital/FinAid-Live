@@ -61,7 +61,7 @@ namespace PCIWebFinAid
 						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.AdvantageCardCRM) )
 							goTo = "ADVCRM.aspx";
 						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.SmartStox)        ) // 160
-							goTo = "SSHome.aspx";
+							goTo = "PCISSHome.aspx";
 						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.SmartStoxCRM)     )
 							goTo = "SSCRM.aspx";
 						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.RewardsVault)     ) // 170

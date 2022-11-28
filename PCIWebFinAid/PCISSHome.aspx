@@ -242,7 +242,7 @@ function BigImage()
 		<a id="hNext" href="JavaScript:LoadImage(+1)" title="Next slide" style="text-decoration:none"> > </a>
 	</div>
 	<div id="divBig" style="display:none;visibility:hidden;border:1px solid #000000;position:fixed;left:5px;top:5px;padding:3px;background-color:aqua;font-size:18px">
-		<span id="spnBig"></span><img src="ImageLibrary/Close1.png" onclick="JavaScript:ShowElt('divBig',false)" title="Close" style="float:right" /><br />
+		<span id="spnBig"></span><img src="<%=PCIBusiness.Tools.ImageFolder() %>Close1.png" onclick="JavaScript:ShowElt('divBig',false)" title="Close" style="float:right" /><br />
 		<img id="imgBig" style="margin-top:3px" />
 	</div>
 	<!-- Slide Show -->

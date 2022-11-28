@@ -3,7 +3,7 @@
 	public static class SystemDetails
 	{
 		public static string AppName    = "Prosperian BackOffice";
-		public static string AppVersion = "1.0.149";
-		public static string AppDate    = "2022/11/24 11:59:02";
+		public static string AppVersion = "1.0.150";
+		public static string AppDate    = "2022/11/28 16:49:02";
 	}
 }
