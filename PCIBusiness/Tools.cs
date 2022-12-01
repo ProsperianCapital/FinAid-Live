@@ -1836,6 +1836,7 @@ namespace PCIBusiness
 			if ( transactionType == (byte)Constants.TransactionType.Transfer              ) return "Transfer";
 			if ( transactionType == (byte)Constants.TransactionType.TransactionLookup     ) return "Transaction Lookup";
 			if ( transactionType == (byte)Constants.TransactionType.ZeroValueCheck        ) return "Zero-Value Validation";
+			if ( transactionType == (byte)Constants.TransactionType.AccountUpdate         ) return "Account Update";
 			if ( transactionType == (byte)Constants.TransactionType.Test                  ) return "Test";
 			return "Unknown (transactionType=" + transactionType.ToString() + ")";
 		}

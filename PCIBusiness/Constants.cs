@@ -129,7 +129,9 @@ namespace PCIBusiness
 			TankwaCyber      = 180,
 			TankwaCyberCRM   = 185,
 			ProsperianSTO    = 190,
-			ProsperianSTOCRM = 195
+			ProsperianSTOCRM = 195,
+			SmartMoney       = 200,
+			SmartMoneyCRM    = 205
 		}
 
 		public enum BureauStatus : byte
@@ -172,6 +174,7 @@ namespace PCIBusiness
 			Reversal              =  10,
 			Refund                =  11,
 			ZeroValueCheck        =  13,
+			AccountUpdate         =  14,
 			ManualPayment         =  73,
 			TransactionLookup     =  81,
 			Test                  = 197

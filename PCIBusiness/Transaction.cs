@@ -214,13 +214,18 @@ namespace PCIBusiness
 			return 14100;
 		}
 
+		public virtual int AccountUpdate(Payment payment)
+		{
+			return 14120;
+		}
+
 		public virtual int ThreeDSecurePayment(Payment payment,Uri postBackURL,string languageCode="",string languageDialectCode="")
 		{
-			return 14110;
+			return 14130;
 		}
 		public virtual int ThreeDSecureCheck(string providerRef,string merchantRef="",string data1="",string data2="",string data3="")
 		{
-			return 14120;
+			return 14140;
 		}
 
       public virtual bool EnabledFor3d(byte transactionType)

@@ -71,7 +71,7 @@ namespace PCIBusiness
 		private string   machineCookie;
 		private string   schemeTranID;
 
-//	Stripe fields
+//	Stripe/PaymentCloud fields
 		private string   customerID;
 		private string   paymentMethodID;
 
@@ -953,6 +953,11 @@ namespace PCIBusiness
 			return retProc;
 		}
 
+		public int AccountUpdate()
+		{
+			return 0;
+		}
+
 		public int GetToken()
 		{
 			int retProc = 64020;
@@ -1160,7 +1165,7 @@ namespace PCIBusiness
 			ccPIN            = dbConn.ColString ("PIN"            ,0,0);
 			transactionID    = dbConn.ColGuid   ("TransactionId"  ,0,0);
 		//	transactionID    = dbConn.ColString ("TransactionId"  ,0,0,177);
-		//	Used by Stripe (bureauCode 028)
+		//	Used by Stripe (bureauCode 028) and PaymentCloude (bureauCode 031)
 			customerID       = dbConn.ColString ("CustomerId"     ,0,0);
 			paymentMethodID  = dbConn.ColString ("PaymentMethodId",0,0);
 		//	Used by WorldPay (bureauCode 032)

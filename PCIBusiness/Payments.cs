@@ -142,6 +142,8 @@ namespace PCIBusiness
 				spr  = "sp_Get_CardPayment_Ref";
 			else if ( transactionType == (byte)Constants.TransactionType.ZeroValueCheck )
 				spr  = "sp_Get_PaymentZeroValue";
+			else if ( transactionType == (byte)Constants.TransactionType.AccountUpdate )
+				spr  = "sp_Get_AccountUpdate";
 
 			//	Testing
 			//	sql  = "select 1 as Seq,'EoD35wlB34RtDeIVG74RqEexmT8aYkNOw9T2kEH3nyu21zWwQ10Ls9Y8zXfs4pVc' as TransactionId"
@@ -217,6 +219,8 @@ namespace PCIBusiness
 							err = payment.Refund();
 						else if ( transactionType == (byte)Constants.TransactionType.TransactionLookup )
 							err = payment.Lookup();
+						else if ( transactionType == (byte)Constants.TransactionType.AccountUpdate )
+							err = payment.AccountUpdate();
 						else if ( transactionType == (byte)Constants.TransactionType.Transfer )
 						//	err = payment.Transfer();
 							err = 41999;
