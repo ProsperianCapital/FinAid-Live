@@ -76,6 +76,8 @@ namespace PCIWebFinAid
 							goTo = "PCISTOHome.aspx";
 						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.ProsperianSTOCRM) )
 							goTo = "PCISTOCRM.aspx";
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.SmartMoney)       ) // 200
+							goTo = "SMHome.aspx";
 						else
 							err  = 20;
 					}
