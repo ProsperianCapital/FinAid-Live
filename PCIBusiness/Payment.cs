@@ -836,14 +836,16 @@ namespace PCIBusiness
 			                                  + ",@PaymentBureauToken = " + Tools.DBString(CardToken)
 			                                  + ",@ContractCode = "       + Tools.DBString(MerchantReference)
 			                                  + ",@CardNumber = "         + Tools.DBString(transaction.CardNumber);
-				Tools.LogInfo("Detokenize/20","SQL=" + sql,218,this);
+			//	Tools.LogInfo("Detokenize/20","SQL=" + sql,10,this);
 				retSQL = ExecuteSQLUpdate();
+				Tools.LogInfo("Detokenize/30","retProc=" + retProc.ToString()+" | retSQL=" + retSQL.ToString()+" | SQL=" + sql,
+				             (byte)(retSQL > 0 ? 218 : 20),this);
 			}
 			else
-				Tools.LogInfo("Detokenize/30","retProc=" + retProc.ToString() + " | data="
+				Tools.LogInfo("Detokenize/40","retProc=" + retProc.ToString() + " | data="
 				            + CardToken + " | " + transaction.PaymentReference + " | " + transaction.CardNumber,218,this);
 
-			Tools.LogInfo("Detokenize/90","retProc=" + retProc.ToString()+", retSQL=" + retSQL.ToString(),40,this);
+		//	Tools.LogInfo("Detokenize/90","retProc=" + retProc.ToString()+", retSQL=" + retSQL.ToString(),40,this);
 			return retProc;
 		}
 
@@ -868,10 +870,10 @@ namespace PCIBusiness
 			                                + ",@Token = "             + Tools.DBString(CardToken)
 			                                + ",@StatusName = "        + Tools.DBString(transaction.ResultStatus)
 			                                + ",@StatusDesc = "        + Tools.DBString(transaction.ResultMessage);
-				Tools.LogInfo("DeleteToken/20","SQL=" + sql,10,this);
+				Tools.LogInfo("DeleteToken/20","SQL=" + sql,20,this);
 				retSQL = ExecuteSQLUpdate();
 			}
-			Tools.LogInfo("DeleteToken/90","retProc=" + retProc.ToString()+", retSQL=" + retSQL.ToString(),40,this);
+			Tools.LogInfo("DeleteToken/90","retProc=" + retProc.ToString()+", retSQL=" + retSQL.ToString(),20,this);
 			return retProc;
 		}
 
@@ -991,7 +993,7 @@ namespace PCIBusiness
 				Tools.LogInfo("GetToken/20","SQL=" + sql,20,this);
 				retSQL = ExecuteSQLUpdate();
 			}
-			Tools.LogInfo("GetToken/90","retProc=" + retProc.ToString()+", retSQL=" + retSQL.ToString(),40,this);
+			Tools.LogInfo("GetToken/90","retProc=" + retProc.ToString()+", retSQL=" + retSQL.ToString(),20,this);
 			return retProc;
 		}
 

@@ -103,18 +103,32 @@ namespace PCIBusiness
 				ret      = 40;
 				ret      = CallWebService(payment,(byte)Constants.TransactionType.TransactionLookup);
 				otherRef = Tools.JSONValue(strResult,"id");
+				ret      = 50;
 				if ( resultCode.ToUpper().StartsWith("BUSY") || resultCode.ToUpper().StartsWith("APPROV") )
 					return ret;
 
-				Tools.LogInfo("Lookup/40","Ret="+ret.ToString()
+				Tools.LogInfo("Lookup/50","Ret="+ret.ToString()
 				                      + ", TransactionId="+payment.TransactionID
 				                      + ", ResultCode="+resultCode
 				                      + ", ResultMsg="+resultMsg
 				                      + ", strResult="+strResult,10,this);
 
-				if ( resultMsg.Length > 0 )
-					resultCode = resultMsg;
-				else
+//	Removed 2022/12/02
+//				if ( resultMsg.Length > 0 )
+//					resultCode = resultMsg;
+//				else
+//					resultCode = "ERROR/142";
+
+//	Added 2022/12/02
+				ret = 60;
+				if ( resultCode.Length < 1 )
+					if ( resultMsg.Length > 255 )
+						resultCode = resultMsg.Substring(0,255);
+					else if ( resultMsg.Length > 0 )
+						resultCode = resultMsg;
+
+				ret = 70;
+				if ( resultCode.Length < 1 )
 					resultCode = "ERROR/142";
 
 //				if ( ret == 0 && otherRef.Length > 0 && resultCode.Length > 0 )
@@ -122,8 +136,6 @@ namespace PCIBusiness
 //						resultCode = resultMsg;
 //				if ( resultCode.Length == 0 )
 //					resultCode = "ERROR";
-
-//				Tools.LogInfo("Lookup/50","Ret="+ret.ToString()+", TransactionId="+payment.TransactionID+", ResultCode="+resultCode+", strResult="+strResult,199,this);
 			}
 			catch (Exception ex)
 			{
@@ -326,7 +338,7 @@ namespace PCIBusiness
 			}
 			else
 			{
-				Tools.LogInfo("CallWebService/263","transactionType="+transactionType.ToString(),220,this);
+				Tools.LogInfo("CallWebService/263","Unknown transaction type (transactionType="+transactionType.ToString()+")",220,this);
 				ret        = 110;
 				resultCode = "110";
 				resultMsg  = "(110) Unknown transaction type";

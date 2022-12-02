@@ -1843,32 +1843,46 @@ namespace PCIBusiness
 
 		public static string ErrorTypeName(int errType)
 		{
-			if ( errType == (int)Constants.ErrorType.InvalidMenu ) return "Invalid/missing menu for this application/language";
+			if ( errType == (int)Constants.ErrorType.InvalidMenu )
+				return "Invalid/missing menu for this application/language";
 			return "";
 		}
 
-		public static string LoadGoogleAnalytics(string productCode)
+		public static string LoadGoogleAnalytics(string productCode,byte version=1,string transactionId="")
 		{
-			string sql = "exec sp_WP_Get_GoogleACA @ProductCode=" + Tools.DBString(productCode);
+			string sql     = "exec sp_WP_Get_GoogleACA @ProductCode=" + Tools.DBString(productCode);
+			string gScript = "";
+			string gaCode  = "";
+			string url     = "";
 
 			using (MiscList miscList = new MiscList())
 				try
 				{
 					if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
 					{
-						string gaCode = miscList.GetColumn("GoogleAnalyticCode");
-						string url    = miscList.GetColumn("URL");
-						return Environment.NewLine
-					        + "<script>" + Environment.NewLine
-						     + "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){"
-						     + "(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),"
-						     + "m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)"
-						     + "})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');" + Environment.NewLine
-						     + "ga('create', '" + gaCode + "', 'auto', {'allowLinker': true});" + Environment.NewLine
-						     + "ga('require', 'linker');" + Environment.NewLine
-						     + "ga('linker:autoLink', ['" + url + "'] );" + Environment.NewLine
-						     + "ga('send', 'pageview');" + Environment.NewLine
-						     + "</script>" + Environment.NewLine;
+						gaCode = miscList.GetColumn("GoogleAnalyticCode");
+						url    = miscList.GetColumn("URL");
+
+						if ( version == 2 )
+						//	gaCode  = "AW-11030275536"
+							gScript = "<script async src='https://www.googletagmanager.com/gtag/js?id=" + gaCode + "'></script>" + Environment.NewLine
+							        + "<script>" + Environment.NewLine
+							        + "window.dataLayer = window.dataLayer || [];"
+							        + "function gtag(){dataLayer.push(arguments);}"
+							        + "gtag('js', new Date());"
+							        + "gtag('config', '" + gaCode + "');" + Environment.NewLine
+							        + "</script>";
+						else
+							gScript = "<script>" + Environment.NewLine
+							        + "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){"
+							        + "(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),"
+							        + "m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)"
+							        + "})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');" + Environment.NewLine
+							        + "ga('create', '" + gaCode + "', 'auto', {'allowLinker': true});" + Environment.NewLine
+							        + "ga('require', 'linker');" + Environment.NewLine
+							        + "ga('linker:autoLink', ['" + url + "'] );" + Environment.NewLine
+							        + "ga('send', 'pageview');" + Environment.NewLine
+							        + "</script>";
 					}
 					else
 						LogException("Tools.LoadGoogleAnalytics/1","Failed to load Google UA code ("+sql+")");
@@ -1877,6 +1891,15 @@ namespace PCIBusiness
 				{
 					LogException("Tools.LoadGoogleAnalytics/2",sql,ex);
 				}
+
+			if ( gScript.Length > 0 && gaCode.Length > 0 )
+			{
+				if ( transactionId.Length > 0 )
+					gScript = gScript + Environment.NewLine + "<script>"
+					                  + "gtag('event', 'conversion', { 'send_to': '" + gaCode + "/CHq3CJGyloMYENDL0osp', 'transaction_id': '" + transactionId + "' });"
+					                  + Environment.NewLine + "</script>";
+				return Environment.NewLine + gScript + Environment.NewLine;
+			}
 			return "";
 		}
 

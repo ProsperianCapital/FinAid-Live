@@ -259,7 +259,7 @@ namespace PCIBusiness
 				finally
 				{
 					Tools.CloseDB(ref dbConn);
-					Tools.LogInfo("ProcessCards/90",desc + " finished, success " + success.ToString() + ", fail " + fail.ToString(),199,this);
+					Tools.LogInfo("ProcessCards/90",desc + " finished, success " + success.ToString() + ", fail " + fail.ToString(),logPriority,this);
 				}
 
 			return success+fail;

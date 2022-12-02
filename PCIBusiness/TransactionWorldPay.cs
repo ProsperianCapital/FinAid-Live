@@ -888,8 +888,8 @@ namespace PCIBusiness
 		{
 			base.LoadBureauDetails(Constants.PaymentProvider.WorldPay);
 			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-//			logPriority                          = 10;  // For production, when all is stable
-			logPriority                          = 222; // For testing/development, to log very detailed errors
+			logPriority                          = 10;  // For production, when all is stable
+//			logPriority                          = 222; // For testing/development, to log very detailed errors
 		}
 	}
 }
