@@ -390,8 +390,8 @@ namespace PCIBusiness
 			base.LoadBureauDetails(Constants.PaymentProvider.PaymentCloud);
 			ServicePointManager.Expect100Continue = true;
 			ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
-			logPriority                           = 233; // Testing, always log
-		//	logPriority                           =  10; // Live, only log errors
+		//	logPriority                           = 233; // Testing, always log
+			logPriority                           =  10; // Live, only log errors
 		}
 	}
 }

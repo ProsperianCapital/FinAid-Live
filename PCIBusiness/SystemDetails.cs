@@ -6,8 +6,8 @@
 	//	public static string AppName    = "Prosperian Capital Recurring Payments";
 
 		public static string AppID      = "PCI-DLL";
-		public static string AppVersion = "1.2.135";
-		public static string AppDate    = "2022/12/02 13:27:01";
+		public static string AppVersion = "1.2.137";
+		public static string AppDate    = "2022/12/14 15:01:47";
 		public static string Developer  = "Paul Kilfoil, Software Development & IT Consulting";
 		public static string Owner      = "Prosperian Capital International";
 		public static string OwnerPhone = "+27 21 950 6060";

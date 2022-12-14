@@ -113,24 +113,51 @@ namespace PCIBusiness
 				                      + ", ResultMsg="+resultMsg
 				                      + ", strResult="+strResult,10,this);
 
-//	Removed 2022/12/02
+//	Ver 1, removed 2022/12/02
+//				ret = 59;
 //				if ( resultMsg.Length > 0 )
 //					resultCode = resultMsg;
 //				else
 //					resultCode = "ERROR/142";
 
-//	Added 2022/12/02
-				ret = 60;
-				if ( resultCode.Length < 1 )
-					if ( resultMsg.Length > 255 )
-						resultCode = resultMsg.Substring(0,255);
-					else if ( resultMsg.Length > 0 )
-						resultCode = resultMsg;
+//	Ver 2, removed 2022/12/05
+//				ret = 60;
+//				if ( resultCode.Length < 1 )
+//					if ( resultMsg.Length > 250 )
+//						resultCode = resultMsg.Substring(0,250);
+//					else if ( resultMsg.Length > 0 )
+//						resultCode = resultMsg;
 
-				ret = 70;
-				if ( resultCode.Length < 1 )
+//	Ver 3, removed 2022/12/05
+//				ret = 61;
+//				if ( resultCode.Length < 1 )
+//					resultCode = "ERROR/142";
+//				if ( resultMsg.Length  < 1 )
+//					resultMsg  = "No details supplied";
+//
+//				ret        = 62;
+//				resultCode = resultCode + " (" + resultMsg;
+//
+//				if ( resultCode.Length > 249 )
+//					resultCode = resultCode.Substring(0,249);
+//
+//				ret        = 63;
+//				resultCode = resultCode + ")";
+
+//	Ver 4, added 2022/12/05
+				ret = 64;
+				if ( resultMsg.Length > 249 )
+					resultCode = resultMsg.Substring(0,249);
+				else if ( resultMsg.Length > 0 )
+					resultCode = resultMsg;
+				else if ( resultCode.Length < 1 )
 					resultCode = "ERROR/142";
 
+//				ret = 70;
+//				if ( resultCode.Length < 1 )
+//					resultCode = "ERROR/142";
+
+//				ret = 80;
 //				if ( ret == 0 && otherRef.Length > 0 && resultCode.Length > 0 )
 //					if ( resultCode.ToUpper().StartsWith("DECLINE") && resultMsg.Length > 0 )
 //						resultCode = resultMsg;
