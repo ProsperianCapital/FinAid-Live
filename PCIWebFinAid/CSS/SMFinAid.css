@@ -235,11 +235,13 @@ table td
 }
 .TopButtonO
 {
+	color: white;
 	background-color: #00457C;
 	text-decoration: none;
 }
 .TopButtonY
 {
+	color: white;
 	background-color: #0086CC;
 	text-decoration: none;
 }
