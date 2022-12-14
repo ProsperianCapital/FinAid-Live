@@ -1,0 +1,620 @@
+@font-face{font-family:'ralewaysemibold';src:url(/CSS/raleway-semibold-webfont.eot);src:url(/CSS/raleway-semibold-webfont.eot?#iefix) format("embedded-opentype"),url(/CSS/raleway-semibold-webfont.woff) format("woff"),url(/CSS/raleway-semibold-webfont.ttf) format("truetype"),url(/CSS/raleway-semibold-webfont.svg#ralewaysemibold) format("svg");font-weight:400;font-style:normal}
+@font-face{font-family:'ralewaymedium';src:url(/CSS/raleway-medium-webfont.eot);src:url(/CSS/raleway-medium-webfont.eot?#iefix) format("embedded-opentype"),url(/CSS/raleway-medium-webfont.woff) format("woff"),url(/CSS/raleway-medium-webfont.ttf) format("truetype"),url(/CSS/raleway-medium-webfont.svg#ralewaymedium) format("svg");font-weight:400;font-style:normal}
+@font-face{font-family:'ralewaybold';src:url(/CSS/raleway-bold-webfont.eot);src:url(/CSS/raleway-bold-webfont.eot?#iefix) format("embedded-opentype"),url(/CSS/raleway-bold-webfont.woff) format("woff"),url(/CSS/raleway-bold-webfont.ttf) format("truetype"),url(/CSS/raleway-bold-webfont.svg#ralewaybold) format("svg");font-weight:400;font-style:normal}
+
+body
+{
+	font-family: ralewaymedium, Calibri, Arial, Tahoma;
+	font-size: 14px;
+	overflow-x: hidden;
+}
+input[type=button], input[type=submit]
+{
+	font-weight: 300;
+	color: white;
+	background-color: #E68A00;
+	width: 100px;
+	padding: 3px;
+}
+input[type=button]:hover, input[type=submit]:hover
+{
+	background-color: #FF1A1A !important;
+}
+table td
+{
+	height: 22px;
+	width: 209px;
+}
+
+.Confirmation td
+{
+	height: 12px;
+}
+
+.ImageAdjust
+{
+	max-width: 2400px;
+}
+
+.Header1
+{
+	font-family: "Trebuchet MS", serif;
+	font-size: 16px;
+	font-style: italic;
+	font-weight: 100;
+	color: white;
+	padding: 0px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background-color: #00A3F8;
+	display: inline-block;
+	width: 100%;
+}
+.Header1a
+{
+	font-size: 18px;
+	letter-spacing: 1.6px;
+	font-family: "Open Sans Hebrew", Sans-serif;
+	line-height: 1.5;
+}
+.Header1b:hover
+{
+	background-color: #FF1A1A;
+}
+
+@media screen and (max-width: 1118px)
+{
+	.HCol1
+	{
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+	.HCol2
+	{
+		padding: 10px;
+		padding-top: 20px;
+	}
+	.HCol3
+	{
+		padding: 10px;
+		padding-top: 20px;
+	}
+	.HCol4
+	{
+		padding: 10px;
+		padding-top: 25px;
+	}
+}
+
+@media screen and (max-width: 1004px)
+{
+	.HCol1
+	{
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+	.HCol2
+	{
+		padding: 10px;
+		padding-top: 0px;
+		padding-bottom: 8px;
+	}
+	.HCol3
+	{
+		padding: 10px;
+		padding-top: 8px;
+		padding-bottom: 0px;
+	}
+	.HCol4
+	{
+		padding: 10px;
+		padding-top: 25px;
+	}
+}
+
+@media screen and (max-width: 664px)
+{
+	.HeaderCA
+	{
+		height: 140px;
+	}
+	.HeaderPY
+	{
+		height: 140px;
+	}
+	.HeaderLG
+	{
+		height: 120px;
+	}
+	.HeaderIS
+	{
+		height: 140px;
+	}
+	.HCol1
+	{
+		padding-left: 56px;
+		padding-right: 400px;
+	}
+	.HCol2
+	{
+		float: none;
+		padding-left: 8px;
+		padding-top: 4px;
+		padding-bottom: 4px;
+	}
+	.HCol3
+	{
+		float: none;
+		padding-left: 16px;
+		padding-top: 4px;
+		padding-bottom: 4px;
+	}
+	.HCol4
+	{
+		float: none;
+		padding-left: 8px;
+		padding-top: 4px;
+		padding-bottom: 4px;
+	}
+	.ImageAdjust
+	{
+		max-width: 330px;
+	}
+}
+
+.Header2
+{
+	font-family: "Trebuchet MS", serif;
+	font-size: 20px;
+	color: black;
+	padding: 10px;
+}
+.Header2a
+{
+	float: right;
+}
+
+.Header3
+{
+	display: block;
+	font-family: ralewaymedium, sans-serif;
+	font-size: 32px;
+	font-weight: 100;
+	color: black;
+	padding: 20px;
+	background-color: #898787;
+}
+
+.Header4
+{
+	font-family: ralewaymedium;
+	font-size: 20px;
+	font-weight: bold;
+	color: black;
+}
+
+.Header5
+{
+	font-family: ralewaymedium;
+	font-size: 18px;
+	font-weight: bold;
+	color: orange;
+}
+
+.Header5 td
+{
+	border-bottom: 1px solid blue;
+}
+
+.MenuRow
+{
+	background-color: #898787;
+	text-align: center;
+	padding: 2px;
+}
+
+/*
+.Header6 input[type=button] input[type=submit]
+*/
+
+.TopButton
+{
+	border: 0;
+	box-shadow: none;
+	border-radius: 5px;
+	outline: none;
+	width: 100px;
+	height: 28px;
+	font-style: normal;
+	font-size: 16px;
+	letter-spacing: 0px;
+	text-align: center;
+	vertical-align: middle;
+	display: inline-block;
+	padding: 8px 0px 0px 0px;
+}
+.TopButtonO
+{
+	background-color: #00457C;
+	text-decoration: none;
+}
+.TopButtonY
+{
+	background-color: #0086CC;
+	text-decoration: none;
+}
+.TopButtonD
+{
+	background-color: #54595F;
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.TopButtonP
+{
+	background-color: #61CE70;
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.TopButton:hover
+{
+	background-color: #898787;
+}
+
+.Footer3
+{
+	font-family: Arial;
+	font-size: 12px;
+	color: white;
+	background-color: #54595F;
+	height: 25px;
+	width: 100%;
+	text-align: center;
+	float: left;
+	padding: 0px;
+	padding-top: 8px;
+}
+
+.Footer2
+{
+	font-family: "Trebuchet MS", serif;
+	font-size: 12px;
+	color: black;
+	padding: 10px;
+	background-color: lightblue; /* #898787; */
+	position: fixed;
+	bottom: 1px;
+	width: 99%;
+}
+
+.Footer1
+{
+	display: block;
+	width: 100%;
+	text-align: center;
+	background-color: #898787;
+	color: #FFFFFF;
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.DataLabel
+{
+	color: #E68A00;
+	width: 209px;
+}
+
+.DataInput
+{
+	background-color: #898787;
+	width: 209px;
+	border: 0;
+	padding: 2px;
+}
+
+.Error
+{
+	color: red;
+	width: 500px;
+}
+
+.PopupBox
+{
+	top: 20%;
+	left: 20%;
+	position: fixed;
+	z-index: 100;
+	border: 1px solid #999999;
+	padding: 5px;
+	background-color: #E68A00;
+	color: #FFFFFF;
+	-moz-box-shadow: 1px 1px 3px 1px #999;
+	-webkit-box-shadow: 1px 1px 3px 1px #999;
+	box-shadow: 1px 1px 3px 1px #999;
+}
+
+.Popup2
+{
+	top: 10%;
+	left: 10%;
+	position: fixed;
+	z-index: 100;
+	border: 1px solid #999999;
+	padding: 5px;
+	background-color: aqua;
+	color: #000000;
+	-moz-box-shadow: 1px 1px 3px 1px #999;
+	-webkit-box-shadow: 1px 1px 3px 1px #999;
+	box-shadow: 1px 1px 3px 1px #999;
+}
+
+.PopupHead
+{
+	background-color: lightpink;
+	color: black;
+	padding: 5px;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+/* Testing stuff below, not used */
+
+.Detail
+{
+	font-size: 16px;
+}
+.Red
+{
+	color: red;
+}
+
+.ButtonRow
+{
+	padding: 5px;
+	background-color: powderblue;
+}
+.Button
+{
+	padding: 5px;
+	color: darkgreen;
+	font-weight: bold;
+	font-size: 14px;
+	cursor: pointer;
+	background-color: #DDCCCC;
+}
+
+.BoxRight
+{
+	padding: 3px;
+	border: 1px solid #000000;
+	background-color: #E8E8FF;
+	margin: 0px;
+	margin-left: 5px;
+	float: right;
+}
+
+.FAQHead
+{
+	color: black;
+	font-family: Montserrat, Sans-serif;
+	font-size: 16px;
+	font-weight: 800;
+	margin-left: 15px;
+}
+
+.FAQQuestion
+{
+	color: #FF7400;
+	font-family: Montserrat, Sans-serif;
+	font-size: 14px;
+	font-weight: 800;
+	margin-left: 15px;
+}
+
+.FAQAnswer
+{
+	color: #000000;
+	font-family: Montserrat, Sans-serif;
+	font-size: 12px;
+	margin-left: 15px;
+}
+
+.HIWHead1
+{
+	color: #00457C;
+	font-family: Montserrat, Sans-serif;
+	font-size: 19px;
+	font-weight: 500;
+	line-height: 1.2em;
+	letter-spacing: 0.6px;
+}
+
+.HIWDetail1
+{
+	margin-left: 20px;
+}
+
+.HIWHead2
+{
+	font-weight: bold;
+}
+
+.HIWDetail2
+{
+}
+
+.HCol1
+{
+	margin: 0 auto;
+	text-align: center;
+	padding: 0px;
+/*
+	float: left;
+	padding-left: 10px;
+	padding-right: 5px;
+*/
+}
+.HCol2
+{
+	font-size: 18px;
+	letter-spacing: 1.5px;
+	padding: 0px;
+	padding-top: 20px;
+	margin: 0 auto;
+	text-align: center;
+/*
+	padding-left: 5px;
+	padding-right: 5px;
+	float: left;
+*/
+}
+.HCol3 {
+	padding: 0px;
+	padding-top: 10px;
+	margin: 0 auto;
+	text-align: center;
+	/*
+	padding: 5px;
+	float: left;
+*/
+}
+.HCol4
+{
+	font-size: 18px;
+	letter-spacing: 1.5px;
+	padding: 0px;
+	padding-top: 25px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.HFig
+{
+	float: left;
+}
+
+@media screen and (max-width: 2400px)
+{
+	.HCol1
+	{
+		float: left;
+		padding: 0px 20px 0px 20px;
+	}
+	.HCol2
+	{
+		float: left;
+		padding: 25px 20px 0px 20px;
+	}
+	.HCol3
+	{
+		float: left;
+		padding: 20px 20px 0px 20px;
+	}
+	.HCol4
+	{
+		float: left;
+		padding: 25px 20px 0px 20px;
+	}
+	.HeaderCA
+	{
+		height: 75px;
+	}
+	.HeaderPY
+	{
+		height: 75px;
+	}
+	.HeaderLG
+	{
+		height: 85px;
+	}
+	.HeaderIS
+	{
+		height: 95px;
+	}
+}
+
+@media screen and (max-width: 1100px)
+{
+	.HCol1
+	{
+		float: left;
+		padding: 0px 20px 0px 20px;
+	}
+	.HCol2
+	{
+		float: left;
+		padding: 5px 20px 0px 20px;
+	}
+	.HCol3
+	{
+		float: left;
+		padding: 10px 20px 0px 20px;
+	}
+	.HCol4
+	{
+		float: left;
+		padding: 25px 20px 0px 20px;
+	}
+	.HeaderCA
+	{
+		height: 75px;
+	}
+	.HeaderPY
+	{
+		height: 75px;
+	}
+	.HeaderLG
+	{
+		height: 85px;
+	}
+	.HeaderIS
+	{
+		height: 95px;
+	}
+}
+
+@media screen and (max-width: 710px)
+{
+	.HCol1
+	{
+		float: none;
+		padding: 0px 0px 0px 0px;
+	}
+	.HCol2
+	{
+		float: none;
+		padding: 5px 0px 0px 0px;
+	}
+	.HCol3
+	{
+		float: none;
+		padding: 10px 0px 0px 0px;
+	}
+	.HCol4
+	{
+		float: none;
+		padding: 5px 0px 0px 0px;
+	}
+	.HeaderCA
+	{
+		height: 150px;
+	}
+	.HeaderPY
+	{
+		height: 150px;
+	}
+	.HeaderLG
+	{
+		height: 120px;
+	}
+	.HeaderIS
+	{
+		height: 140px;
+	}
+	.HFig
+	{
+		margin: 0 auto;
+		text-align: center;
+		float: none;
+		padding: 0px 0px 0px 0px;
+	}
+}
