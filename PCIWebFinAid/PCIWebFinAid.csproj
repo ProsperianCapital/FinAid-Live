@@ -150,6 +150,7 @@
     <Content Include="IncludeMainAdmin.htm" />
     <Content Include="IncludeMainCRM.htm" />
     <Content Include="IncludeMainCA.htm" />
+    <Content Include="IncludeMainSM.htm" />
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +160,7 @@
     <Content Include="JS\Calendar.js" />
     <Content Include="JS\Timeout.js" />
     <Content Include="CSS\CAFinAid.css" />
+    <Content Include="CSS\SMFinAid.css" />
     <Content Include="CSS\FinAid.css" />
     <Content Include="CSS\BackOffice.css" />
     <Content Include="CSS\Calendar.css" />

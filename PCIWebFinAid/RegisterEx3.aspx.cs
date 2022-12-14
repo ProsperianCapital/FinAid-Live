@@ -1448,6 +1448,10 @@ namespace PCIWebFinAid
 
 //	Confirmation Page
 
+						//	Insert Google "Conversion" code here
+						//	... Get code via SP call
+						//	... Put JavaScript into a literal				
+
 							try
 							{
 								mailText = File.ReadAllText(Tools.SystemFolder("Templates")+"ConfirmationMail.htm");

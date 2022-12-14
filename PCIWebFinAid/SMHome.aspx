@@ -6,7 +6,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-<!--#include file="IncludeMainCA.htm" -->
+<!--#include file="IncludeMainSM.htm" -->
 	<asp:Literal runat="server" ID="lblGoogleUA"></asp:Literal>
 	<title><asp:Literal runat="server" ID="X105040">105040</asp:Literal></title>
 </head>
@@ -64,7 +64,7 @@ function Legal(code)
 		<asp:Image runat="server" ID="P12005" class="HFig" style="width:340px;display:inline-block;padding:10px;float:left;margin:2px;" />
 	</div> 
 
-	<div style="color:#FFFFFF;background-color:#F9CF0E;font-family:Sans-serif;width:99%;padding:0px;margin:0px">
+	<div style="color:#FFFFFF;background-color:#00A3F8;font-family:Sans-serif;width:99%;padding:0px;margin:0px">
 		<div style="padding:10px;font-family:'Open Sans Hebrew',Sans-serif;font-size:20px;line-height:1.5em;letter-spacing:1.3px;margin:0px">
 			<div style="margin-left:20px">
 			<img src="<%=PCIBusiness.Tools.ImageFolder() %>TickOrange.png" onmouseover="JavaScript:TickOver(this,2)" onmouseout="JavaScript:TickOver(this,1)" style="vertical-align:middle" />
@@ -82,7 +82,7 @@ function Legal(code)
 			</div>
 			<br />
 			<div style="text-align:center">
-			<asp:HyperLink runat="server" ID="X100009" class="TopButton" style="height:32px;width:120px;padding:3px;padding-top:4px;color:#FFFFFF;background-color:#54595F;text-decoration:none" onmouseover="JavaScript:this.style.backgroundColor='#FF7400'" onmouseout="JavaScript:this.style.backgroundColor='#54595F'">REGISTER</asp:HyperLink>
+			<asp:HyperLink runat="server" ID="X100009" class="TopButton" style="height:32px;width:120px;padding:3px;padding-top:4px;color:#FFFFFF;background-color:#0086CC;text-decoration:none" onmouseover="JavaScript:this.style.backgroundColor='#FF7400'" onmouseout="JavaScript:this.style.backgroundColor='#54595F'">REGISTER</asp:HyperLink>
 			</div>
 		</div>
 
@@ -121,7 +121,7 @@ function Legal(code)
 	</div>
 
 	<div style="margin:0 auto;padding:0px;display:inline-block;width:100%">
-		<p style="color: #F88742;font-family:Sans-serif;font-size:35px;font-weight:400;line-height:1.4em;letter-spacing:0.8px;text-align:center">
+		<p style="color:#00457C;font-family:Sans-serif;font-size:35px;font-weight:400;line-height:1.4em;letter-spacing:0.8px;text-align:center">
 		<asp:Literal runat="server" ID="X100051">100051</asp:Literal>
 		</p>
 		<asp:Panel runat="server" ID="D12010" CssClass="HFig">
@@ -170,14 +170,14 @@ function Legal(code)
 	<asp:Literal runat="server" ID="X105008">105008</asp:Literal>
 	</div>
 
-	<div style="background-color:#F9CF0E;width:100%;padding:2px 0px 5px 0px;margin:10px 0px 0px 0px;text-align:center">
-		<a href="JavaScript:FAQ()"><div class="TopButton" style="width:120px;color:#FFFFFF;background-color:#54595F;margin:4px 0px 0px 4px" onmouseover="JavaScript:this.style.backgroundColor='#FF7400'" onmouseout="JavaScript:this.style.backgroundColor='#54595F'"><asp:Literal runat="server" ID="X100063">100063</asp:Literal></div></a>
+	<div style="background-color:#00A3F8;width:100%;padding:2px 0px 5px 0px;margin:10px 0px 0px 0px;text-align:center">
+		<a href="JavaScript:FAQ()"><div class="TopButton" style="width:120px;color:#FFFFFF;background-color:#0086CC;margin:4px 0px 0px 4px" onmouseover="JavaScript:this.style.backgroundColor='#FF7400'" onmouseout="JavaScript:this.style.backgroundColor='#54595F'"><asp:Literal runat="server" ID="X100063">100063</asp:Literal></div></a>
 		<div id="divFAQ" style="color:#FFFFFF;font-family:Sans-serif;visibility:hidden;display:none">
 		<asp:Literal runat="server" ID="xFAQ"></asp:Literal>
 		</div>
 	</div>
 
-	<div style="color:#F9CF0E;font-family:Sans-serif;font-size:40px;font-weight:600;line-height:1.4em;letter-spacing:0.8px;margin-left:10px">
+	<div style="color:#00457C;font-family:Sans-serif;font-size:40px;font-weight:600;line-height:1.4em;letter-spacing:0.8px;margin-left:10px">
 	<asp:Literal runat="server" ID="X105009">105009</asp:Literal>
 	</div>
 
@@ -192,7 +192,7 @@ function Legal(code)
 	<hr />
 
 	<div>
-		<p style="color:#FF7400;font-family:Sans-serif;font-size:18px;font-weight:600;letter-spacing:0.8px">
+		<p style="color:#00457C;font-family:Sans-serif;font-size:18px;font-weight:600;letter-spacing:0.8px">
 		<asp:Literal runat="server" ID="X100092"></asp:Literal>
 		</p><p><b>
 		<asp:Literal runat="server" ID="X100093"></asp:Literal>
@@ -242,10 +242,10 @@ function Legal(code)
 	<asp:Literal runat="server" ID="X105010">105010</asp:Literal>
 	</p>
 
-	<asp:HyperLink runat="server" ID="X100041" ForeColor="Orange" NavigateUrl="JavaScript:Legal(1)"></asp:HyperLink> |
-	<asp:HyperLink runat="server" ID="X100042" ForeColor="Orange" NavigateUrl="JavaScript:Legal(3)"></asp:HyperLink> |
-	<asp:HyperLink runat="server" ID="X100043" ForeColor="Orange" NavigateUrl="JavaScript:Legal(5)"></asp:HyperLink> |
-	<asp:HyperLink runat="server" ID="X100044" ForeColor="Orange" NavigateUrl="JavaScript:Legal(4)"></asp:HyperLink>
+	<asp:HyperLink runat="server" ID="X100041" ForeColor="#00457C" NavigateUrl="JavaScript:Legal(1)"></asp:HyperLink> |
+	<asp:HyperLink runat="server" ID="X100042" ForeColor="#00457C" NavigateUrl="JavaScript:Legal(3)"></asp:HyperLink> |
+	<asp:HyperLink runat="server" ID="X100043" ForeColor="#00457C" NavigateUrl="JavaScript:Legal(5)"></asp:HyperLink> |
+	<asp:HyperLink runat="server" ID="X100044" ForeColor="#00457C" NavigateUrl="JavaScript:Legal(4)"></asp:HyperLink>
 
 	<div id="LV001" style="color:#FFFFFF;font-family:Sans-serif;background-color:#F9CF0E;width:100%;padding:2px 0px 5px 0px;margin:10px 0px 0px 0px;visibility:hidden;display:none">
 		<img src="<%=PCIBusiness.Tools.ImageFolder() %>Close1.png" onclick="JavaScript:ShowElt('LV001',false)" title="Close" style="float:right;padding:4px" />

@@ -596,49 +596,6 @@ namespace PCIWebFinAid
 							ViewState["ContractPIN"]  = contractPIN;
 						}
 					}
-
-/* Moved to "LoadGoogleAnalytics()
-
-//					If this fails, continue - don't stop with an error
-					lblGoogleUA.Text = "";
-					sql              = "exec sp_WP_Get_GoogleACA @ProductCode =" + Tools.DBString(productCode);
-					if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
-					{
-						string gaCode    = miscList.GetColumn("GoogleAnalyticCode");
-						string url       = miscList.GetColumn("URL");
-//	V1 ... gtag.js
-//						lblGoogleUA.Text = Environment.NewLine
-//						                 + "<!-- Global site tag (gtag.js) - Google Analytics -->" + Environment.NewLine
-//						                 + "<script async src=\"https://www.googletagmanager.com/gtag/js?id=" + gaCode + "\"></script>" + Environment.NewLine
-//						                 + "<script>" + Environment.NewLine
-//						                 + "window.dataLayer = window.dataLayer || [];" + Environment.NewLine
-//						                 + "function gtag(){dataLayer.push(arguments);}" + Environment.NewLine
-//						                 + "gtag('js', new Date());" + Environment.NewLine
-//						                 + "gtag('config', '" + gaCode + "', { 'linker': { 'accept_incoming': true } });" + Environment.NewLine
-// //					                 + "gtag('config', '" + gaCode + "');" + Environment.NewLine
-//						                 + "</script>" + Environment.NewLine;
-
-// V2 ... Analytics.js
-						lblGoogleUA.Text = Environment.NewLine
-						                 + "<script>" + Environment.NewLine
-						                 + "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){"
-						                 + "(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),"
-						                 + "m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)"
-						                 + "})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');" + Environment.NewLine
-						                 + "ga('create', '" + gaCode + "', 'auto', {'allowLinker': true});" + Environment.NewLine
-						                 + "ga('require', 'linker');" + Environment.NewLine
-						                 + "ga('linker:autoLink', ['" + url + "'] );" + Environment.NewLine
-						                 + "ga('send', 'pageview');" + Environment.NewLine
-						                 + "</script>" + Environment.NewLine;
-					}
-
-//					if ( miscList.ExecQuery(sql,0) != 0 )
-//						SetErrorDetail(10026,10026,"Error retrieving the Google analytics code ; please try again later",sql);
-//					else if ( miscList.EOF )
-//						SetErrorDetail(10028,10028,"Error retrieving the Google analytics code ; please try again later",sql);
-//					else
-//						lblGoogleUA.Text = "Blah, blah" + miscList.GetColumn(0);
-*/
 				}
 				catch (Exception ex)
 				{
@@ -947,6 +904,10 @@ namespace PCIWebFinAid
 								throw new Exception("XYZ");
 
 //	Confirmation Page
+
+						//	Insert Google "Conversion" code here
+						//	... Get code via SP call
+						//	... Put JavaScript into a literal				
 
 							try
 							{
