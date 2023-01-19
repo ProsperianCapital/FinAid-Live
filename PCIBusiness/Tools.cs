@@ -1855,6 +1855,8 @@ namespace PCIBusiness
 			string gaCode  = "";
 			string url     = "";
 
+			Tools.LogInfo("Tools.LoadGoogleAnalytics/3","ProductCode="+productCode+", SQL="+sql,233);
+
 			using (MiscList miscList = new MiscList())
 				try
 				{
@@ -1891,13 +1893,15 @@ gtag('config', 'GA_MEASUREMENT_ID', {
 							        + "ga('linker:autoLink', ['" + url + "'] );" + Environment.NewLine
 							        + "ga('send', 'pageview');" + Environment.NewLine
 							        + "</script>";
+
+						Tools.LogInfo("Tools.LoadGoogleAnalytics/5","gCode="+gaCode+", gScript="+gScript,233);
 					}
 					else
-						LogException("Tools.LoadGoogleAnalytics/1","Failed to load Google UA code ("+sql+")");
+						LogException("Tools.LoadGoogleAnalytics/7","Failed to load Google UA code ("+sql+")");
 				}
 				catch (Exception ex)
 				{
-					LogException("Tools.LoadGoogleAnalytics/2",sql,ex);
+					LogException("Tools.LoadGoogleAnalytics/9",sql,ex);
 				}
 
 			if ( gScript.Length > 0 && gaCode.Length > 0 )
