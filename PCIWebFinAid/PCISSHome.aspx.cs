@@ -392,7 +392,7 @@ namespace PCIWebFinAid
 
 		private void LoadGoogleAnalytics()
 		{
-			lblGoogleUA.Text = Tools.LoadGoogleAnalytics(productCode,2);
+			lblGoogleUA.Text = Tools.LoadGoogleAnalytics(productCode);
 		}
 	}
 }
