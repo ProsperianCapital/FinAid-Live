@@ -1848,8 +1848,29 @@ namespace PCIBusiness
 			return "";
 		}
 
-		public static string LoadGoogleAnalytics(string productCode,byte version=1,string transactionId="")
+		public static string LoadGoogleAnalytics(string productCode,byte version=3,string transactionId="",byte noScript=0)
 		{
+			if ( version < 1 )
+				version   = 3;
+
+			if ( version == 3 && noScript == 0 )
+			//	From Johrika Burger via Anton Koekemoer at Open Circle Solutions, 2023/04/21
+				return "<script>" + Environment.NewLine
+				     + "(function(w,d,s,l,i)" + Environment.NewLine
+				     + "{w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});" + Environment.NewLine
+				     + "var f=d.getElementsByTagName(s)[0]," + Environment.NewLine
+				     + "j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;" + Environment.NewLine
+				     + "j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})" + Environment.NewLine
+				     + "(window,document,'script','dataLayer','GTM-5VHQMGR');" + Environment.NewLine
+				     + "</script>";
+
+			if ( version == 3 && noScript > 0 )
+			//	From Johrika Burger via Anton Koekemoer at Open Circle Solutions, 2023/04/21
+				return "<noscript>"
+				     + "<iframe src='https://www.googletagmanager.com/ns.html?id=GTM-5VHQMGR' height='0' width='0' style='display:none;visibility:hidden'>" + Environment.NewLine
+				     + "</iframe>"
+				     + "</noscript>";
+
 			string sql     = "exec sp_WP_Get_GoogleACA @ProductCode=" + Tools.DBString(productCode);
 			string gScript = "";
 			string gaCode  = "";
