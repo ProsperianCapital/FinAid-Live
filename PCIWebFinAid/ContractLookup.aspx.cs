@@ -385,7 +385,7 @@ namespace PCIWebFinAid
 						lblp6CCType.Text = miscList.GetColumn("Brand");
 
 				//	Product option
-					sql = "exec sp_WP_CRM_Get_WebsiteProductoptionA"
+					sql = "exec sp_WP_CRM_Get_WebsiteProductOptionA"
 					    + " @ProductCode="       + Tools.DBString(productCode)
 					    + ",@ProductOptionCode=" + Tools.DBString(productOptionCode);
 					if ( miscList.ExecQuery(sql,0,"",false) != 0 )

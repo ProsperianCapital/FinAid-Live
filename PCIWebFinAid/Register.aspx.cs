@@ -181,8 +181,17 @@ namespace PCIWebFinAid
 			lblJS.Text = WebTools.JavaScriptSource("ShowElt('tr"+controlID+"',false);ShowElt('trp6"+controlID+"',false)",lblJS.Text,1);
 		}
 
-		private void LoadGoogleAnalytics()
+		private void LoadGoogleAnalytics(byte version=3)
 		{
+//	V3 ... from Johrika Burger via Anton Koekemoer at Open Circle Solutions, 2023/04/21
+
+			if ( version == 3 )
+			{
+				lblGoogleUA.Text       = Tools.LoadGoogleAnalytics(productCode,version);
+//				lblGoogleNoScript.Text = Tools.LoadGoogleAnalytics(productCode,version,"",1);
+				return;
+			}
+
 			lblGoogleUA.Text = "";
 
 			using (MiscList miscList = new MiscList())

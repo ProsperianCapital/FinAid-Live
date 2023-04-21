@@ -114,6 +114,7 @@
 	</style>
 </head>
 <body>
+<asp:Literal runat="server" ID="lblGoogleNoScript"></asp:Literal>
 <form id="frmHome" runat="server">
 	<ascx:Header runat="server" ID="ascxHeader" />
 
