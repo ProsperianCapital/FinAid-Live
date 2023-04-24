@@ -342,8 +342,6 @@ namespace PCIWebFinAid
 //			hdnProductCode.Value     = productCode;
 //			hdnLangCode.Value        = languageCode;
 //			hdnLangDialectCode.Value = languageDialectCode;
-
-			Tools.LogInfo("LoadProduct","PC/LC/LDC="+productCode+"/"+languageCode+"/"+languageDialectCode,10,this);
 		}	
 
 		private void LoadChat()
