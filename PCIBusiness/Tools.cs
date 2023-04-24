@@ -1850,31 +1850,30 @@ namespace PCIBusiness
 
 		public static string LoadGoogleAnalytics(string productCode,byte version=3,string transactionId="",byte noScript=0)
 		{
-			if ( version < 1 )
-				version   = 3;
-
-			if ( version == 3 && noScript == 0 )
-			//	From Johrika Burger via Anton Koekemoer at Open Circle Solutions, 2023/04/21
-				return "<script>" + Environment.NewLine
-				     + "(function(w,d,s,l,i)" + Environment.NewLine
-				     + "{w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});" + Environment.NewLine
-				     + "var f=d.getElementsByTagName(s)[0]," + Environment.NewLine
-				     + "j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;" + Environment.NewLine
-				     + "j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})" + Environment.NewLine
-				     + "(window,document,'script','dataLayer','GTM-5VHQMGR');" + Environment.NewLine
-				     + "</script>";
-
-			if ( version == 3 && noScript > 0 )
-			//	From Johrika Burger via Anton Koekemoer at Open Circle Solutions, 2023/04/21
-				return "<noscript>"
-				     + "<iframe src='https://www.googletagmanager.com/ns.html?id=GTM-5VHQMGR' height='0' width='0' style='display:none;visibility:hidden'>" + Environment.NewLine
-				     + "</iframe>"
-				     + "</noscript>";
-
 			string sql     = "exec sp_WP_Get_GoogleACA @ProductCode=" + Tools.DBString(productCode);
 			string gScript = "";
 			string gaCode  = "";
 			string url     = "";
+
+			if ( version < 1 )
+				version   = 3;
+
+//	Version 3. See code further down
+//			if ( version == 3 && noScript == 0 )
+//				return "<script>" + Environment.NewLine
+//				     + "(function(w,d,s,l,i)" + Environment.NewLine
+//				     + "{w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});" + Environment.NewLine
+//				     + "var f=d.getElementsByTagName(s)[0]," + Environment.NewLine
+//				     + "j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;" + Environment.NewLine
+//				     + "j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})" + Environment.NewLine
+//				     + "(window,document,'script','dataLayer','GTM-5VHQMGR');" + Environment.NewLine
+//				     + "</script>";
+//
+//			if ( version == 3 && noScript > 0 )
+//				return "<noscript>"
+//				     + "<iframe src='https://www.googletagmanager.com/ns.html?id=GTM-5VHQMGR' height='0' width='0' style='display:none;visibility:hidden'>" + Environment.NewLine
+//				     + "</iframe>"
+//				     + "</noscript>";
 
 //			Tools.LogInfo("Tools.LoadGoogleAnalytics/3","ProductCode="+productCode+", SQL="+sql,233);
 
@@ -1886,8 +1885,29 @@ namespace PCIBusiness
 						gaCode = miscList.GetColumn("GoogleAnalyticCode");
 						url    = miscList.GetColumn("URL");
 
-						if ( version == 2 || gaCode.ToUpper().StartsWith("G") )
+						if ( gaCode.Length < 1 )
+							gaCode  = "GTM-5VHQMGR";
 						//	gaCode  = "AW-11030275536"
+
+						if ( version == 3 && noScript == 0 )
+						//	From Johrika Burger via Anton Koekemoer at Open Circle Solutions, 2023/04/21
+							gScript = "<script>" + Environment.NewLine
+							        + "(function(w,d,s,l,i)" + Environment.NewLine
+							        + "{w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});" + Environment.NewLine
+							        + "var f=d.getElementsByTagName(s)[0]," + Environment.NewLine
+							        + "j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;" + Environment.NewLine
+							        + "j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})" + Environment.NewLine
+							        + "(window,document,'script','dataLayer','" + gaCode + "');" + Environment.NewLine
+							        + "</script>";
+
+						else if ( version == 3 && noScript > 0 )
+						//	From Johrika Burger via Anton Koekemoer at Open Circle Solutions, 2023/04/21
+							gScript = "<noscript>"
+							        + "<iframe src='https://www.googletagmanager.com/ns.html?id=" + gaCode + "' height='0' width='0' style='display:none;visibility:hidden'>" + Environment.NewLine
+							        + "</iframe>"
+							        + "</noscript>";
+
+						else if ( version == 2 || gaCode.ToUpper().StartsWith("G") )
 							gScript = "<script async src='https://www.googletagmanager.com/gtag/js?id=" + gaCode + "'></script>" + Environment.NewLine
 							        + "<script>" + Environment.NewLine
 							        + "window.dataLayer = window.dataLayer || [];" + Environment.NewLine
