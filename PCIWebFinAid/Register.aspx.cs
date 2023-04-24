@@ -188,7 +188,7 @@ namespace PCIWebFinAid
 			if ( version == 3 )
 			{
 				lblGoogleUA.Text       = Tools.LoadGoogleAnalytics(productCode,version);
-//				lblGoogleNoScript.Text = Tools.LoadGoogleAnalytics(productCode,version,"",1);
+				lblGoogleNoScript.Text = Tools.LoadGoogleAnalytics(productCode,0,"",1);
 				return;
 			}
 

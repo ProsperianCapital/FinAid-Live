@@ -11,6 +11,7 @@
 	<!--#include file="IncludeMainSimple.htm" -->
 </head>
 <body>
+<asp:Literal runat="server" ID="lblGoogleNoScript"></asp:Literal>
 
 <script type="text/javascript">
 var firstPage = 1;

@@ -11,6 +11,7 @@
 	<title><asp:Literal runat="server" ID="X105040">105040</asp:Literal></title>
 </head>
 <body>
+<asp:Literal runat="server" ID="lblGoogleNoScript"></asp:Literal>
 <script type="text/javascript">
 var showFAQ   = 0;
 var showLegal = [0,0,0,0,0,0,0];

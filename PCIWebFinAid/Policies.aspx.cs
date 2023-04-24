@@ -193,7 +193,7 @@ namespace PCIWebFinAid
 			hdnLangCode.Value        = languageCode;
 			hdnLangDialectCode.Value = languageDialectCode;
 
-			Tools.LogInfo("LoadProduct","PC/LC/LDC="+productCode+"/"+languageCode+"/"+languageDialectCode,10,this);
+//			Tools.LogInfo("LoadProduct","PC/LC/LDC="+productCode+"/"+languageCode+"/"+languageDialectCode,10,this);
 		}	
 
 //		private void LoadChat()
@@ -203,7 +203,8 @@ namespace PCIWebFinAid
 
 		private void LoadGoogleAnalytics()
 		{
-			lblGoogleUA.Text = Tools.LoadGoogleAnalytics(productCode);
+			lblGoogleUA.Text       = Tools.LoadGoogleAnalytics(productCode);
+			lblGoogleNoScript.Text = Tools.LoadGoogleAnalytics(productCode,0,"",1);
 		}
 	}
 }

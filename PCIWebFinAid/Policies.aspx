@@ -14,6 +14,7 @@
 </head>
 <body>
 <form id="frmHome" runat="server">
+	<asp:Literal runat="server" ID="lblGoogleNoScript"></asp:Literal>
 	<ascx:Header runat="server" ID="ascxHeader" />
 
 	<asp:HiddenField runat="server" ID="hdnCountryCode" />
