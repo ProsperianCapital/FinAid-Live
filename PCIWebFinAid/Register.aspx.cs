@@ -1054,11 +1054,10 @@ namespace PCIWebFinAid
 
 										errNo                      = 30235;
 										SmtpClient smtp            = new SmtpClient(smtpServer);
+										smtp.UseDefaultCredentials = false;
 										smtp.Credentials           = new NetworkCredential(smtpUser,smtpPassword);
 										if ( smtpPort > 0 )
 											smtp.Port               = smtpPort;
-//										smtp.UseDefaultCredentials = false;
-//										smtp.EnableSsl             = true;
 
 										using (MailMessage mailMsg = new MailMessage())
 										{
@@ -1107,10 +1106,15 @@ namespace PCIWebFinAid
 														errNo = 0;
 														break;
 													}
-													if ( k > 1 ) // After 2 failed attempts
-														smtp.UseDefaultCredentials = false;
-													if ( k > 2 ) // After 3 failed attempts
-														Tools.LogException("Register.aspx/84","Mail send failure, errNo=" + errNo.ToString() + " (" + txtEMail.Text+")",ex3);
+//													if ( k == 3 ) // After 2 failed attempts
+//														smtp.UseDefaultCredentials = false;
+													if ( k == 4 ) // After 3 failed attempts
+														Tools.LogException("btnNext_Click/30260","Mail send failure, errNo=" + errNo.ToString()
+													                    + " (Server="   + smtpServer
+													                    + ", User="     + smtpUser
+													                    + ", Password=" + smtpPassword
+													                    + ", Port="     + smtpPort.ToString()
+													                    + ", MailTo="   + txtEMail.Text+")",ex3);
 												}
 										}
 										SetErrorDetail("btnNext_Click",errNo,"Unable to send confirmation email (5 failed attempts)","");
