@@ -37,7 +37,8 @@
 	<div style="float:right;margin-right:20px">
 		<asp:Label runat="server" ID="lblUName" style="top:12px;position:relative"></asp:Label>
 		&nbsp;&nbsp;&nbsp;&nbsp;
-		<asp:HyperLink runat="server" ID="lnkMessages" ToolTip="You have unread message(s)" onclick="JavaScript:ShowMessages(1)" NavigateUrl="#" style="top:18px;position:relative">
+		<asp:HyperLink runat="server" ID="lnkMessages" ToolTip="Notifications are not available" NavigateUrl="#" style="top:18px;position:relative">
+			<!-- (removed from above) onclick="JavaScript:ShowMessages(1)" -->
 			<img src="<%=PCIBusiness.Tools.ImageFolder() %>Bell1.png" height="24" />
 		</asp:HyperLink>
 	</div>
@@ -57,6 +58,7 @@ That email from Francois needs attention ... NOW!
 <script type="text/javascript">
 function ShowMessages(show)
 {
-	ShowElt('pnlMessages',(show>0));
+	show = 0;
+//	ShowElt('pnlMessages',(show>0));
 }
 </script>
