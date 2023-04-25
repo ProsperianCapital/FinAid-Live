@@ -82,7 +82,7 @@ namespace PCIBusiness
 		public override void LoadData(DBConn dbConn)
 		{
 			string x           = "Level" + level.ToString();
-			menuCode           = dbConn.ColString(x+"ItemCode",0);
+			menuCode           = dbConn.ColString(x+"ItemCode",0,0);
 			menuName           = dbConn.ColString(x+"ItemDescription");
 			menuDescription    = dbConn.ColString(x+"ItemDescription");
 			imageName          = dbConn.ColString("MenuLevel1ImageFileName");

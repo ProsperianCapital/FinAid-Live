@@ -21,7 +21,7 @@ namespace PCIBusiness
 					mail          = mail.Replace(";",",");
 					string[] mArr = mail.Split(',');
 					for ( int k = 0; k < mArr.Length ; k++ )
-						if ( mArr[k].Length > 5 )
+						if ( mArr[k].Length > 5 && mArr[k].Contains("@") )
 							mailList.Add(mArr[k].Trim());
 				}
 				else // if ( Tools.CheckEMail(mail) )
@@ -281,7 +281,9 @@ namespace PCIBusiness
 
 		public Mail()
 		{
-			msg = new MailMessage();
+			ServicePointManager.Expect100Continue = false; // Yes, this must be FALSE
+			ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
+			msg                                   = new MailMessage();
 		}
 	}
 }
