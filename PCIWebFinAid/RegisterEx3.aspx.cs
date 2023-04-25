@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Net;
 using System.Net.Mail;
 using PCIBusiness;
 
@@ -1567,7 +1568,7 @@ namespace PCIWebFinAid
 
 										errNo                      = 30235;
 										SmtpClient smtp            = new SmtpClient(smtpServer);
-										smtp.Credentials           = new System.Net.NetworkCredential(smtpUser,smtpPassword);
+										smtp.Credentials           = new NetworkCredential(smtpUser,smtpPassword);
 										if ( smtpPort > 0 )
 											smtp.Port               = smtpPort;
 //										smtp.UseDefaultCredentials = false;
@@ -1724,5 +1725,11 @@ namespace PCIWebFinAid
 //		{
 //			Server.ScriptTimeout = timeOut;
 //		}
+
+		public RegisterEx3() : base()
+		{
+			ServicePointManager.Expect100Continue = false; // Yes, this must be FALSE
+			ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
+		}
 	}
 }
