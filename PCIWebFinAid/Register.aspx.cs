@@ -1198,7 +1198,7 @@ namespace PCIWebFinAid
 
 		public Register() : base()
 		{
-			ServicePointManager.Expect100Continue = false; // Yes, this must be FALSE
+			ServicePointManager.Expect100Continue = true;
 			ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
 		}
 	}
