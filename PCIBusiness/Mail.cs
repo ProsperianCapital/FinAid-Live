@@ -223,7 +223,6 @@ namespace PCIBusiness
 					smtp.Port = ePort;
 				ret                        = 60;
 				smtp.UseDefaultCredentials = false;
-			//	smtp.EnableSsl             = false;
 				smtp.Credentials           = new NetworkCredential(eUser,ePwd);
 				ret                        = 0;
 			}
@@ -257,7 +256,6 @@ namespace PCIBusiness
 					if ( provider.Port > 0 )
 						smtp.Port = provider.Port;
 					smtp.UseDefaultCredentials = false;
-				//	smtp.EnableSsl             = false;
 					smtp.Credentials           = new NetworkCredential(provider.MerchantUserID,provider.MerchantPassword);
 				//	SendGrid testing
 				//	For SendGrid, the NetworkCredential userName must equal "apikey" (the actual string "apikey")
