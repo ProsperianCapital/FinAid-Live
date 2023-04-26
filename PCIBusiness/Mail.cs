@@ -222,6 +222,7 @@ namespace PCIBusiness
 				if ( ePort > 0 )
 					smtp.Port = ePort;
 				ret                        = 60;
+				smtp.EnableSsl             = true;
 				smtp.UseDefaultCredentials = false;
 				smtp.Credentials           = new NetworkCredential(eUser,ePwd);
 				ret                        = 0;
@@ -255,6 +256,7 @@ namespace PCIBusiness
 					smtp       = new SmtpClient (provider.BureauURL);
 					if ( provider.Port > 0 )
 						smtp.Port = provider.Port;
+					smtp.EnableSsl             = true;
 					smtp.UseDefaultCredentials = false;
 					smtp.Credentials           = new NetworkCredential(provider.MerchantUserID,provider.MerchantPassword);
 				//	SendGrid testing
@@ -279,8 +281,8 @@ namespace PCIBusiness
 
 		public Mail()
 		{
-			ServicePointManager.Expect100Continue = false; // Yes, this must be FALSE
-			ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
+		//	ServicePointManager.Expect100Continue = false; // Yes, this must be FALSE
+		//	ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
 			msg                                   = new MailMessage();
 		}
 	}
