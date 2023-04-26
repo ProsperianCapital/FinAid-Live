@@ -157,7 +157,7 @@ namespace PCIBusiness
 				                                ", URL=" + url +
 				                                ", App Id=" + payment.ProviderAccount +
 				                                ", Public Key=" + payment.ProviderKey +
-				                                ", Private Key=" + payment.ProviderPassword +
+				                                ", Private Key=" + Tools.MaskedValue(payment.ProviderPassword) +
 				                                ", JSON Sent=" + xmlSent, 210, this);
 
 				using (Stream stream = webRequest.GetRequestStream())

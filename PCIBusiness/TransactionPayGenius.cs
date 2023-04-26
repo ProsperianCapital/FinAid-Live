@@ -145,7 +145,7 @@ namespace PCIBusiness
 				              "Transaction Type=" + Tools.TransactionTypeName(transactionType) +
 				            ", URL=" + url +
 				            ", Token=" + payment.ProviderKey +
-				            ", Key=" + payment.ProviderPassword +
+				            ", Key=" + Tools.MaskedValue(payment.ProviderPassword) +
 				            ", Signature=" + sig +
 				            ", JSON Sent=" + xmlSent, 10, this);
 

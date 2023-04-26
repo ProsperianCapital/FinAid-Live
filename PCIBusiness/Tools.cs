@@ -1577,11 +1577,11 @@ namespace PCIBusiness
 			if ( strToMask.Length >= 13 )
 				return strToMask.Substring(0, 6) + "******"           + strToMask.Substring(12);
 			if ( strToMask.Length >= 11 )
-				return strToMask.Substring(0, 6) + "****"             + strToMask.Substring(10);
+				return strToMask.Substring(0, 4) + "******"           + strToMask.Substring(10);
 			if ( strToMask.Length >=  9 )
-				return strToMask.Substring(0, 4) + "****"             + strToMask.Substring( 8);
+				return strToMask.Substring(0, 3) + "*****"            + strToMask.Substring( 8);
 			if ( strToMask.Length >=  5 )
-				return strToMask.Substring(0, 2) + "**"               + strToMask.Substring( 4);
+				return strToMask.Substring(0, 2) + "***"              + strToMask.Substring( 5);
 			if ( strToMask.Length >=  1 )
 				return strToMask.Substring(0, 1) + "****";
 			return "";

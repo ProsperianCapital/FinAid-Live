@@ -335,7 +335,7 @@ namespace PCIBusiness
 				            ", URL=" + url +
 				            ", Account=" + payment.ProviderAccount +
 				            ", User=" + payment.ProviderUserID +
-				            ", Pwd=" + payment.ProviderPassword +
+				            ", Pwd=" + Tools.MaskedValue(payment.ProviderPassword) +
 				            ", Cookie=" + payment.Cookie +
 				            ", Authorization=" + auth64 +
 				            ", XML Sent=" + xmlSent, logPriority, this);

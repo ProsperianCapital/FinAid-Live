@@ -203,7 +203,7 @@ namespace PCIBusiness
 				string eBCC     = Tools.ConfigValue("SMTP-BCC");
 				string smtpData = eServer
 				        + " / " + eUser
-				        + " / " + ePwd
+				        + " / " + Tools.MaskedValue(ePwd)
 				        + " / " + ePort.ToString()
 				        + " / " + eFrom
 				        + " / " + eBCC;
@@ -243,7 +243,7 @@ namespace PCIBusiness
 //			string smtpData = provider.BureauCode + " / " + provider.BureauType
 //			                                      + " / " + provider.BureauURL
 //			                                      + " / " + provider.MerchantUserID
-//			                                      + " / " + provider.MerchantPassword
+//			                                      + " / " + Tools.MaskedValue(provider.MerchantPassword)
 //			                                      + " / " + provider.Sender
 //			                                      + " / " + provider.Port.ToString();
 

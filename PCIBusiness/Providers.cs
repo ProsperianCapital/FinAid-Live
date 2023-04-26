@@ -23,7 +23,7 @@
 					string   prData      = msgProvider.BureauCode + " / " + msgProvider.BureauType
 			                                                    + " / " + msgProvider.BureauURL
 			                                                    + " / " + msgProvider.MerchantUserID
-			                                                    + " / " + msgProvider.MerchantPassword
+			                                                    + " / " + Tools.MaskedValue(msgProvider.MerchantPassword)
 			                                                    + " / " + msgProvider.Sender
 			                                                    + " / " + msgProvider.Port.ToString()
 			                                                    + " / " + msgProvider.UserCode;
