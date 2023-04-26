@@ -26,22 +26,6 @@ namespace PCIBusiness
 		protected string messageBody;
 
 		private DBConn   dbConn;
-
-//		public string    ProviderAddress
-//		{
-//			get { return Tools.NullToString(providerAddress); }
-//			set
-//			{
-//				if ( string.IsNullOrWhiteSpace(value) )
-//					providerAddress = "";
-//				else
-//				{
-//					providerAddress = value.Trim();
-//					if ( providerAddress.EndsWith("/") || providerAddress.EndsWith("\\") )
-//						providerAddress = providerAddress.Substring(0,providerAddress.Length-1);
-//				}
-//			}
-//		}
 		public string   UserID
 		{
 			get { return Tools.NullToString(userID); }
@@ -157,13 +141,14 @@ namespace PCIBusiness
 			userID     = "";
 		}
 
-		public Message()
+		public Message() : base()
 		{
-			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-			messageID                            = 0;
-			providerID                           = "";
-			userID                               = "";
-			provider                             = null;
+			ServicePointManager.Expect100Continue = true;
+			ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
+			messageID                             = 0;
+			providerID                            = "";
+			userID                                = "";
+			provider                              = null;
 		}
 	}
 }

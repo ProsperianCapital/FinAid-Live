@@ -162,7 +162,7 @@ namespace PCIBusiness
 					}
 					catch (Exception ex)
 					{
-						if ( q > 3 ) // Log an error on the 4'th failed attempt
+						if ( q == 4 ) // Log an error on the 4'th failed attempt
 							Tools.LogException("Send/10","EMail failure (try " + q.ToString() + "), to " + msg.To.ToString(), ex, this);
 					}
 
@@ -209,22 +209,23 @@ namespace PCIBusiness
 				        + " / " + eBCC;
 				Tools.LogInfo("LoadConfig/10","SMTP Config ... " + smtpData,222,this);
 
-				ret     = 20;
-				smtp    = new SmtpClient(eServer);
-				ret     = 30;
+				ret                        = 20;
+				smtp                       = new SmtpClient(eServer);
+				ret                        = 30;
+				smtp.EnableSsl             = true;
+				smtp.UseDefaultCredentials = false;
+				smtp.Credentials           = new NetworkCredential(eUser,ePwd);
+				ret                        = 40;
+
 				if ( eFrom.Length > 5 )
 					From = eFrom;
 				else
 					From = eUser;
-				ret     = 40;
-				BCC     = eBCC;
 				ret     = 50;
+				BCC     = eBCC;
+				ret     = 60;
 				if ( ePort > 0 )
 					smtp.Port = ePort;
-				ret                        = 60;
-				smtp.EnableSsl             = true;
-				smtp.UseDefaultCredentials = false;
-				smtp.Credentials           = new NetworkCredential(eUser,ePwd);
 				ret                        = 0;
 			}
 			catch (Exception ex)
@@ -279,11 +280,9 @@ namespace PCIBusiness
 			smtp = null;
 		}
 
-		public Mail()
+		public Mail() : base()
 		{
-		//	ServicePointManager.Expect100Continue = false; // Yes, this must be FALSE
-		//	ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
-			msg                                   = new MailMessage();
+			msg = new MailMessage();
 		}
 	}
 }
