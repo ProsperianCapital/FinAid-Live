@@ -460,5 +460,10 @@ namespace PCIWebFinAid
 				ShowControls(1,true);
 			}
 		}
+		public pgContractLookUp() : base()
+		{
+			System.Net.ServicePointManager.Expect100Continue = true;
+			System.Net.ServicePointManager.SecurityProtocol  = System.Net.SecurityProtocolType.Tls12;
+		}
 	}
 }
