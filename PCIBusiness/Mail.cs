@@ -72,10 +72,10 @@ namespace PCIBusiness
 		{
 			set {	msg.From = new MailAddress(value); }
 		}
-//		public  string Sender
-//		{
-//			set {	msg.Sender = new MailAddress(value); }
-//		}
+		public  string Sender
+		{
+			set {	msg.Sender = new MailAddress(value); }
+		}
 		public  string Heading
 		{
 			get {	return Tools.NullToString(msg.Subject); }
@@ -128,23 +128,6 @@ namespace PCIBusiness
 				if ( msg.To.Count < 1 )
 					break;
 
-//				if ( msg.Sender == null )
-//					try
-//					{
-//						msg.Sender = new MailAddress(smtpSender);
-//					//	msg.Sender = new MailAddress(Tools.ConfigValue("SMTP-From"));
-//					}
-//					catch
-//					{ }
-
-//				if ( msg.Sender == null )
-//					try
-//					{
-//						msg.Sender = new MailAddress(Tools.ConfigValue("SMTP-User"));
-//					}
-//					catch
-//					{ }
-
 				err = 70;
 				if ( msg.From == null )
 					msg.From = msg.Sender;
@@ -191,7 +174,8 @@ namespace PCIBusiness
 
 		public byte LoadConfig()
 		{
-			byte ret = 10;
+			byte   ret      = 10;
+			string smtpData = "";
 
 			try
 			{
@@ -201,13 +185,13 @@ namespace PCIBusiness
 				string ePwd     = Tools.ConfigValue("SMTP-Password");
 				string eFrom    = Tools.ConfigValue("SMTP-From");
 				string eBCC     = Tools.ConfigValue("SMTP-BCC");
-				string smtpData = eServer
-				        + " / " + eUser
-				        + " / " + Tools.MaskedValue(ePwd)
-				        + " / " + ePort.ToString()
-				        + " / " + eFrom
-				        + " / " + eBCC;
-				Tools.LogInfo("LoadConfig/10","SMTP Config ... " + smtpData,222,this);
+				smtpData        = "SMTP Config = " + eServer
+				                           + " / " + eUser
+				                           + " / " + Tools.MaskedValue(ePwd)
+				                           + " / " + ePort.ToString()
+				                           + " / " + eFrom
+				                           + " / " + eBCC;
+				Tools.LogInfo("LoadConfig/10",smtpData,10,this);
 
 				ret                        = 20;
 				smtp                       = new SmtpClient(eServer);
@@ -218,19 +202,21 @@ namespace PCIBusiness
 				ret                        = 40;
 
 				if ( eFrom.Length > 5 )
-					From = eFrom;
+					From      = eFrom;
 				else
-					From = eUser;
-				ret     = 50;
-				BCC     = eBCC;
-				ret     = 60;
-				if ( ePort > 0 )
+					From      = eUser;
+				ret          = 50;
+				Sender       = eUser;
+				ret          = 60;
+				BCC          = eBCC;
+				ret          = 70;
+				if ( ePort   > 0 )
 					smtp.Port = ePort;
-				ret                        = 0;
+				ret          = 0;
 			}
 			catch (Exception ex)
 			{
-				Tools.LogException("LoadConfig/90","ret="+ret.ToString(),ex,this);
+				Tools.LogException("LoadConfig/90","ret="+ret.ToString() + ", " + smtpData,ex,this);
 			}
 			return ret;
 		}
