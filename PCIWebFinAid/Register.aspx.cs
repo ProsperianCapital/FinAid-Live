@@ -1044,7 +1044,7 @@ namespace PCIWebFinAid
 										if ( smtpServer.Length < 3 || smtpUser.Length < 3 || smtpPassword.Length < 3 )
 										{
 											errNo = 30230;
-											err   = "Invalid SMTP details, server=" + smtpServer + ", user=" + smtpUser + ", pwd=" + smtpPassword + ", port=" + smtpPort.ToString();
+											err   = "Invalid SMTP details, server=" + smtpServer + ", user=" + smtpUser + ", pwd=" + Tools.MaskedValue(smtpPassword) + ", port=" + smtpPort.ToString();
 											throw new Exception(err);
 										}
 
@@ -1054,6 +1054,7 @@ namespace PCIWebFinAid
 
 										errNo                      = 30235;
 										SmtpClient smtp            = new SmtpClient(smtpServer);
+										smtp.EnableSsl             = true;
 										smtp.UseDefaultCredentials = false;
 										smtp.Credentials           = new NetworkCredential(smtpUser,smtpPassword);
 										if ( smtpPort > 0 )
@@ -1112,7 +1113,7 @@ namespace PCIWebFinAid
 														Tools.LogException("btnNext_Click/30260","Mail send failure, errNo=" + errNo.ToString()
 													                    + " (Server="   + smtpServer
 													                    + ", User="     + smtpUser
-													                    + ", Password=" + smtpPassword
+													                    + ", Password=" + Tools.MaskedValue(smtpPassword)
 													                    + ", Port="     + smtpPort.ToString()
 													                    + ", MailTo="   + txtEMail.Text+")",ex3);
 												}
