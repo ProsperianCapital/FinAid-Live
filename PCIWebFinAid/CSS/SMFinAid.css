@@ -11,6 +11,11 @@ body
 	font-size: 14px;
 	overflow-x: hidden;
 }
+img
+{
+	height: auto;
+	max-width: 100%;
+}
 input[type=button], input[type=submit]
 {
 	font-weight: 300;
