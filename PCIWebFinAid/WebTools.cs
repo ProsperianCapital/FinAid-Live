@@ -473,7 +473,7 @@ namespace PCIWebFinAid
 			fieldValue = fieldValue.Replace(Environment.NewLine,"<br />").Replace("\r\n","<br />").Replace("[BR]","<br />").Replace("<br>","<br />");
 			if ( fieldValue.Contains("[") )
 				fieldValue = fieldValue.Replace("[B]","<b>").Replace("[I]","<i>").Replace("[U]","<u>").Replace("[/B]","</b>").Replace("[/I]","</i>").Replace("[/U]","</u>");
-			
+
 			for ( int k = 1 ; k < 4 ; k++ )
 			{
 				ctl = null;
@@ -492,6 +492,9 @@ namespace PCIWebFinAid
 					if ( k == 1 && webPage != null && ctlID.StartsWith("X") )
 					{
 						ctl = webPage.FindControl("T"+ctlID.Substring(1));
+						if ( ctl != null )
+							ctl.Visible = false;
+						ctl = webPage.FindControl("D"+ctlID.Substring(1));
 						if ( ctl != null )
 							ctl.Visible = false;
 					}
@@ -641,7 +644,12 @@ namespace PCIWebFinAid
 					try
 					{
 						ctl.Visible = false;
-						((Control)webPage.FindControl("D"+ctlID)).Visible = false; // Container around the image
+						Control cX  = ((Control)webPage.FindControl("D"+ctlID)); // Container around the image
+						if ( cX    != null )
+							cX.Visible = false;
+						cX = ((Control)webPage.FindControl("H"+ctlID)); // Container around the image
+						if ( cX != null )
+							cX.Visible = false;
 						return 0;
 					}
 					catch

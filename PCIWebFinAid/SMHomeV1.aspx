@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="false" CodeBehind="SMHome.aspx.cs" Inherits="PCIWebFinAid.SMHome" %>
+﻿<%@ Page Language="C#" AutoEventWireup="false" CodeBehind="SMHomeV1.aspx.cs" Inherits="PCIWebFinAid.SMHomeV1" %>
 <%@ Register TagPrefix="ascx" TagName="Header" Src="CAHeader.ascx" %>
 <%@ Register TagPrefix="ascx" TagName="Footer" Src="CAFooter.ascx" %>
 
@@ -11,13 +11,6 @@
 	<title><asp:Literal runat="server" ID="X105040">105040</asp:Literal></title>
 </head>
 <body>
-<style>
-img
-{
-	height: auto;
-	max-width: 100%;
-}
-</style>
 <asp:Literal runat="server" ID="lblGoogleNoScript"></asp:Literal>
 <script type="text/javascript">
 var showFAQ   = 0;
@@ -96,9 +89,7 @@ function Legal(code)
 
 		<p style="font-size:35px;font-weight:400;line-height:1.4em;letter-spacing:0.8px;color:#333232;text-align:center">
 		<asp:Literal runat="server" ID="X100045">100045</asp:Literal>
-		</p>
-		<asp:Image runat="server" ID="P12044" />
-		<p style="font-size:20px;font-weight:400;line-height:1.6em;color:#272626">
+		</p><p style="font-size:20px;font-weight:400;line-height:1.6em;color:#272626">
 		<asp:Literal runat="server" ID="X100046">100046</asp:Literal>
 		</p>
 
@@ -176,16 +167,10 @@ function Legal(code)
 	<asp:Literal runat="server" ID="xHIW"></asp:Literal>
 	<b>
 	<asp:Literal runat="server" ID="X105007">105007</asp:Literal>
-	</b><br />
+	</b><br /><br />
 	<asp:Literal runat="server" ID="X105008">105008</asp:Literal>
 	</div>
-	<p style="color:#00457C;font-family:Sans-serif;font-size:35px;font-weight:400;letter-spacing:0.8px;text-align:center">
-	<asp:Label runat="server" ID="X105045">105045</asp:Label>
-	<br />
-	<asp:Image runat="server" ID="P12040" />
-	</p>
 
-	<!-- FAQ line -->
 	<div style="background-color:#00A3F8;width:100%;padding:2px 0px 5px 0px;margin:10px 0px 0px 0px;text-align:center">
 		<a href="JavaScript:FAQ()"><div class="TopButton" style="width:120px;color:#FFFFFF;background-color:#0086CC;margin:4px 0px 0px 4px" onmouseover="JavaScript:this.style.backgroundColor='#FF7400'" onmouseout="JavaScript:this.style.backgroundColor='#54595F'"><asp:Literal runat="server" ID="X100063">100063</asp:Literal></div></a>
 		<div id="divFAQ" style="color:#FFFFFF;font-family:Sans-serif;visibility:hidden;display:none">
@@ -193,52 +178,11 @@ function Legal(code)
 		</div>
 	</div>
 
-	<p style="color:#00457C;font-family:Sans-serif;font-size:35px;font-weight:400;letter-spacing:0.8px;text-align:center">
-	<asp:Literal runat="server" ID="X105046">105046</asp:Literal>
-	</p>
-
-	<asp:Panel runat="server" ID="D12041" style="width:430px;font-size:10pt;font-family:Helvetica,sans-serif;max-width:99%">
-	<asp:Image runat="server" ID="P12041" style="float:left;margin-right:4px;width:200px" />
-	<b><asp:Literal runat="server" ID="X105047">105047</asp:Literal></b>
-	<div>
-		<br />
-		<asp:Literal runat="server" ID="X105048">105048</asp:Literal>
-		<br /><br />
-		<asp:Literal runat="server" ID="X105049">105049</asp:Literal>
-	</div>
-	</asp:Panel>
-
-	<asp:Panel runat="server" ID="D12042" style="width:430px;font-size:10pt;font-family:Helvetica,sans-serif;max-width:99%">
-	<br /><br /><br />
-	<asp:Image runat="server" ID="P12042" style="float:left;margin-right:4px;width:200px" />
-	<b><asp:Literal runat="server" ID="X105050">105050</asp:Literal></b>
-	<div>
-		<br />
-		<asp:Literal runat="server" ID="X105051">105051</asp:Literal>
-		<br /><br />
-		<asp:Literal runat="server" ID="X105052">105052</asp:Literal>
-	</div>
-	</asp:Panel>
-
-	<asp:Panel runat="server" ID="D12043" style="width:430px;font-size:10pt;font-family:Helvetica,sans-serif;max-width:99%">
-	<br /><br /><br />
-	<asp:Image runat="server" ID="P12043" style="float:left;margin-right:4px;width:200px" />
-	<b><asp:Literal runat="server" ID="X105053">105053</asp:Literal></b>
-	<div>
-		<br />
-		<asp:Literal runat="server" ID="X105054">105054</asp:Literal>
-		<br /><br />
-		<asp:Literal runat="server" ID="X105055">105055</asp:Literal>
-	</div>
-	</asp:Panel>
-
-	<asp:PlaceHolder runat="server" ID="D105009">
 	<div style="color:#00457C;font-family:Sans-serif;font-size:40px;font-weight:600;line-height:1.4em;letter-spacing:0.8px;margin-left:10px">
 	<asp:Literal runat="server" ID="X105009">105009</asp:Literal>
 	</div>
-	</asp:PlaceHolder>
 
-	<div style="text-align:center">
+	<div style="text-align:center"> <!-- margin:0px;margin-left:10px -->
 	<asp:HyperLink runat="server" ID="H12013"><asp:Image runat="server" ID="P12013" /></asp:HyperLink>
 	<asp:HyperLink runat="server" ID="H12025"><asp:Image runat="server" ID="P12025" /></asp:HyperLink>
 	</div>
