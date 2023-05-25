@@ -4,7 +4,10 @@
 
 body
 {
+	/*
 	font-family: ralewaymedium, Calibri, Arial, Tahoma;
+	*/
+	font-family: Helvetica, sans-serif;
 	font-size: 14px;
 	overflow-x: hidden;
 }
@@ -233,17 +236,21 @@ table td
 	display: inline-block;
 	padding: 8px 0px 0px 0px;
 }
-.TopButtonO
-{
+.TopButtonO {
 	color: white;
+	text-decoration: none;
+	background-color: rgba(000, 069, 124, 0.1);
+/*
 	background-color: #00457C;
-	text-decoration: none;
+*/
 }
-.TopButtonY
-{
+.TopButtonY {
 	color: white;
-	background-color: #0086CC;
 	text-decoration: none;
+	background-color: rgba(000, 134, 204, 0.1);
+/*
+	background-color: #0086CC;
+*/
 }
 .TopButtonD
 {
