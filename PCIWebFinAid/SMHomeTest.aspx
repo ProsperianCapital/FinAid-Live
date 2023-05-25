@@ -171,11 +171,12 @@ function Legal(code)
 	<asp:Literal runat="server" ID="X105007">105007</asp:Literal>
 	</b><br />
 	<asp:Literal runat="server" ID="X105008">105008</asp:Literal>
-	<br /><br /><b>
-	<asp:Literal runat="server" ID="X105045">105045</asp:Literal>
-	</b><br />
-	<asp:Image runat="server" ID="P12040" />
 	</div>
+	<p style="color:#00457C;font-family:Sans-serif;font-size:35px;font-weight:400;letter-spacing:0.8px;text-align:center">
+	<asp:Label runat="server" ID="X105045">105045</asp:Label>
+	<br />
+	<asp:Image runat="server" ID="P12040" />
+	</p>
 
 	<!-- FAQ line -->
 	<div style="background-color:#00A3F8;width:100%;padding:2px 0px 5px 0px;margin:10px 0px 0px 0px;text-align:center">
@@ -185,13 +186,13 @@ function Legal(code)
 		</div>
 	</div>
 
-	<p style="color:#00457C;font-family:Sans-serif;font-size:18px;font-weight:600;letter-spacing:0.8px">
+	<p style="color:#00457C;font-family:Sans-serif;font-size:35px;font-weight:400;letter-spacing:0.8px;text-align:center">
 	<asp:Literal runat="server" ID="X105046">105046</asp:Literal>
 	</p>
 
-	<asp:Panel runat="server" ID="D12041" style="width:430px;font-size:11px">
+	<asp:Panel runat="server" ID="D12041" style="width:430px;font-size:11pt;font-family:Helvetica,sans-serif">
 	<br />
-	<asp:Image runat="server" ID="P12041" style="float:left;margin-right:4px" />
+	<asp:Image runat="server" ID="P12041" style="float:left;margin-right:4px;width:200px" />
 	<b><asp:Literal runat="server" ID="X105047">105047</asp:Literal></b>
 	<div>
 		<br />
@@ -202,9 +203,9 @@ function Legal(code)
 	<br />
 	</asp:Panel>
 
-	<asp:Panel runat="server" ID="D12042" style="width:430px;font-size:11px">
+	<asp:Panel runat="server" ID="D12042" style="width:430px;font-size:11pt;font-family:Helvetica,sans-serif">
 	<br />
-	<asp:Image runat="server" ID="P12042" style="float:left;margin-right:4px" />
+	<asp:Image runat="server" ID="P12042" style="float:left;margin-right:4px;width:200px" />
 	<b><asp:Literal runat="server" ID="X105050">105050</asp:Literal></b>
 	<div>
 		<br />
@@ -215,9 +216,9 @@ function Legal(code)
 	<br />
 	</asp:Panel>
 
-	<asp:Panel runat="server" ID="D12043" style="width:430px;font-size:11px">
+	<asp:Panel runat="server" ID="D12043" style="width:430px;font-size:11pt;font-family:Helvetica,sans-serif">
 	<br />
-	<asp:Image runat="server" ID="P12043" style="float:left;margin-right:4px" />
+	<asp:Image runat="server" ID="P12043" style="float:left;margin-right:4px;width:200px" />
 	<b><asp:Literal runat="server" ID="X105053">105053</asp:Literal></b>
 	<div>
 		<br />

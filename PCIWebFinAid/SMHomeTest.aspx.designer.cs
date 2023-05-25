@@ -462,7 +462,7 @@ namespace PCIWebFinAid
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.Literal X105045;
+		protected global::System.Web.UI.WebControls.Label X105045;
 
 		/// <summary>
 		/// P12040 control.
