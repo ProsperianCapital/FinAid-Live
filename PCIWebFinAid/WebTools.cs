@@ -643,7 +643,9 @@ namespace PCIWebFinAid
 				if ( blocked == "1" || blocked == "B" )
 					try
 					{
+						PCIBusiness.Tools.LogInfo("WebTools.ReplaceImage/1","ctlID="+ctlID+", blocked="+blocked+", ctl.Visible="+ctl.Visible.ToString(),244);
 						ctl.Visible = false;
+						PCIBusiness.Tools.LogInfo("WebTools.ReplaceImage/2","ctlID="+ctlID+", blocked="+blocked+", ctl.Visible="+ctl.Visible.ToString(),244);
 						Control cX  = ((Control)webPage.FindControl("D"+ctlID)); // Container around the image
 						if ( cX    != null )
 							cX.Visible = false;

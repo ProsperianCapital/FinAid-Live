@@ -192,6 +192,10 @@ namespace PCIWebFinAid
 							fieldValue = mList.GetColumn("ImageFileName");
 							fieldURL   = mList.GetColumn("ImageHyperLink");
 							blocked    = mList.GetColumn("Blocked",0);
+
+							if ( blocked.Length > 0 )
+								Tools.LogInfo("SMHome.LoadDynamicDetails","fieldCode="+fieldCode+", blocked="+blocked+", fieldValue="+fieldValue,244);
+
 							err        = WebTools.ReplaceImage(this.Page,fieldCode,fieldValue,
 							                                   mList.GetColumn   ("ImageMouseHoverText"),
 							                                   fieldURL,
