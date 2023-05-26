@@ -179,11 +179,11 @@ function Legal(code)
 	</b><br />
 	<asp:Literal runat="server" ID="X105008">105008</asp:Literal>
 	</div>
-	<p style="color:#00457C;font-family:Sans-serif;font-size:35px;font-weight:400;letter-spacing:0.8px;text-align:center">
+	<asp:Panel runat="server" ID="D12040" style="color:#00457C;font-family:Sans-serif;font-size:35px;font-weight:400;letter-spacing:0.8px;text-align:center">
 	<asp:Label runat="server" ID="X105045">105045</asp:Label>
 	<br />
 	<asp:Image runat="server" ID="P12040" />
-	</p>
+	</asp:Panel>
 
 	<!-- FAQ line -->
 	<div style="background-color:#00A3F8;width:100%;padding:2px 0px 5px 0px;margin:10px 0px 0px 0px;text-align:center">

@@ -181,6 +181,7 @@ namespace PCIWebFinAid
 				   + "System memory<br />"
 				   + "Operating system version<br />"
 				   + "ASP.NET version<br />"
+				   + "Development environment<br />"
 				   + "Script timeout<br />"
 				   + "Environment.UserName<br />"
 				   + "Environment.UserDomainName<br />"
@@ -203,6 +204,7 @@ namespace PCIWebFinAid
 				   + Environment.WorkingSet.ToString() + " bytes<br />"
 				   + Environment.OSVersion.ToString() + "<br />"
 				   + Environment.Version.ToString() + "<br />"
+				   + "Microsoft Visual Studio 2019, version 16.11.26<br />"
 				   + Server.ScriptTimeout.ToString() + "<br />"
 				   + Environment.UserName.ToString() + "<br />"
 				   + Environment.UserDomainName.ToString() + "<br />";
