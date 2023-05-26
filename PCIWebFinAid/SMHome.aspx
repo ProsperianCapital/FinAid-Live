@@ -180,9 +180,9 @@ function Legal(code)
 	<asp:Literal runat="server" ID="X105008">105008</asp:Literal>
 	</div>
 	<asp:Panel runat="server" ID="D12040" style="color:#00457C;font-family:Sans-serif;font-size:35px;font-weight:400;letter-spacing:0.8px;text-align:center">
-	<asp:Label runat="server" ID="X105045">105045</asp:Label>
-	<br />
-	<asp:Image runat="server" ID="P12040" />
+		<asp:Label runat="server" ID="X105045">105045</asp:Label>
+		<br />
+		<asp:Image runat="server" ID="P12040" />
 	</asp:Panel>
 
 	<!-- FAQ line -->

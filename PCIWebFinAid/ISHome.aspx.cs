@@ -171,14 +171,16 @@ namespace PCIWebFinAid
 							fieldCode  = mList.GetColumn("ImageCode");
 							fieldValue = mList.GetColumn("ImageFileName");
 							fieldURL   = mList.GetColumn("ImageHyperLink");
-							Tools.LogInfo("LoadDynamicDetails/10190","ImageCode="+fieldCode+"/"+fieldValue,errPriority,this);
+							blocked    = mList.GetColumn("Blocked",0);
+						//	Tools.LogInfo("LoadDynamicDetails/10190","ImageCode="+fieldCode+"/"+fieldValue,errPriority,this);
 							err        = WebTools.ReplaceImage(this.Page,fieldCode,fieldValue,
 							                                   mList.GetColumn   ("ImageMouseHoverText"),
 							                                   fieldURL,
 							                                   mList.GetColumnInt("ImageHeight"),
 							                                   mList.GetColumnInt("ImageWidth"),
 							                                   ascxHeader,
-							                                   ascxFooter);
+							                                   ascxFooter,
+							                                   blocked);
 							if ( err != 0 )
 								SetErrorDetail("LoadDynamicDetails", 10200, "Unrecognized Image code ("+fieldCode + "/" + fieldValue.ToString() + ")", "WebTools.ReplaceImage('"+fieldCode+"') => "+err.ToString(), 2, 0, null, false, errPriority);
 							mList.NextRow();

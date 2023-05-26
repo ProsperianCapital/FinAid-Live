@@ -105,7 +105,7 @@ namespace PCIWebFinAid
 								lCode        = mList.GetColumn("LanguageCode");
 								lDialectCode = mList.GetColumn("LanguageDialectCode");
 							//	blocked      = mList.GetColumn("Blocked");
-								Tools.LogInfo("LoadStaticDetails/10080","Language="+lCode+"/"+lDialectCode,errPriority,this);
+							//	Tools.LogInfo("LoadStaticDetails/10080","Language="+lCode+"/"+lDialectCode,errPriority,this);
 								lstLang.Items.Add(new System.Web.UI.WebControls.ListItem(lCode,lCode+"|"+lDialectCode));
 								if ( mList.GetColumn("DefaultIndicator").ToUpper() == "Y" ||
 								   ( lCode == languageCode && lDialectCode == languageDialectCode ) )

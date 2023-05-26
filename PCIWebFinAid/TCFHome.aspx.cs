@@ -107,7 +107,7 @@ namespace PCIWebFinAid
 								lCode        = mList.GetColumn("LanguageCode");
 								lDialectCode = mList.GetColumn("LanguageDialectCode");
 							//	blocked      = mList.GetColumn("Blocked");
-								Tools.LogInfo("LoadStaticDetails/10080","Language="+lCode+"/"+lDialectCode,errPriority,this);
+							//	Tools.LogInfo("LoadStaticDetails/10080","Language="+lCode+"/"+lDialectCode,errPriority,this);
 								lstLang.Items.Add(new System.Web.UI.WebControls.ListItem(lCode,lCode+"|"+lDialectCode));
 								if ( mList.GetColumn("DefaultIndicator").ToUpper() == "Y" ||
 								   ( lCode == languageCode && lDialectCode == languageDialectCode ) )
@@ -193,13 +193,15 @@ namespace PCIWebFinAid
 							fieldCode  = mList.GetColumn("ImageCode");
 							fieldValue = mList.GetColumn("ImageFileName");
 							fieldURL   = mList.GetColumn("ImageHyperLink");
+							blocked    = mList.GetColumn("Blocked",0);
 							err        = WebTools.ReplaceImage(this.Page,fieldCode,fieldValue,
 							                                   mList.GetColumn   ("ImageMouseHoverText"),
 							                                   fieldURL,
 							                                   mList.GetColumnInt("ImageHeight"),
 							                                   mList.GetColumnInt("ImageWidth"),
 							                                   ascxHeader,
-							                                   ascxFooter);
+							                                   ascxFooter,
+							                                   blocked);
 							if ( err != 0 )
 								SetErrorDetail("LoadDynamicDetails", 10197, "Unrecognized Image code ("+fieldCode + "/" + fieldValue.ToString() + ")", "WebTools.ReplaceImage('"+fieldCode+"') => "+err.ToString(), 2, 0, null, false, errPriority);
 							Tools.LogInfo("LoadDynamicDetails/10201","ImageCode="+fieldCode+"/"+fieldValue,errPriority,this);

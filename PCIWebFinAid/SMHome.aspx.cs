@@ -105,7 +105,7 @@ namespace PCIWebFinAid
 								lCode        = mList.GetColumn("LanguageCode");
 								lDialectCode = mList.GetColumn("LanguageDialectCode");
 							//	blocked      = mList.GetColumn("Blocked");
-								Tools.LogInfo("LoadStaticDetails/10080","Language="+lCode+"/"+lDialectCode,errPriority,this);
+							//	Tools.LogInfo("LoadStaticDetails/10080","Language="+lCode+"/"+lDialectCode,errPriority,this);
 								lstLang.Items.Add(new System.Web.UI.WebControls.ListItem(lCode,lCode+"|"+lDialectCode));
 								if ( mList.GetColumn("DefaultIndicator").ToUpper() == "Y" ||
 								   ( lCode == languageCode && lDialectCode == languageDialectCode ) )
@@ -170,7 +170,7 @@ namespace PCIWebFinAid
 							if ( fieldURL.Length > 0 && fieldURL.Contains("[") )
 								fieldURL = fieldURL.Replace("[PC]",Tools.URLString(productCode)).Replace("[LC]",Tools.URLString(languageCode)).Replace("[LDC]",Tools.URLString(languageDialectCode));
 
-							Tools.LogInfo("LoadDynamicDetails/10140","FieldCode="+fieldCode,errPriority,this);
+						//	Tools.LogInfo("LoadDynamicDetails/10140","FieldCode="+fieldCode,errPriority,this);
 							err         = WebTools.ReplaceControlText(this.Page,"X"+fieldCode,blocked,fieldValue,fieldURL,ascxHeader,ascxFooter);
 							if ( err   != 0 )
 								SetErrorDetail("LoadDynamicDetails", 10150, "Unrecognized HTML control (X"+fieldCode + "/" + fieldValue.ToString() + ")", "WebTools.ReplaceControlText('X"+fieldCode+"') => "+err.ToString(), 2, 0, null, false, errPriority);
@@ -191,10 +191,10 @@ namespace PCIWebFinAid
 							fieldCode  = mList.GetColumn("ImageCode");
 							fieldValue = mList.GetColumn("ImageFileName");
 							fieldURL   = mList.GetColumn("ImageHyperLink");
-							blocked    = mList.GetColumn("Blocked",0);
+							blocked    = mList.GetColumn("Blocked");
 
-							if ( blocked.Length > 0 )
-								Tools.LogInfo("SMHome.LoadDynamicDetails","fieldCode="+fieldCode+", blocked="+blocked+", fieldValue="+fieldValue,244);
+						//	if ( blocked.Length > 0 && blocked != "0" )
+						//		Tools.LogInfo("SMHome.LoadDynamicDetails","fieldCode="+fieldCode+", blocked="+blocked+", fieldValue="+fieldValue,244);
 
 							err        = WebTools.ReplaceImage(this.Page,fieldCode,fieldValue,
 							                                   mList.GetColumn   ("ImageMouseHoverText"),
