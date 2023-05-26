@@ -39,7 +39,7 @@
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<asp:HyperLink runat="server" ID="lnkMessages" ToolTip="Notifications are not available" NavigateUrl="#" style="top:18px;position:relative">
 			<!-- (removed from above) onclick="JavaScript:ShowMessages(1)" -->
-			<img src="<%=PCIBusiness.Tools.ImageFolder() %>Bell1.png" height="24" />
+			<img src="<%=PCIBusiness.Tools.ImageFolder() %>Bell1.png" width="24" />
 		</asp:HyperLink>
 	</div>
 </div>

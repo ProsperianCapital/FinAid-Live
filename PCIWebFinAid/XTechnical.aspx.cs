@@ -73,7 +73,9 @@ namespace PCIWebFinAid
 			string x1     = "";
 			string x2     = "";
 			string x3     = "";
-			string tdBlue = "<td style='color:blue'>";
+			string tdBlue = "<td style='color:blue;vertical-align:top'>";
+			string tdCol1 = "<table><tr><td style='vertical-align:top'><u>Setting</u><br />";
+			string tdCol2 = "</td>" + tdBlue + "<u>Value</u><br />";
 
 			if ( action == (byte)PCIBusiness.Constants.TechnicalQuery.ConfigNet )
 			{
@@ -115,7 +117,7 @@ namespace PCIWebFinAid
 				   + Request.UserHostName + "<br />"
 				   + Request.RawUrl + "<br />"
 				   + Request.PhysicalApplicationPath;
-				lblResult.Text = "<table><tr><td><u>Setting</u><br />" + x1 + "</td>" + tdBlue +"<u>Value</u><br />" + x2 + "</td></tr></table>";
+				lblResult.Text = tdCol1 + x1 + tdCol2 + x2 + "</td></tr></table>";
 			}
 
 			else if ( action == (byte)PCIBusiness.Constants.TechnicalQuery.ConfigApp )
@@ -152,7 +154,7 @@ namespace PCIWebFinAid
 				   + PCIBusiness.Tools.ConfigValue("SMTP-BCC")       + "<br />"
 				   + ReplacePassword(db1.ConnectionString)           + "<br />"
 				   + ReplacePassword(db2.ConnectionString);
-				lblResult.Text = "<table><tr><td><u>Setting</u><br />" + x1 + "</td>" + tdBlue + "<u>Value</u><br />" + x2 + "</td></tr></table>";
+				lblResult.Text = tdCol1 + x1 + tdCol2 + x2 + "</td></tr></table>";
 			}
 
 			else if ( action == (byte)PCIBusiness.Constants.TechnicalQuery.ServerVariables )
@@ -162,7 +164,7 @@ namespace PCIWebFinAid
 					x1 = x1 + sV + "<br />";
 					x2 = x2 + Request.ServerVariables[sV] + "<br />";
 				}
-				lblResult.Text = "<table><tr><td><u>Server Variable</u><br />" + x1 + "</td>" + tdBlue + "<u>Value</u><br />" + x2 + "</td></tr></table>";
+				lblResult.Text = tdCol1 + x1 + tdCol2 + x2 + "</td></tr></table>";
 			}
 
 			else if ( action == (byte)PCIBusiness.Constants.TechnicalQuery.ConfigSoftware )
@@ -181,11 +183,11 @@ namespace PCIWebFinAid
 				   + "System memory<br />"
 				   + "Operating system version<br />"
 				   + "ASP.NET version<br />"
-				   + "Development environment<br />"
 				   + "Script timeout<br />"
 				   + "Environment.UserName<br />"
 				   + "Environment.UserDomainName<br />"
-				   + "Database version<br />&nbsp;";
+				   + "Development environment<br />"
+				   + "Database version";
 				if ( sessionGeneral == null )
 					x3 = "<br /><br />";
 				else
@@ -204,10 +206,10 @@ namespace PCIWebFinAid
 				   + Environment.WorkingSet.ToString() + " bytes<br />"
 				   + Environment.OSVersion.ToString() + "<br />"
 				   + Environment.Version.ToString() + "<br />"
-				   + "Microsoft Visual Studio 2019, version 16.11.26<br />"
 				   + Server.ScriptTimeout.ToString() + "<br />"
 				   + Environment.UserName.ToString() + "<br />"
-				   + Environment.UserDomainName.ToString() + "<br />";
+				   + Environment.UserDomainName.ToString() + "<br />"
+				   + "Microsoft Visual Studio 2019, version 16.11.26<br />";
 
 				PCIBusiness.DBConn conn = null;
 				try
@@ -234,7 +236,7 @@ namespace PCIWebFinAid
 					conn = null;
 				}
 
-				lblResult.Text = "<table><tr><td><u>Setting</u><br />" + x1 + "</td>" + tdBlue + "<u>Value</u><br />" + x2 + "</td></tr></table>";
+				lblResult.Text = tdCol1 + x1 + tdCol2 + x2 + "</td></tr></table>";
 			}
 
 			else if ( action == (byte)PCIBusiness.Constants.TechnicalQuery.EMailSend && txtData.Text.Length > 0 )
@@ -377,7 +379,7 @@ namespace PCIWebFinAid
 				lblResult.Text = "<table><tr>"
 				               + "<td><u>Check</u><br />" + x1 + "</td>"
 				               + tdBlue + "<u>Result</u><br />" + x2 + "</td>"
-				               + "<td><u>Value</u><br />" + ReplacePassword(x3) + "</td>"
+				               + "<td style='vertical-align:top'><u>Value</u><br />" + ReplacePassword(x3) + "</td>"
 				               + "</tr></table>";
 			}
 
@@ -477,8 +479,8 @@ namespace PCIWebFinAid
 				}
 				if ( x1.Length > 0 )
 					lblResult.Text = "<table><tr>"
-					               + "<td><u>Object</u><br />" + x1 + "</td>"
-					               + "<td><u>Value</u><br />" + x2 + "</td>"
+					               + "<td style='vertical-align:top'><u>Object</u><br />" + x1 + "</td>"
+					               + "<td style='vertical-align:top'><u>Value</u><br />" + x2 + "</td>"
 					               + "</tr></table>" + x4;
 			}
 
