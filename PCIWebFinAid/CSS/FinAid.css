@@ -9,7 +9,9 @@ body
 }
 img
 {
+/*
 	height: auto;
+*/
 	max-width: 100%;
 }
 input[type=button], input[type=submit]
