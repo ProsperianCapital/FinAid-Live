@@ -111,7 +111,7 @@ function Legal(code)
 			</div>
 		</div>
 
-		<br />
+		<br /><br />
 		<div style="color:#54595F;font-size:19px;font-weight:600">
 			<!-- img src="[PCIBusiness.Tools.ImageFolder()]Pay2.png" style="float:left;margin-right:4px" -->
 			<asp:Image runat="server" ID="P12008" style="float:left;margin-right:4px" />
@@ -121,7 +121,7 @@ function Legal(code)
 			</div>
 		</div>
 
-		<br />
+		<br /><br />
 		<div style="color:#54595F;font-size:19px;font-weight:600">
 			<!-- img src="[PCIBusiness.Tools.ImageFolder()]Enjoy2.png" style="float:left;margin-right:4px" -->
 			<asp:Image runat="server" ID="P12009" style="float:left;margin-right:4px" />
@@ -130,7 +130,7 @@ function Legal(code)
 			<asp:Literal runat="server" ID="X105006">105006</asp:Literal>
 			</div>
 		</div>
-		<br />
+		<br /><br />
 	</div>
 
 	<div style="margin:0 auto;padding:0px;display:inline-block;width:100%">
