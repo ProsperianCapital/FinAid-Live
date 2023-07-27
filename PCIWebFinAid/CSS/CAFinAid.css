@@ -243,13 +243,21 @@ table td
 	display: inline-block;
 	padding: 8px 0px 0px 0px;
 }
+.TopButtonG
+{
+	color: black;
+	background-color: #F1F1F1;
+	text-decoration: none;
+}
 .TopButtonO
 {
+	color: white;
 	background-color: #FF841C;
 	text-decoration: none;
 }
 .TopButtonY
 {
+	color: white;
 	background-color: #F4DD08;
 	text-decoration: none;
 }
@@ -267,7 +275,10 @@ table td
 }
 .TopButton:hover
 {
+/*
 	background-color: #898787;
+*/
+	background-color: #A8A8A8;
 }
 
 .Footer3
