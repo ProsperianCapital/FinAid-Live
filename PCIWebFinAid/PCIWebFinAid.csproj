@@ -116,7 +116,6 @@
     <Content Include="RegisterThreeD.aspx" />
     <Content Include="RVHome.aspx" />
     <Content Include="SMHome.aspx" />
-    <Content Include="SMHomeV1.aspx" />
     <Content Include="SSHome.aspx" />
     <Content Include="TCFHome.aspx" />
     <Content Include="Test01.aspx" />
@@ -438,13 +437,6 @@
     </Compile>
     <Compile Include="SMHome.aspx.designer.cs">
       <DependentUpon>SMHome.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="SMHomeV1.aspx.cs">
-      <DependentUpon>SMHomeV1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="SMHomeV1.aspx.designer.cs">
-      <DependentUpon>SMHomeV1.aspx</DependentUpon>
     </Compile>
     <Compile Include="SSHome.aspx.cs">
       <DependentUpon>SSHome.aspx</DependentUpon>

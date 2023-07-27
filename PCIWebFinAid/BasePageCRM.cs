@@ -127,7 +127,7 @@ namespace PCIWebFinAid
 				TextBox tBox = (TextBox)ctl;
 				try
 				{
-					string  placeHolder  = tBox.Attributes["placeholder"].ToString().Trim().ToUpper();
+					string placeHolder   = tBox.Attributes["placeholder"].ToString().Trim().ToUpper();
 					if ( placeHolder    == ctlID )
 						tBox.Attributes["placeholder"] = fieldValue;
 					else

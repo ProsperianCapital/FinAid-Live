@@ -159,7 +159,7 @@ namespace PCIWebFinAid
 			if ( errDetail.Length < 1 )
 				errDetail = errBrief;
 			errDetail = "[" + errCode.ToString() + "] " + errDetail;
-			errDetail = errDetail.Replace(",","<br />,").Replace(";","<br />;").Trim();
+			errDetail = errDetail.Replace(",",",<br />").Replace(";",";<br />").Trim();
 			if ( detailMode == 2 ) // Append
 				errDetail = lblErrorDtl.Text + ( lblErrorDtl.Text.Length > 0 ? "<br /><br />" : "" ) + errDetail;
 			lblErrorDtl.Text = errDetail;

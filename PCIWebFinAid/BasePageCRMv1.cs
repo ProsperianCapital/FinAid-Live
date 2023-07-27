@@ -81,6 +81,8 @@ namespace PCIWebFinAid
 				((RadioButton)ctl).Text = fieldValue;
 			else if (ctl.GetType()    == typeof(HyperLink))
 				((HyperLink)ctl).Text   = fieldValue;
+			else if (ctl.GetType()    == typeof(TextBox))
+				((TextBox)ctl).Text     = fieldValue;
 			else
 				SetErrorDetail("ReplaceControlText", 10030, "Unrecognized HTML control (" + ctlID.ToString() + "/" + fieldValue.ToString() + ")",ctlID.ToString() + ", control type="+ctl.GetType().ToString());
 		}

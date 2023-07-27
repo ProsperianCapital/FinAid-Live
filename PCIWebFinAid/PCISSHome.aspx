@@ -90,24 +90,22 @@ function BigImage()
 	<asp:Button runat="server" ID="btnWidth" Text="Width" OnClientClick="JavaScript:alert('Width = '+window.innerWidth.toString()+' pixels');return false" />
 
 	<div style="margin:0px;padding:0px;display:block;width:100%">
-	<asp:Image runat="server" ID="P12002" style="max-width:100%;max-height:173px;float:left;padding-right:5px" />
 	<p style="color:#242424;font-family:Arial;font-size:35px;font-weight:600;line-height:1.5em;letter-spacing:0.8px;text-shadow:0px 0px 0px #000000;top:100px;left:0px;right:0px;word-break:break-word;word-wrap:break-word;text-align:center">
 	<asp:Literal runat="server" ID="X100002">100002</asp:Literal>
-	</p><p style="color:#54595F;font-family:Sans-serif;font-size:19px;font-weight:500;line-height:1.6em;letter-spacing:0.8px;text-shadow:0px 0px 51px #FFFFFF;top:210px;left:0px;right:0px">
+	</p>
+	<asp:Image runat="server" ID="P12002" style="max-width:100%" /> <!-- float:left;max-height:173px;padding-right:5px -->
+	<p style="color:#54595F;font-family:Sans-serif;font-size:19px;font-weight:500;line-height:1.6em;letter-spacing:0.8px;text-shadow:0px 0px 51px #FFFFFF;top:210px;left:0px;right:0px">
 	<asp:Literal runat="server" ID="X100004">100004</asp:Literal>
 	</p>
 	</div>
 
 	<div style="margin:0 auto;padding:0px;display:inline-block;width:100%">
-		<asp:Image runat="server" ID="P12003" class="HFig" style="width:340px;display:inline-block;padding:10px;float:left;margin:2px;" />
-		<asp:Image runat="server" ID="P12004" class="HFig" style="width:340px;display:inline-block;padding:10px;float:left;margin:2px;" />
-		<asp:Image runat="server" ID="P12005" class="HFig" style="width:340px;display:inline-block;padding:10px;float:left;margin:2px;" />
+		<asp:Image runat="server" ID="P12003" class="HFig" style="width:340px;display:inline-block;padding:10px;float:left;margin:2px" />
+		<asp:Image runat="server" ID="P12004" class="HFig" style="width:340px;display:inline-block;padding:10px;float:left;margin:2px" />
+		<asp:Image runat="server" ID="P12005" class="HFig" style="width:340px;display:inline-block;padding:10px;float:left;margin:2px" />
 	</div> 
 
-	<!--
-	<div style="color:#FFFFFF;background-color:#F9CF0E;font-family:Sans-serif;width:99%;padding:0px;margin:0px">
-	-->
-	<div style="color:#FFFFFF;background-color:#F1F1F1;font-family:Sans-serif;width:99%;padding:0px;margin:0px">
+	<div style="color:#FFFFFF;background-color:#F1F1F1;font-family:Sans-serif;width:99%;padding:0px;margin:0px"> <!-- background-color:#F9CF0E -->
 		<div style="padding:10px;font-family:'Open Sans Hebrew',Sans-serif;font-size:20px;line-height:1.5em;letter-spacing:1.3px;margin:0px">
 			<div style="margin-left:20px;color:#FF841C">
 			<img src="<%=PCIBusiness.Tools.ImageFolder() %>TickOrange.png" onmouseover="JavaScript:TickOver(this,2)" onmouseout="JavaScript:TickOver(this,1)" style="vertical-align:middle" />
@@ -190,19 +188,19 @@ function BigImage()
 		<asp:Panel runat="server" ID="D12023" CssClass="HFig">
 			<figure style="display:inline-block;box-shadow:0px 0px 50px 0px rgba(15,15,43,0.58);width:340px;border-radius:15px;transition:background 0.3s, border 0.3s, border-radius 0.3s, box-shadow 0.3s;margin:10px 10px 10px 10px;padding:20px 20px 10px 10px">
 				<asp:Image runat="server" ID="P12023" style="width:100%" />
-				<figcaption style="font-size:17px;letter-spacing:0.5px;margin-top:8px;text-align:center">Image 12023 Caption</figcaption>
+				<figcaption style="font-size:17px;letter-spacing:0.5px;margin-top:8px;text-align:center"><asp:Literal runat="server" ID="X105151">105151</asp:Literal></figcaption>
 			</figure> 
 		</asp:Panel>
 		<asp:Panel runat="server" ID="D12024" CssClass="HFig">
 			<figure style="display:inline-block;box-shadow:0px 0px 50px 0px rgba(15,15,43,0.58);width:340px;border-radius:15px;transition:background 0.3s, border 0.3s, border-radius 0.3s, box-shadow 0.3s;margin:10px 10px 10px 10px;padding:20px 20px 10px 10px">
 				<asp:Image runat="server" ID="P12024" style="width:100%" />
-				<figcaption style="font-size:17px;letter-spacing:0.5px;margin-top:8px;text-align:center">Image 12024 Caption</figcaption>
+				<figcaption style="font-size:17px;letter-spacing:0.5px;margin-top:8px;text-align:center"><asp:Literal runat="server" ID="X105152">105152</asp:Literal></figcaption>
 			</figure> 
 		</asp:Panel>
 		<asp:Panel runat="server" ID="D12028" CssClass="HFig">
 			<figure style="display:inline-block;box-shadow:0px 0px 50px 0px rgba(15,15,43,0.58);width:340px;border-radius:15px;transition:background 0.3s, border 0.3s, border-radius 0.3s, box-shadow 0.3s;margin:10px 10px 10px 10px;padding:20px 20px 10px 10px">
 				<asp:Image runat="server" ID="P12028" style="width:100%" />
-				<figcaption style="font-size:17px;letter-spacing:0.5px;margin-top:8px;text-align:center">Image 12028 Caption</figcaption>
+				<figcaption style="font-size:17px;letter-spacing:0.5px;margin-top:8px;text-align:center"><asp:Literal runat="server" ID="X105153">105153</asp:Literal></figcaption>
 			</figure> 
 		</asp:Panel>
 	</div>
@@ -215,11 +213,11 @@ function BigImage()
 	<asp:Literal runat="server" ID="X105008">105008</asp:Literal>
 	</div>
 
-	<div style="background-color:#F9CF0E;width:100%;padding:2px 0px 5px 0px;margin:10px 0px 0px 0px;text-align:center">
+	<div style="background-color:#F1F1F1;width:100%;padding:2px 0px 5px 0px;margin:10px 0px 0px 0px;text-align:center"> <!-- background-color:#F9CF0E -->
 		<asp:HyperLink runat="server" ID="T100063" NavigateUrl="JavaScript:FAQ()">
 			<div class="TopButton" style="width:120px;color:#FFFFFF;background-color:#54595F;margin:4px 0px 0px 4px" onmouseover="JavaScript:this.style.backgroundColor='#FF7400'" onmouseout="JavaScript:this.style.backgroundColor='#54595F'"><asp:Literal runat="server" ID="X100063">100063</asp:Literal></div>
 		</asp:HyperLink>
-		<div id="divFAQ" style="color:#FFFFFF;font-family:Sans-serif;visibility:hidden;display:none">
+		<div id="divFAQ" style="color:#FFFFFF;font-family:Sans-serif"> <!-- visibility:hidden;display:none -->
 		<asp:Literal runat="server" ID="xFAQ"></asp:Literal>
 		</div>
 	</div>

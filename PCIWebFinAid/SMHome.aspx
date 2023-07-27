@@ -159,19 +159,19 @@ function Legal(code)
 		<asp:Panel runat="server" ID="D12023" CssClass="HFig">
 			<figure style="display:inline-block;box-shadow:0px 0px 50px 0px rgba(15,15,43,0.58);width:340px;border-radius:15px;transition:background 0.3s, border 0.3s, border-radius 0.3s, box-shadow 0.3s;margin:10px 10px 10px 10px;padding:20px 20px 10px 10px">
 				<asp:Image runat="server" ID="P12023" style="width:100%" />
-				<figcaption style="font-size:17px;letter-spacing:0.5px;margin-top:8px;text-align:center">Image 12023 Caption</figcaption>
+				<figcaption style="font-size:17px;letter-spacing:0.5px;margin-top:8px;text-align:center"><asp:Literal runat="server" ID="X105151">105151</asp:Literal></figcaption>
 			</figure>
 		</asp:Panel>
 		<asp:Panel runat="server" ID="D12024" CssClass="HFig">
 			<figure style="display:inline-block;box-shadow:0px 0px 50px 0px rgba(15,15,43,0.58);width:340px;border-radius:15px;transition:background 0.3s, border 0.3s, border-radius 0.3s, box-shadow 0.3s;margin:10px 10px 10px 10px;padding:20px 20px 10px 10px">
 				<asp:Image runat="server" ID="P12024" style="width:100%" />
-				<figcaption style="font-size:17px;letter-spacing:0.5px;margin-top:8px;text-align:center">Image 12024 Caption</figcaption>
+				<figcaption style="font-size:17px;letter-spacing:0.5px;margin-top:8px;text-align:center"><asp:Literal runat="server" ID="X105152">105152</asp:Literal></figcaption>
 			</figure>
 		</asp:Panel>
 		<asp:Panel runat="server" ID="D12028" CssClass="HFig">
 			<figure style="display:inline-block;box-shadow:0px 0px 50px 0px rgba(15,15,43,0.58);width:340px;border-radius:15px;transition:background 0.3s, border 0.3s, border-radius 0.3s, box-shadow 0.3s;margin:10px 10px 10px 10px;padding:20px 20px 10px 10px">
 				<asp:Image runat="server" ID="P12028" style="width:100%" />
-				<figcaption style="font-size:17px;letter-spacing:0.5px;margin-top:8px;text-align:center">Image 12028 Caption</figcaption>
+				<figcaption style="font-size:17px;letter-spacing:0.5px;margin-top:8px;text-align:center"><asp:Literal runat="server" ID="X105153">105153</asp:Literal></figcaption>
 			</figure>
 		</asp:Panel>
 	</div>
