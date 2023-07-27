@@ -16,7 +16,7 @@
 var imgMin    = <%=firstSlide%>;
 var imgMax    = <%=lastSlide%>;
 var imgNum    = <%=firstSlide%>;
-var showFAQ   = 0;
+var showFAQ   = 1;
 var showLegal = [0,0,0,0,0,0,0];
 function TickOver(img,mode)
 {
@@ -104,21 +104,24 @@ function BigImage()
 		<asp:Image runat="server" ID="P12005" class="HFig" style="width:340px;display:inline-block;padding:10px;float:left;margin:2px;" />
 	</div> 
 
+	<!--
 	<div style="color:#FFFFFF;background-color:#F9CF0E;font-family:Sans-serif;width:99%;padding:0px;margin:0px">
+	-->
+	<div style="color:#FFFFFF;background-color:#F1F1F1;font-family:Sans-serif;width:99%;padding:0px;margin:0px">
 		<div style="padding:10px;font-family:'Open Sans Hebrew',Sans-serif;font-size:20px;line-height:1.5em;letter-spacing:1.3px;margin:0px">
-			<div style="margin-left:20px">
+			<div style="margin-left:20px;color:#FF841C">
 			<img src="<%=PCIBusiness.Tools.ImageFolder() %>TickOrange.png" onmouseover="JavaScript:TickOver(this,2)" onmouseout="JavaScript:TickOver(this,1)" style="vertical-align:middle" />
-			<asp:Literal runat="server" ID="X100287">100287</asp:Literal>
+			<b><asp:Literal runat="server" ID="X100287">100287</asp:Literal></b>
 			</div>
 			<br />
-			<div style="margin-left:20px">
+			<div style="margin-left:20px;color:#FF841C">
 			<img src="<%=PCIBusiness.Tools.ImageFolder() %>TickOrange.png" onmouseover="JavaScript:TickOver(this,2)" onmouseout="JavaScript:TickOver(this,1)" style="vertical-align:middle" />
-			<asp:Literal runat="server" ID="X100288">100288</asp:Literal>
+			<b><asp:Literal runat="server" ID="X100288">100288</asp:Literal></b>
 			</div>
 			<br />
-			<div style="margin-left:20px">
+			<div style="margin-left:20px;color:#FF841C">
 			<img src="<%=PCIBusiness.Tools.ImageFolder() %>TickOrange.png" onmouseover="JavaScript:TickOver(this,2)" onmouseout="JavaScript:TickOver(this,1)" style="vertical-align:middle" />
-			<asp:Literal runat="server" ID="X100289">100289</asp:Literal>
+			<b><asp:Literal runat="server" ID="X100289">100289</asp:Literal></b>
 			</div>
 			<br />
 			<div style="text-align:center">
@@ -128,7 +131,9 @@ function BigImage()
 
 		<p style="font-size:35px;font-weight:400;line-height:1.4em;letter-spacing:0.8px;color:#333232;text-align:center">
 		<asp:Literal runat="server" ID="X100045">100045</asp:Literal>
-		</p><p style="font-size:20px;font-weight:400;line-height:1.6em;color:#272626">
+		</p>
+		<asp:Image runat="server" ID="P12044" />
+		<p style="font-size:20px;font-weight:400;line-height:1.6em;color:#272626">
 		<asp:Literal runat="server" ID="X100046">100046</asp:Literal>
 		</p>
 
@@ -234,9 +239,11 @@ function BigImage()
 	<asp:HyperLink runat="server" ID="H12027"><asp:Image runat="server" ID="P12027" /></asp:HyperLink>
 	</div>
 
-	<hr /><br />
+	<hr />
 
 	<!-- Slide Show -->
+	<!-- Removed 2023/07/27
+	<br />
 	<div style="font-size:50px;font-weight:bold;display:flex;align-items:center;justify-content:center">
 		<a id="hPrev" href="JavaScript:LoadImage(-1)" title="Previous slide" style="text-decoration:none"> < </a>
 		<a href="JavaScript:BigImage()"><asp:Image runat="server" ID="imgSlides" style="margin:0px 10px 0px 10px" /></a>
@@ -246,9 +253,9 @@ function BigImage()
 		<span id="spnBig"></span><img src="<%=PCIBusiness.Tools.ImageFolder() %>Close1.png" onclick="JavaScript:ShowElt('divBig',false)" title="Close" style="float:right" /><br />
 		<img id="imgBig" style="margin-top:3px" />
 	</div>
-	<!-- Slide Show -->
-
 	<br /><hr />
+	-->
+	<!-- Slide Show -->
 
 	<div>
 		<p style="color:#FF7400;font-family:Sans-serif;font-size:18px;font-weight:600;letter-spacing:0.8px">

@@ -213,6 +213,15 @@ namespace PCIWebFinAid
 		protected global::System.Web.UI.WebControls.Literal X100045;
 
 		/// <summary>
+		/// P12044 control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.Image P12044;
+
+		/// <summary>
 		/// X100046 control.
 		/// </summary>
 		/// <remarks>
