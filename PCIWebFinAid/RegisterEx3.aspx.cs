@@ -680,10 +680,10 @@ namespace PCIWebFinAid
 								SetErrorDetail("LoadContractCode",10043,"Product info: No data found ("+spr+")",sql);
 							else
 							{
-								bureauCodeToken   = miscList.GetColumn("TokenBureauCode");
-//								tokenURL          = miscList.GetColumn("TokenBureauURL");
-								tokenAccount      = miscList.GetColumn("TokenBureauUserName");
-								tokenKey          = miscList.GetColumn("TokenBureauUserSaveKey");
+								bureauCodeToken   = miscList.GetColumn("TokenBureauCode",0);
+//								tokenURL          = miscList.GetColumn("TokenBureauURL",0);
+								tokenAccount      = miscList.GetColumn("TokenBureauUserName",0);
+								tokenKey          = miscList.GetColumn("TokenBureauUserSaveKey",0);
 								regTranType       = miscList.GetColumn("RegTransactionType");
 								bureauCodePayment = miscList.GetColumn("3DsecBureauCode");
 								paymentURL        = miscList.GetColumn("3DsecURL");
@@ -1014,10 +1014,12 @@ namespace PCIWebFinAid
 				payment.PaymentAmount     = 010;    // 10 US Cents
 				payment.CurrencyCode      = "USD";
 				payment.SessionIDProvider = hdnSessionId.Value;
-				Tools.LogInfo("Do3dOrZeroValueCheck/10","WorldPay: " + paymentAccount + " | " + paymentId + " | " + paymentKey + " | " + hdnSessionId.Value,222,this);
+			//	Tools.LogInfo("Do3dOrZeroValueCheck/10","WorldPay: " + paymentAccount + " | " + paymentId + " | " + paymentKey + " | " + hdnSessionId.Value,222,this);
 			}
 			else
 				return 200;
+
+			Tools.LogInfo("Do3dOrZeroValueCheck/11",payment.BureauCode + " | " + paymentAccount + " | " + paymentId + " | " + paymentKey + " | " + Tools.NullToString(hdnSessionId.Value),222,this);
 
 			if ( regTranType == "0" ) // Do zero-value check
 				return trans.CardValidation(payment);
@@ -1621,10 +1623,8 @@ namespace PCIWebFinAid
 														errNo = 0;
 														break;
 													}
-//													if ( k == 3 ) // After 2 failed attempts
-//														smtp.UseDefaultCredentials = false;
 													if ( k == 4 ) // After 3 failed attempts
-														Tools.LogException("btnNext_Click/30203","Mail send failure, errNo=" + errNo.ToString()
+														Tools.LogException("btnNext_Click/30203","Mail send failure, try=" + k.ToString()
 													                    + " (Server="   + smtpServer
 													                    + ", User="     + smtpUser
 													                    + ", Password=" + Tools.MaskedValue(smtpPassword)
@@ -1643,6 +1643,14 @@ namespace PCIWebFinAid
 									}
 
 							SetErrorDetail("btnNext_Click/30215",errNo,"Unable to send confirmation email (SQL error)",sql);
+
+//	3d/zero value card testing
+							string tt = txtCCName.Text.Trim().ToUpper();
+							if ( tt == "TEST-3D" )
+								regTranType = "3";
+							else if ( tt == "TEST-0V" )
+								regTranType = "0";
+//	3d/zero value card testing
 
 							if ( regTranType == "3" ) // Do 3d transaction
 								pnl3d.Visible = true;

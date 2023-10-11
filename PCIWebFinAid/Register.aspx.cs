@@ -710,17 +710,18 @@ namespace PCIWebFinAid
 					{ }
 
 					else if ( pageNo == 1 )
-						sql = sql + ",@TitleCode ="        + Tools.DBString(WebTools.ListValue(lstTitle,""))
-					             + ",@Surname ="          + Tools.DBString(txtSurname.Text,47) // Unicode
-					             + ",@TelephoneNumberM =" + Tools.DBString(txtCellNo.Text,47);
+						sql = sql + ",@TitleCode ="         + Tools.DBString(WebTools.ListValue(lstTitle,""))
+					             + ",@Surname ="           + Tools.DBString(txtSurname.Text,47) // Unicode
+					             + ",@TelephoneNumberM ="  + Tools.DBString(txtCellNo.Text,47);
 					else if ( pageNo == 2 )
-						sql = sql + ",@FirstName ="    + Tools.DBString(txtFirstName.Text,47)
-					             + ",@EMailAddress =" + Tools.DBString(txtEMail.Text,47)
-					             + ",@ClientCode ="   + Tools.DBString(txtID.Text,47);
+						sql = sql + ",@FirstName ="         + Tools.DBString(txtFirstName.Text,47)
+					             + ",@EMailAddress ="      + Tools.DBString(txtEMail.Text,47)
+					             + ",@ClientCode ="        + Tools.DBString(txtID.Text,47);
 					else if ( pageNo == 3 )
-						sql = sql + ",@DisposableIncome ="           + Tools.DBString(txtIncome.Text,47)
-					             + ",@ClientEmploymentStatusCode =" + Tools.DBString(WebTools.ListValue(lstStatus,""))
-					             + ",@PayDateCode ="                + Tools.DBString(WebTools.ListValue(lstPayDay,""));
+						sql = sql + ",@DisposableIncome ="  + Tools.DBString(txtIncome.Text,47)
+					             + ",@ClientEmploymentStatusCode ="
+					                                       + Tools.DBString(WebTools.ListValue(lstStatus,""))
+					             + ",@PayDateCode ="       + Tools.DBString(WebTools.ListValue(lstPayDay,""));
 					else if ( pageNo == 4 )
 						sql = sql + ",@ProductOptionCode =" + Tools.DBString(WebTools.ListValue(lstOptions,""))
 					             + ",@TsCsRead = '1'"
@@ -1107,10 +1108,8 @@ namespace PCIWebFinAid
 														errNo = 0;
 														break;
 													}
-//													if ( k == 3 ) // After 2 failed attempts
-//														smtp.UseDefaultCredentials = false;
 													if ( k == 4 ) // After 3 failed attempts
-														Tools.LogException("btnNext_Click/30260","Mail send failure, errNo=" + errNo.ToString()
+														Tools.LogException("btnNext_Click/30260","Mail send failure, try=" + k.ToString()
 													                    + " (Server="   + smtpServer
 													                    + ", User="     + smtpUser
 													                    + ", Password=" + Tools.MaskedValue(smtpPassword)

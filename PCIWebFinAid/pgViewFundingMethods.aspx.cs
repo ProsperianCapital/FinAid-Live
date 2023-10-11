@@ -67,9 +67,9 @@ namespace PCIWebFinAid
 				{ 
 					lblName.Text    = mList.GetColumn("CardHolderName");
 					lblNumber.Text  = mList.GetColumn("MaskedCardNumber");
-					lblCVV.Text     = mList.GetColumn("CardCVVCode");
-					string mm       = mList.GetColumn("CardExpiryMonth");
-					string yy       = mList.GetColumn("CardExpiryYear");
+					lblCVV.Text     = mList.GetColumn("CardCVVCode",0);
+					string mm       = mList.GetColumn("CardExpiryMonth",0);
+					string yy       = mList.GetColumn("CardExpiryYear",0);
 					if ( mm.Length  > 0 && yy.Length > 0 )
 						lblDate.Text = (mm.Length==1?"0":"") + mm + " / " + yy;
 					else
