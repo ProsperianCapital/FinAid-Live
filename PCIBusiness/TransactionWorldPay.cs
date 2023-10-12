@@ -230,29 +230,31 @@ namespace PCIBusiness
 
 			try
 			{
-				xmlSent = "<order orderCode='" + payment.TransactionID + "'>"
-				        +   "<description>" + payment.PaymentDescription + "</description>"
-				        +   "<amount currencyCode='" + payment.CurrencyCode + "'"
-				        +          " exponent='2'"
-				        +          " value='" + payment.PaymentAmount.ToString() + "' />"
-				        +   "<paymentDetails action='ACCOUNTVERIFICATION'>"
-				        +     "<CARD-SSL>"
-				        +       "<cardNumber>" + payment.CardNumber + "</cardNumber>"
-				        +       "<expiryDate>"
-				        +         "<date month='" + payment.CardExpiryMM + "' year='" + payment.CardExpiryYYYY + "' />"
-				        +       "</expiryDate>"
-				        +       "<cardHolderName>" + payment.CardName + "</cardHolderName>"
-				        +       "<cvc>" + payment.CardCVV + "</cvc>"
-				        +       CardAddress(payment)
-				        +     "</CARD-SSL>"
-				        +   "</paymentDetails>"
-				        + "</order>";
+				xmlSent  = "<order orderCode='" + payment.TransactionID + "'>"
+				         +   "<description>" + payment.PaymentDescription + "</description>"
+				         +   "<amount currencyCode='" + payment.CurrencyCode + "'"
+				         +          " exponent='2'"
+				         +          " value='" + payment.PaymentAmount.ToString() + "' />"
+				         +   "<paymentDetails action='ACCOUNTVERIFICATION'>"
+				         +     "<CARD-SSL>"
+				         +       "<cardNumber>" + payment.CardNumber + "</cardNumber>"
+				         +       "<expiryDate>"
+				         +         "<date month='" + payment.CardExpiryMM + "' year='" + payment.CardExpiryYYYY + "' />"
+				         +       "</expiryDate>"
+				         +       "<cardHolderName>" + payment.CardName + "</cardHolderName>"
+				         +       "<cvc>" + payment.CardCVV + "</cvc>"
+				         +       CardAddress(payment)
+				         +     "</CARD-SSL>"
+				         +   "</paymentDetails>"
+				         + "</order>";
+				Tools.LogInfo("CardValidation/30","XML Sent="+xmlSent,199,this);
 				ret      = 20;
 				ret      = CallWebService(payment,(byte)Constants.TransactionType.ZeroValueCheck);
+				Tools.LogInfo("CardValidation/40","ret="+ret.ToString()+", XML Rec="+strResult,199,this);
 				if ( ret == 0 )
 					return 0;
 
-				Tools.LogInfo("CardValidation/50","ret="+ret.ToString()+", XML Sent="+xmlSent+", XML Rec="+strResult,199,this);
+//				Tools.LogInfo("CardValidation/50","ret="+ret.ToString()+", XML Sent="+xmlSent+", XML Rec="+strResult,199,this);
 			}
 			catch (Exception ex)
 			{
@@ -280,6 +282,12 @@ namespace PCIBusiness
 //			string pwd               = payment.ProviderPassword;
 //			payment.ProviderUserID   = "2LHRK1HBEPDYVP9OKG8S";
 //			payment.ProviderPassword = "st0nE#481";
+
+			if ( transactionType == (byte)Constants.TransactionType.AccountUpdate      ||
+			     transactionType == (byte)Constants.TransactionType.ZeroValueCheck     ||
+			     transactionType == (byte)Constants.TransactionType.ThreeDSecureCheck  ||
+			     transactionType == (byte)Constants.TransactionType.ThreeDSecurePayment )
+				logPriority = 241;
 //	Testing
 
 			SetError ("99","Internal error connecting to " + url);
@@ -880,8 +888,8 @@ namespace PCIBusiness
 		{
 			base.LoadBureauDetails(Constants.PaymentProvider.WorldPay);
 			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-//			logPriority                          = 10;  // For production, when all is stable
-			logPriority                          = 222; // For testing/development, to log very detailed errors
+			logPriority                          = 10;  // For production, when all is stable
+//			logPriority                          = 222; // For testing/development, to log very detailed errors
 		}
 	}
 }
