@@ -123,9 +123,9 @@ namespace PCIWebFinAid
 				ViewState["LanguageCode"]        = languageCode;
 				ViewState["LanguageDialectCode"] = languageDialectCode;
 
-				hdnVer.Value       = "[RegisterEx3.aspx] DLL Version " + PCIBusiness.SystemDetails.AppVersion + " (" + PCIBusiness.SystemDetails.AppDate + "), "
+				hdnVer.Value       = "(RegisterEx3.aspx) DLL Version " + PCIBusiness.SystemDetails.AppVersion + " (" + PCIBusiness.SystemDetails.AppDate + "), "
 				                   +                    "Web Version " + SystemDetails.AppVersion             + " (" + SystemDetails.AppDate             + ")";
-				lblVer.Text        = "[RegisterEx3] Versions " + PCIBusiness.SystemDetails.AppVersion + " (DLL), " + SystemDetails.AppVersion + " (Web)";
+				lblVer.Text        = "(RegisterEx3) Versions " + PCIBusiness.SystemDetails.AppVersion + " (DLL), " + SystemDetails.AppVersion + " (Web)";
 				lblVer.Visible     = ! Tools.SystemIsLive();
 				btnBack1.Visible   = ! Tools.SystemIsLive();
 				lblReg.Visible     = true;
