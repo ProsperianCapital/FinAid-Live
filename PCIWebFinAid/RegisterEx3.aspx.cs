@@ -11,6 +11,7 @@ namespace PCIWebFinAid
 {
 	public partial class RegisterEx3 : BasePage
 	{
+		private   byte   testMode = 0;
 		private   byte   logDebug = 40; // Make this bigger to log very detailed debug messages
 		private   string productCode;
 		private   string languageCode;
@@ -877,12 +878,28 @@ namespace PCIWebFinAid
 				}
 				else if ( txToken.Value.Length < 12 )
 					err = err + "Invalid credit/debit card number [Token]<br />";
+
 				txtCCName.Text = txtCCName.Text.Trim();
 				if ( txtCCName.Visible && txtCCName.Text.Length < 3 )
 					err = err + "Invalid credit/debit card name<br />";
+
 				txtCCCVV.Text = txtCCCVV.Text.Trim();
 				if ( txtCCCVV.Visible && ( txtCCCVV.Text.Length < 3 || txtCCCVV.Text.Length > 6 ) )
 					err = err + "Invalid credit/debit card CVV code<br />";
+
+				if ( txtCCName.Text.ToUpper() == "TEST-3D" )
+				{
+					testMode    = 31;
+					regTranType = "3";
+				}
+				else if ( txtCCName.Text.ToUpper() == "TEST-0V" )
+				{
+					testMode    = 41;
+					regTranType = "0";
+				}
+				else
+					testMode    =  0;
+
 				try
 				{
 					DateTime dt = new DateTime(WebTools.ListValue(lstCCYear),WebTools.ListValue(lstCCMonth),1,0,0,0);
@@ -897,16 +914,12 @@ namespace PCIWebFinAid
 
 			if ( err.Length > 0 )
 				SetErrorDetail("ValidateData",20022,err,err,1,1,null,false,50);
+
 			return err.Length;
 		}
 
-		private int Do3dOrZeroValueCheck(byte tokenizer=0) // Payment payment)
+		private int Do3dOrZeroValueCheck(byte tokenizer=0)
 		{
-//			if ( payment == null )
-//				return 10;
-//			else if ( payment.BureauCode.Length < 1 )
-//				return 20;
-
 			if ( regTranType != "0" && regTranType != "3" )
 				return 30;
 
@@ -927,6 +940,15 @@ namespace PCIWebFinAid
 				payment.TokenizerID     = "";
 				payment.TokenizerKey    = "";
 				payment.CardToken       = "";
+			}
+
+			if ( testMode > 0 ) // WorldPay
+			{
+				bureauCodePayment       = Tools.BureauCode(Constants.PaymentProvider.WorldPay);
+				paymentAccount          = "PROSPERIANTEST";
+				paymentId               = "2LHRK1HBEPDYVP9OKG8S";
+				paymentKey              = "st0nE#481=";
+				paymentURL              = "https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp";
 			}
 
 		//	Bureau
@@ -1019,7 +1041,7 @@ namespace PCIWebFinAid
 			else
 				return 200;
 
-			Tools.LogInfo("Do3dOrZeroValueCheck/11",payment.BureauCode + " | " + paymentAccount + " | " + paymentId + " | " + paymentKey + " | " + Tools.NullToString(hdnSessionId.Value),222,this);
+			Tools.LogInfo("Do3dOrZeroValueCheck/11",regTranType + " | " + payment.BureauCode + " | " + paymentAccount + " | " + paymentId + " | " + paymentKey + " | " + paymentURL + " | " + Tools.NullToString(hdnSessionId.Value),222,this);
 
 			if ( regTranType == "0" ) // Do zero-value check
 				return trans.CardValidation(payment);
@@ -1645,11 +1667,11 @@ namespace PCIWebFinAid
 							SetErrorDetail("btnNext_Click/30215",errNo,"Unable to send confirmation email (SQL error)",sql);
 
 //	3d/zero value card testing
-							string tt = txtCCName.Text.Trim().ToUpper();
-							if ( tt == "TEST-3D" )
-								regTranType = "3";
-							else if ( tt == "TEST-0V" )
-								regTranType = "0";
+//							string tt = txtCCName.Text.Trim().ToUpper();
+//							if ( tt == "TEST-3D" )
+//								regTranType = "3";
+//							else if ( tt == "TEST-0V" )
+//								regTranType = "0";
 //	3d/zero value card testing
 
 							if ( regTranType == "3" ) // Do 3d transaction
@@ -1741,6 +1763,7 @@ namespace PCIWebFinAid
 
 		public RegisterEx3() : base()
 		{
+			testMode                              = 0;
 			ServicePointManager.Expect100Continue = true;
 			ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
 		}
