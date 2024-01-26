@@ -109,11 +109,13 @@ namespace PCIBusiness
 		public int ProcessCards(string bureau,byte transactionType=0,int rowsToProcess=0,string bureaCodeTokenize="",byte logPriority=222)
 		{
 			int    maxRows    = Tools.StringToInt(Tools.ConfigValue("MaximumRows"));
+			int    delay      = Tools.StringToInt(Tools.ConfigValue("ProcessingDelay")); // Seconds to wait between cards
 			int    iter       = 0;
 			int    rowsDone   = 0;
+			int    pos        = 0;
 			string spr        = "";
 			bureauCode        = Tools.NullToString(bureau);
-			bureaCodeTokenize = Tools.NullToString(bureau);
+//			bureaCodeTokenize = ( bureaCodeTokenize.Length > 0 ? bureaCodeTokenize : Tools.NullToString(bureau) );
 			success           = 0;
 			fail              = 0;
 			maxRows           = ( maxRows < 1 ? Constants.MaxRowsPayment : maxRows );
@@ -187,20 +189,24 @@ namespace PCIBusiness
 					sql = sql + Constants.MaxRowsPayment.ToString();
 			}
 
-			Tools.LogInfo("ProcessCards/15",desc + ", MaxRows=" + maxRows.ToString()+", RowsToProcess=" + rowsToProcess.ToString()+", SQL="+sql,logPriority,this);
+			Tools.LogInfo("ProcessCards/15",desc + ", ProcessingDelay=" + delay.ToString()+" seconds, MaxRows=" + maxRows.ToString()+", RowsToProcess=" + rowsToProcess.ToString()+", SQL="+sql,222,this);
 
 			while ( rowsToProcess < 1 || rowsToProcess > success + fail )
 				try
 				{
+					pos = 10;
 					if ( LoadDataFromSQL(maxRows,"Payments.ProcessCards ("+desc+")") < 1 )
 						break;
 					Tools.CloseDB(ref dbConn);
 					rowsDone = 0;
+					pos      = 20;
 					iter++;
 					foreach (Payment payment in objList)
 					{
+						pos                     = 30;
 						payment.BureauCode      = bureauCode;
 						payment.TransactionType = transactionType;
+						pos                     = 40;
 						if ( transactionType == (byte)Constants.TransactionType.GetToken )
 							err = payment.GetToken();
 						else if ( transactionType == (byte)Constants.TransactionType.ZeroValueCheck )
@@ -226,15 +232,20 @@ namespace PCIBusiness
 							err = 41999;
 						else if ( transactionType == (byte)Constants.TransactionType.GetTokenThirdParty )
 						{
-							payment.TokenizerCode = bureaCodeTokenize;
-							err                   = payment.GetToken(); 
+							if ( bureaCodeTokenize.Length > 0 )
+								payment.TokenizerCode = bureaCodeTokenize;
+							pos = 50;
+							err = payment.GetToken(); 
 						}
 						else if ( transactionType == (byte)Constants.TransactionType.CardPaymentThirdParty )
 						{
-							payment.TokenizerCode = bureaCodeTokenize;
-							err                   = payment.ProcessPayment(); 
+							if ( bureaCodeTokenize.Length > 0 )
+								payment.TokenizerCode = bureaCodeTokenize;
+							pos = 60;
+							err = payment.ProcessPayment(); 
 						}
 
+						pos = 70;
 						if ( err == 0 )
 							success++;
 						else
@@ -242,8 +253,20 @@ namespace PCIBusiness
 						rowsDone++;
 						if ( rowsToProcess > 0 && rowsToProcess <= success + fail )
 							break;
+
+						if ( delay > 0 ) // Wait this number of seconds
+							for ( int y = 0 ; y < (delay*2) ; y++ )
+							{
+								pos = 80;
+								System.Threading.Thread.Sleep(500); // Half a second
+//								Application.DoEvents();
+							}
+//							System.Threading.Thread.Sleep(delay*1000); // Milliseconds
 					}
+
+					pos = 90;
 					Tools.LogInfo("ProcessCards/40",desc + ", iteration " + iter.ToString() + ", " + rowsDone.ToString() + " rows done",logPriority,this);
+
 //	In case of a runaway loop where failures are not rectified ...
 					if ( fail > 99 && success == 0 )
 						break;
@@ -254,7 +277,7 @@ namespace PCIBusiness
 				{
 					fail++;
 					rowsDone++;
-					Tools.LogException("ProcessCards/50",desc + ", iteration " + iter.ToString() + ", " + (success+fail).ToString() + " rows done",ex,this);
+					Tools.LogException("ProcessCards/50","pos="+pos.ToString() + ", " + desc + ", iteration " + iter.ToString() + ", " + (success+fail).ToString() + " rows done",ex,this);
 				}
 				finally
 				{

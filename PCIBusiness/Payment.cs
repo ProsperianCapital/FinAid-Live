@@ -71,7 +71,7 @@ namespace PCIBusiness
 		private string   machineCookie;
 		private string   schemeTranID;
 
-//	Stripe/PaymentCloud fields
+//	Stripe/PaymentCloud/AirWallex fields
 		private string   customerID;
 		private string   paymentMethodID;
 
@@ -140,7 +140,7 @@ namespace PCIBusiness
 			set { contractCode = value.Trim(); }
 		}
 
-//		Stripe stuff
+//		Stripe/AirWallex stuff
 		public string    CustomerID
 		{
 			get { return  Tools.NullToString(customerID); }
@@ -241,11 +241,13 @@ namespace PCIBusiness
 					return "IcJSjbVloKPQsS5PJrCdGOz8W/pLOBjzO4QVqKG4Ai8=";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentsOS) )
 					return "daea1771-d849-4fa4-a648-230a54186964"; // Public key
-				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_USA) ) // Public key
-					return "pk_test_51It78gGmZVKtO2iKXD0LEFRDvEs1Wkld93qRjifDLyWRoOgxXwGDJZzs9i902shBJqEk8v3XYg1WLLdButIK0QfU00xtFyxDQf";
-//					return "pk_test_51It78gGmZVKtO2iKc4eB6JveDn9HZAWR7F9cbiISEcYHGquyNoqb1YNnSQuzlJlR8maNlTUmaH0pBHHw4tZAOUBc00KZH2PeKW";
+//				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeUSA_Moto) ) // Public key
+//					return "pk_test_51It78gGmZVKtO2iKXD0LEFRDvEs1Wkld93qRjifDLyWRoOgxXwGDJZzs9i902shBJqEk8v3XYg1WLLdButIK0QfU00xtFyxDQf";
+//	//				return "pk_test_51It78gGmZVKtO2iKc4eB6JveDn9HZAWR7F9cbiISEcYHGquyNoqb1YNnSQuzlJlR8maNlTUmaH0pBHHw4tZAOUBc00KZH2PeKW";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentCloud) )
 					return "859v6V4N8H67pvAk";
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.AirWallex) )
+					return "89322de818fdf05fa96e146c61bbb780476921aefc6d420b88df40099e6efc6da158f3856b0a481ce911ac54c74f293a";
 				return "";
 			}
 		}
@@ -314,8 +316,9 @@ namespace PCIBusiness
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentCloud) )
 					return "7a5bb4SW9GY";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.WorldPay) )
-				//	return "2LHRK1HBEPDYVP9OKG8S";
 					return "AI5QP9YBY291AGF5AD7I";
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.AirWallex) )
+					return "Ct49swvQRSK_3oYSfaTNoA";
 
 				return "";
 			}
@@ -335,8 +338,8 @@ namespace PCIBusiness
 					return "g1Kzk8GY";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentsOS) )
 					return "3790d1d5-4847-43e6-a29a-f22180cc9fda"; // Private/secret key
-				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_USA) ) // Secret key
-					return "sk_test_51It78gGmZVKtO2iKBZF7DA5JisJzRqvibQdXSfBj9eQh4f5UDvgCShZIjznOWCxu8MtcJG5acVkDcd8K184gIegx001uXlHI5g";
+//				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeUSA_Moto) ) // Secret key
+//					return "sk_test_51It78gGmZVKtO2iKBZF7DA5JisJzRqvibQdXSfBj9eQh4f5UDvgCShZIjznOWCxu8MtcJG5acVkDcd8K184gIegx001uXlHI5g";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
 					return "sbyq0CUAvUSPMifwRH0f68fByQ5ZgSjyEpbeKg77o1Cuh9BD30ucakuXtpCCUMJN"; // Instance key
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.WorldPay) )
@@ -499,7 +502,10 @@ namespace PCIBusiness
 		{
 			if ( mode == 65 && string.IsNullOrWhiteSpace(countryCode) )
 				return "ZA";
-			return Tools.NullToString(countryCode);
+			countryCode = Tools.NullToString(countryCode);
+			if ( mode == 83 )
+				return ( countryCode.Length > 2 ? countryCode.Substring(0,2) : countryCode ).ToUpper();				
+			return countryCode;
 		}
 		public string    ProvinceCode
 		{
@@ -989,7 +995,8 @@ namespace PCIBusiness
 			                                 + ",@TransactionStatusCode = "       + Tools.DBString(transaction.ResultCode)
 //			                                 + ",@PaymentMethodId = "             + Tools.DBString(transaction.PaymentReference)
 			                                 + ",@PaymentMethodId = "             + Tools.DBString(transaction.PaymentMethodId)
-		                                    + ",@CardTokenisationStatusCode = '" + ( retProc == 0 ? "007'" : "001'" );
+		                                    + ",@CardTokenisationStatusCode = '" + ( retProc == 0 ? "007'" : "002'" );
+//		                                    + ",@CardTokenisationStatusCode = '" + ( retProc == 0 ? "007'" : "001'" );
 				Tools.LogInfo("GetToken/20","SQL=" + sql,20,this);
 				retSQL = ExecuteSQLUpdate();
 			}
@@ -1041,9 +1048,9 @@ namespace PCIBusiness
 			                              + ",@TransactionID = "     + Tools.DBString(transaction.PaymentReference)
 			                              + ",@TransactionStatusCode = '77'"
 			                              + ",@TransactionStatusMessage = ''";
-				Tools.LogInfo("ProcessPayment/30","SQL 1=" + sql,20,this);
+				Tools.LogInfo("ProcessPayment/30","SQL 1=" + sql,10,this);
 				retSQL = ExecuteSQLUpdate();
-				Tools.LogInfo("ProcessPayment/40","SQL 1 complete",20,this);
+				Tools.LogInfo("ProcessPayment/40","SQL 1 complete",10,this);
 			}
 			else
 				Tools.LogInfo("ProcessPayment/50","SQL 1 skipped",20,this);
@@ -1059,6 +1066,8 @@ namespace PCIBusiness
 
 			webForm       = "";
 			returnMessage = transaction.ResultMessage;
+
+			Tools.LogInfo("ProcessPayment/60","ResultCode=" + transaction.ResultCode + ", ResultMessage=" + transaction.ResultMessage,231,this);
 
 			if ( transactionType == (byte)Constants.TransactionType.ManualPayment ) // Manual card payment
 			{
@@ -1089,12 +1098,12 @@ namespace PCIBusiness
 			                              + ",@TransactionID = "            + Tools.DBString(transaction.PaymentReference)
 			                              + ",@TransactionStatusCode = "    + Tools.DBString(transaction.ResultCode)
 			                              + ",@TransactionStatusMessage = " + Tools.DBString(transaction.ResultMessage);
-				Tools.LogInfo("ProcessPayment/70","SQL 2=" + sql,20,this);
+				Tools.LogInfo("ProcessPayment/70","SQL 2=" + sql,231,this);
 				retSQL = ExecuteSQLUpdate();
-				Tools.LogInfo("ProcessPayment/80","SQL 2 complete",20,this);
+				Tools.LogInfo("ProcessPayment/80","SQL 2 complete",231,this);
 			}
 			else
-				Tools.LogInfo("ProcessPayment/90","SQL 2 skipped",20,this);
+				Tools.LogInfo("ProcessPayment/90","SQL 2 skipped",10,this);
 
 			return retProc;
 		}
@@ -1148,13 +1157,18 @@ namespace PCIBusiness
 			//	ipAddress     = dbConn.ColString ("IPAddress"  ,0,0);
 			}
 
-
 		//	Payment
 			merchantReference         = dbConn.ColString("merchantReference"        ,0,0);
 			merchantReferenceOriginal = dbConn.ColString("merchantReferenceOriginal",0,0); // Only really for Ikajo, don't log error
 			currencyCode              = dbConn.ColString("currencyCode"             ,0,0);
-			paymentDescription        = dbConn.ColString("description"              ,0,0);
 			paymentAmount             = dbConn.ColLong  ("amountInCents"            ,0,0);
+
+		//	Description on statement
+			paymentDescription        = "";
+			if ( dbConn.ColStatus("statementDescriptor") == Constants.DBColumnStatus.ColumnOK )
+				paymentDescription     = dbConn.ColString("statementDescriptor",0);
+			if ( paymentDescription.Length < 1 && dbConn.ColStatus("description") == Constants.DBColumnStatus.ColumnOK )
+				paymentDescription     = dbConn.ColString("description"        ,0);
 
 		//	Card/token/transaction details, not always present, don't log errors
 			ccName           = dbConn.ColUniCode("NameOnCard"     ,0,0);
@@ -1167,27 +1181,35 @@ namespace PCIBusiness
 			ccPIN            = dbConn.ColString ("PIN"            ,0,0);
 			transactionID    = dbConn.ColGuid   ("TransactionId"  ,0,0);
 		//	transactionID    = dbConn.ColString ("TransactionId"  ,0,0,177);
-		//	Used by Stripe (bureauCode 028) and PaymentCloude (bureauCode 031)
+		//	Used by Stripe and PaymentCloud (bureauCode 031) and AirWallex (bureauCode 108)
 			customerID       = dbConn.ColString ("CustomerId"     ,0,0);
 			paymentMethodID  = dbConn.ColString ("PaymentMethodId",0,0);
+
 		//	Used by WorldPay (bureauCode 032)
+		//	For WorldPay, "paymentMethodId" is eaxctly the same as "schemeTransactionID"
+		//	So first check if there is a "SchemeTransactionIdentifier". If not, use "paymentMethodId"
 			schemeTranID     = dbConn.ColString ("SchemeTransactionIdentifier",0,0);
+			if ( schemeTranID.Length < 1 && paymentMethodID.Length > 0 )
+				schemeTranID  = paymentMethodID;
 
 		//	Contract/customer mandate
 			mandateDateTime  = dbConn.ColDate   ("ContractDate"   ,0,0);
-			mandateIPAddress = dbConn.ColString ("IPAddres"       ,0,0);
 			mandateBrowser   = dbConn.ColString ("Browser"        ,0,0);
 			contractCode     = dbConn.ColString ("ContractCode"   ,0,0);
+			mandateIPAddress = dbConn.ColString ("IPAddres"       ,0,0);
+			if ( mandateIPAddress.Length < 1 )
+				mandateIPAddress = dbConn.ColString ("IPAddress"   ,0,0);
 
 		//	Token Provider (if empty, then it is the same as the payment provider)
 			if ( dbConn.ColStatus("TxKey") == Constants.DBColumnStatus.ColumnOK )
 			{
-				tokenizerID   = dbConn.ColString("TxID");
-				tokenizerKey  = dbConn.ColString("TxKey");
-				tokenizerURL  = dbConn.ColString("TxURL");
+				tokenizerCode = dbConn.ColString ("TxBureauCode");
+				tokenizerID   = dbConn.ColString ("TxID");
+				tokenizerKey  = dbConn.ColString ("TxKey");
+				tokenizerURL  = dbConn.ColString ("TxURL");
 			}
 			if ( dbConn.ColStatus("TxToken") == Constants.DBColumnStatus.ColumnOK )
-				ccToken       = dbConn.ColString("TxToken");
+				ccToken       = dbConn.ColString ("TxToken");
 
 //	Testing
 //			countryCode      = "ZA";

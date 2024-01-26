@@ -1399,9 +1399,13 @@ namespace PCIBusiness
 		{
 //		//	Providers where live and test are the same URL
 
-			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_USA) ||
-				  bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_EU)  ||
-				  bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_Asia) )
+			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeAU) ||
+				  bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeEE) ||
+				  bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeHK) ||
+				  bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeSG) ||
+				  bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeTH) ||
+				  bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeUK) ||
+				  bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeUS)  )
 				return "https://api.stripe.com";
 
 			else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate) )
@@ -1806,16 +1810,21 @@ namespace PCIBusiness
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB)              ) return new TransactionFNB();
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.WorldPay)         ) return new TransactionWorldPay();
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGenius)        ) return new TransactionPayGenius();
+			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.AirWallex)        ) return new TransactionAirWallex();
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Ecentric)         ) return new TransactionEcentric();
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.eNETS)            ) return new TransactionENets();
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Peach)            ) return new TransactionPeach();
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.TokenEx)          ) return new TransactionTokenEx();
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentsOS)       ) return new TransactionPaymentsOS();
-			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_USA)       ) return new TransactionStripe(Constants.PaymentProvider.Stripe_USA);
-			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_EU)        ) return new TransactionStripe(Constants.PaymentProvider.Stripe_EU);
-			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_Asia)      ) return new TransactionStripe(Constants.PaymentProvider.Stripe_Asia);
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.CyberSource)      ) return new TransactionCyberSource(Constants.PaymentProvider.CyberSource);
 			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.CyberSource_Moto) ) return new TransactionCyberSource(Constants.PaymentProvider.CyberSource_Moto);
+			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeAU)         ) return new TransactionStripe(Constants.PaymentProvider.StripeAU);
+			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeEE)         ) return new TransactionStripe(Constants.PaymentProvider.StripeEE);
+			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeHK)         ) return new TransactionStripe(Constants.PaymentProvider.StripeHK);
+			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeSG)         ) return new TransactionStripe(Constants.PaymentProvider.StripeSG);
+			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeTH)         ) return new TransactionStripe(Constants.PaymentProvider.StripeTH);
+			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeUK)         ) return new TransactionStripe(Constants.PaymentProvider.StripeUK);
+			if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeUS)         ) return new TransactionStripe(Constants.PaymentProvider.StripeUS);
 			return null;
 		}
 

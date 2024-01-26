@@ -401,19 +401,6 @@ namespace PCIBusiness
 				colNo = colNumber;
 			if ( ! dataReader.IsDBNull(colNo) )
 				return dataReader.GetString(colNo).Trim();
-
-//			if ( dataReader.IsDBNull(colNo) )
-//				return "";
-//			else if ( convertMode == 177 ) // It may be a GUID
-//			{
-//				string x = dataReader.GetDataTypeName(colNo);
-//				Type   y = dataReader.GetFieldType(colNo);
-//				if ( dataReader.GetDataType(colNo) == 
-//				Guid x = dataReader.GetGuid(colNo);
-//				return x.ToString();
-//			}
-//			else
-//				return dataReader.GetString(colNo).Trim();
      }
       catch (Exception ex)
       {

@@ -11,6 +11,8 @@ namespace PCIBusiness
 		protected string      payToken;
 		protected string      customerId;
 		protected string      paymentMethodId;
+		protected string      paymentConsentId;
+		protected string      paymentIntentId;
 		protected string      cardNumber;
 //		protected string      authCode;
 		protected string      resultCode;
