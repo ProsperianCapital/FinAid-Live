@@ -710,29 +710,28 @@ namespace PCIWebFinAid
 					{ }
 
 					else if ( pageNo == 1 )
-						sql = sql + ",@TitleCode ="         + Tools.DBString(WebTools.ListValue(lstTitle,""))
-					             + ",@Surname ="           + Tools.DBString(txtSurname.Text,47) // Unicode
-					             + ",@TelephoneNumberM ="  + Tools.DBString(txtCellNo.Text,47);
+						sql = sql + ",@TitleCode ="                  + Tools.DBString(WebTools.ListValue(lstTitle,""))
+					             + ",@Surname ="                    + Tools.DBString(txtSurname.Text,47) // Unicode
+					             + ",@TelephoneNumberM ="           + Tools.DBString(txtCellNo.Text,47);
 					else if ( pageNo == 2 )
-						sql = sql + ",@FirstName ="         + Tools.DBString(txtFirstName.Text,47)
-					             + ",@EMailAddress ="      + Tools.DBString(txtEMail.Text,47)
-					             + ",@ClientCode ="        + Tools.DBString(txtID.Text,47);
+						sql = sql + ",@FirstName ="                  + Tools.DBString(txtFirstName.Text,47)
+					             + ",@EMailAddress ="               + Tools.DBString(txtEMail.Text,47)
+					             + ",@ClientCode ="                 + Tools.DBString(txtID.Text,47);
 					else if ( pageNo == 3 )
-						sql = sql + ",@DisposableIncome ="  + Tools.DBString(txtIncome.Text,47)
-					             + ",@ClientEmploymentStatusCode ="
-					                                       + Tools.DBString(WebTools.ListValue(lstStatus,""))
-					             + ",@PayDateCode ="       + Tools.DBString(WebTools.ListValue(lstPayDay,""));
+						sql = sql + ",@DisposableIncome ="           + Tools.DBString(txtIncome.Text,47)
+					             + ",@ClientEmploymentStatusCode =" + Tools.DBString(WebTools.ListValue(lstStatus,""))
+					             + ",@PayDateCode ="                + Tools.DBString(WebTools.ListValue(lstPayDay,""));
 					else if ( pageNo == 4 )
-						sql = sql + ",@ProductOptionCode =" + Tools.DBString(WebTools.ListValue(lstOptions,""))
+						sql = sql + ",@ProductOptionCode ="          + Tools.DBString(WebTools.ListValue(lstOptions,""))
 					             + ",@TsCsRead = '1'"
-					             + ",@PaymentMethodCode =" + Tools.DBString(WebTools.ListValue(lstPayment,""))
-					             + ",@RewardsBoost = "     + ( chkRewards.Checked ? "'1'" : "'0'" );
+					             + ",@PaymentMethodCode ="          + Tools.DBString(WebTools.ListValue(lstPayment,""))
+					             + ",@RewardsBoost ="               + ( chkRewards.Checked ? "'1'" : "'0'" );
 					else if ( pageNo == 5 )
-						sql = sql + ",@CardNumber ="        + Tools.DBString(txtCCNumber.Text,47)
-					             + ",@AccountHolder ="     + Tools.DBString(txtCCName.Text,47)
-					             + ",@CardExpiryMonth ="   + Tools.DBString(WebTools.ListValue(lstCCMonth).ToString())
-					             + ",@CardExpiryYear ="    + Tools.DBString(WebTools.ListValue(lstCCYear).ToString())
-					             + ",@CardCVVCode ="       + Tools.DBString(txtCCCVV.Text,47);
+						sql = sql + ",@CardNumber ="                 + Tools.DBString(txtCCNumber.Text,47)
+					             + ",@AccountHolder ="              + Tools.DBString(txtCCName.Text,47)
+					             + ",@CardExpiryMonth ="            + Tools.DBString(WebTools.ListValue(lstCCMonth).ToString())
+					             + ",@CardExpiryYear ="             + Tools.DBString(WebTools.ListValue(lstCCYear).ToString())
+					             + ",@CardCVVCode ="                + Tools.DBString(txtCCCVV.Text,47);
 
 					errNo = miscList.ExecQuery(sql,0);
 

@@ -79,12 +79,17 @@ namespace PCIWebFinAid
 						provRet = 210;
 					}
 				}
-				else if ( providerCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_EU)  ||
-				          providerCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_USA) ||
-				          providerCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_Asia) )
+				else if ( providerCode == Tools.BureauCode(Constants.PaymentProvider.StripeEE) ||
+				          providerCode == Tools.BureauCode(Constants.PaymentProvider.StripeAU) ||
+				          providerCode == Tools.BureauCode(Constants.PaymentProvider.StripeHK) ||
+				          providerCode == Tools.BureauCode(Constants.PaymentProvider.StripeSG) ||
+				          providerCode == Tools.BureauCode(Constants.PaymentProvider.StripeUS) ||
+				          providerCode == Tools.BureauCode(Constants.PaymentProvider.StripeUK) ||
+				          providerCode == Tools.BureauCode(Constants.PaymentProvider.StripeTH) )
 				{
 					ret         = 50;
-					trans       = new TransactionStripe();
+				//	trans       = new TransactionStripe(providerCode);
+					trans       = Tools.CreateTransaction(providerCode);
 					providerRef = WebTools.RequestValueString(Request,"payment_intent");
 				//	string id   = WebTools.RequestValueString(Request,"payment_intent_client_secret");
 					provRet     = trans.ThreeDSecureCheck(providerRef);

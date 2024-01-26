@@ -788,9 +788,13 @@ namespace PCIWebFinAid
 										if ( paymentId.Length      < 1 ) paymentId      = Tools.ProviderCredentials("CyberSource_Moto","KeyId");
 										if ( paymentKey.Length     < 1 ) paymentKey     = Tools.ProviderCredentials("CyberSource_Moto","Key");
 									}
-									else if ( bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.Stripe_EU)  ||
-									          bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.Stripe_USA) ||
-									          bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.Stripe_Asia) )
+									else if ( bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.StripeAU) ||
+									          bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.StripeEE) ||
+									          bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.StripeSG) ||
+									          bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.StripeUK) ||
+									          bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.StripeTH) ||
+									          bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.StripeUS) ||
+									          bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.StripeHK) )
 									{
 										if ( paymentAccount.Length < 1 ) paymentAccount = Tools.ProviderCredentials("Stripe","SecretKey");
 									//	if ( paymentKey.Length     < 1 ) paymentKey     = Tools.ProviderCredentials("Stripe","PublicKey");
@@ -1008,11 +1012,16 @@ namespace PCIWebFinAid
 				payment.ProviderAccount = paymentAccount;
 				payment.ProviderUserID  = paymentId;
 			}
-			else if ( payment.BureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_EU)  ||
-			          payment.BureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_USA) ||
-			          payment.BureauCode == Tools.BureauCode(Constants.PaymentProvider.Stripe_Asia) )
+			else if ( payment.BureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeEE) ||
+			          payment.BureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeAU) ||
+			          payment.BureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeHK) ||
+			          payment.BureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeSG) ||
+			          payment.BureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeUS) ||
+			          payment.BureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeUK) ||
+			          payment.BureauCode == Tools.BureauCode(Constants.PaymentProvider.StripeTH) )
 			{
-				trans                    = new TransactionStripe();
+			//	trans                    = new TransactionStripe();
+				trans                    = Tools.CreateTransaction(payment.BureauCode);
 				payment.ProviderPassword = paymentAccount; // Secret Key
 			//	payment.PaymentAmount    = 050;            // 50 US Cents
 			//	payment.CurrencyCode     = "USD";          // Minimum amount for Stripe
