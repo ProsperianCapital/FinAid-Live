@@ -111,7 +111,7 @@ To Date<br />
 <asp:TextBox runat="server" ID="txtDate2" Width="80px" MaxLength="10" placeholder="dd/mm/yyyy"></asp:TextBox>
 <a href="JavaScript:showCalendar(frmLookup.txtDate2)"><img src="Images/Calendar.gif" title="Pop-up calendar" style="vertical-align:middle" /></a>
 </p><p>
-<input type="button" value="Home"   onclick="JavaScript:location.href='LAdmin.aspx'" />&nbsp;
+<input type="button" value="Home" onclick="JavaScript:location.href='XHome.aspx'" />&nbsp;
 <asp:Button runat="server" ID="btnSearch"   Text="Search" OnClick="btnSearch_Click" />&nbsp;
 <asp:Button runat="server" ID="btnErrorDtl" Text="Error ...?" OnClientClick="JavaScript:ShowElt('lblErrorDtl',true);return false" />
 </p>
