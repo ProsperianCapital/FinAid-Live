@@ -104,7 +104,7 @@ namespace PCIWebFinAid
 			if ( txtID.Text.ToUpper() == "XADMIN"  && txtPW.Text.ToUpper() == "X8Y3Z7" )
 			{
 				SetErrorDetail("",-777);
-				SessionSave("014","Johrika Burger","A");
+				SessionSave("013","Johrika Burger","A");
 				ShowSecure(true,true);
 				return;
 			}
