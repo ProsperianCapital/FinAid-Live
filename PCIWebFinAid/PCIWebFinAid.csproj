@@ -152,6 +152,7 @@
     <Content Include="IncludeMainCA.htm" />
     <Content Include="IncludeMainSM.htm" />
     <Content Include="packages.config" />
+    <Content Include="XTransLookup.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="JS\AJAXUtils.js" />
@@ -783,6 +784,13 @@
     </Compile>
     <Compile Include="pgViewDashboardProsperianWealth.aspx.designer.cs">
       <DependentUpon>pgViewDashboardProsperianWealth.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="XTransLookup.aspx.cs">
+      <DependentUpon>XTransLookup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="XTransLookup.aspx.designer.cs">
+      <DependentUpon>XTransLookup.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
