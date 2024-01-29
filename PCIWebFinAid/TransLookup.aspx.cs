@@ -8,9 +8,8 @@ namespace PCIWebFinAid
 	{
 		protected override void PageLoad(object sender, EventArgs e)
 		{
-//		Put in when login is live
-//			if ( SessionCheck()    != 0 )
-//				return;
+			if ( SessionCheck (19) != 0 ) // Admin only
+				return;
 //			if ( SecurityCheck(19) != 0 ) // Admin only
 //				return;
 
@@ -123,12 +122,12 @@ namespace PCIWebFinAid
 
 				if ( actionId == 1 )
 					sql = "sp_FILL_ChargebackAlert @InvoiceNumber = " + Tools.DBString(xData)
-					    +                        ",@AlertDate = " + Tools.DateToSQL(System.DateTime.Now,1)
+					    +                        ",@AlertDate = "     + Tools.DateToSQL(System.DateTime.Now,1)
 					    +                        ",@AlertProviderCode = '001'"
 					    +                        ",@AlertStatusCode = '01'";
 
 				else if ( actionId == 2 )
-					sql = "sp_FILL_Chargeback @InvoiceNumber = " + Tools.DBString(xData)
+					sql = "sp_FILL_Chargeback @InvoiceNumber = "  + Tools.DBString(xData)
 					    +                   ",@ChargebackDate	= " + Tools.DateToSQL(System.DateTime.Now,1);
 
 				else if ( actionId == 3 )

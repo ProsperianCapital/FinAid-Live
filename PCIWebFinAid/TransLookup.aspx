@@ -126,28 +126,29 @@ To Date<br />
 </div>
 
 <div id="divConfirm" class="PopupBox" style="visibility:hidden;display:none;background-color:aqua;color:black">
-<div class="PopupHead">Are you sure?</div>
-<div>
-<br />
-You are about to
-<div id="lblLabel1"></div>
-for <span id="lblLabel2"></span>.
-<br /><br />
-Please confirm that you want to do this.
-</div>
-<hr />
-<asp:Button runat="server" ID="btnOK" Text="OK" OnClick="btnOK_Click" />
-<input type="button" value="Cancel" onclick="JavaScript:ActionMenu(0,0)" />
+	<div class="PopupHead">Are you sure?</div>
+	<div>
+	<br />
+	You are about to
+	<div id="lblLabel1"></div>
+	for <span id="lblLabel2"></span>.
+	<br /><br />
+	Please confirm that you want to do this.
+	</div>
+	<hr />
+	<asp:Button runat="server" ID="btnOK" Text="OK" OnClick="btnOK_Click" />
+	<input type="button" value="Cancel" onclick="JavaScript:ActionMenu(0,0)" />
 </div>
 
 <div id="divFinish" class="PopupBox" style="visibility:hidden;display:none;background-color:aqua;color:black">
-<div class="PopupHead">Status ...</div>
-<div>
-<p>
-<asp:Literal runat="server" ID="lblFinish"></asp:Literal>
-</p>
-<hr />
-<input type="button" value="Close" onclick="JavaScript:ActionMenu(0,0)" />
+	<div class="PopupHead">Status ...</div>
+	<div>
+	<p>
+	<asp:Literal runat="server" ID="lblFinish"></asp:Literal>
+	</p>
+	<hr />
+	<input type="button" value="Close" onclick="JavaScript:ActionMenu(0,0)" />
+	</div>
 </div>
 
 <asp:Literal runat="server" ID="lblJS"></asp:Literal>

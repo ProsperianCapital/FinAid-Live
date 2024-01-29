@@ -8,6 +8,6 @@
 
 <div class="Footer1">
 <hr />
-© 2022 All Rights Reserved - PlaNet Tech Limited
+© 2024 All Rights Reserved - PlaNet Tech Limited
 <asp:Label runat="server" ID="lblVer" style="float:right"></asp:Label>
 </div>
