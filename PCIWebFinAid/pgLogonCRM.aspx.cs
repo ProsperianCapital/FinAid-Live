@@ -76,28 +76,25 @@ namespace PCIWebFinAid
 
 		protected void btnLogin_Click(Object sender, EventArgs e)
 		{
-			SetErrorDetail("btnLogin_Click",10100,"Invalid user name and/or password","One or both of user name/password is blank",2,2,null,true);
-			X103014.Text = X103014.Text.Trim(); // User name
-			X103015.Text = X103015.Text.Trim(); // Password
-
-			if ( X103014.Text.Length < 1 || X103015.Text.Length < 1 )
-				return;
-
-//	Testing
-			if ( ! Tools.SystemIsLive() && X103014.Text.ToUpper() == "PK" && X103015.Text.ToUpper() == "PK" )
+			X103014.Text    = X103014.Text.Trim(); // User name
+			X103015.Text    = X103015.Text.Trim(); // Password
+			string userCode = "";
+			string userName = "";
+			byte   loginErr = WebTools.CheckBackDoorLogins(X103014.Text, X103015.Text, ref userCode, ref userName);
+			
+			if ( loginErr == 0 && userCode.Length > 0 && userName.Length > 0 )
 			{
-				SessionSave("100248","Paul Kilfoil","N","20200304-1911");
+				SetErrorDetail("",-777);
+				SessionSave(userCode,userName,"N","20200304-1911");
 				WebTools.Redirect(Response,sessionGeneral.StartPage);
 				return;
 			}
-//	Testing
 
-//			if ( txtID.Text.ToUpper() == "XADMIN" && txtPW.Text.ToUpper() == "X8Y3Z7" )
-//			{
-//				SessionSave("109337","Ivan Pyotrsky","N","20200304-2054");
-//				WebTools.Redirect(Response,sessionGeneral.StartPage);
-//				return;
-//			}
+			if ( loginErr == 0 )
+			{
+				SetErrorDetail("btnLogin_Click",10100,"Invalid user name and/or password","One or both of user name/password is blank",2,2,null,true);
+				return;
+			}
 
 			using (MiscList mList = new MiscList())
 			{
@@ -119,7 +116,7 @@ namespace PCIWebFinAid
 				}
 				else
 				{
-					string userCode     = mList.GetColumn("ClientCode");
+					userCode            = mList.GetColumn("ClientCode");
 					string contractCode = mList.GetColumn("ContractCode");
 					string access       = mList.GetColumn("Access");
 					SessionSave(userCode,"",access,contractCode);

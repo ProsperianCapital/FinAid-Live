@@ -7,8 +7,9 @@ namespace PCIWebFinAid
 	{
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
-			byte   err = 0;
-			string url = Request.Url.AbsoluteUri.Trim();
+			byte   err  = 0;
+			string url  = Request.Url.AbsoluteUri.Trim();
+			string goTo = "";
 
 		//	The above is the best one to use
 		//	string urlT1 = Tools.ObjectToString(Request.UrlReferrer);
@@ -20,7 +21,6 @@ namespace PCIWebFinAid
 			{
 				int    k         = url.IndexOf("://");
 				string dName     = url.Substring(k+3);
-				string goTo      = "pgLogon.aspx";
 				string parms     = "";
 				string appStatus = "*";
 				ApplicationCode  = "";
@@ -39,9 +39,12 @@ namespace PCIWebFinAid
 						string appSecurity = mList.GetColumn("EnforceMenuItemSecurity");
 						appStatus          = mList.GetColumn("ApplicationStatus").ToUpper();
 						ApplicationCode    = mList.GetColumn("ApplicationCode");
+						goTo               = mList.GetColumn("ApplicationLandingPage");
 
 						if ( appStatus != "A" )
 							err  = 10;
+						else if ( goTo.Length > 0 )
+							err  = 0;
 						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.Registration)     ) // 000
 							goTo = "Register3.aspx";
 						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.CRM)              ) // 002
@@ -58,32 +61,39 @@ namespace PCIWebFinAid
 							goTo = "PYHome.aspx";
 						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.AdvantageCard)    ) // 140
 							goTo = "ADVHome.aspx";
-						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.AdvantageCardCRM) )
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.AdvantageCardCRM) ) // 145
 							goTo = "ADVCRM.aspx";
 						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.SmartStox)        ) // 160
 							goTo = "PCISSHome.aspx";
-						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.SmartStoxCRM)     )
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.SmartStoxCRM)     ) // 165
 							goTo = "SSCRM.aspx";
 						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.RewardsVault)     ) // 170
 							goTo = "RVHome.aspx";
-						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.RewardsVaultCRM)  )
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.RewardsVaultCRM)  ) // 175
 							goTo = "RVCRM.aspx";
 						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.TankwaCyber)      ) // 180
 							goTo = "TCFHome.aspx";
-						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.TankwaCyberCRM)   )
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.TankwaCyberCRM)   ) // 185
 							goTo = "TCFCRM.aspx";
 						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.ProsperianSTO)    ) // 190
 							goTo = "PCISTOHome.aspx";
-						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.ProsperianSTOCRM) )
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.ProsperianSTOCRM) ) // 195
 							goTo = "PCISTOCRM.aspx";
 						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.SmartMoney)       ) // 200
 							goTo = "SMHome.aspx";
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.MoneyMarket)      ) // 210
+							goTo = "MMHome.aspx";
 						else
 							err  = 20;
 					}
 					else
 						err =  0;
 					//	err = 30;
+
+				if ( goTo.Length < 1 )
+					goTo = "pgLogon.aspx";
+				else if ( ! goTo.ToUpper().Contains(".ASPX") )
+					goTo = goTo + ".aspx";
 
 				if ( err > 0 )
 					Tools.LogInfo("Home.PageLoad/1","err="       + err.ToString()
@@ -93,7 +103,7 @@ namespace PCIWebFinAid
 					                            + ", parms="     + parms
 					                            + ", appCode="   + ApplicationCode
 					                            + ", appStatus=" + appStatus, 222);
-
+				err = 0;
 				Response.Redirect(goTo+parms);
 			}	
 			catch (System.Threading.ThreadAbortException)
@@ -102,14 +112,19 @@ namespace PCIWebFinAid
 			}
 			catch (Exception ex)
 			{
-				err = 90;
-				Tools.LogException("Home.PageLoad/2","url="+url,ex);
+				if ( err < 1 )
+					err = 90;
+				Tools.LogException("Home.PageLoad/2","err="     + err.ToString()
+				                                 + ", url="     + url
+				                                 + ", appCode=" + ApplicationCode
+				                                 + ", goTo="    + goTo,ex);
 			}
 
 			if ( err > 0 )
 				Tools.LogInfo("Home.PageLoad/3","err="     + err.ToString()
 				                            + ", url="     + url
-				                            + ", appCode=" + ApplicationCode, 222);
+				                            + ", appCode=" + ApplicationCode
+				                            + ", goTo="    + goTo, 222);
 		}
 	}
 }

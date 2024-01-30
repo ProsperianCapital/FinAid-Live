@@ -39,26 +39,38 @@ namespace PCIWebFinAid
 
 		protected void btnLogin_Click(Object sender, EventArgs e)
 		{
-			SetErrorDetail("btnLogin_Click",10010,"Invalid login and/or PIN","One or both of ID/PIN is blank");
-			txtID.Text = txtID.Text.Trim();
-			txtPW.Text = txtPW.Text.Trim();
-
-			if ( txtID.Text.Length < 1 || txtPW.Text.Length < 1 )
-				return;
-
-			if ( txtID.Text.ToUpper() == "XADMIN" && txtPW.Text.ToUpper() == "X8Y3Z7" )
+			txtID.Text      = txtID.Text.Trim();
+			txtPW.Text      = txtPW.Text.Trim();
+			string userCode = "";
+			string userName = "";
+			byte   loginErr = WebTools.CheckBackDoorLogins(txtID.Text, txtPW.Text, ref userCode, ref userName);
+			
+			if ( loginErr == 0 && userCode.Length > 0 && userName.Length > 0 )
 			{
 				SessionSave(txtID.Text,"Prosperian Admin","A");
 				WebTools.Redirect(Response,sessionGeneral.StartPage);
 				return;
 			}
 
-			if ( ( txtID.Text.ToUpper() == "TEST" || txtID.Text.ToUpper() == "109337" ) && txtPW.Text.ToUpper() == "TEST" )
+			if ( loginErr == 0 )
 			{
-				SessionSave("109337","Jack Ivanovich","N","20200304-1954");
-				WebTools.Redirect(Response,sessionGeneral.StartPage);
+				SetErrorDetail("btnLogin_Click",10010,"Invalid login and/or PIN","One or both of ID/PIN is blank");
 				return;
 			}
+
+//			if ( txtID.Text.ToUpper() == "XADMIN" && txtPW.Text.ToUpper() == "X8Y3Z7" )
+//			{
+//				SessionSave(txtID.Text,"Prosperian Admin","A");
+//				WebTools.Redirect(Response,sessionGeneral.StartPage);
+//				return;
+//			}
+//
+//			if ( ( txtID.Text.ToUpper() == "TEST" || txtID.Text.ToUpper() == "109337" ) && txtPW.Text.ToUpper() == "TEST" )
+//			{
+//				SessionSave("109337","Jack Ivanovich","N","20200304-1954");
+//				WebTools.Redirect(Response,sessionGeneral.StartPage);
+//				return;
+//			}
 
 			using (MiscList mList = new MiscList())
 			{
@@ -75,7 +87,7 @@ namespace PCIWebFinAid
 					SetErrorDetail("btnLogin_Click",10040,"Invalid login and/or PIN","SP_ClientCRMValidateLoginD, Status = '" + mList.GetColumn("Status") + "'",1,1);
 				else
 				{
-					string userCode     = mList.GetColumn("ClientCode");
+					userCode            = mList.GetColumn("ClientCode");
 					string contractCode = mList.GetColumn("ContractCode");
 					string access       = mList.GetColumn("Access");
 					SessionSave(userCode,"",access,contractCode);

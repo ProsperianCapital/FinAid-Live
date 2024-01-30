@@ -70,6 +70,7 @@
     <Content Include="AJAXProcess.aspx" />
     <Content Include="CAFooter.ascx" />
     <Content Include="CAHeader.ascx" />
+    <Content Include="MMHome.aspx" />
     <Content Include="PCISSHome.aspx" />
     <Content Include="CAHome.aspx" />
     <Content Include="FAHome.aspx" />
@@ -287,6 +288,13 @@
     </Compile>
     <Compile Include="LGHome.aspx.designer.cs">
       <DependentUpon>LGHome.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MMHome.aspx.cs">
+      <DependentUpon>MMHome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MMHome.aspx.designer.cs">
+      <DependentUpon>MMHome.aspx</DependentUpon>
     </Compile>
     <Compile Include="pgChangeEMailOnly.aspx.cs">
       <DependentUpon>pgChangeEMailOnly.aspx</DependentUpon>

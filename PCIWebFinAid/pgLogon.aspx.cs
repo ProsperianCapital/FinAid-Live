@@ -81,33 +81,47 @@ namespace PCIWebFinAid
 
 		protected void btnLogin_Click(Object sender, EventArgs e)
 		{
-			SetErrorDetail("btnLogin_Click",11050,"Invalid user name and/or password","One or both of user name/password is blank",2,2,null,true);
-			txtID.Text = txtID.Text.Trim();
-			txtPW.Text = txtPW.Text.Trim();
-
-			if ( txtID.Text.Length < 1 || txtPW.Text.Length < 1 )
+			txtID.Text      = txtID.Text.Trim();
+			txtPW.Text      = txtPW.Text.Trim();
+			string userCode = "";
+			string userName = "";
+			byte   loginErr = WebTools.CheckBackDoorLogins(txtID.Text, txtPW.Text, ref userCode, ref userName);
+			
+			if ( loginErr == 0 && userCode.Length > 0 && userName.Length > 0 )
+			{
+				SetErrorDetail("",-777);
+				SessionSave(userCode,userName,"A");
+			//	ShowSecure(true,true);
+				WebTools.Redirect(Response,sessionGeneral.StartPage);
 				return;
+			}
+
+			if ( loginErr == 0 )
+			{
+				SetErrorDetail("btnLogin_Click",11050,"Invalid user name and/or password","One or both of user name/password is blank",2,2,null,true);
+				return;
+			}
 
 //	Testing
 //			if ( txtID.Text.ToUpper() == "XADMIN" && txtPW.Text.ToUpper() == "X8Y3Z7" )
-			if ( ! Tools.SystemIsLive() && txtID.Text.ToUpper() == "PK" && txtPW.Text.ToUpper() == "PK" )
-			{
-				SetErrorDetail("",-777);
-				SessionSave("013","Paul Kilfoil","A");
-				ShowSecure(true,true);
-				return;
-			}
+//			if ( ! Tools.SystemIsLive() && txtID.Text.ToUpper() == "PK" && txtPW.Text.ToUpper() == "PK" )
+//			{
+//				SetErrorDetail("",-777);
+//				SessionSave("013","Paul Kilfoil","A");
+//				ShowSecure(true,true);
+//				return;
+//			}
 //	Testing
 
 //	Live (temporary workaround)
 //			if ( txtID.Text.ToUpper() == "JOHRIKA" && txtPW.Text.ToUpper() == "K4RH@9E2" )
-			if ( txtID.Text.ToUpper() == "XADMIN"  && txtPW.Text.ToUpper() == "X8Y3Z7" )
-			{
-				SetErrorDetail("",-777);
-				SessionSave("013","Johrika Burger","A");
-				ShowSecure(true,true);
-				return;
-			}
+//			if ( txtID.Text.ToUpper() == "XADMIN"  && txtPW.Text.ToUpper() == "X8Y3Z7" )
+//			{
+//				SetErrorDetail("",-777);
+//				SessionSave("013","Johrika Burger","A");
+//				ShowSecure(true,true);
+//				return;
+//			}
 //	Live (temporary workaround)
 
 			using (MiscList mList = new MiscList())
@@ -121,10 +135,10 @@ namespace PCIWebFinAid
 					SetErrorDetail("btnLogin_Click",11065,"Invalid user name and/or password",sql + " (no data returned)",1,1,null,true);
 				else
 				{
-					string userCode = mList.GetColumn("UserCode");
-					string userName = mList.GetColumn("UserDisplayName");
-					string status   = mList.GetColumn("Status").ToUpper();
-					string message  = mList.GetColumn("Message");
+					userCode       = mList.GetColumn("UserCode");
+					userName       = mList.GetColumn("UserDisplayName");
+					string status  = mList.GetColumn("Status").ToUpper();
+					string message = mList.GetColumn("Message");
 					if ( status != "S" )
 						SetErrorDetail("btnLogin_Click",11070,message,sql + " (Status = '" + status + "')",1,1,null,true);
 					else if ( userCode.Length < 1 || userName.Length < 2 )
