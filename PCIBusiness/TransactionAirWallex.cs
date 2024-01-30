@@ -355,7 +355,14 @@ namespace PCIBusiness
 					           +          "\"expiry_year\" : \""       + payment.CardExpiryYYYY + "\","
 					           +          "\"name\" : \""              + payment.CardName + "\","
 					           +          "\"number_type\" : \"PAN\","
-					           +          "\"number\" : \"##CARDNUM##\" } } }";
+					           +          "\"number\" : \"##CARDNUM##\" } },"
+					           +   "\"device_data\" :"
+					           +     "{ \"ip_address\" : \"" + payment.MandateIPAddress + "\","
+					           +       "\"accept_header\" : \"*/*\","
+					           +       "\"browser\" :"
+					           +         "{ \"user_agent\" : \"" + payment.MandateBrowser + "\","
+					           +           "\"java_enabled\" : false,"
+					           +           "\"javascript_enabled\" : true } } }";
 
 					if ( transactionType == (byte)Constants.TransactionType.CardPaymentThirdParty && txURL.Length > 0 )
 					{

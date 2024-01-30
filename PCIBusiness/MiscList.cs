@@ -66,7 +66,7 @@ namespace PCIBusiness
 
 		public int ExecQuery(string sqlQuery,byte loadRows,string dataClass="",bool noRowsIsError=true,bool alwaysClose=false,string connectionName="")
 		{
-			if ( sqlQuery.ToUpper().StartsWith("EXEC SP_XXXX") ) // Not implemented yet
+			if ( sqlQuery.ToUpper().Contains(" SP_XXXX") ) // Not implemented yet
 				return (int)Constants.ErrorType.SQLNotImplemented;
 
 			sql = sqlQuery;

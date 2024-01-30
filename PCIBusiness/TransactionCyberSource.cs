@@ -277,7 +277,7 @@ namespace PCIBusiness
 //				payment.LastName       = "Jenkins";
 //				payment.CardNumber     = "5284973093146722";
 //				payment.CardExpiryMM   = "02";
-//				payment.CardExpiryYYYY = "2027";
+//				payment.CardExpiryYYYY = (System.DateTime.Now.Year+1).ToString();
 //				payment.CardCVV        = "137";
 //				payment.CardType       = "mastercard";
 // LIVE testing [REMOVE]
@@ -689,7 +689,7 @@ namespace PCIBusiness
 				                       , { "override_custom_receipt_page"       , "http://www.paulkilfoil.co.za/Travelogues.aspx" } };
 				fieldU = new string[,] { { "card_type"                          , "001" }
 				                       , { "card_number"                        , "4456530000000007" }
-				                       , { "card_expiry_date"                   , "12-2022" } };
+				                       , { "card_expiry_date"                   , "12-" + (System.DateTime.Now.Year+1).ToString() } };
 //				                       , { "card_number"                        , "4111111111111111" } // Visa
 //				                       , { "card_number"                        , "5555555555554444" } // MasterCard
 
@@ -826,7 +826,7 @@ namespace PCIBusiness
 			CyberSource.Card card     = new CyberSource.Card();
 			card.accountNumber        = "4111111111111111";
 			card.expirationMonth      = "12";
-			card.expirationYear       = "2022";
+			card.expirationYear       = (System.DateTime.Now.Year+1).ToString();
 			request.card              = card;
 
 			CyberSource.PurchaseTotals purchaseTotals = new CyberSource.PurchaseTotals();
