@@ -81,7 +81,7 @@ namespace PCIWebFinAid
 							goTo = "PCISTOCRM.aspx";
 						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.SmartMoney)       ) // 200
 							goTo = "SMHome.aspx";
-						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.MoneyMarket)      ) // 210
+						else if ( ApplicationCode == Tools.SystemCode(Constants.ApplicationCode.MoneyMaster)      ) // 210
 							goTo = "MMHome.aspx";
 						else
 							err  = 20;

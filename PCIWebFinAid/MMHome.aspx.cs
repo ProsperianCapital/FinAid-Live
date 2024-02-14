@@ -21,7 +21,7 @@ namespace PCIWebFinAid
 
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
-			ApplicationCode = Tools.SystemCode(Constants.ApplicationCode.MoneyMarket);
+			ApplicationCode = Tools.SystemCode(Constants.ApplicationCode.MoneyMaster);
 			errPriority     = 19;
 
 			if ( Page.IsPostBack )
@@ -302,6 +302,7 @@ namespace PCIWebFinAid
 							fieldCode = mList.GetColumn("DocumentTypeCode");
 							try
 							{
+							//	((Literal)FindControl("LT"+fieldCode)).Text = mList.GetColumn("DocumentTitle",1,6);
 								((Literal)FindControl("LH"+fieldCode)).Text = mList.GetColumn("DocumentHeader",1,6);
 								((Literal)FindControl("LD"+fieldCode)).Text = mList.GetColumn("DocumentText",1,6);
 							}

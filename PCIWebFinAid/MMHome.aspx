@@ -18,7 +18,8 @@ img
 	height: auto;
 	max-width: 100%;
 }
-.Header1 /* Override what's in SMFinAid.css */
+/* Classes below override what's in SMFinAid.css */
+.Header1
 {
 	font-family: "Trebuchet MS", serif;
 	font-size: 16px;
@@ -32,7 +33,22 @@ img
 	display: inline-block;
 	width: 100%;
 }
-
+.HIWHead1
+{
+	color: #E68A00;
+}
+.TopButtonO
+{
+	color: white;
+	text-decoration: none;
+	background-color: #262626;
+}
+.TopButtonG
+{
+	color: white;
+	text-decoration: none;
+	background-color: #262626;
+}
 </style>
 <asp:Literal runat="server" ID="lblGoogleNoScript"></asp:Literal>
 <script type="text/javascript">
@@ -106,30 +122,31 @@ function Legal(code)
 			</div>
 			<br />
 			<div style="text-align:center">
-			<asp:HyperLink runat="server" ID="X100009" class="TopButton" style="height:32px;width:120px;padding:3px;padding-top:4px;color:#FFFFFF;background-color:#0086CC;text-decoration:none" onmouseover="JavaScript:this.style.backgroundColor='#FF7400'" onmouseout="JavaScript:this.style.backgroundColor='#54595F'">REGISTER</asp:HyperLink>
+			<asp:HyperLink runat="server" ID="X100009" class="TopButton TopButtonG" style="height:32px;width:120px;padding:3px;padding-top:4px" onmouseover="JavaScript:this.style.backgroundColor='#FF7400'" onmouseout="JavaScript:this.style.backgroundColor='#54595F'">REGISTER</asp:HyperLink>
 			</div>
 		</div>
 
 		<p style="font-size:35px;font-weight:400;line-height:1.4em;letter-spacing:0.8px;color:#333232;text-align:center">
 		<asp:Literal runat="server" ID="X100045">100045</asp:Literal>
 		</p>
-		<asp:Image runat="server" ID="P12044" />
+		<asp:Image runat="server" ID="P12006" />
 		<p style="font-size:20px;font-weight:400;line-height:1.6em;color:#272626">
 		<asp:Literal runat="server" ID="X100046">100046</asp:Literal>
 		</p>
+		<asp:Image runat="server" ID="P12044" />
 
-		<div style="color:#54595F;font-size:19px;font-weight:600">
-			<!-- img src="[PCIBusiness.Tools.ImageFolder()]Register2.png" style="float:left;margin-right:4px" -->
+		<div style="color:#54595F;font-size:19px;font-weight:600;color:white">
+			<!-- img src="[PCIBusiness.Tools.ImageFolder()]Register2.png" -->
 			<asp:Image runat="server" ID="P12007" style="float:left;margin-right:4px" />
-			<br /><asp:Label runat="server" ID="X105001">105001</asp:Label>
+			<br /><asp:Literal runat="server" ID="X105001">105001</asp:Literal>
 			<div style="color:#54595F;font-size:15px;font-weight:300;line-height:1.8em">
 			<asp:Label runat="server" ID="X105002">105002</asp:Label>
 			</div>
 		</div>
 
 		<br /><br />
-		<div style="color:#54595F;font-size:19px;font-weight:600">
-			<!-- img src="[PCIBusiness.Tools.ImageFolder()]Pay2.png" style="float:left;margin-right:4px" -->
+		<div style="color:#54595F;font-size:19px;font-weight:600;color:white">
+			<!-- img src="[PCIBusiness.Tools.ImageFolder()]Pay2.png" -->
 			<asp:Image runat="server" ID="P12008" style="float:left;margin-right:4px" />
 			<br /><asp:Literal runat="server" ID="X105003">105003</asp:Literal>
 			<div style="color:#54595F;font-size:15px;font-weight:300;line-height:1.8em">
@@ -138,8 +155,8 @@ function Legal(code)
 		</div>
 
 		<br /><br />
-		<div style="color:#54595F;font-size:19px;font-weight:600">
-			<!-- img src="[PCIBusiness.Tools.ImageFolder()]Enjoy2.png" style="float:left;margin-right:4px" -->
+		<div style="color:#54595F;font-size:19px;font-weight:600;color:white">
+			<!-- img src="[PCIBusiness.Tools.ImageFolder()]Enjoy2.png" -->
 			<asp:Image runat="server" ID="P12009" style="float:left;margin-right:4px" />
 			<br /><asp:Literal runat="server" ID="X105005">105005</asp:Literal>
 			<div style="color:#54595F;font-size:15px;font-weight:300;line-height:1.8em">
@@ -150,7 +167,7 @@ function Legal(code)
 	</div>
 
 	<div style="margin:0 auto;padding:0px;display:inline-block;width:100%">
-		<p style="color:#00457C;font-family:Sans-serif;font-size:35px;font-weight:400;line-height:1.4em;letter-spacing:0.8px;text-align:center">
+		<p style="color:#E68A00;font-family:Sans-serif;font-size:35px;font-weight:400;line-height:1.4em;letter-spacing:0.8px;text-align:center">
 		<asp:Literal runat="server" ID="X100051">100051</asp:Literal>
 		</p>
 		<asp:Panel runat="server" ID="D12010" CssClass="HFig">
@@ -198,7 +215,7 @@ function Legal(code)
 	</b><br />
 	<asp:Literal runat="server" ID="X105008">105008</asp:Literal>
 	</div>
-	<asp:Panel runat="server" ID="D12040" style="color:#00457C;font-family:Sans-serif;font-size:35px;font-weight:400;letter-spacing:0.8px;text-align:center">
+	<asp:Panel runat="server" ID="D12040" style="color:#262626;font-family:Sans-serif;font-size:35px;font-weight:400;letter-spacing:0.8px;text-align:center">
 		<asp:Label runat="server" ID="X105045">105045</asp:Label>
 		<br />
 		<asp:Image runat="server" ID="P12040" />
@@ -206,13 +223,13 @@ function Legal(code)
 
 	<!-- FAQ line -->
 	<div style="background-color:#6D6660;width:100%;padding:2px 0px 5px 0px;margin:10px 0px 0px 0px;text-align:center">
-		<a href="JavaScript:FAQ()"><div class="TopButton" style="width:120px;color:#FFFFFF;background-color:#0086CC;margin:4px 0px 0px 4px" onmouseover="JavaScript:this.style.backgroundColor='#FF7400'" onmouseout="JavaScript:this.style.backgroundColor='#54595F'"><asp:Literal runat="server" ID="X100063">100063</asp:Literal></div></a>
+		<a href="JavaScript:FAQ()"><div class="TopButton TopButtonG" style="width:120px;margin:4px 0px 0px 4px" onmouseover="JavaScript:this.style.backgroundColor='#FF7400'" onmouseout="JavaScript:this.style.backgroundColor='#54595F'"><asp:Literal runat="server" ID="X100063">100063</asp:Literal></div></a>
 		<div id="divFAQ" style="color:#FFFFFF;font-family:Sans-serif;visibility:hidden;display:none">
 		<asp:Literal runat="server" ID="xFAQ"></asp:Literal>
 		</div>
 	</div>
 
-	<p style="color:#00457C;font-family:Sans-serif;font-size:35px;font-weight:400;letter-spacing:0.8px;text-align:center">
+	<p style="color:#262626;font-family:Sans-serif;font-size:35px;font-weight:400;letter-spacing:0.8px;text-align:center">
 	<asp:Literal runat="server" ID="X105046">105046</asp:Literal>
 	</p>
 
@@ -252,7 +269,7 @@ function Legal(code)
 	</asp:Panel>
 
 	<asp:PlaceHolder runat="server" ID="D105009">
-	<div style="color:#00457C;font-family:Sans-serif;font-size:40px;font-weight:600;line-height:1.4em;letter-spacing:0.8px;margin-left:10px">
+	<div style="color:#262626;font-family:Sans-serif;font-size:40px;font-weight:600;line-height:1.4em;letter-spacing:0.8px;margin-left:10px">
 	<asp:Literal runat="server" ID="X105009">105009</asp:Literal>
 	</div>
 	</asp:PlaceHolder>
@@ -268,7 +285,7 @@ function Legal(code)
 	<hr />
 
 	<div>
-		<p style="color:#00457C;font-family:Sans-serif;font-size:18px;font-weight:600;letter-spacing:0.8px">
+		<p style="font-family:Sans-serif;font-size:18px;font-weight:600;letter-spacing:0.8px">
 		<asp:Literal runat="server" ID="X100092"></asp:Literal>
 		</p><p><b>
 		<asp:Literal runat="server" ID="X100093"></asp:Literal>
