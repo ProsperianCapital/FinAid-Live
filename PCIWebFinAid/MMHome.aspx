@@ -135,31 +135,31 @@ function Legal(code)
 		</p>
 		<asp:Image runat="server" ID="P12044" />
 
-		<div style="color:#54595F;font-size:19px;font-weight:600;color:white">
+		<div style="color:white;font-size:19px;font-weight:600">
 			<!-- img src="[PCIBusiness.Tools.ImageFolder()]Register2.png" -->
 			<asp:Image runat="server" ID="P12007" style="float:left;margin-right:4px" />
 			<br /><asp:Literal runat="server" ID="X105001">105001</asp:Literal>
-			<div style="color:#54595F;font-size:15px;font-weight:300;line-height:1.8em">
+			<div style="font-size:15px;font-weight:300;line-height:1.8em">
 			<asp:Label runat="server" ID="X105002">105002</asp:Label>
 			</div>
 		</div>
 
 		<br /><br />
-		<div style="color:#54595F;font-size:19px;font-weight:600;color:white">
+		<div style="color:white;font-size:19px;font-weight:600">
 			<!-- img src="[PCIBusiness.Tools.ImageFolder()]Pay2.png" -->
 			<asp:Image runat="server" ID="P12008" style="float:left;margin-right:4px" />
 			<br /><asp:Literal runat="server" ID="X105003">105003</asp:Literal>
-			<div style="color:#54595F;font-size:15px;font-weight:300;line-height:1.8em">
+			<div style="font-size:15px;font-weight:300;line-height:1.8em">
 			<asp:Literal runat="server" ID="X105004">105004</asp:Literal>
 			</div>
 		</div>
 
 		<br /><br />
-		<div style="color:#54595F;font-size:19px;font-weight:600;color:white">
+		<div style="color:white;font-size:19px;font-weight:600">
 			<!-- img src="[PCIBusiness.Tools.ImageFolder()]Enjoy2.png" -->
 			<asp:Image runat="server" ID="P12009" style="float:left;margin-right:4px" />
 			<br /><asp:Literal runat="server" ID="X105005">105005</asp:Literal>
-			<div style="color:#54595F;font-size:15px;font-weight:300;line-height:1.8em">
+			<div style="font-size:15px;font-weight:300;line-height:1.8em">
 			<asp:Literal runat="server" ID="X105006">105006</asp:Literal>
 			</div>
 		</div>
