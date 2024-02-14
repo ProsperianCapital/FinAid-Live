@@ -126,16 +126,16 @@ function Legal(code)
 			</div>
 		</div>
 
-		<p style="font-size:35px;font-weight:400;line-height:1.4em;letter-spacing:0.8px;color:#333232;text-align:center">
+		<p style="font-size:35px;font-weight:400;line-height:1.4em;letter-spacing:0.8px;color:white;text-align:center">
 		<asp:Literal runat="server" ID="X100045">100045</asp:Literal>
 		</p>
 		<asp:Image runat="server" ID="P12006" />
-		<p style="font-size:20px;font-weight:400;line-height:1.6em;color:#272626">
+		<p style="font-size:20px;font-weight:400;line-height:1.6em;color:white;margin-left:4px">
 		<asp:Literal runat="server" ID="X100046">100046</asp:Literal>
 		</p>
 		<asp:Image runat="server" ID="P12044" />
 
-		<div style="color:white;font-size:19px;font-weight:600">
+		<div style="color:white;font-size:19px;font-weight:600;margin-top:4px">
 			<!-- img src="[PCIBusiness.Tools.ImageFolder()]Register2.png" -->
 			<asp:Image runat="server" ID="P12007" style="float:left;margin-right:4px" />
 			<br /><asp:Literal runat="server" ID="X105001">105001</asp:Literal>
