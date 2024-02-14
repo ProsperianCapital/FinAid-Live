@@ -149,7 +149,7 @@ namespace PCIBusiness
 			ProsperianSTOCRM = 195,
 			SmartMoney       = 200,
 			SmartMoneyCRM    = 205,
-			MoneyMarket      = 210
+			MoneyMaster      = 210
 		}
 
 		public enum BureauStatus : byte

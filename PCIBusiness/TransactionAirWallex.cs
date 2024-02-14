@@ -2,7 +2,6 @@ using System;
 using System.Text;
 using System.Net;
 using System.IO;
-using System.Security.Cryptography;
 
 namespace PCIBusiness
 {
@@ -339,7 +338,7 @@ namespace PCIBusiness
 					strResult  = "";
 					resultCode = "44";
 					resultMsg  = "(44) Internal error confirming a payment intent";
-					ret        = 610;
+					ret        = 605;
 					xmlSent    = "{ \"request_id\" : \"" + (Guid.NewGuid()).ToString() + "\","
 					           +   "\"payment_method\" :"
 					           +     "{ \"type\" : \"card\","
@@ -350,35 +349,45 @@ namespace PCIBusiness
 					           +               "\"last_name\" : \""    + payment.LastName + "\","
 					           +               "\"email\" : \""        + payment.EMail + "\","
 					           +               "\"phone_number\" : \"" + payment.PhoneCell + "\" },"
-					           +          "\"cvc\" : \""               + payment.CardCVV + "\","
+					           +          "\"number\" : \"##CARDNUM##\","
+					           +          "\"cvc\" : \"##CVV##\","
+					           +          "\"number_type\" : \"PAN\","
 					           +          "\"expiry_month\" : \""      + payment.CardExpiryMM + "\","
 					           +          "\"expiry_year\" : \""       + payment.CardExpiryYYYY + "\","
-					           +          "\"name\" : \""              + payment.CardName + "\","
-					           +          "\"number_type\" : \"PAN\","
-					           +          "\"number\" : \"##CARDNUM##\" } },"
-					           +   "\"device_data\" :"
+					           +          "\"name\" : \""              + payment.CardName + "\" } }";
+					ret        = 610;
+					if ( payment.MandateBrowser.Length > 0 && payment.MandateIPAddress.Length > 0 )
+						xmlSent = xmlSent
+					           +  ",\"device_data\" :"
 					           +     "{ \"ip_address\" : \"" + payment.MandateIPAddress + "\","
 					           +       "\"accept_header\" : \"*/*\","
 					           +       "\"browser\" :"
 					           +         "{ \"user_agent\" : \"" + payment.MandateBrowser + "\","
 					           +           "\"java_enabled\" : false,"
-					           +           "\"javascript_enabled\" : true } } }";
+					           +           "\"javascript_enabled\" : true } }";
+					xmlSent    = xmlSent + " }";
+
+//	Replace the CVV if we have it
+//					if ( payment.CardCVV.Length >= 3 && Tools.StringToInt(payment.CardCVV) > 0 )
+//				 		xmlSent = xmlSent.Replace("##CVV##",payment.CardCVV);
 
 					if ( transactionType == (byte)Constants.TransactionType.CardPaymentThirdParty && txURL.Length > 0 )
 					{
 						ret                                = 620;
-					//	xmlSent                            = xmlSent + "\"{{{" + payment.CardToken + "}}}\" } } }";
 					 	xmlSent                            = xmlSent.Replace("##CARDNUM##","{{{" + payment.CardToken + "}}}");
+					 	xmlSent                            = xmlSent.Replace("##CVV##"    ,"{{{cvv}}}");
 						webRequest                         = (HttpWebRequest)WebRequest.Create(txURL);
 						webRequest.Headers["TX_URL"]       = url + "pa/payment_intents/" + paymentIntentId + "/confirm";
 						webRequest.Headers["TX_TokenExID"] = payment.TokenizerID;  // "4311038889209736";
 						webRequest.Headers["TX_APIKey"]    = payment.TokenizerKey; // "54md8h1OmLe9oJwYdp182pCxKF0MUnWzikTZSnOi";
+						webRequest.Headers["TX_CacheCvv"]  = "true";
 					}
 					else
 					{
 						ret          = 630;
 					//	xmlSent      = xmlSent + "\"" + payment.CardNumber + "\" } } }";
 					 	xmlSent      = xmlSent.Replace("##CARDNUM##",payment.CardNumber);
+				 		xmlSent      = xmlSent.Replace("##CVV##",payment.CardCVV);
 						webRequest   = (HttpWebRequest)WebRequest.Create(url+"pa/payment_intents/" + paymentIntentId + "/confirm");
 					}
 					ret             = 640;
