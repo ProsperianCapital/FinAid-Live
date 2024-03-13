@@ -19,6 +19,11 @@ namespace PCIBusiness
 			}
 		}
 
+      public override bool EnabledFor3d(byte transactionType)
+		{
+			return true;
+		}
+
 		private int PeachHTML(byte transactionType,Payment payment)
 		{
 			int    ret  = 10;
@@ -232,13 +237,17 @@ namespace PCIBusiness
 
 		private string GetURL(string url,Payment payment)
 		{
+			string tURL = payment.ProviderURL;
+
 			if ( url.Length < 1 )
-				return payment.ProviderURL;
+				return tURL;
 
 			if ( url.ToUpper().StartsWith("HTTP") )
 				return url;
 
-			string tURL = payment.ProviderURL;
+			if ( tURL.ToUpper().EndsWith(url.ToUpper()) )
+				return tURL;
+
 			if ( tURL.EndsWith("/") && url.StartsWith("/") )
 				return tURL + url.Substring(1);
 
@@ -255,24 +264,30 @@ namespace PCIBusiness
 		//	Main URL : https://test-api.tokenex.com/v2/Pci/
 		//	Tokenize : https://test-api.tokenex.com/v2/Pci/Tokenize
 
-			int ret = 10;
+			int ret   = 10;
+			strResult = "";
 
 			try
 			{
 				url = GetURL(url,payment);
 
-				Tools.LogInfo("PostXML_V2/10","URL=" + url + ", Post="+xmlSent+", Key="+payment.ProviderKey,logPriority,this);
+				Tools.LogInfo("PostXML_V2/10","URL=" + url + ", Send="+xmlSent,logPriority,this);
 
-				ret                     = 20;
-				byte[]         buffer   = Encoding.UTF8.GetBytes(xmlSent);
-				HttpWebRequest request  = (HttpWebRequest)HttpWebRequest.Create(url);
-				ret                     = 30;
+				ret                    = 20;
+				byte[]         buffer  = Encoding.UTF8.GetBytes(xmlSent);
+				HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
+				ret                    = 30;
 
 				request.Method                     = "POST";
 				request.ContentType                = "application/json";
 				request.Headers["tx-tokenex-id"]   = payment.ProviderUserID;  // "4311038889209736";
 				request.Headers["tx-apikey"]       = payment.ProviderKey;     // "54md8h1OmLe9oJwYdp182pCxKF0MUnWzikTZSnOi";
 				request.Headers["tx-token-scheme"] = "sixTOKENfour";
+
+				if ( payment.TransactionType == (byte)Constants.TransactionType.ManualPayment      ||
+					  payment.TransactionType == (byte)Constants.TransactionType.ThreeDSecureCheck  ||
+					  payment.TransactionType == (byte)Constants.TransactionType.ThreeDSecurePayment )
+					request.Headers["tx-tokenize"] = "true";
 
 				ret                     = 40;
 				Stream postData         = request.GetRequestStream();
@@ -305,10 +320,16 @@ namespace PCIBusiness
 						resultMsg         = errMsg;
 					ret                  = 140;
 					payRef               = Tools.JSONValue(strResult,"referenceNumber");
+
 					if ( Successful )
+					{
 						ret = 0;
-					else
-						Tools.LogInfo("PostXML_V2/110","strResult="+strResult,221,this);
+						Tools.LogInfo("PostXML_V2/110","Success, Rec="+strResult,logPriority,this);
+					}
+					else if ( logPriority > 99 ) // Means the XML sent has already been logged
+						Tools.LogInfo("PostXML_V2/111","Fail (ret="+ret.ToString()+"), Rec="+strResult,222,this);
+					else                         // Nothing logged, show the lot
+						Tools.LogInfo("PostXML_V2/112","Fail (ret="+ret.ToString()+"), URL="+url+", Send="+xmlSent+", Rec="+strResult,222,this);
 				}
 			}
 			catch (WebException ex1)
@@ -317,7 +338,8 @@ namespace PCIBusiness
 			}
 			catch (Exception ex2)
 			{
-				Tools.LogException("PostXML_V2/199","Ret="+ret.ToString()+", XML Sent=" + xmlSent,ex2,this);
+				Tools.LogInfo     ("PostXML_V2/198","Fail (ret="+ret.ToString()+"), URL="+url+", Send="+xmlSent+", Rec="+strResult,222,this);
+				Tools.LogException("PostXML_V2/199","Ret="+ret.ToString(),ex2,this);
 			}
 			return ret;
 		}
@@ -353,7 +375,7 @@ namespace PCIBusiness
 			cardNumber = "";
 			cardCVV    = "";
 			xmlSent    = Tools.JSONPair("token",payment.CardToken,1,"{","}");
-			int  ret   = PostXML_V2("/DetokenizeWithCvv",payment);
+			int  ret   = PostXML_V2("/Pci/DetokenizeWithCvv",payment);
 			if ( ret  == 0 && strResult.ToUpper().Contains("VALUE") ) // Success
 			{
 				cardNumber = Tools.JSONValue(strResult,"value");
@@ -460,24 +482,24 @@ namespace PCIBusiness
 			if ( payment.CardCVV.Length > 0 )
 			   xmlSent = xmlSent + "," + Tools.JSONPair("cvv",payment.CardCVV,1,"","");
 		   xmlSent    = xmlSent + "}";
-			int ret    = PostXML_V2("/Tokenize",payment);
+			int ret    = PostXML_V2("/Pci/Tokenize",payment);
 
 			if ( ret == 0 )
-				payToken = Tools.XMLNode(xmlResult,"token");
-
-//		//	Now the CVV
-//			if ( payToken.Length > 0 && payment.CardCVV.Length > 0 )
-//			{
-//				xmlSent  = Tools.XMLCell("cvv",payment.CardCVV)
-//				         + Tools.XMLCell("TokenScheme","sixTOKENfour");
-//				ret  = PostXML_V1("/TokenServices.svc/REST/AssociateCvv",payment);
-//				if ( ret == 0 )
-//					payToken = Tools.XMLNode(xmlResult,"Token");
-//			}
+				payToken = Tools.JSONValue(strResult,"token");
 			return ret;
 		}
 
-		public override int CardPayment(Payment payment)
+		public int AssociateCVV(Payment payment)
+		{
+//	API v2
+			payToken = payment.CardToken;
+			xmlSent  = Tools.JSONPair("token",payment.CardToken,1,"{",",")
+		            + Tools.JSONPair("cvv",payment.CardCVV,1,"","}");
+			int ret  = PostXML_V2("/Pci/AssociateCvv",payment);
+			return ret;
+		}
+
+		public int CardPaymentV1(Payment payment)
 		{
 //			For Peach Payments
 
@@ -530,6 +552,89 @@ namespace PCIBusiness
 			return ret;
 		}
 
+		public override int CardPayment(Payment payment)
+		{
+			int ret = 10;
+
+			try
+			{
+//	Check "Supported Versions" : https://docs.tokenex.com/docs/supported-versions
+				xmlSent = Tools.JSONPair("data",payment.CardNumber,1,"{","}");
+//				ret     = PostXML_V2("https://test-api.tokenex.com/v2/ThreeDSecure/SupportedVersions",payment);
+				ret     = PostXML_V2("/ThreeDSecure/SupportedVersions",payment);
+
+				if ( ret == 0 && payRef.Length > 0 ) // Succeeded
+				{
+					Tools.LogInfo("CardPayment/30","ResultCode="+ResultCode + ", payRef=" + payRef + ", ret=" + ret.ToString(),233,this);
+
+//	Do "authentication" : https://docs.tokenex.com/docs/authentications
+
+					string token  = Tools.JSONValue(strResult,"token");
+					string tranId = Tools.JSONValue(strResult,"threeDSServerTransID");
+					string dsId   = Tools.JSONValue(strResult,"dsIdentifier");
+					string msgVer = Tools.JSONValue(strResult,dsId);
+
+//	Prosperian Acquirer BIN:
+//	  For Mastercard: 271109
+//	  For VISA:       425940
+
+					if ( payment.OtherData != "1" && payment.OtherData != "2" )
+						payment.OtherData = "2"; // Non-payment
+
+					xmlSent = Tools.JSONPair("ServerTransactionId",tranId,1,"{")
+					        + Tools.JSONPair("MethodCompletionIndicator","2",11)
+					        + Tools.JSONPair("MessageVersion",msgVer)
+					        + "\"BrowserInfo\":" + Tools.JSONPair("AcceptHeaders","*/*",1,"{")
+					                             + Tools.JSONPair("IpAddress",payment.MandateIPAddress)
+					                             + Tools.JSONPair("JavaEnabled","false",12)
+					                             + Tools.JSONPair("Language","en-us")
+					                             + Tools.JSONPair("ColorDepth","3")
+					                             + Tools.JSONPair("ScreenHeight","1080")
+					                             + Tools.JSONPair("ScreenWidth","1920")
+					                             + Tools.JSONPair("TimeZone","300")
+					                             + Tools.JSONPair("UserAgent",payment.MandateBrowser,1,"","},")
+					        + Tools.JSONPair("AcquirerBin",(payment.CardNumber.StartsWith("4")?"425940":"271109"))
+					        + "\"CardDetails\":" + Tools.JSONPair("Number",payment.CardNumber,1,"{")
+					                             + Tools.JSONPair("CardExpiryDate",payment.CardExpiryYY+payment.CardExpiryMM)
+					                             + Tools.JSONPair("AccountType","2",11,"","},")
+					        + "\"CardHolderDetails\":" + Tools.JSONPair("Name",payment.CardName,1,"{")
+					                                   + Tools.JSONPair("EmailAddress",payment.EMail,1,"","},")
+					        + Tools.JSONPair("ChallengeWindowSize","2",11) // Credit card
+					        + Tools.JSONPair("DeviceChannel","2",11)
+					        + Tools.JSONPair("DirectoryServerIdentifier",dsId)
+					        + Tools.JSONPair("GenerateChallengeRequest","true",12)
+					        + "\"MerchantDetails\":" + Tools.JSONPair("AcquirerMerchantId",payment.ProviderUserID,1,"{")
+//					                                 + Tools.JSONPair("Name",SystemDetails.Owner)
+					                                 + Tools.JSONPair("Name","LifeStyle Direct")
+					                                 + Tools.JSONPair("CategoryCode","8299") // Prosperian's category code
+					                                 + Tools.JSONPair("CountryCode","710",1,"","},") // South Africa
+					        + Tools.JSONPair("MessageCategory",payment.OtherData,11)
+					        + Tools.JSONPair("TransactionType","1",11)
+					        + Tools.JSONPair("NotificationUrl",Tools.ConfigValue("SystemURL")+"/Succeed.aspx?TransRef="+Tools.XMLSafe(payment.MerchantReference),1)
+					        + Tools.JSONPair("AuthenticationIndicator","6",11,"","");
+
+					if ( payment.OtherData == "1" ) // Payment
+						xmlSent = xmlSent
+					           + ",\"PurchaseDetails\":" + Tools.JSONPair("Amount",payment.PaymentAmount.ToString(),11,"{")
+					                                     + Tools.JSONPair("Currency",payment.CurrencyCodeISO4217)
+					                                     + Tools.JSONPair("Exponent","2",11)
+					                                     + Tools.JSONPair("Date","20240229174603",1,"","}}");
+//					                                     + Tools.JSONPair("Date","2024-03-01T17:42:03Z",1,"","}}");
+					else
+						xmlSent = xmlSent + "}";
+
+					ret     = PostXML_V2("/ThreeDSecure/Authentications",payment);
+				}
+				else
+					Tools.LogInfo("CardPayment/34","ResultCode="+ResultCode + ", payRef=" + payRef,logPriority,this);
+			}
+			catch (Exception ex)
+			{
+				Tools.LogException("CardPayment/99","Ret="+ret.ToString()+", XML Sent=" + xmlSent,ex,this);
+			}
+			return ret;
+		}
+
 		public override int TokenPayment(Payment payment)
 		{
 			return CardPayment(payment);
@@ -547,9 +652,9 @@ namespace PCIBusiness
 			ServicePointManager.Expect100Continue = true;
 			ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
 //	Testing, log everything
-//			logPriority                           = 231;
+			logPriority                           = 231;
 //	Live, log important issues
-			logPriority                           =  10;
+//			logPriority                           =  10;
 		}
 	}
 }

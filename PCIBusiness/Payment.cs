@@ -29,6 +29,7 @@ namespace PCIBusiness
 //		private byte     paymentStatus;
 		private string   paymentDescription;
 		private string   currencyCode;
+		private string   otherData; // Provider-specific info
 
 		private string   ccNumber;
 		private string   ccType;
@@ -118,6 +119,11 @@ namespace PCIBusiness
 //				{ }
 //				return Constants.DateNull;
 			}
+		}
+		public string    OtherData
+		{
+			get { return  Tools.NullToString(otherData); }
+			set { otherData = value.Trim(); }
 		}
 		public string    MandateIPAddress
 		{
@@ -223,8 +229,12 @@ namespace PCIBusiness
 					return "";
 
 //	Testing
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGenius) )
+					return "f1a7d3b1-e90b-42c0-a304-459382a47aba";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU) )
 					return "{A580B3C7-3EF3-47F1-9B90-4047CE0EC54C}";
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.TokenEx) )
+					return "54md8h1OmLe9oJwYdp182pCxKF0MUnWzikTZSnOi";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGate) )
 					return "27ededae-4ba3-486a-a243-8da1e4c1a067";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.FNB) )
@@ -247,7 +257,8 @@ namespace PCIBusiness
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentCloud) )
 					return "859v6V4N8H67pvAk";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.AirWallex) )
-					return "89322de818fdf05fa96e146c61bbb780476921aefc6d420b88df40099e6efc6da158f3856b0a481ce911ac54c74f293a";
+					return "89322de818fdf05fa96e146c61bbb780476921aefc6d420b88df40099e6efc6da158f3856b0a481ce911ac54c74f293a"; // Dev
+
 				return "";
 			}
 		}
@@ -318,7 +329,7 @@ namespace PCIBusiness
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.WorldPay) )
 					return "AI5QP9YBY291AGF5AD7I";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.AirWallex) )
-					return "Ct49swvQRSK_3oYSfaTNoA";
+					return "Ct49swvQRSK_3oYSfaTNoA"; // Dev
 
 				return "";
 			}
@@ -334,6 +345,8 @@ namespace PCIBusiness
 					return "";
 
 //	Testing
+				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayGenius) )
+					return "60977662-6640-4701-96c8-ca6accbaac11";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PayU) )
 					return "g1Kzk8GY";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentsOS) )
@@ -579,6 +592,19 @@ namespace PCIBusiness
 //		{
 //			get { return  Tools.NullToString(authorizationCode); }
 //		}
+		public string    CurrencyCodeISO4217
+		{
+			get
+			{
+				currencyCode = Tools.NullToString(currencyCode).ToUpper();
+				if ( currencyCode == "USD" ) return "840";
+				if ( currencyCode == "EUR" ) return "978";
+				if ( currencyCode == "GBP" ) return "826";
+				if ( currencyCode == "ZAR" ) return "710";
+				if ( currencyCode == "THB" ) return "764"; // Thai Baht
+				return "840";
+			}
+		}
 		public string    CurrencyCode
 		{
 			get { return  Tools.NullToString(currencyCode); }
@@ -1085,6 +1111,11 @@ namespace PCIBusiness
 						        + "<form name='frm3D' method='POST' action='" + transaction.ThreeDacsUrl + "'>"
 						        + transaction.ThreeDKeyValuePairs
 						        + "</form></body></html>";
+					else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.TokenEx) )
+						webForm = "<html><body onload='document.forms[\"frm3D\"].submit()'>"
+						        + "<form name='frm3D' method='POST' action='" + transaction.ThreeDacsUrl + "'>"
+						        + transaction.ThreeDKeyValuePairs
+						        + "</form></body></html>";
 			}
 			else if ( transactionType == (byte)Constants.TransactionType.Test && transaction.WebForm.Length > 0 )
 			{
@@ -1203,23 +1234,29 @@ namespace PCIBusiness
 		//	Token Provider (if empty, then it is the same as the payment provider)
 			if ( dbConn.ColStatus("TxKey") == Constants.DBColumnStatus.ColumnOK )
 			{
-				tokenizerCode = dbConn.ColString ("TxBureauCode");
 				tokenizerID   = dbConn.ColString ("TxID");
 				tokenizerKey  = dbConn.ColString ("TxKey");
 				tokenizerURL  = dbConn.ColString ("TxURL");
+				tokenizerCode = dbConn.ColString ("TxBureauCode",0,0);
+				if ( tokenizerCode.Length < 1 )
+					tokenizerCode = Tools.BureauCode(Constants.PaymentProvider.TokenEx);
 			}
-			if ( dbConn.ColStatus("TxToken") == Constants.DBColumnStatus.ColumnOK )
-				ccToken       = dbConn.ColString ("TxToken");
+			if (dbConn.ColStatus("TxToken") == Constants.DBColumnStatus.ColumnOK)
+			{
+				string tmp = dbConn.ColString("TxToken");
+				if ( tmp.Length > 0 )
+					ccToken = tmp;
+			}
 
-//	Testing
-//			countryCode      = "ZA";
-//			address1         = "231 Lagoon's Edge";
-//			address2         = "Port Alfred";
-//			email            = "Joe@DontPhoneMe.net";
-//			phoneCell        = "084 666 8888";
-//			mandateDateTime  = "2019/12/31 23:59:59";
-//			mandateIPAddress = "10.0.231.45";
-//			mandateBrowser   = "FireFox 89.0.1";
+			//	Testing
+			//			countryCode      = "ZA";
+			//			address1         = "231 Lagoon's Edge";
+			//			address2         = "Port Alfred";
+			//			email            = "Joe@DontPhoneMe.net";
+			//			phoneCell        = "084 666 8888";
+			//			mandateDateTime  = "2019/12/31 23:59:59";
+			//			mandateIPAddress = "10.0.231.45";
+			//			mandateBrowser   = "FireFox 89.0.1";
 		}
 
 		public override void CleanUp()

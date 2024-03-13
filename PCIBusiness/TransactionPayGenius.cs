@@ -8,6 +8,8 @@ namespace PCIBusiness
 {
 	public class TransactionPayGenius : Transaction
 	{
+		private byte logPriority;
+
 		public  bool Successful
 		{
 			get { return Tools.JSONValue(strResult,"success").ToUpper() == "TRUE"; }
@@ -27,20 +29,17 @@ namespace PCIBusiness
 				                                 + Tools.JSONPair("expiryYear" ,payment.CardExpiryYYYY,11)
 				                                 + Tools.JSONPair("expiryMonth",payment.CardExpiryMonth.ToString(),11) // Not padded, so 7 not 07
 				                                 + Tools.JSONPair("type"       ,payment.CardType,1)
-				                                 + Tools.JSONPair("cvv"        ,payment.CardCVV,1,"","}") // Changed to STRING from NUMERIC
+				                                 + Tools.JSONPair("cvv"        ,payment.CardCVV,1,"","}")
 				         + "}";
 				ret      = 20;
-//				ret      = TestService(0); // Dev
-//				ret      = TestService(1); // Live
-//				ret      = CallWebService(payment,"/pg/api/v2/card/register");
 				ret      = CallWebService(payment,(byte)Constants.TransactionType.GetToken);
 				ret      = 30;
 				payToken = Tools.JSONValue(XMLResult,"token");
 				ret      = 40;
 				if ( Successful && payToken.Length > 0 )
 					ret   = 0;
-//				else
-//					Tools.LogInfo("GetToken/50","JSON Sent="+xmlSent+", JSON Rec="+XMLResult,199,this);
+
+//				Tools.LogInfo("GetToken/50","JSON Sent="+xmlSent+", JSON Rec="+XMLResult,(byte)(ret==0?logPriority:199),this);
 			}
 			catch (Exception ex)
 			{
@@ -55,30 +54,36 @@ namespace PCIBusiness
 			if ( ! EnabledFor3d(payment.TransactionType) )
 				return 590;
 
-			int ret = 10;
-			payRef  = "";
+			int    ret = 10;
+			string url = Tools.ConfigValue("SystemURL")+"/Succeed.aspx?TransRef=" + Tools.XMLSafe(payment.MerchantReference);
+		//	string url = "https://lifestyledirectglobal.com";
+			payRef     = "";
 
 			Tools.LogInfo("TokenPayment/10","Merchant Ref=" + payment.MerchantReference,10,this);
 
 			try
 			{
-				xmlSent = "{ \"creditCard\" : "  + Tools.JSONPair("token"    ,payment.CardToken,1,"{","}")
-				        + ", \"transaction\" : " + Tools.JSONPair("reference",payment.MerchantReference,1,"{")
-				                                 + Tools.JSONPair("currency" ,payment.CurrencyCode,1)
-				                                 + Tools.JSONPair("amount"   ,payment.PaymentAmount.ToString(),11,"","}")
-				        + ", "                   + Tools.JSONPair("threeDSecure","false",12,"","")
+				xmlSent = "{ \"creditCard\" : "  + Tools.JSONPair("token"        ,payment.CardToken,1,"{")
+				                                 + Tools.JSONPair("cvv"          ,payment.CardCVV,1,"","}")
+				        + ", \"transaction\" : " + Tools.JSONPair("reference"    ,payment.MerchantReference,1,"{")
+				                                 + Tools.JSONPair("currency"     ,payment.CurrencyCode,1)
+				                                 + Tools.JSONPair("amount"       ,payment.PaymentAmount.ToString(),11,"","}")
+				        + ", "                   + Tools.JSONPair("callbackUrl"  ,url,     1,"","")
+				        + ", "                   + Tools.JSONPair("threeDSecure" ,"false",12,"","")
+//				        + ", "                   + Tools.JSONPair("supports3dsV2","false",12,"","")
+				        + ", "                   + Tools.JSONPair("autoExecute"  ,"true" ,12,"","")
+				        + ", "                   + Tools.JSONPair("recurring"    ,"true" ,12,"","")
 				        + "}";
 
 				ret     = 20;
-//				ret     = CallWebService(payment,"/pg/api/v2/payment/create");
 				ret     = CallWebService(payment,(byte)Constants.TransactionType.TokenPayment);
 				ret     = 30;
 				payRef  = Tools.JSONValue(XMLResult,"reference");
 				ret     = 40;
 				if ( Successful && payRef.Length > 0 )
 					ret  = 0;
-//				else
-//					Tools.LogInfo("TokenPayment/50","JSON Sent="+xmlSent+", JSON Rec="+XMLResult,199,this);
+
+//				Tools.LogInfo("TokenPayment/50","JSON Sent="+xmlSent+", JSON Rec="+XMLResult,(byte)(ret==0?logPriority:199),this);
 			}
 			catch (Exception ex)
 			{
@@ -108,18 +113,6 @@ namespace PCIBusiness
 			else
 			{ }
 
-//			if ( Tools.NullToString(urlDetail).Length > 0 )
-//			{
-//				ret = 30;
-//				if ( url.EndsWith("/") )
-//					url = url.Substring(0,url.Length-1);
-//				ret = 40;
-//				if ( urlDetail.StartsWith("/") )
-//					urlDetail = urlDetail.Substring(1);
-//				ret = 50;
-//				url = url + "/" + urlDetail;
-//			}
-
 			ret        = 60;
 			strResult  = "";
 			resultCode = "98";
@@ -143,11 +136,11 @@ namespace PCIBusiness
 
 				Tools.LogInfo("CallWebService/20",
 				              "Transaction Type=" + Tools.TransactionTypeName(transactionType) +
-				            ", URL=" + url +
-				            ", Token=" + payment.ProviderKey +
-				            ", Key=" + Tools.MaskedValue(payment.ProviderPassword) +
-				            ", Signature=" + sig +
-				            ", JSON Sent=" + xmlSent, 10, this);
+				            ", URL="              + url +
+				            ", Token="            + Tools.MaskedValue(payment.ProviderKey) +
+				            ", Key="              + Tools.MaskedValue(payment.ProviderPassword) +
+//				            ", Signature="        + sig +
+				            ", JSON Sent="        + xmlSent, logPriority, this);
 
 				using (Stream stream = webRequest.GetRequestStream())
 				{
@@ -186,7 +179,7 @@ namespace PCIBusiness
 					{
 						ret        = 170;
 						resultCode = "00";
-						Tools.LogInfo("CallWebService/40","Successful, JSON Rec=" + strResult,255,this);
+						Tools.LogInfo("CallWebService/40","Successful, JSON Rec=" + strResult,logPriority,this);
 					}
 					else
 					{
@@ -215,9 +208,8 @@ namespace PCIBusiness
 //			Testing only!
 			try
 			{
-//				string         url        = ( live == 0 ? "https://developer.paygenius.co.za/pg/api/v2/util/validate" : "https://www.paygenius.co.za/pg/api/v2/util/validate" );
 				string         url        = BureauURL + "/pg/api/v2/util/validate";
-				string         key        = ( live == 0 ? "f1a7d3b1-e90b-42c0-a304-459382a47aba" : "bb3a0012-74a5-4e74-bc46-03afa3c30850" );
+				string         key        = ( live == 0 ? "blah-blah-42c0-a304-459382a47aba" : "blah-blah-4e74-bc46-03afa3c30850" );
 				string         data       = "{\"data\":\"value\"}";
 				byte[]         page       = Encoding.UTF8.GetBytes(data);
 				HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
@@ -225,7 +217,7 @@ namespace PCIBusiness
 				webRequest.ContentType    = "application/json";
 				webRequest.Accept         = "application/json";
 				webRequest.Method         = "POST";
-				webRequest.Headers["X-Token"]     = ( live == 0 ? "60977662-6640-4701-96c8-ca6accbaac11" : "5403bd05-93da-49f7-8118-7a2713316dfe" );
+				webRequest.Headers["X-Token"]     = ( live == 0 ? "blah-blah-4701-96c8-ca6accbaac11" : "blah-blah-49f7-8118-7a2713316dfe" );
 				webRequest.Headers["X-Signature"] = GetSignature(key,url,data);
 
 				using (Stream stream = webRequest.GetRequestStream())
@@ -264,6 +256,10 @@ namespace PCIBusiness
 		public TransactionPayGenius() : base()
 		{
 			base.LoadBureauDetails(Constants.PaymentProvider.PayGenius);
+			ServicePointManager.Expect100Continue = true;
+			ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
+//			logPriority                           = 10;  // For production, when all is stable
+			logPriority                           = 234; // For testing/development, to log very detailed errors
 		}
 	}
 }

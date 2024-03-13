@@ -9,6 +9,11 @@ namespace PCIBusiness
 	{
 		private byte     logPriority;
 		private string   err;
+
+//		protected string paymentMethodId;
+		protected string paymentConsentId;
+		protected string paymentIntentId;
+
 		static  string   accessToken;
 		static  DateTime accessDate;
 
@@ -16,6 +21,20 @@ namespace PCIBusiness
 //		{
 //			get { return Tools.JSONValue(strResult,"success").ToUpper() == "TRUE"; }
 //		}
+
+//		See Transaction.cs
+//		public  string      PaymentMethodId
+//		{
+//			get { return     Tools.NullToString(paymentMethodId); }
+//		}
+		public  string      PaymentConsentId
+		{
+			get { return     Tools.NullToString(paymentConsentId); }
+		}
+		public  string      PaymentIntentId
+		{
+			get { return     Tools.NullToString(paymentIntentId); }
+		}
 
 		public override int GetToken(Payment payment)
 		{
@@ -37,6 +56,10 @@ namespace PCIBusiness
 			if ( EnabledFor3d(payment.TransactionType) )
 				return CallWebService(payment,(byte)Constants.TransactionType.CardPaymentThirdParty);
 			return 500;
+		}
+		public override int CardValidation(Payment payment)
+		{
+			return CallWebService(payment,(byte)Constants.TransactionType.ThreeDSecureCheck);
 		}
 
 		private int ExtractErrorAndReturn(int err)
@@ -60,26 +83,34 @@ namespace PCIBusiness
 			HttpWebRequest webRequest;
 			int            wCall;
 			int            ret       = 10;
+//			string         returnURL = "https://pcipaymentgateway1.azurewebsites.net/Succeed.aspx";
+			string         returnURL = "https://lifestyledirectglobal.com";
 			string         url       = payment.ProviderURL;
 			string         txURL     = payment.TokenizerURL;
-			string         returnURL = "https://pcipaymentgateway1.azurewebsites.net/Succeed.aspx";
-			resultCode               = "11";
-			resultMsg                = "(11) Web service call failed";
+			string         awID      = payment.ProviderUserID;
+			string         awKey     = payment.ProviderKey;
 
+			if ( awID.Length < 1 )
+				awID  = Tools.ProviderCredentials("AirWallex","Id");
+			if ( awKey.Length < 1 )
+				awKey = Tools.ProviderCredentials("AirWallex","Key");
 			if ( Tools.NullToString(url).Length == 0 )
 				url = BureauURL;
 			if ( Tools.NullToString(url).Length == 0 )
-				url = "https://api-demo.airwallex.com/api/v1/";
+				url = Tools.BureauURL(BureauCode);
 			if ( ! url.EndsWith("/") )
 				url = url + "/";
 			if ( txURL.Length > 0 && ! txURL.ToUpper().EndsWith("DETOKENIZE") )
 				txURL = txURL + "/TransparentGatewayAPI/Detokenize";
 
+			resultCode = "11";
+			resultMsg  = "(11) Web service call failed";
+
 			try
 			{
 			// First get an access token
 
-				wCall = GetAccessToken(1,url,payment.ProviderUserID,payment.ProviderKey);
+				wCall = GetAccessToken(1,url,awID,awKey);
 				if ( wCall != 0 )
 				{
 					resultCode = wCall.ToString();
@@ -220,6 +251,7 @@ namespace PCIBusiness
 				}
 
 				else if ( transactionType == (byte)Constants.TransactionType.TokenPayment ||
+				          transactionType == (byte)Constants.TransactionType.ThreeDSecureCheck ||
 				          transactionType == (byte)Constants.TransactionType.CardPaymentThirdParty )
 				{
 				//	Create a Payment Intent
@@ -252,9 +284,16 @@ namespace PCIBusiness
 					           +     "\"email\" : \"" + payment.EMail + "\","
 					           +     "\"phone_number\" : \"" + payment.PhoneCell + "\","
 					           +     "\"merchant_customer_id\" : \"" + payment.ContractCode + "\" },"
+//					           +   "\"payment_method_options\" : {"
+//					           +     "\"card\" : {"
+//					           +       "\"risk_control\" : {"
+//					           +         "\"skip_risk_processing\" : true,"
+//	//				           +         "\"three_domain_secure_action\" : \"SKIP_3DS\","
+//					           +         "\"three_ds_action\" : \"SKIP_3DS\" },"
+//					           +       "\"three_ds_action\" : \"SKIP_3DS\" } },"
 					           +   "\"descriptor\" : \"" + payment.PaymentDescription + "\","
 					           +   "\"merchant_order_id\" : \"" + payment.MerchantReference + "\","
-					           +   "\"risk_control_options\" : { \"skip_risk_processing\" : \"true\" },"
+					           +   "\"risk_control_options\" : { \"skip_risk_processing\" : true },"
 					           +   "\"return_url\" : \"" + returnURL + "\","
 					           +   "\"request_id\" : \"" + (Guid.NewGuid()).ToString() + "\" }";
 
@@ -268,6 +307,9 @@ namespace PCIBusiness
 
 					if ( wCall > 0 || strResult.Length < 1 || paymentIntentId.Length < 1 || payRef.Length < 1 )
 						return ExtractErrorAndReturn(530);
+
+					if ( transactionType == (byte)Constants.TransactionType.ThreeDSecureCheck )
+						return 0;
 
 				//	Confirm the Payment Intent
 				//	https://www.airwallex.com/docs/api#/Payment_Acceptance/Payment_Intents/_api_v1_pa_payment_intents__id__confirm/post
@@ -342,19 +384,25 @@ namespace PCIBusiness
 					xmlSent    = "{ \"request_id\" : \"" + (Guid.NewGuid()).ToString() + "\","
 					           +   "\"payment_method\" :"
 					           +     "{ \"type\" : \"card\","
-					           +       "\"card\" :"
-					           +         "{ \"billing\" :"
-					           +             "{ \"address\" : { \"country_code\" : \"" + payment.CountryCode(65) + "\" },"
-					           +               "\"first_name\" : \""   + payment.FirstName + "\","
-					           +               "\"last_name\" : \""    + payment.LastName + "\","
-					           +               "\"email\" : \""        + payment.EMail + "\","
-					           +               "\"phone_number\" : \"" + payment.PhoneCell + "\" },"
+					           +       "\"card\" : {"
 					           +          "\"number\" : \"##CARDNUM##\","
 					           +          "\"cvc\" : \"##CVV##\","
 					           +          "\"number_type\" : \"PAN\","
 					           +          "\"expiry_month\" : \""      + payment.CardExpiryMM + "\","
 					           +          "\"expiry_year\" : \""       + payment.CardExpiryYYYY + "\","
-					           +          "\"name\" : \""              + payment.CardName + "\" } }";
+					           +          "\"name\" : \""              + payment.CardName + "\"";
+
+					ret        = 607;
+					if ( payment.CountryCode(65).Length > 0 && payment.FirstName.Length > 0 && payment.LastName.Length > 0 )
+						xmlSent = xmlSent 
+					           + ",\"billing\" :"
+					           +    "{ \"address\" : { \"country_code\" : \"" + payment.CountryCode(65) + "\" },"
+					           +      "\"first_name\" : \""   + payment.FirstName + "\","
+					           +      "\"last_name\" : \""    + payment.LastName + "\","
+					           +      "\"email\" : \""        + payment.EMail + "\","
+					           +      "\"phone_number\" : \"" + payment.PhoneCell + "\" }";
+
+					xmlSent    = xmlSent + "} }";
 					ret        = 610;
 					if ( payment.MandateBrowser.Length > 0 && payment.MandateIPAddress.Length > 0 )
 						xmlSent = xmlSent
@@ -373,7 +421,33 @@ namespace PCIBusiness
 
 					if ( transactionType == (byte)Constants.TransactionType.CardPaymentThirdParty && txURL.Length > 0 )
 					{
-						ret                                = 620;
+					//	First tokenize the CVV via TokenEx
+						using (TransactionTokenEx tranTx = new TransactionTokenEx())
+						{
+							ret                 = 615;
+							Payment pmnt        = new Payment();
+							pmnt.BureauCode     = Tools.BureauCode(Constants.PaymentProvider.TokenEx);
+							pmnt.ProviderKey    = payment.TokenizerKey;
+							pmnt.ProviderUserID = payment.TokenizerID;
+							pmnt.CardNumber     = payment.CardNumber;
+							pmnt.CardToken      = payment.CardToken;
+							pmnt.CardCVV        = payment.CardCVV;
+						//	pmnt.ProviderURL    = txURL;                // NO! This is different
+						//	pmnt.ProviderURL    = payment.TokenizerURL; // NO!
+							if ( pmnt.CardToken.Length > 0 )
+								ret = tranTx.AssociateCVV(pmnt);
+							else if ( pmnt.CardNumber.Length > 0 )
+								ret = tranTx.GetToken(pmnt);
+							else
+								ret = 620;
+							if ( ret == 0 && tranTx.PaymentToken.Length > 0 )
+								payment.CardToken = tranTx.PaymentToken;
+							else
+								Tools.LogInfo("CallWebService/33","Associating CVV with token via TokenEx failed (ret="+ret.ToString()+")",222,this);
+							pmnt = null;
+						}
+					//	Now do the AirWallex payment intent
+						ret                                = 625;
 					 	xmlSent                            = xmlSent.Replace("##CARDNUM##","{{{" + payment.CardToken + "}}}");
 					 	xmlSent                            = xmlSent.Replace("##CVV##"    ,"{{{cvv}}}");
 						webRequest                         = (HttpWebRequest)WebRequest.Create(txURL);

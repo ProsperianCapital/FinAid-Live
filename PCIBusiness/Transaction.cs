@@ -11,8 +11,6 @@ namespace PCIBusiness
 		protected string      payToken;
 		protected string      customerId;
 		protected string      paymentMethodId;
-		protected string      paymentConsentId;
-		protected string      paymentIntentId;
 		protected string      cardNumber;
 		protected string      cardCVV;
 //		protected string      authCode;
@@ -51,6 +49,7 @@ namespace PCIBusiness
 		{
 			get { return     Tools.NullToString(customerId); }
 		}
+
 		public  string      PaymentMethodId
 		{
 			get { return     Tools.NullToString(paymentMethodId); }
@@ -79,6 +78,23 @@ namespace PCIBusiness
 		public  string      ResultMessage
 		{
 			get { return     Tools.NullToString(resultMsg); }
+		}
+		public  string      ResultSummary
+		{
+			get
+			{
+				string tmp = ResultMessage + " / " + ResultStatus + " (" + ResultCode + ")";
+				if ( tmp.StartsWith(" /") )
+					tmp = tmp.Substring(3);
+				if ( tmp.EndsWith("()") )
+					tmp = tmp.Substring(0,tmp.Length-2);
+				if ( tmp.StartsWith(" (") )
+				{
+					tmp = tmp.Substring(2);
+					tmp = tmp.Substring(0,tmp.Length-1);
+				}
+				return tmp.Trim();
+			}
 		}
 		public  string      XMLSent
 		{
