@@ -596,7 +596,7 @@ namespace PCIWebFinAid
 					    + ",@WebsiteCode ="               + Tools.DBString(WebTools.RequestValueString(Request,"WC"))
 					    + ",@ProductCode ="               + Tools.DBString(productCode)
 					    + ",@LanguageCode ="              + Tools.DBString(languageCode)
-					    + ",@LanguageDialectCode ="       + Tools.DBString(languageDialectCode)
+//					    + ",@LanguageDialectCode ="       + Tools.DBString(languageDialectCode)
 					    + ",@GoogleUtmSource ="           + Tools.DBString(WebTools.RequestValueString(Request,"GUS"))
 					    + ",@GoogleUtmMedium ="           + Tools.DBString(WebTools.RequestValueString(Request,"GUM"))
 					    + ",@GoogleUtmCampaign ="         + Tools.DBString(WebTools.RequestValueString(Request,"GUC"))
