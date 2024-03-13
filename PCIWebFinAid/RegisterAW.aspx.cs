@@ -9,7 +9,7 @@ using PCIBusiness;
 
 namespace PCIWebFinAid
 {
-	public partial class Register : BasePage
+	public partial class RegisterAW : BasePage
 	{
 		private   byte   logDebug = 40; // 240;
 		private   string productCode;
@@ -20,6 +20,11 @@ namespace PCIWebFinAid
 		private   string spr;
 		private   string sql;
 		private   int    errNo;
+
+//	AIrWallex
+		protected string awClientSecret;
+		protected string awPaymentIntentId;
+		protected string awCurrencyCode;
 
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
@@ -41,9 +46,14 @@ namespace PCIWebFinAid
 				languageDialectCode = WebTools.ViewStateString(ViewState,"LanguageDialectCode");
 				contractCode        = WebTools.ViewStateString(ViewState,"ContractCode");
 				contractPIN         = WebTools.ViewStateString(ViewState,"ContractPIN");
+
+				if ( hdnMode.Value == "203" ) // Successful AirWallex payment
+					btnNext_Click(null,null);
+
 			}
 			else
 			{
+				hdnMode.Value       = "0";
 				lblJS.Text          = WebTools.JavaScriptSource("NextPage(0,null)");
 				productCode         = WebTools.RequestValueString(Request,"PC");  // ProductCode");
 				languageCode        = WebTools.RequestValueString(Request,"LC");  // LanguageCode");
@@ -70,16 +80,16 @@ namespace PCIWebFinAid
 					return;
 				}
  
-				if ( WebTools.CheckProductProvider(productCode,"Register.aspx",Request,Response) == 0 )
+				if ( WebTools.CheckProductProvider(productCode,"RegisterAW.aspx",Request,Response) == 0 )
 					return;
 
 				ViewState["ProductCode"]         = productCode;
 				ViewState["LanguageCode"]        = languageCode;
 				ViewState["LanguageDialectCode"] = languageDialectCode;
 
-				hdnVer.Value       = "[Register.aspx] DLL Version " + PCIBusiness.SystemDetails.AppVersion + " (" + PCIBusiness.SystemDetails.AppDate + "), "
-				                   +                 "Web Version " + SystemDetails.AppVersion             + " (" + SystemDetails.AppDate             + ")";
-				lblVer.Text        = "[Register] Versions " + PCIBusiness.SystemDetails.AppVersion + "/" + SystemDetails.AppVersion;
+				hdnVer.Value       = "[RegisterAW.aspx] DLL Version " + PCIBusiness.SystemDetails.AppVersion + " (" + PCIBusiness.SystemDetails.AppDate + "), "
+				                   +                   "Web Version " + SystemDetails.AppVersion             + " (" + SystemDetails.AppDate             + ")";
+				lblVer.Text        = "[RegisterAW] Versions " + PCIBusiness.SystemDetails.AppVersion + "/" + SystemDetails.AppVersion;
 				lblVer.Visible     = ! Tools.SystemIsLive();
 				btnBack1.Visible   = ! Tools.SystemIsLive();
 				lblReg.Visible     = true;
@@ -114,6 +124,18 @@ namespace PCIWebFinAid
 			}
 		}
 
+		protected string awEnvironment
+		{
+			get
+			{
+				if ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Live )
+					return "prod";
+				if ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Test )
+					return "staging";
+				return "demo";
+			}
+		}
+
 		private void SetWarning(string action="",string msg="")
 		{
 			action                = Tools.NullToString(action).ToUpper();
@@ -142,7 +164,7 @@ namespace PCIWebFinAid
 		private void SetPostBackURL()
 		{
 			int    pNo = Tools.StringToInt(hdnPageNo.Value);
-			string url = "Register.aspx";
+			string url = "RegisterAW.aspx";
 			if ( pNo > 0 )
 				url = url + "?PageNo=" + (pNo+1).ToString();
 			btnNext.PostBackUrl  = url;
@@ -177,7 +199,7 @@ namespace PCIWebFinAid
 			}
 			catch (Exception ex)
 			{
-				Tools.LogException("Register.HideControls","",ex);
+				Tools.LogException("RegisterAW.HideControls","",ex);
 			}
 			lblJS.Text = WebTools.JavaScriptSource("ShowElt('tr"+controlID+"',false);ShowElt('trp6"+controlID+"',false)",lblJS.Text,1);
 		}
@@ -231,14 +253,14 @@ namespace PCIWebFinAid
 					}
 					else
 					{
-						Tools.LogInfo     ("Register.LoadGoogleAnalytics/1","Failed to load Google UA code",logDebug);
-						Tools.LogException("Register.LoadGoogleAnalytics/2",sql,null);
+						Tools.LogInfo     ("RegisterAW.LoadGoogleAnalytics/1","Failed to load Google UA code",logDebug);
+						Tools.LogException("RegisterAW.LoadGoogleAnalytics/2",sql,null);
 					}
 				}
 				catch (Exception ex)
 				{
-					Tools.LogInfo     ("Register.LoadGoogleAnalytics/8","Failed to load Google UA code",logDebug);
-					Tools.LogException("Register.LoadGoogleAnalytics/9",sql,ex);
+					Tools.LogInfo     ("RegisterAW.LoadGoogleAnalytics/8","Failed to load Google UA code",logDebug);
+					Tools.LogException("RegisterAW.LoadGoogleAnalytics/9",sql,ex);
 				}
 		}
 
@@ -260,7 +282,7 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-				//	Tools.LogException("Register.LoadChat",sql,ex);
+				//	Tools.LogException("RegisterAW.LoadChat",sql,ex);
 					SetErrorDetail("LoadChat",90099,"Internal error ; please try again later",ex.Message + " (" + sql + ")",2,2,ex);
 				}
 		}	
@@ -334,9 +356,6 @@ namespace PCIWebFinAid
 							controlID    = "";
 							logNo        = 15;
 							errNo        = 0;
- 
-//							if ( logNo <= 10 )
-//								Tools.LogInfo("Register.LoadLabels/15","Row 1, FieldCode="+fieldCode+", FieldValue="+fieldValue,logDebug);
 
 						//	Common
 							if ( fieldCode == "100119" )      // Next
@@ -477,7 +496,7 @@ namespace PCIWebFinAid
 //	Note : btnBack1 ("Back") is only for DEV, not LIVE. So no label data exists
 
 					if ( btnNext.Text.Length  < 1 || btnBack2.Text.Length < 1 || btnAgree.Text.Length < 1 )
-						Tools.LogInfo("Register.LoadLabels/37","Unable to load some or all button labels ("
+						Tools.LogInfo("RegisterAW.LoadLabels/37","Unable to load some or all button labels ("
 						             + btnNext.Text + "/" + btnBack2.Text + "/" + btnAgree.Text + ")",logDebug);
 
 					if ( btnNext.Text.Length  < 1 ) btnNext.Text  = "NEXT";
@@ -551,7 +570,7 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-				//	Tools.LogException("Register.LoadLabels","logNo=" + logNo.ToString(),ex);
+				//	Tools.LogException("RegisterAW.LoadLabels","logNo=" + logNo.ToString(),ex);
 					SetErrorDetail("LoadLabels",logNo,"Internal error ; please try again later",ex.Message + " (" + sql + ")",2,2,ex);
 				}
 
@@ -609,7 +628,7 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-				//	Tools.LogException("Register.LoadContractCode/99",sql,ex);
+				//	Tools.LogException("RegisterAW.LoadContractCode/99",sql,ex);
 					SetErrorDetail("LoadContractCode",10033,"Error retrieving new contract details ("+spr+")",ex.Message + " (" + sql + ")",2,2,ex);
 					return false;
 				}
@@ -789,7 +808,7 @@ namespace PCIWebFinAid
 							                                      + ",@LanguageDialectCode =" + Tools.DBString(languageDialectCode);
 
 							string w = " (looking for ProductOption="+productOption+" and PaymentMethod="+payMethod+")";
-							Tools.LogInfo("Register.btnNext_Click/50",sql+w,logDebug);
+							Tools.LogInfo("RegisterAW.btnNext_Click/50",sql+w,logDebug);
 
 							if ( miscList.ExecQuery(sql,0) == 0 )
 								while ( ! miscList.EOF )
@@ -800,7 +819,7 @@ namespace PCIWebFinAid
 									       miscList.GetColumn("PaymentMethodCode").ToUpper() == payMethod.ToUpper()  )   ||
 									       miscList.GetColumn("PaymentMethodCode") == "*" )
 									{
-										Tools.LogInfo("Register.btnNext_Click/51",w+" (match)",logDebug);
+										Tools.LogInfo("RegisterAW.btnNext_Click/51",w+" (match)",logDebug);
 										lblCCMandate.Text = miscList.GetColumn("CollectionMandateText",0);
 										int k             = lblCCMandate.Text.IndexOf("\n"); // Do NOT use Environment.NewLine here!
 										if ( k > 0 && lblCCMandate.Text.Length > k+1 )
@@ -812,21 +831,70 @@ namespace PCIWebFinAid
 										lblp6Mandate.Text     = lblCCMandate.Text;
 										break;
 									}
-									Tools.LogInfo("Register.btnNext_Click/52",w,logDebug);
+									Tools.LogInfo("RegisterAW.btnNext_Click/52",w,logDebug);
 									miscList.NextRow();
 								}
 
 							if ( lblCCMandate.Text.Length < 1 )
 								SetErrorDetail("btnNext_Click/30040",30040,"Unable to retrieve collection mandate ("+spr+")",sql+" (looking for ProductOption="+productOption+" and PaymentMethod="+payMethod+"). SQL failed or returned no data or<br />the CollectionMandateText column was missing/empty/NULL");
 						}
+						else if ( ( pageNo == 6 || pageNo > 180 ) && Tools.StringToInt(hdnMode.Value) < 100 )
+						{
+						//	Implement AirWallex code here:
+						//	Get access token
+						//	Create payment intent
+						//	put values into "clientsecret" and "paymentIntentId"
+						//	Set up AirWallex JavaScript
+
+							awClientSecret    = "";
+							awPaymentIntentId = "";
+							awCurrencyCode    = "";
+							hdnMode.Value     = "0";
+							pageNo            = 5;
+
+							using ( Payment payment = new Payment() )
+							{
+								payment.BureauCode          = Tools.BureauCode(Constants.PaymentProvider.AirWallex);
+								payment.CardName            = txtCCName.Text;
+								payment.CardNumber          = txtCCNumber.Text;
+								payment.CardCVV             = txtCCCVV.Text;
+								payment.CardExpiryMM        = WebTools.ListValue(lstCCMonth).ToString();
+								payment.CardExpiryYYYY      = WebTools.ListValue(lstCCYear).ToString();
+								payment.CurrencyCode        = "USD";
+								payment.PaymentAmount       = 100;
+								payment.FirstName           = txtFirstName.Text;
+								payment.LastName            = txtSurname.Text;
+								payment.PhoneCell           = txtCellNo.Text;
+								payment.EMail               = txtEMail.Text;
+								payment.ContractCode        = contractCode;
+								payment.MerchantReference   = new Guid().ToString();
+
+								using ( TransactionAirWallex tranAW = new TransactionAirWallex() )
+									if ( tranAW.CardValidation(payment) == 0 )
+									{
+										awClientSecret    = tranAW.PaymentReference;
+										awPaymentIntentId = tranAW.PaymentIntentId;
+										awCurrencyCode    = payment.CurrencyCode;
+										hdnMode.Value     = "87";
+										lblError.Text     = "For Security reasons, your subscription needs to be verified by your bank. Please stand by as we redirect you to your bank's payment page";
+										lblError.Visible  = true;
+									}
+									else
+									{
+									//	pageNo = 5;
+										SetErrorDetail("btnNext_Click/30058",30058,"We are unable to validate this card number",tranAW.ResultSummary);
+									}
+							}
+						}
+
+						else if ( ( pageNo == 6 || pageNo > 180 ) && Tools.StringToInt(hdnMode.Value) < 200 )
+						{
+							pageNo = 5;
+							SetErrorDetail("btnNext_Click/30059",30059,"Verification of your card number failed");
+						}
+
 						else if ( pageNo == 6 || pageNo > 180 )
 						{
-						//	sql   = "exec WP_ContractApplicationC"
-						//	      +     " @RegistrationPage = '5'"
-						//	      +     ",@ContractCode     =" + Tools.DBString(contractCode);
-						//	errNo = miscList.ExecQuery(sql,0);
-						//	SetErrorDetail("btnNext_Click/30050",errNo,"Unable to update information (pageNo=6)",sql);
-
 							lbl100325.Text = "";
 							spr = "sp_WP_Get_WebsiteProductOptionA";
 							sql = "exec " + spr + " @ProductCode ="         + Tools.DBString(productCode)
@@ -1148,7 +1216,7 @@ namespace PCIWebFinAid
 
 //	Script timeout is set to 230 seconds in MS Azure and can't be changed
 
-//		public Register() : base()
+//		public RegisterAW() : base()
 //		{
 //			timeOut              = Server.ScriptTimeout;
 //			Server.ScriptTimeout = 600; // 10 minutes
@@ -1159,7 +1227,7 @@ namespace PCIWebFinAid
 //			Server.ScriptTimeout = timeOut;
 //		}
 
-		public Register() : base()
+		public RegisterAW() : base()
 		{
 			ServicePointManager.Expect100Continue = true;
 			ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;

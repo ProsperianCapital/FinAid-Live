@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="false" CodeBehind="RegisterEx3.aspx.cs" Inherits="PCIWebFinAid.RegisterEx3" ValidateRequest="false" %>
+﻿<%@ Page Language="C#" AutoEventWireup="false" CodeBehind="RegisterAW.aspx.cs" Inherits="PCIWebFinAid.RegisterAW" ValidateRequest="false" %>
 
 <!DOCTYPE html>
 
@@ -12,67 +12,16 @@
 </head>
 <body>
 <asp:Literal runat="server" ID="lblGoogleNoScript"></asp:Literal>
-<div id="dropIn"></div>  <!-- AirWallex -->
+<div id="dropIn" style="position:absolute;top:20px;left:20px;min-width:320px;background-color:aqua"></div>  <!-- AirWallex -->
 <script src="https://checkout.airwallex.com/assets/elements.bundle.min.js"></script>
+
+<form id="frmRegister" runat="server">
 
 <script type="text/javascript">
 var firstPage = 1;
 var lastPage  = 5;
 var confPage  = 6;
 var pageNo;
-
-// [START] AirWallex drop in code
-
-if ( <%=(clientSecret.Length<1)%> || <%=(paymentIntentId.Length<1)%> )
-{
-	alert('No AirWallex data');
-	return;
-}
-
-		alert('AirWallex ready ...');
-
-      // STEP #2: Initialize the Airwallex global context for event communication
-      Airwallex.init({
-        env: 'demo', // Setup which Airwallex env('staging' | 'demo' | 'prod') to integrate with
-        origin: window.location.origin // Setup your event target to receive the browser events message
-      });
-
-      // STEP #4: Create 'dropIn' element
-      const dropIn = Airwallex.createElement('dropIn', {
-        // Required, dropIn use intent Id and client_secret to prepare checkout
-        intent_id: '<%=paymentIntentId%>',
-        client_secret: '<%=clientSecret%>',
-        currency: 'USD'
-      });
-
-      // STEP #5: Mount 'dropIn' element
-      const domElement = dropIn.mount('dropIn');
-
-      // STEP #6: Add an event listener to handle events when the element is mounted
-      domElement.addEventListener('onReady', (event) => {
-        /*
-          ... Handle event
-        */
-        window.alert(event.detail);
-      });
-
-      // STEP #7: Add an event listener to handle events when the payment is successful.
-      domElement.addEventListener('onSuccess', (event) => {
-        /*
-          ... Handle event on success
-        */
-        window.alert(event.detail);
-      });
-
-      // STEP #8: Add an event listener to handle events when the payment has failed.
-      domElement.addEventListener('onError', (event) => {
-        /*
-          ... Handle event on error
-        */
-        console.log(event.detail);
-      });
-
-//	[END] AirWallex
 
 function NoDataError()
 {
@@ -179,7 +128,6 @@ function ValidatePage(ctl,seq,misc)
 		}
 		if ( ( pageNo == 2 && ctl == 0 ) || ctl == 100118 )
 		{
-		//	p   = Validate('txtID','lblInfo2',6,GetEltValue('hdnIDError'),7,20);
 			p   = Validate('txtID','lblInfo2',1,GetEltValue('hdnIDError'),2,3);
 			err = err + p;
 			ShowTick(p,'ID',seq);
@@ -232,18 +180,15 @@ function ValidatePage(ctl,seq,misc)
 		}
 
 	//	Page 5
-
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100187 )
-			if ( GetElt('txtCCNumber') != null )
-			{
-				if ( GetEltValue('hdn100187') == 'Y' ) // Validate card number using Luhn check digit
-					p = Validate('txtCCNumber','lblInfo5',9,GetEltValue('hdnCCNumberError'));
-				else
-					p = Validate('txtCCNumber','lblInfo5',6,GetEltValue('hdnCCNumberError'),8,14);
-				err  = err + p;
-				ShowTick(p,'CCNumber',seq);
-			}
-
+		{
+			if ( GetEltValue('hdn100187') == 'Y' ) // Validate card number using Luhn check digit
+				p = Validate('txtCCNumber','lblInfo5',9,GetEltValue('hdnCCNumberError'));
+			else
+				p = Validate('txtCCNumber','lblInfo5',6,GetEltValue('hdnCCNumberError'),8,14);
+			err  = err + p;
+			ShowTick(p,'CCNumber',seq);
+		}
 		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100186 )
 		{
 			p   = Validate('txtCCName','lblInfo5',1,GetEltValue('hdnCCNameError'),2,2);
@@ -311,87 +256,17 @@ function OptSelect(p)
 		else if ( p == 4 )
 			h = 'PRODUCT NAME: GOLD<br /><br />Up To $300 CA$HBack<br />Your annual registration fee is equal to 1<br />month’s subscription fee<br />Monthly Fee: $29.95';
 	SetEltValue('lblOption',h);
-}
-function CheckWorldPay()
-{
-	try
-	{
-	//	var cc = GetEltValue('txtCCNumber');
-	//	var fr = GetElt('ifr3D'); // .contentWindow.document; alert(fr);
-//	//	fr = fr.body; alert(fr);
-
-	//	var ifrDoc = fr.contentDocument || fr.contentWindow.document; alert('C01: '+ifrDoc.toString());
-	//	var fx = ifrDoc.getElementById('frm3D'); alert('C02: '+fx);
-
-//	//	var frDoc = (fr.contentWindow || fr.contentDocument); alert(frDoc);
-//	//	if (frDoc.document) frDoc = frDoc.document; alert(frDoc);
-	//	alert(fr.toString());
-	//	var fm = fr.getElementsByTagName("form"); alert('C03: '+fm.length);
-	//	fm = fm[0]; alert('C04: '+fm);
-//	//	fm = fr.getElementById("frm3D"); alert(fm);
-	//	var b5 = fm.getElementsByName("Bin")[0]; alert(b5);
-	//	var b6 = fm.getElementById("Bin"); alert(b6);
-
-//	//	var bi = frDoc.getElementById('Bin'); alert(bi);
-//	//	var fm = frDoc.getElementById('frm3D'); alert(fm);
-	//	alert('Card number: '+cc);
-	//	alert('Bin1: '+bi.value);
-	//	bi.value = cc;
-	//	alert('Bin2: '+bi.value);
-	//	fm.submit();
-	//	alert('frm3D submitted');
-	}
-	catch (x)
-	{ }
-}
-function WorldPay3DS(url,binValue,jwtValue)
-{
-	try
-	{
-		alert ('url: '+url+', bin: '+binValue+', jwt: '+jwtValue);
-		var frm = document.createElement('form');
-		frm.id = 'frmX';
-		frm.name = 'frmX';
-		frm.method = 'POST';
-		frm.target = '_blank';
-		frm.action = url;
-		alert(frm);
-
-		var bin = document.createElement('input');
-		bin.type = 'text';
-		bin.id = 'Bin';
-		bin.name = 'Bin';
-		bin.value = binValue;
-		alert(bin);
-
-		var jwt = document.createElement('input');
-		jwt.type = 'text';
-		jwt.id = 'JWT';
-		jwt.name = 'JWT';
-		jwt.value = jwtValue;
-		alert(jwt);
-
-		frm.appendChild(bin);
-		frm.appendChild(jwt);
-		frm.submit();
-	}
-	catch (x)
-	{
-		alert(x.message);
-	}
+//	SetEltValue('hdnOption',h);
 }
 </script>
 
-<form id="frmRegister" runat="server">
-
 <asp:HiddenField runat="server" id="hdnPageNo" value="1" />
-<asp:HiddenField runat="server" id="hdn3dTries" />
+<asp:HiddenField runat="server" id="hdnMode" value="0" />
 <asp:HiddenField runat="server" id="hdnBrowser" />
 <asp:HiddenField runat="server" id="hdn100002" />
 <asp:HiddenField runat="server" id="hdn100137" />
 <asp:HiddenField runat="server" id="hdn100187" />
-<asp:HiddenField runat="server" ID="hdnJwtToken" />
-<asp:HiddenField runat="server" ID="hdnSessionId" />
+<!-- HiddenField run@t="server" id="hdnReferURL" -->
 
 <div class="Header3">
 	<asp:Literal runat="server" ID="lblReg"></asp:Literal><asp:Literal runat="server" ID="lblRegConf"></asp:Literal>
@@ -593,15 +468,10 @@ function WorldPay3DS(url,binValue,jwtValue)
 	<tr id="trCCNumber">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
-			<asp:Literal runat="server" ID="lblCCNumberLabel"></asp:Literal>
-			<a href="#" onmouseover="JavaScript:Help(1,this,'CCNumber')" onmouseout="JavaScript:Help(0)" style="float:right">?</a></div>
-			<asp:PlaceHolder runat="server" ID="pnlTokenNot" Visible="false">
-				<asp:TextBox runat="server" CssClass="DataInput" ID="txtCCNumber" MaxLength="20" onfocus="JavaScript:ValidatePage(100187,1)" onblur="JavaScript:ValidatePage(100187,2)"></asp:TextBox>
-			</asp:PlaceHolder>
+			<asp:Literal runat="server" ID="lblCCNumberLabel"></asp:Literal></div>
+			<asp:TextBox runat="server" CssClass="DataInput" ID="txtCCNumber" MaxLength="20" onfocus="JavaScript:ValidatePage(100187,1)" onblur="JavaScript:ValidatePage(100187,2)"></asp:TextBox>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'CCNumber')" onmouseout="JavaScript:Help(0)">?</a>
 			<img id="imgCCNumber" />
-			<asp:PlaceHolder runat="server" ID="pnlTokenEx" Visible="false">
-				<span id="txIFrameCC"></span>
-			</asp:PlaceHolder>
 			<asp:HiddenField runat="server" ID="hdnCCNumberHelp" />
 			<asp:HiddenField runat="server" ID="hdnCCNumberError" />
 			<asp:HiddenField runat="server" ID="hdnCCNumberGuide" /></td>
@@ -609,9 +479,9 @@ function WorldPay3DS(url,binValue,jwtValue)
 	<tr id="trCCName">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
-			<asp:Literal runat="server" ID="lblCCNameLabel"></asp:Literal>
-			<a href="#" onmouseover="JavaScript:Help(1,this,'CCName')" onmouseout="JavaScript:Help(0)" style="float:right">?</a></div>
+			<asp:Literal runat="server" ID="lblCCNameLabel"></asp:Literal></div>
 			<asp:TextBox runat="server" CssClass="DataInput" ID="txtCCName" onfocus="JavaScript:ValidatePage(100186,1)" onblur="JavaScript:ValidatePage(100186,2)"></asp:TextBox>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'CCName')" onmouseout="JavaScript:Help(0)">?</a>
 			<img id="imgCCName" />
 			<asp:HiddenField runat="server" ID="hdnCCNameHelp" />
 			<asp:HiddenField runat="server" ID="hdnCCNameError" />
@@ -619,8 +489,7 @@ function WorldPay3DS(url,binValue,jwtValue)
 	<tr id="trCCExpiry">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
-			<asp:Literal runat="server" ID="lblCCExpiryLabel"></asp:Literal>
-			<a href="#" onmouseover="JavaScript:Help(1,this,'CCExpiry')" onmouseout="JavaScript:Help(0)" style="float:right">?</a></div>
+			<asp:Literal runat="server" ID="lblCCExpiryLabel"></asp:Literal></div>
 			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstCCMonth" onfocus="JavaScript:ValidatePage(100188,1)" onblur="JavaScript:ValidatePage(100188,2)">
 				<asp:ListItem Value="01" Text="01"></asp:ListItem>
 				<asp:ListItem Value="02" Text="02"></asp:ListItem>
@@ -636,6 +505,7 @@ function WorldPay3DS(url,binValue,jwtValue)
 				<asp:ListItem Value="12" Text="12"></asp:ListItem>
 			</asp:DropDownList>
 			<asp:DropDownList runat="server" CssClass="DataInput" ID="lstCCYear" onfocus="JavaScript:ValidatePage(100188,1)" onblur="JavaScript:ValidatePage(100188,2)"></asp:DropDownList>
+			<a href="#" onmouseover="JavaScript:Help(1,this,'CCExpiry')" onmouseout="JavaScript:Help(0)">?</a>
 			<img id="imgCCExpiry" />
 			<asp:HiddenField runat="server" ID="hdnCCExpiryHelp" />
 			<asp:HiddenField runat="server" ID="hdnCCExpiryError" />
@@ -673,66 +543,6 @@ function WorldPay3DS(url,binValue,jwtValue)
 </p><p>
 <asp:Literal runat="server" ID="lbl100209"></asp:Literal>
 </p>
-
-<!-- 3d Secure -->
-<asp:Panel runat="server" id="pnl3d" style="border:1px solid red;background-color:aqua;color:black;padding:10px">
-
-<asp:PlaceHolder runat="server" ID="pnl3d1">
-<!-- Providers other than WorldPay -->
-<script type='text/javascript'>
-var tOut = setTimeout(function(){GetElt('btn3d').click()},10000);
-//	Disable "Back"
-history.pushState(null, document.title, location.href);
-window.addEventListener('popstate', function (event)
-{
-	history.pushState(null, document.title, location.href);
-});
-</script>
-<asp:Literal runat="server" ID="lbl100500">
-PLEASE NOTE: You will shortly be re-directed to your bank's secure payment page to pay your
-once-off Card Verification Fee of $0.10 (10 US Cents).
-</asp:Literal>
-<br /><br />
-<asp:Literal runat="server" ID="lbl100501">
-If you are not re-directed within 10 seconds, please click the button below to pay the
-Card Verification Fee manually.
-</asp:Literal>
-</asp:PlaceHolder>
-
-<asp:PlaceHolder runat="server" ID="pnl3d2">
-<!-- WorldPay only -->
-<script type='text/javascript'>
-var tOut = null;
-function ThreeD2(stepNo,sId)
-{
-//	alert('ThreeD2('+stepNo.toString()+',"'+sId+'")');
-	ShowElt('pnl3d2Step1',(stepNo==1));
-	ShowElt('pnl3d2Step2',(stepNo==2));
-	ShowElt('btn3dWait',  (stepNo==1));
-	ShowElt('btn3d',      (stepNo==2));
-	SetEltValue('hdnSessionId',sId);
-}
-ThreeD2(1,'');
-</script>
-<div id="pnl3d2Step1">
-Please wait while we connect to our payment provider to verify your card ...
-<br /><br />
-<img src="<%=PCIBusiness.Tools.ImageFolder() %>Busy.gif" />
-</div>
-<div id="pnl3d2Step2">
-<b>Card successfully verified.</b>
-<br /><br />
-Please click the button below to pay the Card Verification Fee.
-</div>
-</asp:PlaceHolder>
-
-<br />
-<input type="button" id="btn3dWait" value="Wait ..." disabled="disabled" style="visibility:hidden;display:none" />
-<asp:Button runat="server" ID="btn3d" Text="Pay Now" UseSubmitBehavior="false" OnClick="btn3d_Click" OnClientClick="JavaScript:clearTimeout(tOut);DisableElt(this,true);" />
-</asp:Panel>
-<br />
-<!-- 3d Secure -->
-
 <table class="Confirmation" style="width:99%">
 	<tr>
 		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100372"></asp:Literal></td></tr>
@@ -854,9 +664,9 @@ Please click the button below to pay the Card Verification Fee.
 Disabled
 </asp:Panel>
 
-<asp:Button runat="server" ID="btnBack1" UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage(-1,this)) return false;" Text="BACK" />
-<asp:Button runat="server" ID="btnNext"  UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage( 1,this)) return false;" OnClick="btnNext_Click" />
-<asp:Button runat="server" ID="btnAgree" UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage( 1,this)) return false;if (!TokenFinish()) return false;" OnClick="btnNext_Click" />
+<asp:Button runat="server" ID="btnBack1" UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage(-1,this)) return false" Text="BACK" />
+<asp:Button runat="server" ID="btnNext"  UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage( 1,this)) return false" OnClick="btnNext_Click" />
+<asp:Button runat="server" ID="btnAgree" UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage( 1,this)) return false" OnClick="btnNext_Click" />
 &nbsp;&nbsp;&nbsp;&nbsp;
 <asp:Button runat="server" ID="btnBack2" UseSubmitBehavior="false" OnClientClick="JavaScript:if (!NextPage(-1,this)) return false" Width="200px" />
 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -884,127 +694,59 @@ Disabled
 <asp:Literal runat="server" id="lblChat"></asp:Literal>
 
 <script type="text/javascript">
-pageNo = GetEltValueInt('hdnPageNo');
+pageNo   = GetEltValueInt('hdnPageNo');
+var mode = GetEltValueInt('hdnMode');
 SetEltValue('hdnBrowser',navigator.userAgent.toString());
-</script>
 
-<!-- TokenEx start -->
-
-<asp:Literal runat="server" ID="txScript"></asp:Literal>
-
-<!-- Above is a place holder for the TokenEx iFrame JavaScript source. Test version would look like
-[lt]script src="https://test-htp.tokenex.com/iframe/iframe-v3.min.js"
--->
-
-<asp:HiddenField runat="server" ID="txHMAC" />
-<asp:HiddenField runat="server" ID="txToken" />
-<asp:HiddenField runat="server" ID="txReference" />
-<asp:HiddenField runat="server" ID="txTimestamp" />
-<asp:HiddenField runat="server" ID="txOrigin" />
-<asp:HiddenField runat="server" ID="txID" />
-<asp:HiddenField runat="server" ID="txTokenScheme" Value="sixTOKENfour" />
-
-<script type="text/javascript">
-var txFrame;
-var txCC;
-
-frmRegister.action = 'RegisterEx3.aspx';
-
-function TokenFinish()
+if ( pageNo == 5 && mode == 87 )
 {
-	if ( GetElt('txIFrameCC') == null )
-		return true;
+// STEP #2: Initialize the Airwallex global context for event communication
+   Airwallex.init({
+		env: '<%=awEnvironment%>',     // Airwallex env ('staging' | 'demo' | 'prod')
+		origin: window.location.origin // Event target to receive the browser events message
+	});
 
-//	ALL returns other then the one above must be FALSE
-//	Only return TRUE if TokenEx is turned OFF (ie. the iFrame object is NULL)
+// STEP #4: Create 'dropIn' element
+	const dropIn = Airwallex.createElement('dropIn', {
+		intent_id: '<%=awPaymentIntentId%>',
+		client_secret: '<%=awClientSecret%>',
+		currency: '<%=awCurrencyCode%>',
+		methods: ['card']
+	});
 
-	var err = 'Invalid card number and/or CVV';
+// STEP #5: Mount 'dropIn' element
+	const domElement = dropIn.mount('dropIn');
 
-	try
-	{
-		var v = GetEltValue('txtCCCVV');
-		if ( txCC.isValid && v.length >= 3 && ToInteger(v) > 0 )
-		{
-			txFrame.tokenize();
-			return false; // This MUST be false!
-		}
-	}
-	catch (x)
-	{
-		err = err + ' (exception: ' + x.message + ')';
-	}
+// STEP #6: Add an event listener to handle events when the element is mounted
+	domElement.addEventListener('onReady', (event) => {
+		/*
+		blah
+		*/
+	//	window.alert(event.detail);
+	});
 
-	DisableElt('btnAgree',false);
-	alert(err);
-	return false;
+// STEP #7: Add an event listener to handle events when the payment is successful.
+	domElement.addEventListener('onSuccess', (event) => {
+	//	alert('AW Success');
+		SetEltValue('hdnMode','203');
+		SetEltValue('lblError','Verification payment succeeded. Thank you!');
+		ShowElt('lblError',true);
+		GetElt('frmRegister').submit();
+	});
+
+// STEP #8: Add an event listener to handle events when the payment has failed.
+	domElement.addEventListener('onError', (event) => {
+	//	alert('AW Fail');
+		SetEltValue('hdnMode','129');
+		SetEltValue('lblError','The verification payment failed. Please try again');
+		ShowElt('lblError',true);
+	});
 }
-function TokenSetup()
-{
-	var txConfig = {
-		styles: {
-			base: "background-color:#898787;width:209px;border:0;padding:2px",
-			focus: "",
-			error: "border-color:#ce0a0a"
-		},
-		pci: true,
-		inputType: "text",
-		enablePrettyFormat: true,
-		debug: false,
-		placeholder: "Card Number",
-//	Required
-		origin: document.getElementById("txOrigin").value,
-		timestamp: document.getElementById("txTimestamp").value,
-		tokenExID: document.getElementById("txID").value,
-		tokenScheme: document.getElementById("txTokenScheme").value,
-		authenticationKey: document.getElementById("txHMAC").value,
-		enableValidateOnBlur: true
-	};
 
-	try
-	{
-//		alert('TX/1');
-		txFrame = new TokenEx.Iframe("txIFrameCC", txConfig);
-//		alert(txFrame);
-//		txFrame.on("load", function() { alert('TX/2'); });
-//		txFrame.on("focus", function() { util.log("Iframe focus") });
-//		txFrame.on("blur", function() { util.log("Iframe blur") });
-//		txFrame.on("change", function() { txCC = null; });
-		txFrame.on("validate", function (data) { txCC = data; });
-//		txFrame.on("cardTypeChange", function (data) { util.log("Iframe cardTypeChange:" + JSON.stringify(data)); });
-		txFrame.on("tokenize", function (data) { if (data.token) { SetEltValue('lblError','');
-																					  SetEltValue('txToken',data.token);
-																					  SetEltValue('txReference',data.referenceNumber);
-																					  frmRegister.action = 'RegisterEx3.aspx?PageNo=6'
-																					  frmRegister.submit(); } });
-		txFrame.on("error", function (data) { SetEltValue('txToken','');SetEltValue('txReference','');SetEltValue('lblError',data.error) }); //major error occured
-//		alert('TX/4');
-		txFrame.load();
-//		alert('TX/5');
-	}
-	catch (x)
-	{
-		alert(x.message);
-	}
-}
 </script>
-<asp:Literal runat="server" ID="lblTx"></asp:Literal>
-<!-- TokenEx end -->
 
 <asp:Literal runat="server" ID="lblJS"></asp:Literal>
 
 </form>
-
-<asp:Literal runat="server" ID="lblJwtIframe"></asp:Literal>
-
-<!-- Testing -->
-<!--
-<div id="t01" style="border:1px solid #000000;margin:5px"></div>
-<br />
-<div id="t02" style="border:1px solid #000000;margin:5px"></div>
-<br />
-<div id="t03" style="border:1px solid #000000;margin:5px"></div>
--->
-<!-- Testing -->
-
 </body>
 </html>

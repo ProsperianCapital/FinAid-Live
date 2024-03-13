@@ -113,6 +113,7 @@
     <Content Include="PYHeader.ascx" />
     <Content Include="PYHome.aspx" />
     <Content Include="Register.aspx" />
+    <Content Include="RegisterAW.aspx" />
     <Content Include="RegisterEx3.aspx" />
     <Content Include="RegisterThreeD.aspx" />
     <Content Include="RVHome.aspx" />
@@ -439,6 +440,13 @@
     </Compile>
     <Compile Include="FAHome.aspx.designer.cs">
       <DependentUpon>FAHome.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RegisterAW.aspx.cs">
+      <DependentUpon>RegisterAW.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RegisterAW.aspx.designer.cs">
+      <DependentUpon>RegisterAW.aspx</DependentUpon>
     </Compile>
     <Compile Include="SMHome.aspx.cs">
       <DependentUpon>SMHome.aspx</DependentUpon>

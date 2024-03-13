@@ -43,6 +43,9 @@ namespace PCIWebFinAid
 		private string   paymentKey;
 		private string   paymentCurrency;
 		private string   paymentAmount;
+//	AIrWallex
+		protected string clientSecret;
+		protected string paymentIntentId;
 
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
 		{
@@ -165,7 +168,8 @@ namespace PCIWebFinAid
 //	Testing 3
 				if ( WebTools.RequestValueInt(Request,"PageNoX") > 0 )
 				{
-					hdnPageNo.Value = WebTools.RequestValueString(Request,"PageNoX");
+					pageNo          = WebTools.RequestValueInt(Request,"PageNoX");
+					hdnPageNo.Value = pageNo.ToString();
 					btnNext_Click(null,null);
 				}
 			}
@@ -811,6 +815,11 @@ namespace PCIWebFinAid
 										if ( paymentId.Length      < 1 ) paymentId      = Tools.ProviderCredentials("WorldPay","Id");
 										if ( paymentKey.Length     < 1 ) paymentKey     = Tools.ProviderCredentials("WorldPay","Password");
 									}
+									else if ( bureauCodePayment == Tools.BureauCode(Constants.PaymentProvider.AirWallex) )
+									{
+										if ( paymentId.Length      < 1 ) paymentId      = Tools.ProviderCredentials("AirWallex","Id");
+										if ( paymentKey.Length     < 1 ) paymentKey     = Tools.ProviderCredentials("AirWallex","Key");
+									}
 									if ( paymentCurrency.Length < 1 )
 										paymentCurrency = "ZAR";
 								}
@@ -1047,6 +1056,26 @@ namespace PCIWebFinAid
 				payment.SessionIDProvider = hdnSessionId.Value;
 			//	Tools.LogInfo("Do3dOrZeroValueCheck/10","WorldPay: " + paymentAccount + " | " + paymentId + " | " + paymentKey + " | " + hdnSessionId.Value,222,this);
 			}
+			else if ( payment.BureauCode == Tools.BureauCode(Constants.PaymentProvider.TokenEx) )
+			{
+				trans                     = new TransactionTokenEx();
+				payment.ProviderAccount   = paymentAccount;
+				payment.ProviderUserID    = paymentId;
+				payment.ProviderPassword  = paymentKey;
+				payment.PaymentAmount     = 010;    // 10 US Cents
+				payment.CurrencyCode      = "USD";
+				payment.SessionIDProvider = hdnSessionId.Value;
+			//	Tools.LogInfo("Do3dOrZeroValueCheck/10","WorldPay: " + paymentAccount + " | " + paymentId + " | " + paymentKey + " | " + hdnSessionId.Value,222,this);
+			}
+			else if ( payment.BureauCode == Tools.BureauCode(Constants.PaymentProvider.AirWallex) )
+			{
+				trans                     = new TransactionAirWallex();
+				payment.ProviderUserID    = paymentId;
+				payment.ProviderKey       = paymentKey;
+				payment.PaymentAmount     = 010;    // 10 US Cents
+				payment.CurrencyCode      = "USD";
+			//	Tools.LogInfo("Do3dOrZeroValueCheck/10","AirWallex: " + paymentId + " | " + paymentKey,222,this);
+			}
 			else
 				return 200;
 
@@ -1219,8 +1248,9 @@ namespace PCIWebFinAid
 				txtFirstName.Text = "Peter";
 				txtEMail.Text     = "PaulKilfoil@gmail.com";
 				txtIncome.Text    = "125000";
-				txToken.Value     = "4111118034721111";
-				txtCCNumber.Text  = "4111111111111111";
+			//	txToken.Value     = "4111118034721111";
+			//	txtCCNumber.Text  = "4111111111111111";
+				txtCCNumber.Text  = "4035501000000008"; // AirWallex test card
 				txtCCCVV.Text     = "789";
 			}
 
@@ -1772,6 +1802,8 @@ namespace PCIWebFinAid
 
 		public RegisterEx3() : base()
 		{
+			clientSecret                          = "";
+			paymentIntentId                       = "";
 			testMode                              = 0;
 			ServicePointManager.Expect100Continue = true;
 			ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
