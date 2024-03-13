@@ -444,6 +444,8 @@ namespace PCIWebFinAid
 			else if ( bureauCode  == (int)PCIBusiness.Constants.PaymentProvider.TokenEx ||			
 			          bureauCode  == (int)PCIBusiness.Constants.PaymentProvider.CyberSource )				
 				urlNew = "RegisterEx3.aspx";
+			else if ( bureauCode  == (int)PCIBusiness.Constants.PaymentProvider.AirWallex )	
+				urlNew = "RegisterAW.aspx";
 			else
 				urlNew = "Register.aspx";
 
