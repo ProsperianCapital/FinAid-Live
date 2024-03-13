@@ -130,8 +130,8 @@ namespace PCIWebFinAid
 			{
 				if ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Live )
 					return "prod";
-				if ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Test )
-					return "staging";
+//				if ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Test )
+//					return "staging";
 				return "demo";
 			}
 		}
@@ -596,6 +596,7 @@ namespace PCIWebFinAid
 					    + ",@WebsiteCode ="               + Tools.DBString(WebTools.RequestValueString(Request,"WC"))
 					    + ",@ProductCode ="               + Tools.DBString(productCode)
 					    + ",@LanguageCode ="              + Tools.DBString(languageCode)
+					    + ",@LanguageDialectCode ="       + Tools.DBString(languageDialectCode)
 					    + ",@GoogleUtmSource ="           + Tools.DBString(WebTools.RequestValueString(Request,"GUS"))
 					    + ",@GoogleUtmMedium ="           + Tools.DBString(WebTools.RequestValueString(Request,"GUM"))
 					    + ",@GoogleUtmCampaign ="         + Tools.DBString(WebTools.RequestValueString(Request,"GUC"))
@@ -870,7 +871,9 @@ namespace PCIWebFinAid
 								payment.MerchantReference   = new Guid().ToString();
 
 								using ( TransactionAirWallex tranAW = new TransactionAirWallex() )
-									if ( tranAW.CardValidation(payment) == 0 )
+								{
+									int ret = tranAW.CardValidation(payment);
+									if ( ret == 0 )
 									{
 										awClientSecret    = tranAW.PaymentReference;
 										awPaymentIntentId = tranAW.PaymentIntentId;
@@ -882,8 +885,9 @@ namespace PCIWebFinAid
 									else
 									{
 									//	pageNo = 5;
-										SetErrorDetail("btnNext_Click/30058",30058,"We are unable to validate this card number",tranAW.ResultSummary);
+										SetErrorDetail("btnNext_Click/30058",30058,"We are unable to validate this card number (ret="+ret.ToString()+")",tranAW.ResultSummary);
 									}
+								}
 							}
 						}
 
