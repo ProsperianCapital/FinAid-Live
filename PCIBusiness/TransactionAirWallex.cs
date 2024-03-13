@@ -84,7 +84,8 @@ namespace PCIBusiness
 			int            wCall;
 			int            ret       = 10;
 //			string         returnURL = "https://pcipaymentgateway1.azurewebsites.net/Succeed.aspx";
-			string         returnURL = "https://lifestyledirectglobal.com";
+//			string         returnURL = "https://lifestyledirectglobal.com";
+			string         returnURL = "https://www.eservsecure.com";
 			string         url       = payment.ProviderURL;
 			string         txURL     = payment.TokenizerURL;
 			string         awID      = payment.ProviderUserID;
@@ -105,6 +106,11 @@ namespace PCIBusiness
 
 			resultCode = "11";
 			resultMsg  = "(11) Web service call failed";
+
+			Tools.LogInfo("CallWebService/10","tranType="+transactionType.ToString()
+			                              + ", url="+url
+			                              + ", awID="+awID
+			                              + ", awKey="+awKey,logPriority,this);
 
 			try
 			{
