@@ -861,6 +861,8 @@ namespace PCIWebFinAid
 								payment.CardCVV             = txtCCCVV.Text;
 								payment.CardExpiryMM        = WebTools.ListValue(lstCCMonth).ToString();
 								payment.CardExpiryYYYY      = WebTools.ListValue(lstCCYear).ToString();
+								payment.MandateIPAddress    = WebTools.ClientIPAddress(Request,2);
+								payment.MandateBrowser      = WebTools.ClientBrowser(Request);
 								payment.CurrencyCode        = "USD";
 								payment.PaymentAmount       = 100;
 								payment.FirstName           = txtFirstName.Text;
@@ -872,7 +874,8 @@ namespace PCIWebFinAid
 
 								using ( TransactionAirWallex tranAW = new TransactionAirWallex() )
 								{
-									int ret = tranAW.CardValidation(payment);
+									tranAW.ReturnURL     = Request.Url.GetLeftPart(UriPartial.Authority);
+									int ret              = tranAW.CardValidation(payment);
 									if ( ret == 0 )
 									{
 										awClientSecret    = tranAW.PaymentReference;
