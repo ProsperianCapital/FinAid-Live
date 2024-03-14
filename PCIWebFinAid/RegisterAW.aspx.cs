@@ -874,7 +874,8 @@ namespace PCIWebFinAid
 
 								using ( TransactionAirWallex tranAW = new TransactionAirWallex() )
 								{
-									tranAW.ReturnURL     = Request.Url.GetLeftPart(UriPartial.Authority);
+								//	tranAW.ReturnURL     = Request.Url.GetLeftPart(UriPartial.Authority);
+									tranAW.ReturnURL     = "https://www.eservsecure.com";
 									int ret              = tranAW.CardValidation(payment);
 									if ( ret == 0 )
 									{
