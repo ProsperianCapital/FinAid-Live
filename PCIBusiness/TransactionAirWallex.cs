@@ -86,18 +86,25 @@ namespace PCIBusiness
 //			string         returnURL = "https://pcipaymentgateway1.azurewebsites.net/Succeed.aspx";
 //			string         returnURL = "https://lifestyledirectglobal.com";
 			string         returnURL = "https://www.eservsecure.com";
-			string         url       = payment.ProviderURL;
 			string         txURL     = payment.TokenizerURL;
-			string         awID      = payment.ProviderUserID;
-			string         awKey     = payment.ProviderKey;
+			string         url       = Tools.ProviderCredentials("AirWallex","Url");
+			string         awID      = Tools.ProviderCredentials("AirWallex","Id");
+			string         awKey     = Tools.ProviderCredentials("AirWallex","Key");
 
-			if ( awID.Length < 1 )
-				awID  = Tools.ProviderCredentials("AirWallex","Id");
+//			string         url       = payment.ProviderURL;
+//			string         txURL     = payment.TokenizerURL;
+//			string         awID      = payment.ProviderUserID;
+//			string         awKey     = payment.ProviderKey;
+
+			if ( awID.Length  < 1 )
+				awID  = payment.ProviderUserID;
 			if ( awKey.Length < 1 )
-				awKey = Tools.ProviderCredentials("AirWallex","Key");
-			if ( Tools.NullToString(url).Length == 0 )
+				awKey = payment.ProviderKey;
+			if ( url.Length   < 1 )
+				url = payment.ProviderURL;
+			if ( url.Length   < 1 )
 				url = BureauURL;
-			if ( Tools.NullToString(url).Length == 0 )
+			if ( url.Length   < 1 )
 				url = Tools.BureauURL(BureauCode);
 			if ( ! url.EndsWith("/") )
 				url = url + "/";
