@@ -12,9 +12,9 @@ namespace PCIBusiness
 		protected string sql;
 		protected DBConn dbConn;
 
-      public override void Close()
-      {
-      // This will automatically be called by the base class destructor (StdDisposable).
+		public override void Close()
+		{
+		// This will automatically be called by the base class destructor (StdDisposable).
 
 		//	Clean up the derived class
 			CleanUp();

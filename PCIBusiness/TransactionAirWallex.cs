@@ -83,9 +83,6 @@ namespace PCIBusiness
 			HttpWebRequest webRequest;
 			int            wCall;
 			int            ret       = 10;
-//			string         returnURL = "https://pcipaymentgateway1.azurewebsites.net/Succeed.aspx";
-//			string         returnURL = "https://lifestyledirectglobal.com";
-			string         returnURL = "https://www.eservsecure.com";
 			string         txURL     = payment.TokenizerURL;
 			string         url       = Tools.ProviderCredentials("AirWallex","Url");
 			string         awID      = Tools.ProviderCredentials("AirWallex","Id");
@@ -95,6 +92,9 @@ namespace PCIBusiness
 //			string         txURL     = payment.TokenizerURL;
 //			string         awID      = payment.ProviderUserID;
 //			string         awKey     = payment.ProviderKey;
+//			string         returnURL = "https://pcipaymentgateway1.azurewebsites.net/Succeed.aspx";
+//			string         returnURL = "https://lifestyledirectglobal.com";
+//			string         returnURL = "https://www.eservsecure.com";
 
 			if ( awID.Length  < 1 )
 				awID  = payment.ProviderUserID;
@@ -110,6 +110,8 @@ namespace PCIBusiness
 				url = url + "/";
 			if ( txURL.Length > 0 && ! txURL.ToUpper().EndsWith("DETOKENIZE") )
 				txURL = txURL + "/TransparentGatewayAPI/Detokenize";
+			if ( Tools.NullToString(returnURL).Length < 1 )
+				returnURL = "https://www.eservsecure.com";
 
 			resultCode = "11";
 			resultMsg  = "(11) Web service call failed";
@@ -243,10 +245,8 @@ namespace PCIBusiness
 					           +       "{ \"amount\" : 1.00,"
 					           +         "\"currency\" : \"USD\","
 					           +         "\"cvc\" : \"" + payment.CardCVV + "\" } },"
-					           +   "\"return_url\" : \"" + returnURL + "\","
+					           +   "\"return_url\" : \"" + ReturnURL + "\","
 					           +   "\"request_id\" : \"" + (Guid.NewGuid()).ToString() + "\" }";
-//
-//					           +   "\"return_url\" : \"https://pcipaymentgateway1.azurewebsites.net/Succeed.aspx\","
 
 					ret              = 410;
 					webRequest       = (HttpWebRequest)WebRequest.Create(url+"pa/payment_consents/" + paymentConsentId + "/verify");
@@ -283,7 +283,7 @@ namespace PCIBusiness
 				//	           +   "\"descriptor\" : \"" + payment.PaymentDescription + "\","
 				//	           +   "\"merchant_order_id\" : \"" + payment.MerchantReference + "\","
 				//	           +   "\"risk_control_options\" : { \"skip_risk_processing\" : \"true\" },"
-				//	           +   "\"return_url\" : \"" + returnURL + "\","
+				//	           +   "\"return_url\" : \"" + ReturnURL + "\","
 				//	           +   "\"request_id\" : \"" + (Guid.NewGuid()).ToString() + "\" }";
 
 				//	Ver 2: Provide customer details
@@ -307,7 +307,7 @@ namespace PCIBusiness
 					           +   "\"descriptor\" : \"" + payment.PaymentDescription + "\","
 					           +   "\"merchant_order_id\" : \"" + payment.MerchantReference + "\","
 					           +   "\"risk_control_options\" : { \"skip_risk_processing\" : true },"
-					           +   "\"return_url\" : \"" + returnURL + "\","
+					           +   "\"return_url\" : \"" + ReturnURL + "\","
 					           +   "\"request_id\" : \"" + (Guid.NewGuid()).ToString() + "\" }";
 
 					ret             = 510;

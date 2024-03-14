@@ -45,7 +45,7 @@ namespace PCIBusiness
 				returnCode = base.ExecuteSQL(null);
 				if ( returnCode == 0 )
 				{
-					returnCode    = GetColumnInt("ReturnCode");
+					returnCode    = GetColumnInt("ReturnCode",0);
 					returnMessage = GetColumn   ("ReturnMessage",0);
 					returnData    = GetColumn   ("ReturnData",0);
 				}

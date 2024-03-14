@@ -21,6 +21,7 @@ namespace PCIBusiness
 		protected string      bureauCode;
 		protected string      bureauCodeTokenizer;
 		protected string      bureauURL;
+		protected string      returnURL;
 		protected string      strResult;
 		protected XmlDocument xmlResult;
 
@@ -70,6 +71,11 @@ namespace PCIBusiness
 		{
 			get { return     Tools.NullToString(resultCode); }
 			set { resultCode = value.Trim(); }
+		}
+		public  string      ReturnURL
+		{
+			get { return     Tools.NullToString(returnURL); }
+			set { returnURL = value.Trim(); }
 		}
 		public  string      ResultStatus
 		{
