@@ -128,8 +128,8 @@ namespace PCIWebFinAid
 		{
 			get
 			{
-//				if ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Live )
-//					return "prod";
+				if ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Live )
+					return "prod";
 //				if ( Tools.SystemLiveTestOrDev() == Constants.SystemMode.Test )
 //					return "staging";
 				return "demo";
