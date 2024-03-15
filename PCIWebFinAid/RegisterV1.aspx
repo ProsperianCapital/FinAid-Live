@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="false" CodeBehind="Register.aspx.cs" Inherits="PCIWebFinAid.Register" ValidateRequest="false" %>
+﻿<%@ Page Language="C#" AutoEventWireup="false" CodeBehind="RegisterV1.aspx.cs" Inherits="PCIWebFinAid.RegisterV1" ValidateRequest="false" %>
 
 <!DOCTYPE html>
 
@@ -12,9 +12,6 @@
 </head>
 <body>
 <asp:Literal runat="server" ID="lblGoogleNoScript"></asp:Literal>
-<div id="dropIn" style="position:absolute;top:20px;left:20px;min-width:320px;background-color:aqua"></div>  <!-- AirWallex -->
-<script src="https://checkout.airwallex.com/assets/elements.bundle.min.js"></script>
-
 <form id="frmRegister" runat="server">
 
 <script type="text/javascript">
@@ -57,7 +54,6 @@ function NextPage(inc,btn)
 		ShowElt('divP03'  ,pageNo==3);
 		ShowElt('divP04'  ,pageNo==4);
 		ShowElt('divP05'  ,pageNo==5);
-		ShowElt('tblP05'  ,pageNo==5 && '<%=optionCode3d%>' != '09');
 		ShowElt('divP06'  ,pageNo==6);
 		ShowElt('btnAgree',pageNo==lastPage  && pageNo!=confPage);
 		ShowElt('btnBack2',pageNo==lastPage  && pageNo!=confPage);
@@ -181,48 +177,45 @@ function ValidatePage(ctl,seq,misc)
 		}
 
 	//	Page 5
-		if ( pageNo == 5 && '<%=optionCode3d%>' != '09' )
+		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100187 )
 		{
-			if ( ctl == 0 || ctl == 100187 )
+			if ( GetEltValue('hdn100187') == 'Y' ) // Validate card number using Luhn check digit
+				p = Validate('txtCCNumber','lblInfo5',9,GetEltValue('hdnCCNumberError'));
+			else
+				p = Validate('txtCCNumber','lblInfo5',6,GetEltValue('hdnCCNumberError'),8,14);
+			err  = err + p;
+			ShowTick(p,'CCNumber',seq);
+		}
+		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100186 )
+		{
+			p   = Validate('txtCCName','lblInfo5',1,GetEltValue('hdnCCNameError'),2,2);
+			err = err + p;
+			ShowTick(p,'CCName',seq);
+		}
+		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100188 )
+		{
+			p    = Validate('lstCCMonth','lblInfo5',3,GetEltValue('hdnCCExpiryError'),73,0)
+			     + Validate('lstCCYear' ,'lblInfo5',3,GetEltValue('hdnCCExpiryError'),73,0);
+			err  = err + p;
+			if ( p.length == 0 )
 			{
-				if ( GetEltValue('hdn100187') == 'Y' ) // Validate card number using Luhn check digit
-					p = Validate('txtCCNumber','lblInfo5',9,GetEltValue('hdnCCNumberError'));
+				p = new Date();
+				if ( p.getFullYear() > GetListValueInt('lstCCYear') )
+					p = 'Invalid card expiry date';
+				else if ( p.getFullYear() == GetListValueInt('lstCCYear') && p.getMonth()+1 > GetListValueInt('lstCCMonth') )
+					p = 'Invalid card expiry date';
 				else
-					p = Validate('txtCCNumber','lblInfo5',6,GetEltValue('hdnCCNumberError'),8,14);
+					p = '';
 				err  = err + p;
-				ShowTick(p,'CCNumber',seq);
+				SetErrorLabel('lblInfo5',p.length,p);
 			}
-			if ( ctl == 0 || ctl == 100186 )
-			{
-				p   = Validate('txtCCName','lblInfo5',1,GetEltValue('hdnCCNameError'),2,2);
-				err = err + p;
-				ShowTick(p,'CCName',seq);
-			}
-			if ( ctl == 0 || ctl == 100188 )
-			{
-				p    = Validate('lstCCMonth','lblInfo5',3,GetEltValue('hdnCCExpiryError'),73,0)
-				     + Validate('lstCCYear' ,'lblInfo5',3,GetEltValue('hdnCCExpiryError'),73,0);
-				err  = err + p;
-				if ( p.length == 0 )
-				{
-					p = new Date();
-					if ( p.getFullYear() > GetListValueInt('lstCCYear') )
-						p = 'Invalid card expiry date';
-					else if ( p.getFullYear() == GetListValueInt('lstCCYear') && p.getMonth()+1 > GetListValueInt('lstCCMonth') )
-						p = 'Invalid card expiry date';
-					else
-						p = '';
-					err  = err + p;
-					SetErrorLabel('lblInfo5',p.length,p);
-				}
-				ShowTick(p,'CCExpiry',seq);
-			}
-			if ( ctl == 0 || ctl == 100189 )
-			{
-				p   = Validate('txtCCCVV','lblInfo5',6,GetEltValue('hdnCCCVVError'),44,0);
-				err = err + p;
-				ShowTick(p,'CCCVV',seq);
-			}
+			ShowTick(p,'CCExpiry',seq);
+		}
+		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100189 )
+		{
+			p   = Validate('txtCCCVV','lblInfo5',6,GetEltValue('hdnCCCVVError'),44,0);
+			err = err + p;
+			ShowTick(p,'CCCVV',seq);
 		}
 	}
 	catch (x)
@@ -265,7 +258,6 @@ function OptSelect(p)
 </script>
 
 <asp:HiddenField runat="server" id="hdnPageNo" value="1" />
-<asp:HiddenField runat="server" id="hdnMode3d" value="0" />
 <asp:HiddenField runat="server" id="hdnBrowser" />
 <asp:HiddenField runat="server" id="hdn100002" />
 <asp:HiddenField runat="server" id="hdn100137" />
@@ -468,7 +460,7 @@ function OptSelect(p)
 <asp:Literal runat="server" ID="lblSubHead5Label"></asp:Literal>
 </p>
 
-<table style="width:99%" id="tblP05">
+<table style="width:99%">
 	<tr id="trCCNumber">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
@@ -626,7 +618,6 @@ function OptSelect(p)
 		<td colspan="2"><asp:Literal runat="server" ID="lblp6CancellationPolicy"></asp:Literal></td></tr>
 	<tr><td>&nbsp;</td></tr>
 
-	<asp:PlaceHolder runat="server" ID="pnl6CardInfo">
 	<tr>
 		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100184"></asp:Literal></td></tr>
 	<tr id="trp6CCType">
@@ -644,7 +635,6 @@ function OptSelect(p)
 	<tr>
 		<td colspan="2"><asp:Literal runat="server" ID="lblp6Billing"></asp:Literal></td></tr>
 	<tr><td>&nbsp;</td></tr>
-	</asp:PlaceHolder>
 
 	<tr>
 		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lblp6MandateHead"></asp:Literal></td></tr>
@@ -700,55 +690,8 @@ Disabled
 <asp:Literal runat="server" id="lblChat"></asp:Literal>
 
 <script type="text/javascript">
-pageNo   = GetEltValueInt('hdnPageNo');
-var mode = GetEltValueInt('hdnMode3d');
+pageNo = GetEltValueInt('hdnPageNo');
 SetEltValue('hdnBrowser',navigator.userAgent.toString());
-
-if ( pageNo == 5 && mode == 87 )
-{
-// STEP #2: Initialize the Airwallex global context for event communication
-   Airwallex.init({
-		env: '<%=awEnvironment%>',     // Airwallex env ('staging' | 'demo' | 'prod')
-		origin: window.location.origin // Event target to receive the browser events message
-	});
-
-// STEP #4: Create 'dropIn' element
-	const dropIn = Airwallex.createElement('dropIn', {
-		intent_id: '<%=awPaymentIntentId%>',
-		client_secret: '<%=awClientSecret%>',
-		currency: '<%=awCurrencyCode%>',
-		methods: ['card']
-	});
-
-// STEP #5: Mount 'dropIn' element
-	const domElement = dropIn.mount('dropIn');
-
-// STEP #6: Add an event listener to handle events when the element is mounted
-	domElement.addEventListener('onReady', (event) => {
-		/*
-		blah
-		*/
-	//	window.alert(event.detail);
-	});
-
-// STEP #7: Add an event listener to handle events when the payment is successful.
-	domElement.addEventListener('onSuccess', (event) => {
-	//	alert('AW Success');
-		SetEltValue('hdnMode3d','203');
-		SetEltValue('lblError','Verification payment succeeded. Thank you!');
-		ShowElt('lblError',true);
-		GetElt('frmRegister').submit();
-	});
-
-// STEP #8: Add an event listener to handle events when the payment has failed.
-	domElement.addEventListener('onError', (event) => {
-	//	alert('AW Fail');
-		SetEltValue('hdnMode3d','129');
-		SetEltValue('lblError','The verification payment failed. Please try again');
-		ShowElt('lblError',true);
-	});
-}
-
 </script>
 
 <asp:Literal runat="server" ID="lblJS"></asp:Literal>

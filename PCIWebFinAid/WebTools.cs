@@ -4,6 +4,7 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using PCIBusiness;
 
 namespace PCIWebFinAid
 {
@@ -18,9 +19,9 @@ namespace PCIWebFinAid
 		//	Method = 2, POST
 			try
 			{
-				if ( method == (byte)PCIBusiness.Constants.HttpMethod.Post ) // Must be HTML form variables
-					return PCIBusiness.Tools.ObjectToString(req.Form[parmName]);
-				return PCIBusiness.Tools.ObjectToString(req[parmName]);
+				if ( method == (byte)Constants.HttpMethod.Post ) // Must be HTML form variables
+					return Tools.ObjectToString(req.Form[parmName]);
+				return Tools.ObjectToString(req[parmName]);
 			}
 			catch
 			{ }
@@ -187,7 +188,7 @@ namespace PCIWebFinAid
 		                              string      selectValue = "",
 		                              short       selectIndex = -888 )
 		{
-			if ( PCIBusiness.Tools.NullToString(sql).Length > 0 )
+			if ( Tools.NullToString(sql).Length > 0 )
 				return ListBindMultiKey ( listBox,
 				                          sql,
 				                          new string[] {dataFieldKey},
@@ -219,7 +220,7 @@ namespace PCIWebFinAid
 
 			try
 			{
-				if ( PCIBusiness.Tools.NullToString(sql).Length < 5 )
+				if ( Tools.NullToString(sql).Length < 5 )
 					return 22;
 
 				string dataValue;
@@ -388,15 +389,15 @@ namespace PCIWebFinAid
 
 		public static string ClientReferringURL(HttpRequest req,byte logInfo=0,string logSource="")
 		{
-			string refer = PCIBusiness.Tools.ObjectToString(req.UrlReferrer);
+			string refer = Tools.ObjectToString(req.UrlReferrer);
 			if ( refer.Length < 5 )
-				refer = PCIBusiness.Tools.ObjectToString(req.Headers["Referer"]); // Yes, this is spelt CORRECTLY! Do not change
+				refer = Tools.ObjectToString(req.Headers["Referer"]); // Yes, this is spelt CORRECTLY! Do not change
 
 			if ( logInfo > 0 )
 			{
 				if ( logSource.Length < 1 )
 					logSource = req.Url.AbsoluteUri;
-				PCIBusiness.Tools.LogInfo ( "WebTools.ClientReferringURL", logSource + " (" + logInfo.ToString() + "), Referring URL=" + refer );
+				Tools.LogInfo ( "WebTools.ClientReferringURL", logSource + " (" + logInfo.ToString() + "), Referring URL=" + refer );
 			}
 			return refer;
 		}
@@ -428,24 +429,24 @@ namespace PCIWebFinAid
 
 		public static byte CheckProductProvider(string productCode,string urlOld,HttpRequest req=null,HttpResponse resp=null)
 		{
-			if ( string.IsNullOrWhiteSpace(productCode) || PCIBusiness.Tools.SystemLiveTestOrDev() == PCIBusiness.Constants.SystemMode.Development )
+			if ( string.IsNullOrWhiteSpace(productCode) || Tools.SystemLiveTestOrDev() == Constants.SystemMode.Development )
 				return 10;
 
 			string urlNew     = "";
-			string sql        = "exec sp_WP_Get_ProductTokenBureau @ProductCode=" + PCIBusiness.Tools.DBString(productCode);
+			string sql        = "exec sp_WP_Get_ProductTokenBureau @ProductCode=" + Tools.DBString(productCode);
 			int    bureauCode = 0;
 
 			using (PCIBusiness.MiscList mList = new PCIBusiness.MiscList())
 				if ( mList.ExecQuery(sql,0) == 0 )
-					bureauCode = PCIBusiness.Tools.StringToInt(mList.GetColumn("TokenBureauCode"));
+					bureauCode = Tools.StringToInt(mList.GetColumn("TokenBureauCode"));
 
 			if ( bureauCode < 1 )
 				return 20;
-			else if ( bureauCode  == (int)PCIBusiness.Constants.PaymentProvider.TokenEx ||			
-			          bureauCode  == (int)PCIBusiness.Constants.PaymentProvider.CyberSource )				
+			else if ( bureauCode  == (int)Constants.PaymentProvider.TokenEx ||			
+			          bureauCode  == (int)Constants.PaymentProvider.CyberSource )				
 				urlNew = "RegisterEx3.aspx";
-			else if ( bureauCode  == (int)PCIBusiness.Constants.PaymentProvider.AirWallex )	
-				urlNew = "RegisterAW.aspx";
+//			else if ( bureauCode  == (int)Constants.PaymentProvider.AirWallex )	
+//				urlNew = "RegisterAW.aspx";
 			else
 				urlNew = "Register.aspx";
 
@@ -576,11 +577,11 @@ namespace PCIWebFinAid
 						refer = refer.Substring(0,k);
 
 					ret = 60;
-					sql = "exec sp_WP_Get_WebsiteInfoByURL " + PCIBusiness.Tools.DBString(refer);
+					sql = "exec sp_WP_Get_WebsiteInfoByURL " + Tools.DBString(refer);
 					if ( mList.ExecQuery(sql,0) != 0 )
-						PCIBusiness.Tools.LogInfo("WebTools.LoadProductFromURL/3","SQL failed: " + sql,229);
+						Tools.LogInfo("WebTools.LoadProductFromURL/3","SQL failed: " + sql,229);
 					else if ( mList.EOF )
-						PCIBusiness.Tools.LogInfo("WebTools.LoadProductFromURL/6","SQL returned no data: " + sql,229);
+						Tools.LogInfo("WebTools.LoadProductFromURL/6","SQL returned no data: " + sql,229);
 					else
 					{
 						ret                 = 70;
@@ -592,8 +593,8 @@ namespace PCIWebFinAid
 				}
 				catch (Exception ex)
 				{
-					PCIBusiness.Tools.LogInfo     ("WebTools.LoadProductFromURL/8","ret="+ret.ToString()+" ("+ex.Message+")",229);
-					PCIBusiness.Tools.LogException("WebTools.LoadProductFromURL/9","ret="+ret.ToString(),ex);
+					Tools.LogInfo     ("WebTools.LoadProductFromURL/8","ret="+ret.ToString()+" ("+ex.Message+")",229);
+					Tools.LogException("WebTools.LoadProductFromURL/9","ret="+ret.ToString(),ex);
 				}
 
 			if ( checkURLParms )
@@ -632,12 +633,12 @@ namespace PCIWebFinAid
 				{
 					Literal lbl = (Literal)webPage.FindControl("F"+ctlID);
 					if ( lbl   != null ) // Favicon
-						lbl.Text = "<link rel='shortcut icon' href='" + PCIBusiness.Tools.ImageFolder("ImagesCA") + imgFileName + "' />";
+						lbl.Text = "<link rel='shortcut icon' href='" + Tools.ImageFolder("ImagesCA") + imgFileName + "' />";
 					else
 					{
 						lbl = (Literal)webPage.FindControl("H"+ctlID);
 						if ( lbl != null )
-							lbl.Text = "<img src='" + PCIBusiness.Tools.ImageFolder("ImagesCA") + imgFileName + "' title='" + imgTooltip + "' />";
+							lbl.Text = "<img src='" + Tools.ImageFolder("ImagesCA") + imgFileName + "' title='" + imgTooltip + "' />";
 					}
 					return 0;
 				}
@@ -645,7 +646,7 @@ namespace PCIWebFinAid
 				if ( blocked == "1" || blocked == "B" )
 					try
 					{
-					//	PCIBusiness.Tools.LogInfo("WebTools.ReplaceImage/1","ctlID="+ctlID+", blocked="+blocked+", ctl.Visible="+ctl.Visible.ToString(),244);
+					//	Tools.LogInfo("WebTools.ReplaceImage/1","ctlID="+ctlID+", blocked="+blocked+", ctl.Visible="+ctl.Visible.ToString(),244);
 						ctl.Visible = false;
 						Control cX  = ((Control)webPage.FindControl("D"+ctlID)); // Container around the image
 						if ( cX    != null )
@@ -661,7 +662,7 @@ namespace PCIWebFinAid
 					}
 
 				ctl.ToolTip   = imgTooltip;
-				ctl.ImageUrl  = PCIBusiness.Tools.ImageFolder("ImagesCA") + imgFileName;
+				ctl.ImageUrl  = Tools.ImageFolder("ImagesCA") + imgFileName;
 				if ( imgHeight > 0 )
 					ctl.Height = imgHeight;
 				else if ( imgWidth > 0 )
@@ -684,7 +685,7 @@ namespace PCIWebFinAid
 			}
 			catch (Exception ex)
 			{
-				PCIBusiness.Tools.LogException("WebTools.ReplaceImage","",ex);
+				Tools.LogException("WebTools.ReplaceImage","",ex);
 			}
 			return 90;
 		}
@@ -717,7 +718,7 @@ namespace PCIWebFinAid
 				userName = "Johrika Burger";
 				return 0;
 			}
-			if ( uId == "PK" && uPwd == "PK" && ! PCIBusiness.Tools.SystemIsLive() )
+			if ( uId == "PK" && uPwd == "PK" && ! Tools.SystemIsLive() )
 			{
 				userCode = "013";
 				userName = "Paul Kilfoil";
@@ -726,10 +727,10 @@ namespace PCIWebFinAid
 			return 20;
 		}
 
-//		Moved to PCIBusiness.Tools
+//		Moved to Tools
 //		public static string ImageFolder(string defaultDir="")
 //		{
-//			string folder = PCIBusiness.Tools.ConfigValue("ImageFolder");
+//			string folder = Tools.ConfigValue("ImageFolder");
 //			if ( folder.Length < 1 )
 //				if ( defaultDir.Length < 1 )
 //					return "Images/";
@@ -750,7 +751,7 @@ namespace PCIWebFinAid
 			try
 			{
 				errCode  = 20;
-				mailText = File.ReadAllText(PCIBusiness.Tools.SystemFolder("Templates")+"ConfirmationMail.htm");
+				mailText = File.ReadAllText(Tools.SystemFolder("Templates")+"ConfirmationMail.htm");
 				errCode  = 30;
 
 				if ( cardNumber.Length > 12 )
@@ -767,12 +768,12 @@ namespace PCIWebFinAid
 				foreach (Control ctlOuter in controls)
 					foreach (Control ctlInner in ctlOuter.Controls)
 						if ( ctlInner.GetType() == typeof(Literal) && mailText.Contains("#"+ctlInner.ID+"#") )
-							mailText = mailText.Replace("#"+ctlInner.ID+"#",PCIBusiness.Tools.HTMLSafe(((Literal)ctlInner).Text));
+							mailText = mailText.Replace("#"+ctlInner.ID+"#",Tools.HTMLSafe(((Literal)ctlInner).Text));
 						else if ( ctlInner.GetType() == typeof(Label) && mailText.Contains("#"+ctlInner.ID+"#") )
-							mailText = mailText.Replace("#"+ctlInner.ID+"#",PCIBusiness.Tools.HTMLSafe(((Label)ctlInner).Text));
+							mailText = mailText.Replace("#"+ctlInner.ID+"#",Tools.HTMLSafe(((Label)ctlInner).Text));
 
 				errCode  = 60;
-				File.AppendAllText(PCIBusiness.Tools.SystemFolder("Contracts")+contractCode+".htm",mailText,Encoding.UTF8);
+				File.AppendAllText(Tools.SystemFolder("Contracts")+contractCode+".htm",mailText,Encoding.UTF8);
 
 							}
 							catch (Exception ex6)
