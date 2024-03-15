@@ -21,7 +21,12 @@ namespace PCIWebFinAid
 		private   string sql;
 		private   int    errNo;
 
-//	AIrWallex
+//	3d Secure
+		protected string optionCode3d;
+		private   string bureauCode3d;
+		private   string returnURL3d;
+
+//	AirWallex
 		protected string awClientSecret;
 		protected string awPaymentIntentId;
 		protected string awCurrencyCode;
@@ -46,19 +51,25 @@ namespace PCIWebFinAid
 				languageDialectCode = WebTools.ViewStateString(ViewState,"LanguageDialectCode");
 				contractCode        = WebTools.ViewStateString(ViewState,"ContractCode");
 				contractPIN         = WebTools.ViewStateString(ViewState,"ContractPIN");
+				optionCode3d        = WebTools.ViewStateString(ViewState,"OptionCode3d");
+				bureauCode3d        = WebTools.ViewStateString(ViewState,"BureauCode3d");
+				returnURL3d         = WebTools.ViewStateString(ViewState,"ReturnURL3d");
 
-				if ( hdnMode.Value == "203" ) // Successful AirWallex payment
+				if ( hdnMode3d.Value == "203" ) // Successful AirWallex payment
 					btnNext_Click(null,null);
 
 			}
 			else
 			{
-				hdnMode.Value       = "0";
+				hdnMode3d.Value     = "0";
 				lblJS.Text          = WebTools.JavaScriptSource("NextPage(0,null)");
 				productCode         = WebTools.RequestValueString(Request,"PC");  // ProductCode");
 				languageCode        = WebTools.RequestValueString(Request,"LC");  // LanguageCode");
 				languageDialectCode = WebTools.RequestValueString(Request,"LDC"); // LanguageDialectCode");
 //				hdnReferURL.Value   = WebTools.ClientReferringURL(Request,11);
+				optionCode3d        = "";
+				bureauCode3d        = "";
+				returnURL3d         = "";
 
 				if ( ! Tools.SystemIsLive() )
 				{
@@ -586,6 +597,9 @@ namespace PCIWebFinAid
 			contractPIN               = "";
 			ViewState["ContractCode"] = null;
 			ViewState["ContractPIN"]  = null;
+			ViewState["OptionCode3d"] = null;
+			ViewState["BureauCode3d"] = null;
+			ViewState["ReturnURL3d"]  = null;
 
 			using (MiscList miscList = new MiscList())
 				try
@@ -619,11 +633,47 @@ namespace PCIWebFinAid
 						contractCode = miscList.GetColumn("ContractCode");
 						contractPIN  = miscList.GetColumn("PIN");
 						string stat  = miscList.GetColumn("Status");
+
 						if ( contractCode.Length > 0 && contractPIN.Length > 0 && ( stat == "0" || stat.Length == 0 ) )
 						{
 							lblError.Text             = "";
 							ViewState["ContractCode"] = contractCode;
 							ViewState["ContractPIN"]  = contractPIN;
+							spr                       = "sp_GET_ProductSecureRegistrationOption";
+							sql                       = "exec " + spr + " @ProductCode=" + Tools.DBString(productCode);
+
+							if ( miscList.ExecQuery(sql,0) != 0 )
+								SetErrorDetail("LoadContractCode",10033,"Error retrieving secure registration info ("+spr+")",sql);
+							else if ( miscList.EOF )
+								SetErrorDetail("LoadContractCode",10043,"Secure registration info: No data found ("+spr+")",sql);
+							else
+							{
+								optionCode3d = miscList.GetColumn("ProductSecureRegistrationOptionCode");
+								bureauCode3d = miscList.GetColumn("BureauCode",0); // May not be there
+								returnURL3d  = miscList.GetColumn("ReturnURL");
+
+//	OptionCode3d can be
+//	  01 - Frictionless Registration - We Capture Card Details => No 3DS Provider
+//   02 - Frictionless Registration - TokenEx Card Details => No 3DS Provider 
+//   03 - 3DS Registration - We Capture Card Details => Ad Hoc 3DS Provider
+//   04 - 3DS Registration - TokenEx Capture Card Details => Ad Hoc 3DS Provider
+//   05 - 3DS Registration - We Capture Card Details => TokenEx as 3DS Provider
+//   06 - 3DS Registration - TokenEx Capture Card Details => TokenEx as 3DS Provider
+//   07 - 3DS Registration - TokenEx Capture Card Details => Airwallex as 3DS Provider (Native API)
+//   08 - 3DS Registration - We Capture Card Details => Message: "For Security reasons, your subscription needs to be verified by your bank. Please stand by as we redirect you to your bank's payment page. => Airwallex Drop In Element - AirWallex as 3DS Provider
+//   09 - 3DS Registration Registration - We Don't Capture Card Details => Message: "For Security reasons, your subscription needs to be verified by your bank. Please stand by as we redirect you to your bank's payment page. => Airwallex Drop In Element - AirWallex as 3DS Provider
+
+								if ( optionCode3d == "08" || optionCode3d == "09" )
+								{
+									bureauCode3d    = Tools.BureauCode(Constants.PaymentProvider.AirWallex);
+									hdnMode3d.Value = "44";
+								}
+								if ( returnURL3d.Length < 10 )
+									returnURL3d = Request.Url.GetLeftPart(UriPartial.Authority); // Not always correct
+								ViewState["OptionCode3d"] = optionCode3d;
+								ViewState["BureauCode3d"] = bureauCode3d;
+								ViewState["ReturnURL3d"]  = returnURL3d;
+							}
 						}
 					}
 				}
@@ -670,7 +720,7 @@ namespace PCIWebFinAid
 			}
 			else if ( pageNo == 4 )
 			{ }
-			else if ( pageNo == 5 )
+			else if ( pageNo == 5 && optionCode3d != "09" )
 			{
 				txtCCNumber.Text = txtCCNumber.Text.Trim();
 				if ( txtCCNumber.Visible && txtCCNumber.Text.Length < 12 )
@@ -839,7 +889,10 @@ namespace PCIWebFinAid
 							if ( lblCCMandate.Text.Length < 1 )
 								SetErrorDetail("btnNext_Click/30040",30040,"Unable to retrieve collection mandate ("+spr+")",sql+" (looking for ProductOption="+productOption+" and PaymentMethod="+payMethod+"). SQL failed or returned no data or<br />the CollectionMandateText column was missing/empty/NULL");
 						}
-						else if ( ( pageNo == 6 || pageNo > 180 ) && Tools.StringToInt(hdnMode.Value) < 100 )
+						else if ( ( pageNo == 6 || pageNo > 180 )                  &&
+						          ( optionCode3d == "08" || optionCode3d == "09" ) &&
+						          Tools.StringToInt(hdnMode3d.Value) == 44         &&
+						          bureauCode3d == Tools.BureauCode(Constants.PaymentProvider.AirWallex) ) // Initiate 3d
 						{
 						//	Implement AirWallex code here:
 						//	Get access token
@@ -850,12 +903,12 @@ namespace PCIWebFinAid
 							awClientSecret    = "";
 							awPaymentIntentId = "";
 							awCurrencyCode    = "";
-							hdnMode.Value     = "0";
+						//	hdnMode3d.Value   = "0";
 							pageNo            = 5;
 
 							using ( Payment payment = new Payment() )
 							{
-								payment.BureauCode          = Tools.BureauCode(Constants.PaymentProvider.AirWallex);
+								payment.BureauCode          = bureauCode3d;
 								payment.CardName            = txtCCName.Text;
 								payment.CardNumber          = txtCCNumber.Text;
 								payment.CardCVV             = txtCCCVV.Text;
@@ -874,15 +927,16 @@ namespace PCIWebFinAid
 
 								using ( TransactionAirWallex tranAW = new TransactionAirWallex() )
 								{
-								//	tranAW.ReturnURL     = Request.Url.GetLeftPart(UriPartial.Authority);
-									tranAW.ReturnURL     = "https://www.eservsecure.com";
+									if ( returnURL3d.Length < 10 )
+										returnURL3d       = Request.Url.GetLeftPart(UriPartial.Authority);
+									tranAW.ReturnURL     = returnURL3d;
 									int ret              = tranAW.CardValidation(payment);
 									if ( ret == 0 )
 									{
 										awClientSecret    = tranAW.PaymentReference;
 										awPaymentIntentId = tranAW.PaymentIntentId;
 										awCurrencyCode    = payment.CurrencyCode;
-										hdnMode.Value     = "87";
+										hdnMode3d.Value   = "87";
 										lblError.Text     = "For Security reasons, your subscription needs to be verified by your bank. Please stand by as we redirect you to your bank's payment page";
 										lblError.Visible  = true;
 									}
@@ -895,7 +949,7 @@ namespace PCIWebFinAid
 							}
 						}
 
-						else if ( ( pageNo == 6 || pageNo > 180 ) && Tools.StringToInt(hdnMode.Value) < 200 )
+						else if ( ( pageNo == 6 || pageNo > 180 ) && Tools.StringToInt(hdnMode3d.Value) == 129 )
 						{
 							pageNo = 5;
 							SetErrorDetail("btnNext_Click/30059",30059,"Verification of your card number failed");
@@ -975,16 +1029,22 @@ namespace PCIWebFinAid
 								lblp6CancellationPolicy.Text = cancellationPolicy;
 							}
 
-							lblp6CCType.Text = "";
-							sql              = txtCCNumber.Text.Trim();
-							if ( sql.Length > 6 )
-								sql = sql.Substring(0,6);
-							spr = "WP_Get_CardAssociation";
-							sql = "exec " + spr + " @BIN=" + Tools.DBString(sql);
-							if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
-								lblp6CCType.Text = miscList.GetColumn("Brand");
-							if ( lblp6CCType.Text.Length < 1 )
-								SetErrorDetail("btnNext_Click/30090",30090,"Unable to retrieve card association details ("+spr+")",sql);
+							if ( optionCode3d == "09" || txtCCNumber.Text.Trim().Length < 12 )
+								pnl6CardInfo.Visible = false;
+							else
+							{
+								pnl6CardInfo.Visible = true;
+								lblp6CCType.Text     = "";
+								sql                  = txtCCNumber.Text.Trim();
+								if ( sql.Length > 6 )
+									sql = sql.Substring(0,6);
+								spr = "WP_Get_CardAssociation";
+								sql = "exec " + spr + " @BIN=" + Tools.DBString(sql);
+								if ( miscList.ExecQuery(sql,0) == 0 && ! miscList.EOF )
+									lblp6CCType.Text = miscList.GetColumn("Brand");
+								if ( lblp6CCType.Text.Length < 1 )
+									SetErrorDetail("btnNext_Click/30090",30090,"Unable to retrieve card association details ("+spr+")",sql);
+							}
 
 							if ( lblError.Text.Length > 0 )
 								throw new Exception("XYZ");

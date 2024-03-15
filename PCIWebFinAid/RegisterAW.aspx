@@ -57,6 +57,7 @@ function NextPage(inc,btn)
 		ShowElt('divP03'  ,pageNo==3);
 		ShowElt('divP04'  ,pageNo==4);
 		ShowElt('divP05'  ,pageNo==5);
+		ShowElt('tblP05'  ,pageNo==5 && '<%=optionCode3d%>' != '09');
 		ShowElt('divP06'  ,pageNo==6);
 		ShowElt('btnAgree',pageNo==lastPage  && pageNo!=confPage);
 		ShowElt('btnBack2',pageNo==lastPage  && pageNo!=confPage);
@@ -180,45 +181,48 @@ function ValidatePage(ctl,seq,misc)
 		}
 
 	//	Page 5
-		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100187 )
+		if ( pageNo == 5 && '<%=optionCode3d%>' != '09' )
 		{
-			if ( GetEltValue('hdn100187') == 'Y' ) // Validate card number using Luhn check digit
-				p = Validate('txtCCNumber','lblInfo5',9,GetEltValue('hdnCCNumberError'));
-			else
-				p = Validate('txtCCNumber','lblInfo5',6,GetEltValue('hdnCCNumberError'),8,14);
-			err  = err + p;
-			ShowTick(p,'CCNumber',seq);
-		}
-		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100186 )
-		{
-			p   = Validate('txtCCName','lblInfo5',1,GetEltValue('hdnCCNameError'),2,2);
-			err = err + p;
-			ShowTick(p,'CCName',seq);
-		}
-		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100188 )
-		{
-			p    = Validate('lstCCMonth','lblInfo5',3,GetEltValue('hdnCCExpiryError'),73,0)
-			     + Validate('lstCCYear' ,'lblInfo5',3,GetEltValue('hdnCCExpiryError'),73,0);
-			err  = err + p;
-			if ( p.length == 0 )
+			if ( ctl == 0 || ctl == 100187 )
 			{
-				p = new Date();
-				if ( p.getFullYear() > GetListValueInt('lstCCYear') )
-					p = 'Invalid card expiry date';
-				else if ( p.getFullYear() == GetListValueInt('lstCCYear') && p.getMonth()+1 > GetListValueInt('lstCCMonth') )
-					p = 'Invalid card expiry date';
+				if ( GetEltValue('hdn100187') == 'Y' ) // Validate card number using Luhn check digit
+					p = Validate('txtCCNumber','lblInfo5',9,GetEltValue('hdnCCNumberError'));
 				else
-					p = '';
+					p = Validate('txtCCNumber','lblInfo5',6,GetEltValue('hdnCCNumberError'),8,14);
 				err  = err + p;
-				SetErrorLabel('lblInfo5',p.length,p);
+				ShowTick(p,'CCNumber',seq);
 			}
-			ShowTick(p,'CCExpiry',seq);
-		}
-		if ( ( pageNo == 5 && ctl == 0 ) || ctl == 100189 )
-		{
-			p   = Validate('txtCCCVV','lblInfo5',6,GetEltValue('hdnCCCVVError'),44,0);
-			err = err + p;
-			ShowTick(p,'CCCVV',seq);
+			if ( ctl == 0 || ctl == 100186 )
+			{
+				p   = Validate('txtCCName','lblInfo5',1,GetEltValue('hdnCCNameError'),2,2);
+				err = err + p;
+				ShowTick(p,'CCName',seq);
+			}
+			if ( ctl == 0 || ctl == 100188 )
+			{
+				p    = Validate('lstCCMonth','lblInfo5',3,GetEltValue('hdnCCExpiryError'),73,0)
+				     + Validate('lstCCYear' ,'lblInfo5',3,GetEltValue('hdnCCExpiryError'),73,0);
+				err  = err + p;
+				if ( p.length == 0 )
+				{
+					p = new Date();
+					if ( p.getFullYear() > GetListValueInt('lstCCYear') )
+						p = 'Invalid card expiry date';
+					else if ( p.getFullYear() == GetListValueInt('lstCCYear') && p.getMonth()+1 > GetListValueInt('lstCCMonth') )
+						p = 'Invalid card expiry date';
+					else
+						p = '';
+					err  = err + p;
+					SetErrorLabel('lblInfo5',p.length,p);
+				}
+				ShowTick(p,'CCExpiry',seq);
+			}
+			if ( ctl == 0 || ctl == 100189 )
+			{
+				p   = Validate('txtCCCVV','lblInfo5',6,GetEltValue('hdnCCCVVError'),44,0);
+				err = err + p;
+				ShowTick(p,'CCCVV',seq);
+			}
 		}
 	}
 	catch (x)
@@ -261,7 +265,7 @@ function OptSelect(p)
 </script>
 
 <asp:HiddenField runat="server" id="hdnPageNo" value="1" />
-<asp:HiddenField runat="server" id="hdnMode" value="0" />
+<asp:HiddenField runat="server" id="hdnMode3d" value="0" />
 <asp:HiddenField runat="server" id="hdnBrowser" />
 <asp:HiddenField runat="server" id="hdn100002" />
 <asp:HiddenField runat="server" id="hdn100137" />
@@ -464,7 +468,7 @@ function OptSelect(p)
 <asp:Literal runat="server" ID="lblSubHead5Label"></asp:Literal>
 </p>
 
-<table style="width:99%">
+<table style="width:99%" id="tblP05">
 	<tr id="trCCNumber">
 		<td style="white-space:nowrap">
 			<div class="DataLabel">
@@ -622,6 +626,7 @@ function OptSelect(p)
 		<td colspan="2"><asp:Literal runat="server" ID="lblp6CancellationPolicy"></asp:Literal></td></tr>
 	<tr><td>&nbsp;</td></tr>
 
+	<asp:PlaceHolder runat="server" ID="pnl6CardInfo">
 	<tr>
 		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lbl100184"></asp:Literal></td></tr>
 	<tr id="trp6CCType">
@@ -639,6 +644,7 @@ function OptSelect(p)
 	<tr>
 		<td colspan="2"><asp:Literal runat="server" ID="lblp6Billing"></asp:Literal></td></tr>
 	<tr><td>&nbsp;</td></tr>
+	</asp:PlaceHolder>
 
 	<tr>
 		<td colspan="2" class="Header5"><asp:Literal runat="server" ID="lblp6MandateHead"></asp:Literal></td></tr>
@@ -695,7 +701,7 @@ Disabled
 
 <script type="text/javascript">
 pageNo   = GetEltValueInt('hdnPageNo');
-var mode = GetEltValueInt('hdnMode');
+var mode = GetEltValueInt('hdnMode3d');
 SetEltValue('hdnBrowser',navigator.userAgent.toString());
 
 if ( pageNo == 5 && mode == 87 )
@@ -728,7 +734,7 @@ if ( pageNo == 5 && mode == 87 )
 // STEP #7: Add an event listener to handle events when the payment is successful.
 	domElement.addEventListener('onSuccess', (event) => {
 	//	alert('AW Success');
-		SetEltValue('hdnMode','203');
+		SetEltValue('hdnMode3d','203');
 		SetEltValue('lblError','Verification payment succeeded. Thank you!');
 		ShowElt('lblError',true);
 		GetElt('frmRegister').submit();
@@ -737,7 +743,7 @@ if ( pageNo == 5 && mode == 87 )
 // STEP #8: Add an event listener to handle events when the payment has failed.
 	domElement.addEventListener('onError', (event) => {
 	//	alert('AW Fail');
-		SetEltValue('hdnMode','129');
+		SetEltValue('hdnMode3d','129');
 		SetEltValue('lblError','The verification payment failed. Please try again');
 		ShowElt('lblError',true);
 	});

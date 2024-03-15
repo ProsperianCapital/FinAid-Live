@@ -51,13 +51,13 @@ namespace PCIWebFinAid
 		protected global::System.Web.UI.WebControls.HiddenField hdnPageNo;
 
 		/// <summary>
-		/// hdnMode control.
+		/// hdnMode3d control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.HiddenField hdnMode;
+		protected global::System.Web.UI.WebControls.HiddenField hdnMode3d;
 
 		/// <summary>
 		/// hdnBrowser control.
@@ -1372,6 +1372,15 @@ namespace PCIWebFinAid
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
 		protected global::System.Web.UI.WebControls.Literal lblp6CancellationPolicy;
+
+		/// <summary>
+		/// pnl6CardInfo control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.PlaceHolder pnl6CardInfo;
 
 		/// <summary>
 		/// lbl100184 control.
