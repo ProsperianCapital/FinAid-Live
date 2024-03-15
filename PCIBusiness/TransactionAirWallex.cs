@@ -116,10 +116,10 @@ namespace PCIBusiness
 			resultCode = "11";
 			resultMsg  = "(11) Web service call failed";
 
-			Tools.LogInfo("CallWebService/10","tranType="+transactionType.ToString()
-			                              + ", url="+url
-			                              + ", awID="+awID
-			                              + ", awKey="+awKey,logPriority,this);
+//			Tools.LogInfo("CallWebService/10","tranType="+transactionType.ToString()
+//			                              + ", url="+url
+//			                              + ", awID="+awID
+//			                              + ", awKey="+awKey,logPriority,this);
 
 			try
 			{
