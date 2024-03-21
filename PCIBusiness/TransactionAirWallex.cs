@@ -15,6 +15,7 @@ namespace PCIBusiness
 		protected string paymentIntentId;
 
 		static  string   accessToken;
+//		static  string   clientSecret;
 		static  DateTime accessDate;
 
 //		public  bool Successful
@@ -134,9 +135,10 @@ namespace PCIBusiness
 				}
 
 				if ( transactionType == (byte)Constants.TransactionType.GetToken ||
-				     transactionType == (byte)Constants.TransactionType.GetTokenThirdParty )
+			        transactionType == (byte)Constants.TransactionType.ThreeDSecureCheck ||
+			        transactionType == (byte)Constants.TransactionType.GetTokenThirdParty )
 				{
-				// Now create a customer
+				// Create a customer
 
 					ret        = 100;
 					strResult  = "";
@@ -155,9 +157,13 @@ namespace PCIBusiness
 					ret        = 120;
 					wCall      = WebCall(webRequest, "Create customer", accessToken, xmlSent, ref strResult);
 					customerId = Tools.JSONValue(strResult,"id");
+					payRef     = Tools.JSONValue(strResult,"client_secret");
 
 					if ( wCall > 0 || strResult.Length < 1 || customerId.Length < 1 )
 						return ExtractErrorAndReturn(130);
+
+					if ( transactionType == (byte)Constants.TransactionType.ThreeDSecureCheck )
+						return 0;
 
 				// Now create a payment method
 
@@ -252,7 +258,7 @@ namespace PCIBusiness
 					webRequest       = (HttpWebRequest)WebRequest.Create(url+"pa/payment_consents/" + paymentConsentId + "/verify");
 					ret              = 420;
 					wCall            = WebCall(webRequest, "Verify payment consent", accessToken, xmlSent, ref strResult);
-//					payToken         = Tools.JSONValue(strResult,"client_secret");
+//					payRef           = Tools.JSONValue(strResult,"client_secret");
 //					paymentConsentId = Tools.JSONValue(strResult,"id");
 					customerId       = Tools.JSONValue(strResult,"customer_id");
 					payToken         = Tools.JSONValue(strResult,"id");
@@ -264,7 +270,7 @@ namespace PCIBusiness
 				}
 
 				else if ( transactionType == (byte)Constants.TransactionType.TokenPayment ||
-				          transactionType == (byte)Constants.TransactionType.ThreeDSecureCheck ||
+//				          transactionType == (byte)Constants.TransactionType.ThreeDSecureCheck ||
 				          transactionType == (byte)Constants.TransactionType.CardPaymentThirdParty )
 				{
 				//	Create a Payment Intent
@@ -401,9 +407,9 @@ namespace PCIBusiness
 					           +          "\"number\" : \"##CARDNUM##\","
 					           +          "\"cvc\" : \"##CVV##\","
 					           +          "\"number_type\" : \"PAN\","
-					           +          "\"expiry_month\" : \""      + payment.CardExpiryMM + "\","
-					           +          "\"expiry_year\" : \""       + payment.CardExpiryYYYY + "\","
-					           +          "\"name\" : \""              + payment.CardName + "\"";
+					           +          "\"expiry_month\" : \"" + payment.CardExpiryMM + "\","
+					           +          "\"expiry_year\" : \""  + payment.CardExpiryYYYY + "\","
+					           +          "\"name\" : \""         + payment.CardName + "\"";
 
 					ret        = 607;
 					if ( payment.CountryCode(65).Length > 0 && payment.FirstName.Length > 0 && payment.LastName.Length > 0 )
