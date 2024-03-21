@@ -713,10 +713,38 @@ if ( pageNo == 5 && mode == 87 )
 	});
 
 // STEP #4: Create 'dropIn' element
+//	4(a): Do a once-off payment
+//	const dropIn = Airwallex.createElement('dropIn', {
+//		intent_id: '<%=awPaymentIntentId%>',
+//		client_secret: '<%=awClientSecret%>',
+//		currency: '<%=awCurrencyCode%>',
+//		methods: ['card']
+//	});
+
+//	4(b): Create a payment consent for future recurring payments
+// See https://www.airwallex.com/docs/payments__drop-in-element__registered-user-checkout
+//
+//  { "client_secret": "<client_secret>",
+//    "currency": "EUR",
+//    "customer_id": "cus_hkdmh97wlgoh1fuw3ff",
+//    "mode": "recurring",
+//    "recurringOptions": {
+//        "card": {
+//            "next_triggered_by": "merchant",
+//            "requires_cvc": false,
+//            "currency": "EUR" } }
+//  }
+
 	const dropIn = Airwallex.createElement('dropIn', {
-		intent_id: '<%=awPaymentIntentId%>',
 		client_secret: '<%=awClientSecret%>',
 		currency: '<%=awCurrencyCode%>',
+		customer_id: '<%=awCustomerId%>',
+		mode: 'recurring',
+		recurringOptions:
+			{ card:
+				{ next_triggered_by: 'merchant',
+				  requires_cvc: false,
+				  currency: '<%=awCurrencyCode%>' } },
 		methods: ['card']
 	});
 
@@ -725,15 +753,26 @@ if ( pageNo == 5 && mode == 87 )
 
 // STEP #6: Add an event listener to handle events when the element is mounted
 	domElement.addEventListener('onReady', (event) => {
-		/*
-		blah
-		*/
 	//	window.alert(event.detail);
 	});
 
 // STEP #7: Add an event listener to handle events when the payment is successful.
 	domElement.addEventListener('onSuccess', (event) => {
 	//	alert('AW Success');
+	//	var v = event;
+	//	var h = v;
+	//	alert(h);
+	//	alert(h.toString());
+	//	h = v.detail;
+	//	alert(h);
+	//	alert(h.toString());
+	//	h = v.target;
+	//	alert(h);
+	//	alert(h.toString());
+	//	h = v.type();
+	//	alert(h);
+	//	alert(h.toString());
+
 		SetEltValue('hdnMode3d','203');
 		SetEltValue('lblError','Verification payment succeeded. Thank you!');
 		ShowElt('lblError',true);

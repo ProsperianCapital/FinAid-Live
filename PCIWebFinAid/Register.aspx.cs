@@ -25,10 +25,13 @@ namespace PCIWebFinAid
 		protected string optionCode3d;
 		private   string bureauCode3d;
 		private   string returnURL3d;
+		private   int    amount3d;
 
 //	AirWallex
 		protected string awClientSecret;
 		protected string awPaymentIntentId;
+//		protected string awPaymentConsentId;
+		protected string awCustomerId;
 		protected string awCurrencyCode;
 
 		protected override void PageLoad(object sender, EventArgs e) // AutoEventWireup = false
@@ -54,6 +57,8 @@ namespace PCIWebFinAid
 				optionCode3d        = WebTools.ViewStateString(ViewState,"OptionCode3d");
 				bureauCode3d        = WebTools.ViewStateString(ViewState,"BureauCode3d");
 				returnURL3d         = WebTools.ViewStateString(ViewState,"ReturnURL3d");
+				awCurrencyCode      = WebTools.ViewStateString(ViewState,"Currency3d");
+				amount3d            = WebTools.ViewStateInt   (ViewState,"Amount3d");
 
 				if ( hdnMode3d.Value == "203" ) // Successful AirWallex payment
 					btnNext_Click(null,null);
@@ -70,6 +75,8 @@ namespace PCIWebFinAid
 				optionCode3d        = "";
 				bureauCode3d        = "";
 				returnURL3d         = "";
+				awCurrencyCode      = "";
+				amount3d            = 0;
 
 				if ( ! Tools.SystemIsLive() )
 				{
@@ -600,6 +607,8 @@ namespace PCIWebFinAid
 			ViewState["OptionCode3d"] = null;
 			ViewState["BureauCode3d"] = null;
 			ViewState["ReturnURL3d"]  = null;
+			ViewState["Currency3d"]   = null;
+			ViewState["Amount3d"]     = null;
 
 			using (MiscList miscList = new MiscList())
 				try
@@ -647,9 +656,11 @@ namespace PCIWebFinAid
 								SetErrorDetail("LoadContractCode",10043,"Secure registration info: No data found ("+spr+")",sql);
 							else
 							{
-								optionCode3d = miscList.GetColumn("ProductSecureRegistrationOptionCode");
-								bureauCode3d = miscList.GetColumn("BureauCode",0); // May not be there
-								returnURL3d  = miscList.GetColumn("ReturnURL");
+								optionCode3d   = miscList.GetColumn   ("ProductSecureRegistrationOptionCode");
+								bureauCode3d   = miscList.GetColumn   ("BureauCode",0); // May not be there
+								returnURL3d    = miscList.GetColumn   ("ReturnURL");
+								awCurrencyCode = miscList.GetColumn   ("CUR");
+								amount3d       = miscList.GetColumnInt("3DSAmount");
 
 //	OptionCode3d can be
 //	  01 - Frictionless Registration - We Capture Card Details => No 3DS Provider
@@ -672,6 +683,8 @@ namespace PCIWebFinAid
 								ViewState["OptionCode3d"] = optionCode3d;
 								ViewState["BureauCode3d"] = bureauCode3d;
 								ViewState["ReturnURL3d"]  = returnURL3d;
+								ViewState["Currency3d"]   = awCurrencyCode;
+								ViewState["Amount3d"]     = amount3d;
 							}
 						}
 					}
@@ -894,50 +907,60 @@ namespace PCIWebFinAid
 						          bureauCode3d == Tools.BureauCode(Constants.PaymentProvider.AirWallex) ) // Initiate 3d
 						{
 						//	Implement AirWallex code here:
+						//	Ver 1
 						//	Get access token
 						//	Create payment intent
 						//	put values into "clientsecret" and "paymentIntentId"
 						//	Set up AirWallex JavaScript
 
-							awClientSecret    = "";
-							awPaymentIntentId = "";
-							awCurrencyCode    = "";
-						//	hdnMode3d.Value   = "0";
-							pageNo            = 5;
+						//	Ver 2
+						//	Implement AirWallex code here:
+						//	Get access token
+						//	Create customer
+						//	put values into "clientsecret" and "customerId"
+						//	Set up AirWallex JavaScript
+
+							awClientSecret     = "";
+							awCustomerId       = "";
+							awPaymentIntentId  = "";
+						//	awPaymentConsentId = "";
+						//	hdnMode3d.Value    = "0";
+							pageNo             = 5;
 
 							using ( Payment payment = new Payment() )
 							{
-								payment.BureauCode          = bureauCode3d;
-								payment.CardName            = txtCCName.Text;
-								payment.CardNumber          = txtCCNumber.Text;
-								payment.CardCVV             = txtCCCVV.Text;
-								payment.CardExpiryMM        = WebTools.ListValue(lstCCMonth).ToString();
-								payment.CardExpiryYYYY      = WebTools.ListValue(lstCCYear).ToString();
-								payment.MandateIPAddress    = WebTools.ClientIPAddress(Request,2);
-								payment.MandateBrowser      = WebTools.ClientBrowser(Request);
-								payment.CurrencyCode        = "USD";
-								payment.PaymentAmount       = 100;
-								payment.FirstName           = txtFirstName.Text;
-								payment.LastName            = txtSurname.Text;
-								payment.PhoneCell           = txtCellNo.Text;
-								payment.EMail               = txtEMail.Text;
-								payment.ContractCode        = contractCode;
-								payment.MerchantReference   = new Guid().ToString();
+								payment.BureauCode        = bureauCode3d;
+								payment.CardName          = txtCCName.Text;
+								payment.CardNumber        = txtCCNumber.Text;
+								payment.CardCVV           = txtCCCVV.Text;
+								payment.CardExpiryMM      = WebTools.ListValue(lstCCMonth).ToString();
+								payment.CardExpiryYYYY    = WebTools.ListValue(lstCCYear).ToString();
+								payment.MandateIPAddress  = WebTools.ClientIPAddress(Request,2);
+								payment.MandateBrowser    = WebTools.ClientBrowser(Request);
+								payment.CurrencyCode      = ( awCurrencyCode.Length > 0 ? awCurrencyCode.ToUpper() : "USD" );
+								payment.PaymentAmount     = ( amount3d > 0              ? amount3d                 : 100   );
+								payment.FirstName         = txtFirstName.Text;
+								payment.LastName          = txtSurname.Text;
+								payment.PhoneCell         = txtCellNo.Text;
+								payment.EMail             = txtEMail.Text;
+								payment.ContractCode      = contractCode;
+								payment.MerchantReference = new Guid().ToString();
 
 								using ( TransactionAirWallex tranAW = new TransactionAirWallex() )
 								{
 									if ( returnURL3d.Length < 10 )
-										returnURL3d       = Request.Url.GetLeftPart(UriPartial.Authority);
-									tranAW.ReturnURL     = returnURL3d;
-									int ret              = tranAW.CardValidation(payment);
+										returnURL3d        = Request.Url.GetLeftPart(UriPartial.Authority);
+									tranAW.ReturnURL      = returnURL3d;
+									int ret               = tranAW.CardValidation(payment);
 									if ( ret == 0 )
 									{
-										awClientSecret    = tranAW.PaymentReference;
-										awPaymentIntentId = tranAW.PaymentIntentId;
-										awCurrencyCode    = payment.CurrencyCode;
-										hdnMode3d.Value   = "87";
-										lblError.Text     = "For Security reasons, your subscription needs to be verified by your bank. Please stand by as we redirect you to your bank's payment page";
-										lblError.Visible  = true;
+										awClientSecret     = tranAW.PaymentReference;
+										awCustomerId       = tranAW.CustomerId;
+										awPaymentIntentId  = tranAW.PaymentIntentId;
+									//	awPaymentConsentId = tranAW.PaymentConsentId;
+										hdnMode3d.Value    = "87";
+										lblError.Text      = "For Security reasons, your subscription needs to be verified by your bank. Please stand by as we redirect you to your bank's payment page";
+										lblError.Visible   = true;
 									}
 									else
 									{
@@ -956,6 +979,24 @@ namespace PCIWebFinAid
 
 						else if ( pageNo == 6 || pageNo > 180 )
 						{
+							if ( bureauCode3d.Length > 0 )
+							{
+								spr = "sp_FILL_3DSAuthorisation";
+								sql = "exec " + spr + " @PaymentBureauCode =" + Tools.DBString(bureauCode3d)
+								                    + ",@MerchantReference =" + Tools.DBString(contractCode)
+								                    + ",@TransactionCUR ="    + Tools.DBString(awCurrencyCode)
+								                    + ",@CustomerID ="        + Tools.DBString(awCustomerId)
+								                    + ",@PaymentConsentID = ''" // + Tools.DBString(awPaymentConsentId)
+								                    + ",@TransactionAmount =" + amount3d.ToString()
+								                    + ",@SecureRegistrationPaymentTypeCode = 'NPA'"
+								                    + ",@TransactionStatusCode = '00'"
+								                    + ",@PaymentBureauToken = ''"
+								                    + ",@BureauSubmissionSoap = ''"
+								                    + ",@BureauResultSoap = ''"
+								                    + ",@TransactionFileResultCode = ''";
+								if ( miscList.ExecQuery(sql,0) != 0 )
+									SetErrorDetail("btnNext_Click/30065",30065,"Internal database error (" + spr + ")",sql);
+							}
 							lbl100325.Text = "";
 							spr = "sp_WP_Get_WebsiteProductOptionA";
 							sql = "exec " + spr + " @ProductCode ="         + Tools.DBString(productCode)
@@ -963,16 +1004,16 @@ namespace PCIWebFinAid
 							                    + ",@LanguageCode ="        + Tools.DBString(languageCode)
 							                    + ",@LanguageDialectCode =" + Tools.DBString(languageDialectCode);
 							if ( miscList.ExecQuery(sql,0) != 0 )
-								SetErrorDetail("btnNext_Click/30060",30060,"Internal database error (" + spr + ")",sql);
+								SetErrorDetail("btnNext_Click/30070",30070,"Internal database error (" + spr + ")",sql);
 							else if ( miscList.EOF )
-								SetErrorDetail("btnNext_Click/30061",30061,"No product option data returned (" + spr + ")",sql);
+								SetErrorDetail("btnNext_Click/30071",30071,"No product option data returned (" + spr + ")",sql);
 							else
 							{
 								lbl100325.Text = miscList.GetColumn("FieldValue");
 								if ( lbl100325.Text.Length > 0 )
 									lbl100325.Text = lbl100325.Text.Replace(Environment.NewLine,"<br />");
 								else
-									SetErrorDetail("btnNext_Click/30062",30062,"Product option data is empty/blank (" + spr + ", column 'FieldValue')",sql,2,2);
+									SetErrorDetail("btnNext_Click/30072",30072,"Product option data is empty/blank (" + spr + ", column 'FieldValue')",sql,2,2);
 							}
 
 //	Not needed any more

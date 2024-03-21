@@ -443,6 +443,7 @@
     </Compile>
     <Compile Include="RegisterV1.aspx.cs">
       <DependentUpon>RegisterV1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="RegisterV1.aspx.designer.cs">
       <DependentUpon>RegisterV1.aspx</DependentUpon>
