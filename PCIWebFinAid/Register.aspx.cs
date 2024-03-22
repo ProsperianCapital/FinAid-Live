@@ -678,8 +678,8 @@ namespace PCIWebFinAid
 									bureauCode3d    = Tools.BureauCode(Constants.PaymentProvider.AirWallex);
 									hdnMode3d.Value = "44";
 								}
-								if ( returnURL3d.Length < 10 )
-									returnURL3d = Request.Url.GetLeftPart(UriPartial.Authority); // Not always correct
+//								if ( returnURL3d.Length < 10 )
+//									returnURL3d = Request.Url.GetLeftPart(UriPartial.Authority); // Not always correct
 								ViewState["OptionCode3d"] = optionCode3d;
 								ViewState["BureauCode3d"] = bureauCode3d;
 								ViewState["ReturnURL3d"]  = returnURL3d;
@@ -949,13 +949,20 @@ namespace PCIWebFinAid
 								using ( TransactionAirWallex tranAW = new TransactionAirWallex() )
 								{
 								//	Testing
-									returnURL3d = "https://www.eservsecure.com";
+								//	returnURL3d = "https://www.eservsecure.com";
 								//	Testing
 									if ( returnURL3d.Length < 10 )
+										returnURL3d        = Tools.ProviderCredentials("AirWallex","ReturnUrl");
+									if ( returnURL3d.Length < 10 )
 										returnURL3d        = Request.Url.GetLeftPart(UriPartial.Authority);
+									if ( returnURL3d.ToUpper().Contains("AZUREWEBSITES.NET") )
+										returnURL3d        = "https://www.eservsecure.com";
 									tranAW.ReturnURL      = returnURL3d;
 									int    ret            = tranAW.CardValidation(payment);
-									string err            = "ret="+ret.ToString()+" / returnURL="+returnURL3d+" / customerId=";
+									string err            = "ret="+ret.ToString()+" / returnURL="+returnURL3d+" / customerId="+tranAW.CustomerId;
+
+									Tools.LogInfo ("btnNext_Click/30042",err,222,this); // Use logDebug
+
 									if ( ret == 0 )
 									{
 										awClientSecret     = tranAW.PaymentReference;
@@ -985,14 +992,15 @@ namespace PCIWebFinAid
 
 										if ( miscList.ExecQuery(sql,0,"",false,true) != 0 )
 										{
-											Tools.LogInfo ("btnNext_Click/30044",err+awCustomerId,222,this); // Use logDebug
-											Tools.LogInfo ("btnNext_Click/30045",sql,222,this);              // Use logDebug
-											SetErrorDetail("btnNext_Click/30046",30046,"Internal database error (" + spr + ")",sql);
+										//	Tools.LogInfo ("btnNext_Click/30043",err,222,this); // Use logDebug
+											Tools.LogInfo ("btnNext_Click/30044",sql,222,this); // Use logDebug
+											SetErrorDetail("btnNext_Click/30045",30045,"Internal database error (" + spr + ")",sql);
 										}
 									}
 									else
 									{
-										Tools.LogInfo ("btnNext_Click/30047",err+awCustomerId,222,this);    // Use logDebug
+									//	Tools.LogInfo ("btnNext_Click/30046",err,222,this);                 // Use logDebug
+										Tools.LogInfo ("btnNext_Click/30047",tranAW.XMLResult,222,this);    // Use logDebug
 										SetErrorDetail("btnNext_Click/30048",30048,"We are unable to validate this card number (ret="+ret.ToString()+")",tranAW.ResultSummary);
 									}
 								}
