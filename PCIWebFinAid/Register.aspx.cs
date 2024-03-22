@@ -961,12 +961,29 @@ namespace PCIWebFinAid
 										hdnMode3d.Value    = "87";
 										lblError.Text      = "For Security reasons, your subscription needs to be verified by your bank. Please stand by as we redirect you to your bank's payment page";
 										lblError.Visible   = true;
+
+										spr = "sp_FILL_3DSAuthorisation";
+										sql = "exec " + spr + " @PaymentBureauCode =" + Tools.DBString(payment.BureauCode)
+										                    + ",@MerchantReference =" + Tools.DBString(contractCode)
+										                    + ",@TransactionCUR ="    + Tools.DBString(payment.CurrencyCode)
+										                    + ",@CustomerID ="        + Tools.DBString(awCustomerId)
+										                    + ",@TransactionAmount =" + payment.PaymentAmount.ToString()
+											                 + ",@SecureRegistrationPaymentTypeCode = 'NPA'"
+										                    + ",@TransactionStatusCode = '00'"
+										                    + ",@PaymentConsentID = ''"
+										                    + ",@PaymentBureauToken = ''"
+										                    + ",@BureauSubmissionSoap = ''"
+											                 + ",@BureauResultSoap = ''"
+												              + ",@TransactionFileResultCode = ''"
+										                    + ",@AuthorisationResultCode = '" + ( awCustomerId.Length > 0 ? "P" : "F" ) + "'";
+
+										                   //	@AuthorisationResultCode can be 'P' (Pre-authorization), 'F' (failed), 'S' (succeeded)
+
+										if ( miscList.ExecQuery(sql,0) != 0 )
+											SetErrorDetail("btnNext_Click/30047",30047,"Internal database error (" + spr + ")",sql);
 									}
 									else
-									{
-									//	pageNo = 5;
-										SetErrorDetail("btnNext_Click/30058",30058,"We are unable to validate this card number (ret="+ret.ToString()+")",tranAW.ResultSummary);
-									}
+										SetErrorDetail("btnNext_Click/30048",30048,"We are unable to validate this card number (ret="+ret.ToString()+")",tranAW.ResultSummary);
 								}
 							}
 						}
@@ -986,14 +1003,15 @@ namespace PCIWebFinAid
 								                    + ",@MerchantReference =" + Tools.DBString(contractCode)
 								                    + ",@TransactionCUR ="    + Tools.DBString(awCurrencyCode)
 								                    + ",@CustomerID ="        + Tools.DBString(awCustomerId)
-								                    + ",@PaymentConsentID = ''" // + Tools.DBString(awPaymentConsentId)
 								                    + ",@TransactionAmount =" + amount3d.ToString()
 								                    + ",@SecureRegistrationPaymentTypeCode = 'NPA'"
 								                    + ",@TransactionStatusCode = '00'"
+								                    + ",@PaymentConsentID = ''" // + Tools.DBString(awPaymentConsentId)
 								                    + ",@PaymentBureauToken = ''"
 								                    + ",@BureauSubmissionSoap = ''"
 								                    + ",@BureauResultSoap = ''"
-								                    + ",@TransactionFileResultCode = ''";
+								                    + ",@TransactionFileResultCode = ''"
+										              + ",@AuthorisationResultCode = 'S'";
 								if ( miscList.ExecQuery(sql,0) != 0 )
 									SetErrorDetail("btnNext_Click/30065",30065,"Internal database error (" + spr + ")",sql);
 							}
