@@ -781,7 +781,7 @@ if ( pageNo == 5 && mode == 87 )
 
 // STEP #8: Add an event listener to handle events when the payment has failed.
 	domElement.addEventListener('onError', (event) => {
-	//	alert('AW Fail');
+		alert(event.detail);
 		SetEltValue('hdnMode3d','129');
 		SetEltValue('lblError','The verification payment failed. Please try again');
 		ShowElt('lblError',true);
