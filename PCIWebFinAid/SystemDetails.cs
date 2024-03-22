@@ -4,6 +4,6 @@
 	{
 		public static string AppName    = "Prosperian BackOffice";
 		public static string AppVersion = "1.0.182";
-		public static string AppDate    = "2024/03/22 13:58:47";
+		public static string AppDate    = "2024/03/22 14:26:47";
 	}
 }

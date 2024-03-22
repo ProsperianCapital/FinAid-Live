@@ -979,9 +979,11 @@ namespace PCIWebFinAid
 
 										                   //	@AuthorisationResultCode can be 'P' (Pre-authorization), 'F' (failed), 'S' (succeeded)
 
-										Tools.LogInfo("btnNext_Click/30045","ret=0 / customerId="+awCustomerId+" / "+sql,222,this);
-										if ( miscList.ExecQuery(sql,0) != 0 )
+										if ( miscList.ExecQuery(sql,0,"",false,true) != 0 )
+										{
+											Tools.LogInfo ("btnNext_Click/30045","ret=0 / customerId="+awCustomerId+" / "+sql,222,this);
 											SetErrorDetail("btnNext_Click/30046",30046,"Internal database error (" + spr + ")",sql);
+										}
 									}
 									else
 									{
@@ -1016,9 +1018,11 @@ namespace PCIWebFinAid
 								                    + ",@BureauResultSoap = ''"
 								                    + ",@TransactionFileResultCode = ''"
 										              + ",@AuthorisationResultCode = 'S'";
-								Tools.LogInfo("btnNext_Click/30064",sql,222,this);
-								if ( miscList.ExecQuery(sql,0) != 0 )
+								if ( miscList.ExecQuery(sql,0,"",false,true) != 0 )
+								{
+									Tools.LogInfo ("btnNext_Click/30064",sql,222,this);
 									SetErrorDetail("btnNext_Click/30065",30065,"Internal database error (" + spr + ")",sql);
+								}
 							}
 							lbl100325.Text = "";
 							spr = "sp_WP_Get_WebsiteProductOptionA";

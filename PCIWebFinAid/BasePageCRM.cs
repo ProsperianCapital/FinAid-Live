@@ -25,8 +25,11 @@ namespace PCIWebFinAid
 			{
 				mList.UpdateQuery(sql);
 				string msg = mList.ReturnMessage;
+
 				if ( mList.ReturnCode == 0 )
 					LoadPageData();
+				else if ( mList.ReturnCode == (int)Constants.ErrorType.SQLNotImplemented )
+					msg = "This functionality is not implemented yet";
 				else if ( msg.Length > 0 )
 					msg = "[" + mList.ReturnCode.ToString() + "] " + msg;
 				else
