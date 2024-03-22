@@ -11,7 +11,7 @@ namespace PCIWebFinAid
 {
 	public partial class Register : BasePage
 	{
-		private   byte   logDebug = 40; // 240;
+		private   byte   logDebug = 10; // 240;
 		private   string productCode;
 		private   string languageCode;
 		private   string languageDialectCode;
@@ -948,10 +948,14 @@ namespace PCIWebFinAid
 
 								using ( TransactionAirWallex tranAW = new TransactionAirWallex() )
 								{
+								//	Testing
+									returnURL3d = "https://www.eservsecure.com";
+								//	Testing
 									if ( returnURL3d.Length < 10 )
 										returnURL3d        = Request.Url.GetLeftPart(UriPartial.Authority);
 									tranAW.ReturnURL      = returnURL3d;
-									int ret               = tranAW.CardValidation(payment);
+									int    ret            = tranAW.CardValidation(payment);
+									string err            = "ret="+ret.ToString()+" / returnURL="+returnURL3d+" / customerId=";
 									if ( ret == 0 )
 									{
 										awClientSecret     = tranAW.PaymentReference;
@@ -981,13 +985,14 @@ namespace PCIWebFinAid
 
 										if ( miscList.ExecQuery(sql,0,"",false,true) != 0 )
 										{
-											Tools.LogInfo ("btnNext_Click/30045","ret=0 / customerId="+awCustomerId+" / "+sql,222,this);
+											Tools.LogInfo ("btnNext_Click/30044",err+awCustomerId,222,this); // Use logDebug
+											Tools.LogInfo ("btnNext_Click/30045",sql,222,this);              // Use logDebug
 											SetErrorDetail("btnNext_Click/30046",30046,"Internal database error (" + spr + ")",sql);
 										}
 									}
 									else
 									{
-										Tools.LogInfo ("btnNext_Click/30047","ret="+ret.ToString()+" / customerId="+awCustomerId,222,this);
+										Tools.LogInfo ("btnNext_Click/30047",err+awCustomerId,222,this);    // Use logDebug
 										SetErrorDetail("btnNext_Click/30048",30048,"We are unable to validate this card number (ret="+ret.ToString()+")",tranAW.ResultSummary);
 									}
 								}
