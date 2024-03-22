@@ -963,27 +963,31 @@ namespace PCIWebFinAid
 										lblError.Visible   = true;
 
 										spr = "sp_FILL_3DSAuthorisation";
-										sql = "exec " + spr + " @PaymentBureauCode =" + Tools.DBString(payment.BureauCode)
-										                    + ",@MerchantReference =" + Tools.DBString(contractCode)
-										                    + ",@TransactionCUR ="    + Tools.DBString(payment.CurrencyCode)
-										                    + ",@CustomerID ="        + Tools.DBString(awCustomerId)
-										                    + ",@TransactionAmount =" + payment.PaymentAmount.ToString()
+										sql = "exec " + spr + " @PaymentBureauCode ="    + Tools.DBString(payment.BureauCode)
+										                    + ",@MerchantReference ="    + Tools.DBString(contractCode)
+										                    + ",@TransactionCUR ="       + Tools.DBString(payment.CurrencyCode)
+										                    + ",@CustomerID ="           + Tools.DBString(awCustomerId)
+										                    + ",@BureauSubmissionSoap =" + Tools.DBString(tranAW.XMLSent)
+											                 + ",@BureauResultSoap ="     + Tools.DBString(tranAW.XMLResult)
+										                    + ",@TransactionAmount ="    + payment.PaymentAmount.ToString()
 											                 + ",@SecureRegistrationPaymentTypeCode = 'NPA'"
 										                    + ",@TransactionStatusCode = '00'"
 										                    + ",@PaymentConsentID = ''"
 										                    + ",@PaymentBureauToken = ''"
-										                    + ",@BureauSubmissionSoap = ''"
-											                 + ",@BureauResultSoap = ''"
 												              + ",@TransactionFileResultCode = ''"
 										                    + ",@AuthorisationResultCode = '" + ( awCustomerId.Length > 0 ? "P" : "F" ) + "'";
 
 										                   //	@AuthorisationResultCode can be 'P' (Pre-authorization), 'F' (failed), 'S' (succeeded)
 
+										Tools.LogInfo("btnNext_Click/30045","ret=0 / customerId="+awCustomerId+" / "+sql,222,this);
 										if ( miscList.ExecQuery(sql,0) != 0 )
-											SetErrorDetail("btnNext_Click/30047",30047,"Internal database error (" + spr + ")",sql);
+											SetErrorDetail("btnNext_Click/30046",30046,"Internal database error (" + spr + ")",sql);
 									}
 									else
+									{
+										Tools.LogInfo ("btnNext_Click/30047","ret="+ret.ToString()+" / customerId="+awCustomerId,222,this);
 										SetErrorDetail("btnNext_Click/30048",30048,"We are unable to validate this card number (ret="+ret.ToString()+")",tranAW.ResultSummary);
+									}
 								}
 							}
 						}
@@ -1012,6 +1016,7 @@ namespace PCIWebFinAid
 								                    + ",@BureauResultSoap = ''"
 								                    + ",@TransactionFileResultCode = ''"
 										              + ",@AuthorisationResultCode = 'S'";
+								Tools.LogInfo("btnNext_Click/30064",sql,222,this);
 								if ( miscList.ExecQuery(sql,0) != 0 )
 									SetErrorDetail("btnNext_Click/30065",30065,"Internal database error (" + spr + ")",sql);
 							}
