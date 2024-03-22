@@ -784,7 +784,7 @@ if ( pageNo == 5 && mode == 87 )
 		SetEltValue('hdnMode3d','129');
 		SetEltValue('lblError','The verification payment failed. Please try again');
 		ShowElt('lblError',true);
-		alert(event.detail);
+	//	alert(event.detail);
 	});
 }
 
