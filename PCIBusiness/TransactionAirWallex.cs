@@ -626,13 +626,13 @@ namespace PCIBusiness
 				errCode                           = WebCall(webRequest, "Access Token", "", "", ref strResult);
 				accessToken                       = Tools.JSONValue(strResult,"token");
 
-				Tools.LogInfo("GetAccessToken/10","New access token="+accessToken+" / result="+strResult,logPriority,this);
+//				Tools.LogInfo("GetAccessToken/10","New access token="+accessToken+" / result="+strResult,logPriority,this);
 
 				if ( errCode == 0 && accessToken.Length > 0 )
 					errCode = SaveAccessToken();
 			}
-			else
-				Tools.LogInfo("GetAccessToken/20","Existing access token="+accessToken,logPriority,this);
+//			else
+//				Tools.LogInfo("GetAccessToken/20","Existing access token="+accessToken,logPriority,this);
 
 			return errCode;
 		}
