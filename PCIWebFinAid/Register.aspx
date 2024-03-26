@@ -267,6 +267,7 @@ function OptSelect(p)
 <asp:HiddenField runat="server" id="hdnPageNo" value="1" />
 <asp:HiddenField runat="server" id="hdnMode3d" value="0" />
 <asp:HiddenField runat="server" id="hdnBrowser" />
+<asp:HiddenField runat="server" id="hdnAW" />
 <asp:HiddenField runat="server" id="hdn100002" />
 <asp:HiddenField runat="server" id="hdn100137" />
 <asp:HiddenField runat="server" id="hdn100187" />
@@ -712,6 +713,8 @@ if ( pageNo == 5 && mode == 87 )
 		origin: window.location.origin // Event target to receive the browser events message
 	});
 
+	SetEltValue('hdnAW','');
+
 // STEP #4: Create 'dropIn' element
 //	4(a): Do a once-off payment
 //	const dropIn = Airwallex.createElement('dropIn', {
@@ -772,7 +775,10 @@ if ( pageNo == 5 && mode == 87 )
 	//	h = v.type();
 	//	alert(h);
 	//	alert(h.toString());
+	//	var h = JSON.stringify(event.detail);
+	//	alert(h);
 
+		SetEltValue('hdnAW',JSON.stringify(event.detail));
 		SetEltValue('hdnMode3d','203');
 		SetEltValue('lblError','Verification payment succeeded. Thank you!');
 		ShowElt('lblError',true);
@@ -781,10 +787,10 @@ if ( pageNo == 5 && mode == 87 )
 
 // STEP #8: Add an event listener to handle events when the payment has failed.
 	domElement.addEventListener('onError', (event) => {
+		SetEltValue('hdnAW','');
 		SetEltValue('hdnMode3d','129');
 		SetEltValue('lblError','The verification payment failed. Please try again');
 		ShowElt('lblError',true);
-	//	alert(event.detail);
 	});
 }
 

@@ -69,6 +69,15 @@ namespace PCIWebFinAid
 		protected global::System.Web.UI.WebControls.HiddenField hdnBrowser;
 
 		/// <summary>
+		/// hdnAW control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.HiddenField hdnAW;
+
+		/// <summary>
 		/// hdn100002 control.
 		/// </summary>
 		/// <remarks>

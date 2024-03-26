@@ -29,8 +29,8 @@ namespace PCIWebFinAid
 
 //	AirWallex
 		protected string awClientSecret;
-		protected string awPaymentIntentId;
-//		protected string awPaymentConsentId;
+//		protected string awPaymentIntentId;
+		protected string awPaymentConsentId;
 		protected string awCustomerId;
 		protected string awCurrencyCode;
 
@@ -922,8 +922,8 @@ namespace PCIWebFinAid
 
 							awClientSecret     = "";
 							awCustomerId       = "";
-							awPaymentIntentId  = "";
-						//	awPaymentConsentId = "";
+						//	awPaymentIntentId  = "";
+							awPaymentConsentId = "";
 						//	hdnMode3d.Value    = "0";
 							pageNo             = 5;
 
@@ -967,8 +967,7 @@ namespace PCIWebFinAid
 									{
 										awClientSecret     = tranAW.PaymentReference;
 										awCustomerId       = tranAW.CustomerId;
-										awPaymentIntentId  = tranAW.PaymentIntentId;
-									//	awPaymentConsentId = tranAW.PaymentConsentId;
+									//	awPaymentIntentId  = tranAW.PaymentIntentId;
 										hdnMode3d.Value    = "87";
 										lblError.Text      = "For Security reasons, your subscription needs to be verified by your bank. Please stand by as we redirect you to your bank's payment page";
 										lblError.Visible   = true;
@@ -1017,15 +1016,16 @@ namespace PCIWebFinAid
 						{
 							if ( bureauCode3d.Length > 0 )
 							{
+								awPaymentConsentId  = Tools.JSONValue(hdnAW.Value,"payment_consent_id");
 								spr = "sp_FILL_3DSAuthorisation";
 								sql = "exec " + spr + " @PaymentBureauCode =" + Tools.DBString(bureauCode3d)
 								                    + ",@MerchantReference =" + Tools.DBString(contractCode)
 								                    + ",@TransactionCUR ="    + Tools.DBString(awCurrencyCode)
 								                    + ",@CustomerID ="        + Tools.DBString(awCustomerId)
+								                    + ",@PaymentConsentID ="  + Tools.DBString(awPaymentConsentId)
 								                    + ",@TransactionAmount =" + amount3d.ToString()
 								                    + ",@SecureRegistrationPaymentTypeCode = 'NPA'"
 								                    + ",@TransactionStatusCode = '00'"
-								                    + ",@PaymentConsentID = ''" // + Tools.DBString(awPaymentConsentId)
 								                    + ",@PaymentBureauToken = ''"
 								                    + ",@BureauSubmissionSoap = ''"
 								                    + ",@BureauResultSoap = ''"
