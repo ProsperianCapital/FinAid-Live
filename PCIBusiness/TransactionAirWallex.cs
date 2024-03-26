@@ -605,7 +605,7 @@ namespace PCIBusiness
 							errCode     = 30;
 							accessToken = mList.GetColumn    ("AccessTokenID");
 							accessDate  = mList.GetColumnDate("AccessTokenDate",0);
-							if ( accessToken.Length > 0 && accessDate.AddMinutes(25) > System.DateTime.Now )
+							if ( accessToken.Length > 0 && accessDate.AddMinutes(20) > System.DateTime.Now )
 								errCode  = 0;
 							else
 								errCode  = 40;
@@ -626,9 +626,14 @@ namespace PCIBusiness
 				errCode                           = WebCall(webRequest, "Access Token", "", "", ref strResult);
 				accessToken                       = Tools.JSONValue(strResult,"token");
 
+				Tools.LogInfo("GetAccessToken/10","New access token="+accessToken+" / result="+strResult,logPriority,this);
+
 				if ( errCode == 0 && accessToken.Length > 0 )
 					errCode = SaveAccessToken();
 			}
+			else
+				Tools.LogInfo("GetAccessToken/20","Existing access token="+accessToken,logPriority,this);
+
 			return errCode;
 		}
 

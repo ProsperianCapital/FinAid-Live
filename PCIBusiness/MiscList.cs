@@ -38,11 +38,17 @@ namespace PCIBusiness
 		public int UpdateQuery(string sqlQuery)
 		{
 			returnData    = "";
-			returnMessage = "Internal SQL error/1";
+			returnMessage = "SQL not implemented";
+			returnCode    = (int)Constants.ErrorType.SQLNotImplemented;
+
+			if ( sqlQuery.ToUpper().Contains(" SP_XXXX") ) // Not implemented yet
+				return returnCode;
+
 			try
 			{
-				sql        = sqlQuery;
-				returnCode = base.ExecuteSQL(null);
+				sql           = sqlQuery;
+				returnMessage = "Internal SQL error/1";
+				returnCode    = base.ExecuteSQL(null);
 				if ( returnCode == 0 )
 				{
 					returnCode    = GetColumnInt("ReturnCode",0);
