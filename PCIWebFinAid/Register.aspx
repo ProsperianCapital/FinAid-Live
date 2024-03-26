@@ -718,9 +718,9 @@ if ( pageNo == 5 && mode == 87 )
 // STEP #4: Create 'dropIn' element
 //	4(a): Do a once-off payment
 //	const dropIn = Airwallex.createElement('dropIn', {
-//		intent_id: '<%=awPaymentIntentId%>',
-//		client_secret: '<%=awClientSecret%>',
-//		currency: '<%=awCurrencyCode%>',
+//		intent_id: '< perc =awPaymentIntentId >',
+//		client_secret: '< perc =awClientSecret >',
+//		currency: '< perc =awCurrencyCode >',
 //		methods: ['card']
 //	});
 
@@ -762,19 +762,6 @@ if ( pageNo == 5 && mode == 87 )
 // STEP #7: Add an event listener to handle events when the payment is successful.
 	domElement.addEventListener('onSuccess', (event) => {
 	//	alert('AW Success');
-	//	var v = event;
-	//	var h = v;
-	//	alert(h);
-	//	alert(h.toString());
-	//	h = v.detail;
-	//	alert(h);
-	//	alert(h.toString());
-	//	h = v.target;
-	//	alert(h);
-	//	alert(h.toString());
-	//	h = v.type();
-	//	alert(h);
-	//	alert(h.toString());
 	//	var h = JSON.stringify(event.detail);
 	//	alert(h);
 
