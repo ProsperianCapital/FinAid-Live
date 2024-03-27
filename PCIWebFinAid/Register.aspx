@@ -738,10 +738,12 @@ if ( pageNo == 5 && mode == 87 )
 //            "currency": "EUR" } }
 //  }
 
+//	amount: <%=amount3d%>,
+
 	const dropIn = Airwallex.createElement('dropIn', {
 		client_secret: '<%=awClientSecret%>',
-		currency: '<%=awCurrencyCode%>',
 		customer_id: '<%=awCustomerId%>',
+		currency: '<%=awCurrencyCode%>',
 		mode: 'recurring',
 		recurringOptions:
 			{ card:
