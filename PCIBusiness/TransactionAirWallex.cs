@@ -112,7 +112,8 @@ namespace PCIBusiness
 			if ( txURL.Length > 0 && ! txURL.ToUpper().EndsWith("DETOKENIZE") )
 				txURL = txURL + "/TransparentGatewayAPI/Detokenize";
 			if ( Tools.NullToString(returnURL).Length < 1 )
-				returnURL = "https://www.eservsecure.com";
+			//	returnURL = "https://www.eservsecure.com";
+				returnURL = "https://lifestyledirectglobal.com";
 
 			resultCode = "11";
 			resultMsg  = "(11) Web service call failed";
@@ -270,7 +271,6 @@ namespace PCIBusiness
 				}
 
 				else if ( transactionType == (byte)Constants.TransactionType.TokenPayment ||
-//				          transactionType == (byte)Constants.TransactionType.ThreeDSecureCheck ||
 				          transactionType == (byte)Constants.TransactionType.CardPaymentThirdParty )
 				{
 				//	Create a Payment Intent
@@ -281,40 +281,39 @@ namespace PCIBusiness
 					resultCode = "41";
 					resultMsg  = "(41) Internal error creating a payment intent";
 
-				//	Ver 1: Use a previously created customer
-				//
-				//	xmlSent    = "{ \"amount\" : \"" + payment.PaymentAmountDecimal + "\","
-				//	           +   "\"currency\" : \"" + payment.CurrencyCode + "\","
-				//	           +   "\"customer_id\" : \"" + payment.CustomerID + "\","
-				//	           +   "\"descriptor\" : \"" + payment.PaymentDescription + "\","
-				//	           +   "\"merchant_order_id\" : \"" + payment.MerchantReference + "\","
-				//	           +   "\"risk_control_options\" : { \"skip_risk_processing\" : \"true\" },"
-				//	           +   "\"return_url\" : \"" + ReturnURL + "\","
-				//	           +   "\"request_id\" : \"" + (Guid.NewGuid()).ToString() + "\" }";
-
-				//	Ver 2: Provide customer details
-				//
-					xmlSent    = "{ \"amount\" : \"" + payment.PaymentAmountDecimal + "\","
-					           +   "\"currency\" : \"" + payment.CurrencyCode + "\","
-					           +   "\"customer\" : {"
-					           +     "\"address\" : { \"country_code\" : \"" + payment.CountryCode(65) + "\" }," // 2 characters, eg. ZA, US or CN
-					           +     "\"first_name\" : \"" + payment.FirstName + "\","
-					           +     "\"last_name\" : \"" + payment.LastName + "\","
-					           +     "\"email\" : \"" + payment.EMail + "\","
-					           +     "\"phone_number\" : \"" + payment.PhoneCell + "\","
-					           +     "\"merchant_customer_id\" : \"" + payment.ContractCode + "\" },"
-//					           +   "\"payment_method_options\" : {"
-//					           +     "\"card\" : {"
-//					           +       "\"risk_control\" : {"
-//					           +         "\"skip_risk_processing\" : true,"
-//	//				           +         "\"three_domain_secure_action\" : \"SKIP_3DS\","
-//					           +         "\"three_ds_action\" : \"SKIP_3DS\" },"
-//					           +       "\"three_ds_action\" : \"SKIP_3DS\" } },"
-					           +   "\"descriptor\" : \"" + payment.PaymentDescription + "\","
-					           +   "\"merchant_order_id\" : \"" + payment.MerchantReference + "\","
-					           +   "\"risk_control_options\" : { \"skip_risk_processing\" : true },"
-					           +   "\"return_url\" : \"" + ReturnURL + "\","
-					           +   "\"request_id\" : \"" + (Guid.NewGuid()).ToString() + "\" }";
+					if ( payment.CustomerID.Length > 0 )
+					//	Ver 1: Use a previously created customer
+						xmlSent = "{ \"amount\" : \"" + payment.PaymentAmountDecimal + "\","
+						        +   "\"currency\" : \"" + payment.CurrencyCode + "\","
+						        +   "\"customer_id\" : \"" + payment.CustomerID + "\","
+						        +   "\"descriptor\" : \"" + payment.PaymentDescription + "\","
+						        +   "\"merchant_order_id\" : \"" + payment.MerchantReference + "\","
+						        +   "\"risk_control_options\" : { \"skip_risk_processing\" : \"true\" },"
+						        +   "\"return_url\" : \"" + ReturnURL + "\","
+						        +   "\"request_id\" : \"" + (Guid.NewGuid()).ToString() + "\" }";
+					else
+					//	Ver 2: Provide customer details
+						xmlSent = "{ \"amount\" : \"" + payment.PaymentAmountDecimal + "\","
+						        +   "\"currency\" : \"" + payment.CurrencyCode + "\","
+						        +   "\"customer\" : {"
+						        +     "\"address\" : { \"country_code\" : \"" + payment.CountryCode(65) + "\" }," // 2 characters, eg. ZA, US or CN
+						        +     "\"first_name\" : \"" + payment.FirstName + "\","
+						        +     "\"last_name\" : \"" + payment.LastName + "\","
+						        +     "\"email\" : \"" + payment.EMail + "\","
+						        +     "\"phone_number\" : \"" + payment.PhoneCell + "\","
+						        +     "\"merchant_customer_id\" : \"" + payment.ContractCode + "\" },"
+//						        +   "\"payment_method_options\" : {"
+//						        +     "\"card\" : {"
+//						        +       "\"risk_control\" : {"
+//						        +         "\"skip_risk_processing\" : true,"
+//	//					        +         "\"three_domain_secure_action\" : \"SKIP_3DS\","
+//						        +         "\"three_ds_action\" : \"SKIP_3DS\" },"
+//						        +       "\"three_ds_action\" : \"SKIP_3DS\" } },"
+						        +   "\"descriptor\" : \"" + payment.PaymentDescription + "\","
+						        +   "\"merchant_order_id\" : \"" + payment.MerchantReference + "\","
+						        +   "\"risk_control_options\" : { \"skip_risk_processing\" : true },"
+						        +   "\"return_url\" : \"" + ReturnURL + "\","
+						        +   "\"request_id\" : \"" + (Guid.NewGuid()).ToString() + "\" }";
 
 					ret             = 510;
 					webRequest      = (HttpWebRequest)WebRequest.Create(url+"pa/payment_intents/create");
@@ -333,12 +332,13 @@ namespace PCIBusiness
 				//	Confirm the Payment Intent
 				//	https://www.airwallex.com/docs/api#/Payment_Acceptance/Payment_Intents/_api_v1_pa_payment_intents__id__confirm/post
 
+					ret        = 600;
+					strResult  = "";
+					resultCode = "42";
+					resultMsg  = "(42) Internal error confirming a payment intent";
+
 				//	Ver 1: Reference a previous Payment Consent (does not work - it asks for customer intervention)
 				//
-				//	ret        = 600;
-				//	strResult  = "";
-				//	resultCode = "42";
-				//	resultMsg  = "(42) Internal error confirming a payment intent";
 				//	xmlSent    = "{ \"customer_id\" : \"" + payment.CustomerID + "\","
 				//	           +   "\"payment_consent_reference\" :"
 				//	           +     "{ \"cvc\" : \"" + payment.CardCVV + "\","
@@ -372,10 +372,6 @@ namespace PCIBusiness
 
 				//	Ver 2: Provide full card details. Works
 				//
-				//	ret        = 600;
-				//	strResult  = "";
-				//	resultCode = "43";
-				//	resultMsg  = "(43) Internal error confirming a payment intent";
 				//	xmlSent    = "{ \"payment_method\" :"
 				//	           +     "{ \"type\" : \"card\","
 				//	           +       "\"card\" :"
@@ -393,23 +389,23 @@ namespace PCIBusiness
 				//	           +          "\"number_type\" : \"PAN\" } },"
 				//	           +   "\"request_id\" : \"" + (Guid.NewGuid()).ToString() + "\" }";
 
-				//	Ver 3: Provide full card details but using a TokenEx token for the card number
-				//
-					ret        = 600;
-					strResult  = "";
-					resultCode = "44";
-					resultMsg  = "(44) Internal error confirming a payment intent";
-					ret        = 605;
-					xmlSent    = "{ \"request_id\" : \"" + (Guid.NewGuid()).ToString() + "\","
-					           +   "\"payment_method\" :"
-					           +     "{ \"type\" : \"card\","
-					           +       "\"card\" : {"
-					           +          "\"number\" : \"##CARDNUM##\","
-					           +          "\"cvc\" : \"##CVV##\","
-					           +          "\"number_type\" : \"PAN\","
-					           +          "\"expiry_month\" : \"" + payment.CardExpiryMM + "\","
-					           +          "\"expiry_year\" : \""  + payment.CardExpiryYYYY + "\","
-					           +          "\"name\" : \""         + payment.CardName + "\"";
+					if ( transactionType == (byte)Constants.TransactionType.CardPaymentThirdParty ) // TokenEx
+					//	Ver 3: Provide full card details but using a TokenEx token for the card number
+						xmlSent = "{ \"request_id\" : \"" + (Guid.NewGuid()).ToString() + "\","
+						        +   "\"payment_method\" :"
+						        +     "{ \"type\" : \"card\","
+						        +       "\"card\" : {"
+						        +          "\"number\" : \"##CARDNUM##\","
+						        +          "\"cvc\" : \"##CVV##\","
+						        +          "\"number_type\" : \"PAN\","
+						        +          "\"expiry_month\" : \"" + payment.CardExpiryMM + "\","
+						        +          "\"expiry_year\" : \""  + payment.CardExpiryYYYY + "\","
+						        +          "\"name\" : \""         + payment.CardName + "\"";
+					else if ( payment.CustomerID.Length > 0 )
+					//	Ver 4: Use an existing customer id
+						xmlSent = "{ \"request_id\" : \"" + (Guid.NewGuid()).ToString() + "\","
+						        +   "\"customer_id\" : \"" + payment.CustomerID + "\","
+						        +   "\"payment_consent_reference\" : { \"id\" : \"" + payment.CardToken + "\" }";
 
 					ret        = 607;
 					if ( payment.CountryCode(65).Length > 0 && payment.FirstName.Length > 0 && payment.LastName.Length > 0 )
@@ -483,6 +479,7 @@ namespace PCIBusiness
 				 		xmlSent      = xmlSent.Replace("##CVV##",payment.CardCVV);
 						webRequest   = (HttpWebRequest)WebRequest.Create(url+"pa/payment_intents/" + paymentIntentId + "/confirm");
 					}
+
 					ret             = 640;
 					wCall           = WebCall(webRequest, "Confirm payment intent", accessToken, xmlSent, ref strResult);
 					payRef          = Tools.JSONValue(strResult,"id");

@@ -257,7 +257,8 @@ namespace PCIBusiness
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.PaymentCloud) )
 					return "859v6V4N8H67pvAk";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.AirWallex) )
-					return "89322de818fdf05fa96e146c61bbb780476921aefc6d420b88df40099e6efc6da158f3856b0a481ce911ac54c74f293a"; // Dev
+//					return "89322de818fdf05fa96e146c61bbb780476921aefc6d420b88df40099e6efc6da158f3856b0a481ce911ac54c74f293a"; // Dev v1
+					return "c42c8248c6c6a4cd1436c96a9e2ab9eaf1f749498c3ce4a91df59194384086355d29be7ef5b5ca9159b78bfba5e993bf"; // Dev v2
 
 				return "";
 			}
@@ -329,7 +330,8 @@ namespace PCIBusiness
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.WorldPay) )
 					return "AI5QP9YBY291AGF5AD7I";
 				else if ( bureauCode == Tools.BureauCode(Constants.PaymentProvider.AirWallex) )
-					return "Ct49swvQRSK_3oYSfaTNoA"; // Dev
+//					return "Ct49swvQRSK_3oYSfaTNoA"; // Dev v1
+					return "rqNE09fJSHKceyv4AgAykg"; // Dev v2
 
 				return "";
 			}
