@@ -14,8 +14,8 @@ namespace PCIBusiness
 		protected string paymentConsentId;
 		protected string paymentIntentId;
 
-		static  string   accessToken;
 //		static  string   clientSecret;
+		static  string   accessToken;
 		static  DateTime accessDate;
 
 //		public  bool Successful
@@ -156,7 +156,7 @@ namespace PCIBusiness
 					ret        = 110;
 					webRequest = (HttpWebRequest)WebRequest.Create(url+"pa/customers/create");
 					ret        = 120;
-					wCall      = WebCall(webRequest, "Create customer", accessToken, xmlSent, ref strResult);
+					wCall      = WebCall(webRequest, "Create customer", xmlSent, ref strResult);
 					customerId = Tools.JSONValue(strResult,"id");
 					payRef     = Tools.JSONValue(strResult,"client_secret");
 
@@ -202,7 +202,7 @@ namespace PCIBusiness
 						webRequest                         = (HttpWebRequest)WebRequest.Create(url+"pa/payment_methods/create");
 
 					ret             = 230;
-					wCall           = WebCall(webRequest, "Create payment method", accessToken, xmlSent, ref strResult);
+					wCall           = WebCall(webRequest, "Create payment method", xmlSent, ref strResult);
 					paymentMethodId = Tools.JSONValue(strResult,"id");
 
 					if ( wCall > 0 || strResult.Length < 1 || paymentMethodId.Length < 1 )
@@ -221,7 +221,7 @@ namespace PCIBusiness
 					ret              = 310;
 					webRequest       = (HttpWebRequest)WebRequest.Create(url+"pa/payment_consents/create");
 					ret              = 320;
-					wCall            = WebCall(webRequest, "Create payment consent", accessToken, xmlSent, ref strResult);
+					wCall            = WebCall(webRequest, "Create payment consent", xmlSent, ref strResult);
 					paymentConsentId = Tools.JSONValue(strResult,"id");
 
 					if ( wCall > 0 || strResult.Length < 1 || paymentConsentId.Length < 1 )
@@ -258,7 +258,7 @@ namespace PCIBusiness
 					ret              = 410;
 					webRequest       = (HttpWebRequest)WebRequest.Create(url+"pa/payment_consents/" + paymentConsentId + "/verify");
 					ret              = 420;
-					wCall            = WebCall(webRequest, "Verify payment consent", accessToken, xmlSent, ref strResult);
+					wCall            = WebCall(webRequest, "Verify payment consent", xmlSent, ref strResult);
 //					payRef           = Tools.JSONValue(strResult,"client_secret");
 //					paymentConsentId = Tools.JSONValue(strResult,"id");
 					customerId       = Tools.JSONValue(strResult,"customer_id");
@@ -318,7 +318,7 @@ namespace PCIBusiness
 					ret             = 510;
 					webRequest      = (HttpWebRequest)WebRequest.Create(url+"pa/payment_intents/create");
 					ret             = 520;
-					wCall           = WebCall(webRequest, "Create payment intent", accessToken, xmlSent, ref strResult);
+					wCall           = WebCall(webRequest, "Create payment intent", xmlSent, ref strResult);
 					payRef          = Tools.JSONValue(strResult,"client_secret");
 					customerId      = Tools.JSONValue(strResult,"customer_id");
 					paymentIntentId = Tools.JSONValue(strResult,"id");
@@ -481,7 +481,7 @@ namespace PCIBusiness
 					}
 
 					ret             = 640;
-					wCall           = WebCall(webRequest, "Confirm payment intent", accessToken, xmlSent, ref strResult);
+					wCall           = WebCall(webRequest, "Confirm payment intent", xmlSent, ref strResult);
 					payRef          = Tools.JSONValue(strResult,"id");
 					customerId      = Tools.JSONValue(strResult,"customer_id");
 					paymentIntentId = Tools.JSONValue(strResult,"payment_intent_id");
@@ -520,7 +520,7 @@ namespace PCIBusiness
 			return 0;
 		}
 
-		private int WebCall(HttpWebRequest webRequest, string action, string accessToken, string dataSent, ref string dataReceived)
+		private int WebCall(HttpWebRequest webRequest, string action, string dataSent, ref string dataReceived)
 		{
 			int wRet     = 10;
 			dataReceived = "";
@@ -585,11 +585,12 @@ namespace PCIBusiness
 		private int GetAccessToken(byte mode,string url,string userID,string pwd)
 		{
 //			Mode = 1 means look for a key in the SQL DB. If one is not found or it has expired, get a new one
-//			Mode = 2 means get a new key, don;t even look in the SQL DB	
+//			Mode = 2 means get a new key, don't even look in the SQL DB	
 
 			int errCode = 0;
+			Tools.LogInfo("GetAccessToken/10","Mode="+mode.ToString()+", "+AccessTokenSummary(),logPriority,this);
 
-			if ( string.IsNullOrWhiteSpace(accessToken) && mode != 2 )
+			if ( ( string.IsNullOrWhiteSpace(accessToken) || accessDate <= System.DateTime.UtcNow ) && mode != 2 )
 				using ( MiscList mList = new MiscList() )
 					try
 					{
@@ -597,28 +598,36 @@ namespace PCIBusiness
 						errCode     = 20;
 						string sql  = "exec sp_GET_PaymentBureauAccessToken @PaymentBureauCode = " + Tools.DBString(bureauCode)
 						            +                                     ",@PaymentBureauUserCode = '001'";
-						Tools.LogInfo("GetAccessToken/10","Mode="+mode.ToString()+", No token, look for one ("+sql+")",logPriority,this);
+						Tools.LogInfo("GetAccessToken/20","Mode="+mode.ToString()+", No token, look for one ("+sql+")",logPriority,this);
 
 						if ( mList.ExecQuery(sql,0) == 0 && ! mList.EOF )
 						{
 							errCode     = 30;
 							accessToken = mList.GetColumn    ("AccessTokenID");
-							accessDate  = mList.GetColumnDate("AccessTokenDate",0);
-							if ( accessToken.Length > 0 && accessDate.AddMinutes(20) > System.DateTime.Now )
-								errCode  = 0;
-							else
+							accessDate  = mList.GetColumnDate("TokenExpiryDate");
+							if ( accessToken.Length < 1 || accessDate <= System.DateTime.UtcNow )
 								errCode  = 40;
+							else
+								errCode  = 0;
+
+						//	accessDate  = mList.GetColumnDate("AccessTokenDate",0);
+						//	if ( accessToken.Length > 0 && accessDate.AddMinutes(20) > System.DateTime.Now )
+						//		errCode  = 0;
+						//	else
+						//		errCode  = 40;
 						}
 						else
 							errCode     = 50;
-						Tools.LogInfo("GetAccessToken/20","Mode="+mode.ToString()+", token="+accessToken+", tokenDate="+accessDate.ToString()+", errCode="+errCode.ToString(),logPriority,this);
+
+						Tools.LogInfo("GetAccessToken/30","Mode="+mode.ToString()+", "+AccessTokenSummary()+", errCode="+errCode.ToString(),logPriority,this);
 					}
 					catch (Exception ex)
 					{
-						Tools.LogInfo("GetAccessToken/30",ex.ToString(),222,this);
+						Tools.LogInfo("GetAccessToken/40",ex.ToString(),222,this);
 					}
+
 			else
-				Tools.LogInfo("GetAccessToken/40","Mode="+mode.ToString()+", Existing token="+accessToken,logPriority,this);
+				Tools.LogInfo("GetAccessToken/50","Mode="+mode.ToString()+", Existing "+AccessTokenSummary(),logPriority,this);
 
 			if ( string.IsNullOrWhiteSpace(accessToken) || errCode > 0 || mode == 2 )
 			{
@@ -627,18 +636,33 @@ namespace PCIBusiness
 				HttpWebRequest webRequest         = (HttpWebRequest)WebRequest.Create(url+"authentication/login");
 				webRequest.Headers["x-client-id"] = userID;
 				webRequest.Headers["x-api-key"]   = pwd;
-				errCode                           = WebCall(webRequest, "Access Token", "", "", ref strResult);
+				errCode                           = WebCall(webRequest, "Access Token", "", ref strResult);
 				accessToken                       = Tools.JSONValue(strResult,"token");
+				accessDate                        = System.DateTime.UtcNow.AddMinutes(25);
 
-				Tools.LogInfo("GetAccessToken/50","Mode="+mode.ToString()+", New access token="+accessToken+", result="+strResult,logPriority,this);
+				Tools.LogInfo("GetAccessToken/60","Mode="+mode.ToString()+", New "+AccessTokenSummary()+", result="+strResult,logPriority,this);
 
 				if ( errCode == 0 && accessToken.Length > 0 )
 					errCode = SaveAccessToken();
 			}
 			else
-				Tools.LogInfo("GetAccessToken/60","Mode="+mode.ToString()+", Existing token="+accessToken,logPriority,this);
+				Tools.LogInfo("GetAccessToken/70","Mode="+mode.ToString()+", Existing "+AccessTokenSummary(),logPriority,this);
 
 			return errCode;
+		}
+
+		private string AccessTokenSummary()
+		{
+			if ( string.IsNullOrWhiteSpace(accessToken) )
+				return "Token=NULL";
+			string tk = accessToken;
+			int    ln = accessToken.Length;
+			if ( ln > 20 )
+				tk = tk.Substring(0,8) + "...." + tk.Substring(ln-8);
+			tk = "Token=" + tk + " (" + ln.ToString() + ") / Expiry=";
+			if ( accessDate < System.Convert.ToDateTime("1999/12/31") )
+				return tk + "NULL";
+			return tk + Tools.DateToString(accessDate,2,1);
 		}
 
 		private int SaveAccessToken()
@@ -656,14 +680,16 @@ namespace PCIBusiness
 					sql     = "exec sp_UPD_PaymentBureauAccessToken @PaymentBureauCode = " + Tools.DBString(bureauCode)
 				           +                                     ",@PaymentBureauUserCode = '001'"
 				           +                                     ",@AccessTokenID = "     + Tools.DBString(accessToken)
-				           +                                     ",@AccessTokenDate = "   + Tools.DateToSQL(System.DateTime.Now,1);
+				           +                                     ",@AccessTokenDate = "   + Tools.DateToSQL(System.DateTime.UtcNow,1);
+					Tools.LogInfo("SaveAccessToken/10",sql,logPriority,this);
 					if ( mList.ExecQuery(sql,0,"",false,true) == 0 )
 						errCode = 0;
-					}
-					catch (Exception ex)
-					{
-						Tools.LogException("SaveAccessToken",sql,ex,this);
-					}
+				}
+				catch (Exception ex)
+				{
+					Tools.LogInfo     ("SaveAccessToken/20",ex.ToString(),logPriority,this);
+					Tools.LogException("SaveAccessToken/30",sql,ex,this);
+				}
 
 			return errCode;
 		}
