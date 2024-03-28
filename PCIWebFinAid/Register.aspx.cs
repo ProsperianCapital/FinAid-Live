@@ -980,6 +980,10 @@ namespace PCIWebFinAid
 										                    + ",@BureauSubmissionSoap =" + Tools.DBString(tranAW.XMLSent)
 											                 + ",@BureauResultSoap ="     + Tools.DBString(tranAW.XMLResult)
 										                    + ",@TransactionAmount ="    + payment.PaymentAmount.ToString()
+								                          + ",@BIN = ''"
+								                          + ",@Last4Digits = ''"
+								                          + ",@CardNumber = ''"
+								                          + ",@CardBrand = ''"
 											                 + ",@SecureRegistrationPaymentTypeCode = 'NPA'"
 										                    + ",@TransactionStatusCode = '00'"
 										                    + ",@PaymentConsentID = ''"
