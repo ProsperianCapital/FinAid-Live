@@ -597,6 +597,8 @@ namespace PCIBusiness
 						errCode     = 20;
 						string sql  = "exec sp_GET_PaymentBureauAccessToken @PaymentBureauCode = " + Tools.DBString(bureauCode)
 						            +                                     ",@PaymentBureauUserCode = '001'";
+						Tools.LogInfo("GetAccessToken/10","Mode="+mode.ToString()+", No token, look for one ("+sql+")",logPriority,this);
+
 						if ( mList.ExecQuery(sql,0) == 0 && ! mList.EOF )
 						{
 							errCode     = 30;
@@ -609,9 +611,14 @@ namespace PCIBusiness
 						}
 						else
 							errCode     = 50;
+						Tools.LogInfo("GetAccessToken/20","Mode="+mode.ToString()+", token="+accessToken+", tokenDate="+accessDate.ToString()+", errCode="+errCode.ToString(),logPriority,this);
 					}
 					catch (Exception ex)
-					{ }
+					{
+						Tools.LogInfo("GetAccessToken/30",ex.ToString(),222,this);
+					}
+			else
+				Tools.LogInfo("GetAccessToken/40","Mode="+mode.ToString()+", Existing token="+accessToken,logPriority,this);
 
 			if ( string.IsNullOrWhiteSpace(accessToken) || errCode > 0 || mode == 2 )
 			{
@@ -623,13 +630,13 @@ namespace PCIBusiness
 				errCode                           = WebCall(webRequest, "Access Token", "", "", ref strResult);
 				accessToken                       = Tools.JSONValue(strResult,"token");
 
-//				Tools.LogInfo("GetAccessToken/10","New access token="+accessToken+" / result="+strResult,logPriority,this);
+				Tools.LogInfo("GetAccessToken/50","Mode="+mode.ToString()+", New access token="+accessToken+", result="+strResult,logPriority,this);
 
 				if ( errCode == 0 && accessToken.Length > 0 )
 					errCode = SaveAccessToken();
 			}
-//			else
-//				Tools.LogInfo("GetAccessToken/20","Existing access token="+accessToken,logPriority,this);
+			else
+				Tools.LogInfo("GetAccessToken/60","Mode="+mode.ToString()+", Existing token="+accessToken,logPriority,this);
 
 			return errCode;
 		}
@@ -639,21 +646,24 @@ namespace PCIBusiness
 			if ( string.IsNullOrWhiteSpace(accessToken) )
 				return 10;
 
-			int errCode = 10;
+			int    errCode = 10;
+			string sql     = "";
 
 			using ( MiscList mList = new MiscList() )
 				try
 				{
-					errCode    = 20;
-					string sql = "exec sp_UPD_PaymentBureauAccessToken @PaymentBureauCode = " + Tools.DBString(bureauCode)
-				              +                                     ",@PaymentBureauUserCode = '001'"
-				              +                                     ",@AccessTokenID = "     + Tools.DBString(accessToken)
-				              +                                     ",@AccessTokenDate = "   + Tools.DateToSQL(System.DateTime.Now,1);
+					errCode = 20;
+					sql     = "exec sp_UPD_PaymentBureauAccessToken @PaymentBureauCode = " + Tools.DBString(bureauCode)
+				           +                                     ",@PaymentBureauUserCode = '001'"
+				           +                                     ",@AccessTokenID = "     + Tools.DBString(accessToken)
+				           +                                     ",@AccessTokenDate = "   + Tools.DateToSQL(System.DateTime.Now,1);
 					if ( mList.ExecQuery(sql,0,"",false,true) == 0 )
 						errCode = 0;
 					}
 					catch (Exception ex)
-					{ }
+					{
+						Tools.LogException("SaveAccessToken",sql,ex,this);
+					}
 
 			return errCode;
 		}
