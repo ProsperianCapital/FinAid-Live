@@ -1018,6 +1018,9 @@ namespace PCIWebFinAid
 							{
 								awPaymentConsentId  = Tools.JSONValue(hdnAW.Value,"payment_consent_id");
 								awCustomerId        = Tools.JSONValue(hdnAW.Value,"customer_id");
+								string awBIN        = Tools.JSONValue(hdnAW.Value,"bin");
+								string awLast4      = Tools.JSONValue(hdnAW.Value,"last4");
+								string awBrand      = Tools.JSONValue(hdnAW.Value,"brand");
 								spr                 = Tools.JSONValue(hdnAW.Value,"amount");
 								if ( spr.Length > 0 )
 									amount3d         = Tools.StringToInt(spr);
@@ -1030,6 +1033,10 @@ namespace PCIWebFinAid
 								                    + ",@PaymentConsentID ="   + Tools.DBString(awPaymentConsentId)
 								                    + ",@PaymentBureauToken =" + Tools.DBString(awPaymentConsentId)
 								                    + ",@BureauResultSoap ="   + Tools.DBString(hdnAW.Value)
+								                    + ",@BIN ="                + Tools.DBString(awBIN)
+								                    + ",@Last4Digits ="        + Tools.DBString(awLast4)
+								                    + ",@CardNumber ="         + Tools.DBString(awBIN+".."+awLast4)
+								                    + ",@CardBrand ="          + Tools.DBString(awBrand)
 								                    + ",@TransactionAmount ="  + amount3d.ToString()
 								                    + ",@SecureRegistrationPaymentTypeCode = 'NPA'"
 								                    + ",@TransactionStatusCode = '00'"
