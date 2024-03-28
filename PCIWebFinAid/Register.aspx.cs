@@ -1023,17 +1023,17 @@ namespace PCIWebFinAid
 									amount3d         = Tools.StringToInt(spr);
 
 								spr = "sp_FILL_3DSAuthorisation";
-								sql = "exec " + spr + " @PaymentBureauCode =" + Tools.DBString(bureauCode3d)
-								                    + ",@MerchantReference =" + Tools.DBString(contractCode)
-								                    + ",@TransactionCUR ="    + Tools.DBString(awCurrencyCode)
-								                    + ",@CustomerID ="        + Tools.DBString(awCustomerId)
-								                    + ",@PaymentConsentID ="  + Tools.DBString(awPaymentConsentId)
-								                    + ",@BureauResultSoap ="  + Tools.DBString(hdnAW.Value)
-								                    + ",@TransactionAmount =" + amount3d.ToString()
+								sql = "exec " + spr + " @PaymentBureauCode ="  + Tools.DBString(bureauCode3d)
+								                    + ",@MerchantReference ="  + Tools.DBString(contractCode)
+								                    + ",@TransactionCUR ="     + Tools.DBString(awCurrencyCode)
+								                    + ",@CustomerID ="         + Tools.DBString(awCustomerId)
+								                    + ",@PaymentConsentID ="   + Tools.DBString(awPaymentConsentId)
+								                    + ",@PaymentBureauToken =" + Tools.DBString(awPaymentConsentId)
+								                    + ",@BureauResultSoap ="   + Tools.DBString(hdnAW.Value)
+								                    + ",@TransactionAmount ="  + amount3d.ToString()
 								                    + ",@SecureRegistrationPaymentTypeCode = 'NPA'"
 								                    + ",@TransactionStatusCode = '00'"
 								                    + ",@BureauSubmissionSoap = 'Register.aspx via AirWallex Drop-In element'"
-								                    + ",@PaymentBureauToken = ''"
 								                    + ",@TransactionFileResultCode = ''"
 										              + ",@AuthorisationResultCode = 'S'";
 								if ( miscList.ExecQuery(sql,0,"",false,true) != 0 )
